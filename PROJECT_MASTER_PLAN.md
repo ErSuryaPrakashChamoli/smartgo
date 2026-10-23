@@ -6,8 +6,15 @@
 | | |
 |---|---|
 | Last updated | 2026-10-24 |
-| Current phase | **Phase 0: READY FOR REVIEW** · Phase 1: IN PROGRESS (drafts ready, awaiting owner decisions) |
+| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: IN PROGRESS.** Documents at v1.0-rc, ready for owner review; business inputs outstanding. |
 | Live status register | [`docs/phases/PHASE_STATUS.md`](docs/phases/PHASE_STATUS.md) |
+| Decisions and risks | [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) |
+
+**Roles in this plan**
+* **Project owner:** approves phases, architecture, process and scope.
+* **Client (SmartGro):** supplies business facts, policies, assets and accounts.
+
+A recommended default never becomes a fact until its decider confirms it.
 
 ---
 
@@ -33,13 +40,31 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
 * **AC:** see `docs/phases/PHASE_0_DISCOVERY_REPORT.md` §10.
 
 ### Phase 1: Product requirements, IA, system architecture, database design, acceptance criteria
-* **Deliverables:** PRD, information architecture and journeys, business rules, role matrix, ERD, integration contracts, ADRs, test strategy.
-* **AC:**
-  1. Every P1 decision is answered or explicitly deferred with an accepted default.
-  2. The ERD is validated against one real location's inventory.
-  3. Every BR and FR has an owner-agreed default or final value.
-  4. ADRs are ACCEPTED or REJECTED.
-  5. The owner signs off.
+* **Deliverables:**
+  * PRD
+  * information architecture (sitemap and user journeys)
+  * business rules
+  * role and permission matrix
+  * ERD
+  * system architecture
+  * API contracts
+  * integration inventory, plus the existing-systems assessment
+  * security model
+  * test strategy
+  * design system foundation
+  * deployment plan
+  * inventory import template and validation process
+  * decision register
+  * ADRs
+* **AC (exact):**
+  * **AC-1.1 Documents complete and consistent.** Every deliverable above is at v1.0 after owner review comments are resolved. All relative links resolve (link check reports 0 broken). No document contradicts another on routes, entities or rules.
+  * **AC-1.2 Blocking client inputs answered.** D-01, D-02, D-03, D-05, D-16, D-19, D-22 and D-33 are answered by the client, **or** explicitly deferred by the owner in the decision register with the default and the risk recorded.
+  * **AC-1.3 Existing systems.** D-06 is answered by the client (questionnaire Q1–Q3 and Q7 at minimum), **or** the owner records an explicit deferral that accepts Scenario A as the working design and makes D-06 a Phase 5 entry gate.
+  * **AC-1.4 ERD validated against reality.** The client's first real location is supplied in the SG-INV-1.0 template and walked through the validation rules. Every finding is either corrected in the data or turned into an ERD change. M-1…M-6 are closed or deferred with a recorded default.
+  * **AC-1.5 No silent defaults.** Every [DEFAULT] value in the PRD and business rules is confirmed by its decider or listed as "Deferred to Phase N" in the register.
+  * **AC-1.6 Architecture approvals.** ADR-0003…0012 are ACCEPTED or REJECTED (D-34). The dependency list (D-24), code layout (D-25), release slicing (D-32) and import process (D-35) are approved.
+  * **AC-1.7 Engineering baseline verified.** Git history is reviewed and pushed to the private remote (D-31). `php artisan test --compact` passes on the local MySQL `smartgro_testing` database created by the setup script, including the concurrency harness. Pint is clean.
+  * **AC-1.8 Sign-off.** Owner approval recorded in `docs/phases/PHASE_STATUS.md`.
 
 ### Phase 2: Brand system, UX/UI design, responsive design system
 * **Depends on:** Phase 1; **logo (D-11)**; photography plan (D-12).
@@ -249,3 +274,10 @@ flowchart LR
 | [`docs/testing/TEST_STRATEGY.md`](docs/testing/TEST_STRATEGY.md) | test layers, MySQL strategy, critical journeys |
 | [`docs/operations/DEPLOYMENT_RUNBOOK.md`](docs/operations/DEPLOYMENT_RUNBOOK.md) | environments, requirements, release procedure (draft) |
 | [`docs/decisions/ADR_INDEX.md`](docs/decisions/ADR_INDEX.md) | architecture decisions |
+| [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) | all decisions and risks, classified; owner actions |
+| [`docs/phases/PHASE_1_PROGRESS_REPORT.md`](docs/phases/PHASE_1_PROGRESS_REPORT.md) | Phase 1 progress report (2026-10-24) |
+| [`docs/requirements/CLIENT_INPUTS_REQUIRED.md`](docs/requirements/CLIENT_INPUTS_REQUIRED.md) | checklist of business facts and assets needed from the client |
+| [`docs/requirements/INVENTORY_IMPORT_SPEC.md`](docs/requirements/INVENTORY_IMPORT_SPEC.md) | inventory import template SG-INV-1.0 and validation rules |
+| [`docs/architecture/API_CONTRACTS.md`](docs/architecture/API_CONTRACTS.md) | public API, form, webhook and domain-action contracts |
+| [`docs/architecture/EXISTING_SYSTEMS_ASSESSMENT.md`](docs/architecture/EXISTING_SYSTEMS_ASSESSMENT.md) | D-06 questionnaire, scenarios, source-of-truth recommendation |
+| [`docs/operations/LOCAL_DEVELOPMENT.md`](docs/operations/LOCAL_DEVELOPMENT.md) | local MySQL setup, tests, Git and GitHub remote steps |

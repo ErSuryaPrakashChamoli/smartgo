@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — Phase 1, ready for review** |
+| Status | **v1.0-rc — Phase 1, ready for owner review.** ADR-0001 (modular monolith) and ADR-0002 (MySQL) accepted 2026-10-24. Other ADRs PROPOSED. |
 | Last updated | 2026-10-24 |
-| Related | `DATABASE_ERD.md`, `INTEGRATION_CONTRACTS.md`, `../decisions/ADR_INDEX.md`, `../requirements/BUSINESS_RULES.md` |
+| Related | `DATABASE_ERD.md` · `API_CONTRACTS.md` · `INTEGRATION_CONTRACTS.md` · `EXISTING_SYSTEMS_ASSESSMENT.md` · `../decisions/ADR_INDEX.md` · `../decisions/DECISION_REGISTER.md` · `../requirements/BUSINESS_RULES.md` |
 
 ---
 
@@ -20,12 +20,13 @@ Facts observed in the repository and on the development machine. See the Phase 0
 | Livewire | 4.4.8 (Filament dependency) | where appropriate | — |
 | Alpine.js | bundled inside Livewire's JS; no separate npm package | yes | Use Livewire's bundled Alpine (ADR-0008) |
 | Tailwind CSS | 4.3.3 via `@tailwindcss/vite`; Vite 8.3.5 | yes | — |
-| Pest | 5.3.3; 2 example tests passing | yes | — |
-| Database | App configured for **SQLite**. MySQL **8.4.11** server running on 127.0.0.1:3306; no app credentials configured. | MySQL 8.4 | Create dev DB + user (D-26) |
+| Pest | 5.3.3; 9 tests (2 examples + 7 MySQL concurrency harness), passing on MySQL 8.4.11 | yes | — |
+| Database | **Tests forced to MySQL** (`smartgro_testing`) with a `*_testing` guard. `.env.example` describes MySQL with placeholders. The local dev `.env` stays on SQLite until the owner runs the setup script (action A-1), which creates the DBs and user and writes credentials only to `.env`. | MySQL 8.4 | Owner action A-1 |
 | Redis | **Not installed**; `phpredis` extension **not loaded**; `predis` not installed | Redis | Install server + `php8.5-redis`, or use `predis` (ADR-0007) |
 | Object storage | `league/flysystem-aws-s3-v3` **not installed**; AWS keys empty | S3-compatible | Add adapter at Phase 4 (dependency approval) |
 | Three.js | not installed (npm latest `three@0.186.1`, checked 2026-10-24) | yes | Add at Phase 7 |
-| Version control | **Not a Git repository** | Git | Initialise + remote (D-23) |
+| Version control | **Git initialised 2026-10-24** on `main` (reviewed baseline + small commits). No remote yet. | Git + private GitHub | Remote: D-31 / action A-2 |
+| Spreadsheet reading | `openspout/openspout` 4.32.0 and `league/csv` 9.28.0 present as Filament dependencies | XLSX import (ADR-0012) | Declare openspout as a direct dependency (D-24) |
 | Image processing | `gd` and `imagick` extensions loaded | yes | — |
 
 All candidate packages listed in §9 publish constraints compatible with Laravel 13 and PHP 8.5, according to Packagist metadata retrieved 2026-10-24. **None has been installed.** Adding dependencies requires owner approval (D-24).
@@ -133,14 +134,16 @@ tests/
 | Back office `/admin` (path TBC) | Filament 5 panel with custom theme | session + **required MFA** + role permissions | none |
 | Webhooks `/webhooks/{provider}` | controllers | provider signature verification | none |
 
-**Initial API v1 endpoints (read-only)**
+**Initial API v1 endpoints (read-only).** Full request/response contracts are in [`API_CONTRACTS.md`](API_CONTRACTS.md).
 
 | Endpoint | Used by | Returns |
 |---|---|---|
-| `GET /api/v1/locations/{location}/availability?date=` | location page widget, 3D viewer | per-space public availability state (BR-AV-1), no counts |
-| `GET /api/v1/spaces/{space}/slots?date=` | meeting-room booking UI | open slots |
-| `GET /api/v1/locations/{location}/tour-slots?from=&to=` | tour scheduler | open tour slots |
-| `GET /api/v1/scenes/{scene}` | 3D viewer | scene manifest: model URLs (CDN), floors, hotspots → space IDs, tour stops, disclaimer |
+| `GET /api/v1/locations/{city}/{location}/availability?date=` | location page widget, 3D viewer | per-space public availability state (BR-AV-1), no counts |
+| `GET /api/v1/spaces/{code}/slots?date=` | meeting-room booking UI (only if D-07) | open slots |
+| `GET /api/v1/locations/{city}/{location}/tour-slots?from=&to=` | tour scheduler | open tour slots |
+| `GET /api/v1/locations/{city}/{location}/scene` | 3D viewer | scene manifest: model URLs (CDN), floors, hotspots → space codes, tour stops, disclaimer |
+
+No database IDs are exposed: locations are identified by slug, spaces by permanent code, and customer records by random reference.
 
 Forms (enquiry, tour, booking) are submitted through Livewire actions backed by Form Request–equivalent validation, not through a public write API. A write API is only added if a mobile app or a partner integration requires one (versioned, token-authenticated with Sanctum).
 
@@ -228,6 +231,7 @@ Compatibility was checked against Packagist and npm metadata on 2026-10-24.
 | `laravel/horizon` | v5.50.1 | illuminate ^13 supported; ext-pcntl, ext-posix | queue supervision | 3/15 |
 | `predis/predis` **or** `php8.5-redis` extension | v3.7.0 | php ^8.0 | Redis client (ADR-0007) | 3 |
 | `three` (npm) | 0.186.1 | — | 3D viewer | 7 |
+| `openspout/openspout` (declare as direct) | 4.32.0 installed | already resolved by Composer under Laravel 13 / PHP 8.5 | XLSX inventory import (ADR-0012) | 5 |
 
 **Considered and not recommended now:** `bezhansalleh/filament-shield` (supports Filament ^5, but generates permissions per CRUD resource, which conflicts with the business-oriented permission model in `SECURITY_MODEL.md`); `laravel/scout` (MySQL queries suffice for tens of locations; revisit only if search volume demands it).
 
@@ -237,7 +241,7 @@ Compatibility was checked against Packagist and npm metadata on 2026-10-24.
 
 | Requested | Status | Proposed handling |
 |---|---|---|
-| MySQL 8.4 | Server available (8.4.11) but the app is on SQLite | Switch `.env` to MySQL once credentials exist (D-26). Run tests on MySQL (see `../testing/TEST_STRATEGY.md`). **No architectural deviation.** |
+| MySQL 8.4 | Server available (8.4.11). Tests now forced to MySQL; local dev `.env` switches when the owner runs the setup script (A-1). | **No architectural deviation.** |
 | Redis | Not installed locally | Keep `database` drivers for local development until Redis is installed. Production requires Redis. **No architectural deviation**; this is an environment task (ADR-0007). |
 | Alpine.js | Provided through Livewire 4's bundle | Do not add a second Alpine package (it would cause a double-initialisation conflict). **No deviation.** |
 | S3 / CDN / Cloudflare | No provider or credentials yet | Use the `local`/`public` disk in development; provider is decided under D-14. |

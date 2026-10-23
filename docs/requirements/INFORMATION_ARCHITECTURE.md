@@ -2,10 +2,12 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — Phase 1, ready for review** |
+| Status | **v1.0-rc — Phase 1, ready for owner review.** Structure is final pending review. Items marked ◇ depend on client inputs. |
 | Last updated | 2026-10-24 |
 | Evidence | `../research/MARKET_BENCHMARK.md` (research of 2026-10-24) |
-| Decisions | D-02 locations, D-03 products, D-16 languages, D-19 existing site/URLs, D-27 partner pages |
+| Decisions | D-02 locations, D-03 products, D-16 languages, D-19 existing site/URLs, D-27 partner pages (`../decisions/DECISION_REGISTER.md`). City slugs: CLIENT_INPUTS C-2.5. |
+
+No page in this sitemap will publish invented content. A ◇ page is built only if the client confirms the product or programme, and a city or centre page only for a real location.
 
 ---
 

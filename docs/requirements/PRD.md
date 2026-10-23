@@ -2,10 +2,12 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — Phase 1, ready for review.** Not approved. |
-| Version | 0.1 (2026-10-24) |
-| Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `../architecture/*` · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
-| Decision references | D-xx items are listed in `../phases/PHASE_0_DISCOVERY_REPORT.md` §5 |
+| Status | **v1.0-rc — Phase 1, ready for owner review.** Not approved. The business sections depend on client inputs. |
+| Version | 0.2 (2026-10-24) |
+| Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` · `../architecture/*` (incl. `API_CONTRACTS.md`, `EXISTING_SYSTEMS_ASSESSMENT.md`) · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
+| Decision references | D-xx items: `../decisions/DECISION_REGISTER.md` (living register) |
+
+> **How to read defaults.** Anything marked [DEFAULT], "recommended" or "assumption" is a proposal from the project team. It is **not** an approved business fact until its decider (owner or client) confirms it in the decision register.
 
 ---
 
@@ -89,7 +91,7 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-INV-1 | Guided setup: City → Building → Location → Floors → Spaces (wizard), plus bulk import from a spreadsheet template. | A non-technical ops user can create a location with 3 floors and 40 spaces in one session. Import validates and reports row errors without partial writes. |
+| FR-INV-1 | Guided setup: City → Building → Location → Floors → Spaces (wizard), plus bulk import with the SG-INV-1.0 template (`INVENTORY_IMPORT_SPEC.md`, ADR-0012). | A non-technical ops user can create a location with 3 floors and 40 spaces in one session. The import validates against rules V-001…V-180 and reports sheet/row/column issues. It is approved by a second person and committed all-or-nothing. Synthetic fixtures pass T-IMP-01…06. |
 | FR-INV-2 | Space operational status changes with reason; history kept. | Every change is audit-logged and emits `SpaceAvailabilityChanged`. |
 | FR-INV-3 | Allocations (long-term occupancy) with start/end/notice; seat-level for desk zones if D-05. | Availability states follow BR-AV-1…6 exactly (unit tests per rule). |
 | FR-INV-4 | Products, offerings and price plans with approval (BR-PR-*). | Four-eyes enforced. Only one active plan per scope and unit at a time. |
@@ -176,15 +178,15 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 | NFR-BROWSER-1 | Support | last 2 versions of evergreen browsers, iOS Safari 16+, Android Chrome; graceful degradation without WebGL |
 | NFR-LOC-1 | Locale | en-IN formatting (₹, Indian digit grouping), Asia/Kolkata display time [DEFAULT pending D-01, D-16] |
 
-## 7. Assumptions (to be confirmed)
+## 7. Working assumptions (unconfirmed; none is treated as fact)
 
-| # | Assumption |
-|---|---|
-| A-1 | SmartGro operates in India, prices in INR, and content is in English. Indian operators were explicitly listed for research, but the country is not confirmed. |
-| A-2 | No existing operational, CRM or member-management system must remain authoritative (D-06). |
-| A-3 | No customer self-registration or member portal at launch (D-20). |
-| A-4 | No existing website whose URLs must be preserved (D-19). |
-| A-5 | Tours are free and do not need payment. |
+| # | Assumption | Status |
+|---|---|---|
+| A-1 | SmartGro operates in India, prices in INR, content in English. Indian operators were listed for research, but the country is not confirmed. | requires client input (D-01, D-16) |
+| A-2 | ~~No existing system must remain authoritative.~~ **Withdrawn 2026-10-24** on owner instruction: no assumption is made. See `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md`. | requires client input (D-06) |
+| A-3 | No customer self-registration or member portal at launch | deferred to Phase 8 (D-20) |
+| A-4 | No existing website whose URLs must be preserved | requires client input (D-19) |
+| A-5 | Tours are free and do not need payment | requires client input (CLIENT_INPUTS C-4.3) |
 
 ## 8. Open decisions
-Listed in full, with recommended defaults, in `../phases/PHASE_0_DISCOVERY_REPORT.md` §5.
+Listed with classification and recommended answers in `../decisions/DECISION_REGISTER.md`. Client-facing questions are in `CLIENT_INPUTS_REQUIRED.md`.

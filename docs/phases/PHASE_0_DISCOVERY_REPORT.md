@@ -3,9 +3,10 @@
 | | |
 |---|---|
 | Phase | 0: Discovery, repository audit and requirements clarification |
-| Status | **READY FOR REVIEW** (not approved; only the owner can approve) |
+| Status | **APPROVED in principle** by the project owner, 2026-10-24 |
 | Date | 2026-10-24 |
 | Prepared for | SmartGro project owner |
+| Note | §5 is the Phase 0 snapshot. The live, re-classified register is [`../decisions/DECISION_REGISTER.md`](../decisions/DECISION_REGISTER.md). |
 
 This report separates **confirmed facts** (verified by a command or a fetched source), **assumptions**, **recommendations** and **unresolved questions**. Nothing in it invents client facts.
 
@@ -205,7 +206,7 @@ See [`../architecture/INTEGRATION_CONTRACTS.md`](../architecture/INTEGRATION_CON
 | 0.3 | Market research documented with dates, sources, access status and limits | Met (benchmark; 4 claims re-verified) |
 | 0.4 | Missing inputs listed; facts, assumptions, recommendations and unresolved items separated | Met (§5) |
 | 0.5 | Proposed architecture, dependency map, entities, integrations and Phase 1 plan documented | Met |
-| 0.6 | Owner has reviewed and approved | **Pending owner** |
+| 0.6 | Owner has reviewed and approved | **Met:** approved in principle, 2026-10-24 |
 
 Phase-level acceptance criteria for all phases are in `PROJECT_MASTER_PLAN.md` §2.
 

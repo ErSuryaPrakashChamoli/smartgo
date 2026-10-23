@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — Phase 1, ready for review.** No provider has been selected or connected. |
+| Status | **v1.0-rc — Phase 1, ready for owner review.** No provider has been selected or connected. Public API and form contracts: [`API_CONTRACTS.md`](API_CONTRACTS.md). |
 | Last updated | 2026-10-24 |
 | Decisions | D-06 existing systems, D-08 payments, D-10 messaging, D-14 hosting, D-18 analytics |
 
@@ -72,7 +72,9 @@ India-specific constraint to confirm with the chosen SMS provider: commercial SM
 
 ### 3.3 Existing operational systems (D-06), the highest-risk unknown
 
-If SmartGro already runs a coworking-management, CRM or accounting system, the owner must state, **per field group**, which system is authoritative:
+**Full assessment, client questionnaire (Q1–Q10), scenarios, recommended source of truth and sync design: [`EXISTING_SYSTEMS_ASSESSMENT.md`](EXISTING_SYSTEMS_ASSESSMENT.md).** The decision stays pending until the client confirms its current systems.
+
+If SmartGro already runs a coworking-management, CRM or accounting system, the client must state, **per field group**, which system is authoritative:
 
 | Field group | Authoritative system (to confirm) | Sync direction | Frequency |
 |---|---|---|---|
@@ -83,7 +85,7 @@ If SmartGro already runs a coworking-management, CRM or accounting system, the o
 | Leads / contacts | ? | ? | ? |
 | Invoices | ? | ? | ? |
 
-**Default if none exists:** the SmartGro platform is authoritative for every row above except invoices, which are out of scope until D-08.
+**Recommended default (not approved; applies only if the client confirms no such system exists):** the SmartGro platform is authoritative for every row above except invoices, which stay in the accounting system (D-08).
 
 ### 3.4 Analytics and attribution (D-18)
 

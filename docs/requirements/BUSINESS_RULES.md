@@ -2,11 +2,15 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — Phase 1, ready for review** |
+| Status | **v1.0-rc — Phase 1, ready for owner review.** Values marked [DEFAULT] are not approved. |
 | Last updated | 2026-10-24 |
-| Owner sign-off required | Yes (Operations, Sales and Marketing leads) |
+| Sign-off required | Project owner (structure); client operations, sales, marketing and finance leads (values) |
 
-Each rule has an ID so tests and code can reference it. Rules marked **[DEFAULT]** are recommendations used until the owner confirms or replaces them. Rules marked **[UNRESOLVED → D-xx]** cannot be finalised without the decision listed in `docs/phases/PHASE_0_DISCOVERY_REPORT.md` §5.
+Each rule has an ID so tests and code can reference it.
+* **[DEFAULT]** marks a *recommended* value. It is **not** an approved business fact. It is used only to design and test the mechanism until the client confirms or replaces it.
+* **[UNRESOLVED → D-xx]** marks a rule that cannot be finalised without that decision (see `../decisions/DECISION_REGISTER.md`).
+
+The *mechanisms* (locking, approval, propagation, labelling) are architecture. The *values* (durations, thresholds, windows) are business policy and belong to the client.
 
 ---
 
@@ -18,7 +22,8 @@ Each rule has an ID so tests and code can reference it. Rules marked **[DEFAULT]
 | BR-SOT-2 | Operational data (capacity, dimensions, floor, operational status, allocations, bookings, price plans) can only be changed by roles with the matching **operational** permission: Operations Manager, Centre Manager (own locations) or Finance for pricing. |
 | BR-SOT-3 | Marketing roles can change presentation (copy, imagery, SEO, page visibility). They can **hide** an offering or space from the website but can never mark it available, change its capacity or change its price. |
 | BR-SOT-4 | When operational status or availability changes, the system emits `SpaceAvailabilityChanged`. Website listings, 3D hotspots, booking widgets and CRM proposals read live state or have their caches invalidated within **60 seconds** [DEFAULT]. |
-| BR-SOT-5 | If an external operational system is adopted as the source of truth (D-06), SmartGro becomes a read mirror for those fields. Direction-of-sync rules replace BR-SOT-2 for the mirrored fields. **[UNRESOLVED → D-06]** |
+| BR-SOT-5 | If an existing system is confirmed as the source of truth for any field group (D-06), SmartGro becomes a read mirror for those fields. They are shown read-only ("Managed in <system>"). Direction-of-sync rules replace BR-SOT-2 for those fields. **[UNRESOLVED → D-06]**; options and recommendation in `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md`. |
+| BR-SOT-6 | Exactly **one** booking engine accepts bookings for a given space. SmartGro never takes a parallel booking for a space whose bookings are mastered elsewhere. |
 
 ## 2. Availability
 
@@ -50,7 +55,7 @@ Each rule has an ID so tests and code can reference it. Rules marked **[DEFAULT]
 | BR-BK-2 | **Shared-capacity spaces** (day passes): for every instant, the sum of blocking booking quantities plus active allocations must not exceed `capacity_seats`. |
 | BR-BK-3 | Blocking statuses are `confirmed`, `pending_payment`, and `held` while `hold_expires_at > now()`. |
 | BR-BK-4 | Holds last **10 minutes** [DEFAULT] while the customer completes details or payment. A scheduled job releases expired holds every minute, but correctness never depends on that job, because BR-BK-3 ignores expired holds anyway. |
-| BR-BK-5 | **Concurrency control:** every operation that creates, extends, reschedules or confirms a booking runs in a single DB transaction with deadlock retry (`DB::transaction(fn, attempts: 3)`). It acquires `SELECT … FOR UPDATE` on the parent `spaces` row first, then re-validates BR-BK-1/2/3, BR-AV-4/5 and booking-window rules before writing. Validation outside the lock is advisory only. (ADR-0004) |
+| BR-BK-5 | **Concurrency control:** every operation that creates, extends, reschedules or confirms a booking runs in a single DB transaction with deadlock retry (`DB::transaction(fn, attempts: 3)`). Its **first statement** is `SELECT … FOR UPDATE` on the parent `spaces` row; nothing is read before the lock. It then re-validates BR-BK-1/2/3, BR-AV-4/5 and booking-window rules before writing. Validation outside the lock is advisory only. (ADR-0004; the "read before lock" failure is reproduced by a negative-control test on MySQL 8.4.) |
 | BR-BK-6 | Booking requests carry an idempotency key. A retried submission with the same key returns the original booking instead of creating a second one. |
 | BR-BK-7 | Booking windows [DEFAULT]: earliest start is 30 minutes from now; latest start is 60 days ahead; minimum and maximum duration come from the space; bookings must fall within location operating hours. |
 | BR-BK-8 | Cancellation and refund policy: **[UNRESOLVED → D-07, D-08, D-15]** |

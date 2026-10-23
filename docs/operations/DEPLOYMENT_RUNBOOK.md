@@ -2,8 +2,21 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — hosting provider not chosen (D-14).** No environment has been deployed. Completed in Phase 15. |
+| Status | **v1.0-rc deployment plan — Phase 1, ready for owner review.** Hosting provider not chosen (D-14, deferred to Phase 3). No environment has been deployed. The provider-specific runbook is completed in Phase 15. |
 | Last updated | 2026-10-24 |
+| Local development | [`LOCAL_DEVELOPMENT.md`](LOCAL_DEVELOPMENT.md) |
+
+---
+
+## 0. Source control and CI (plan)
+
+| Item | State / plan |
+|---|---|
+| Repository | Git, branch `main`, initialised 2026-10-24 with a reviewed baseline. **Private GitHub remote pending** owner choice of repository owner (D-31; steps in `LOCAL_DEVELOPMENT.md` §5). |
+| Branching | short-lived feature branches → pull request → `main`. `main` is protected once the remote exists. |
+| CI (Phase 3; GitHub Actions proposed) | on every PR: PHP 8.5 + MySQL 8.4 service container → `composer install` → `npm ci && npm run build` → `vendor/bin/pint --test` → `php artisan test` (full suite, including the `concurrency` group) → `composer audit` and `npm audit --omit=dev`. A green CI is required to merge. |
+| Secrets in CI | the CI MySQL uses throwaway credentials defined in the workflow (test-only). Deployment secrets live only in the host's secret store or encrypted CI secrets. |
+| Deploy flow | `main` → automatic deploy to **staging** → owner/client acceptance → manual promotion to **production** (§4) |
 
 ---
 
@@ -22,11 +35,11 @@
 | Component | Requirement | Notes |
 |---|---|---|
 | PHP | 8.5.x with OPcache | local: 8.5.4 |
-| PHP extensions | `pdo_mysql`, `mbstring`, `intl`, `bcmath` (recommended for money maths; **not loaded locally**, needs checking), `gd` or `imagick`, `exif`, `fileinfo`, `zip`, `pcntl`, `posix`, `redis` (phpredis), `sodium`, `openssl` | all loaded locally except `redis` and `bcmath` |
+| PHP extensions | `pdo_mysql`, `mbstring`, `intl`, `bcmath` (recommended for money maths), `gd` or `imagick`, `exif`, `fileinfo`, `zip`, `pcntl`, `posix`, `redis` (phpredis), `sodium`, `openssl` | all loaded locally except `redis` and `bcmath`; apt candidates `php8.5-redis` 6.2.0 and `php8.5-bcmath` are available |
 | Composer | 2.x | local: 2.9.5 |
 | Node.js | 22 LTS for builds only | local: 22.22.1, npm 9.2.0 |
 | MySQL | 8.4 LTS, InnoDB, `utf8mb4` | local server: 8.4.11 |
-| Redis | 7.x or managed equivalent | cache, sessions, queues, locks |
+| Redis | 7.x or later, or a managed equivalent (local apt candidate: 8.0.5) | cache, sessions, queues, locks |
 | Object storage | S3-compatible bucket(s): public-read media + private documents | |
 | CDN / WAF | Cloudflare (requested) | |
 | Processes | web (PHP-FPM or equivalent), queue workers (Horizon), scheduler (`schedule:run` every minute) | |
@@ -68,8 +81,21 @@ To be added as integrations are chosen: payment gateway keys and webhook secret,
 
 ---
 
-## 6. Open items
+## 6. Hosting decision criteria (for D-14, Phase 3)
 
-* D-14: host, accounts and ownership, region (data residency), domain/DNS access.
-* D-19: existing website and URLs to redirect at cut-over.
-* D-23: Git hosting and CI provider.
+| Criterion | Requirement |
+|---|---|
+| Runtime | PHP 8.5 with the extensions in §2; MySQL 8.4; Redis; long-running queue workers (Horizon) and a scheduler |
+| Region | India region preferred (latency, and residency pending legal advice, D-15) |
+| Ownership | accounts owned by the client or by the contracting entity, as agreed. No personal accounts for production. |
+| Operations | managed backups with point-in-time recovery, zero-downtime deploys, staging environment, log access, autoscaling optional |
+| Edge | works behind Cloudflare (DNS, WAF, Turnstile, CDN cache purge by URL/tag) |
+| Cost | monthly estimate for staging + production presented to the client before selection |
+
+Candidates (to be assessed against the criteria, none selected): managed Laravel hosting (e.g. Laravel Cloud), a managed VPS with a deployment tool, or a cloud provider's managed services.
+
+## 7. Open items
+
+* D-14: host, accounts and ownership, region, domain/DNS access (deferred to Phase 3)
+* D-19: existing website and URLs to redirect at cut-over
+* D-31: GitHub repository owner, then CI setup in Phase 3

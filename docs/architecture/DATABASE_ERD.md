@@ -2,12 +2,12 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — Phase 1, ready for review** |
+| Status | **v1.0-rc — Phase 1, ready for owner review; not yet validated against real inventory** |
 | Last updated | 2026-10-24 |
-| Target engine | MySQL 8.4 (verified installed locally: 8.4.11; app currently configured for SQLite) |
-| Depends on decisions | D-03 product catalogue, D-04 pricing rules, D-05 inventory granularity, D-06 existing operational systems |
+| Target engine | MySQL 8.4 (ADR-0002 accepted; test suite verified on 8.4.11) |
+| Depends on decisions | D-03 product catalogue, D-04 pricing rules (Phase 5), D-05 inventory granularity, D-06 existing systems ([assessment](EXISTING_SYSTEMS_ASSESSMENT.md)), D-16 languages |
 
-This is the **preliminary** entity model. It is detailed enough to validate the architecture and the business rules, but it must be checked against SmartGro's real inventory sample (D-02, D-05) before any migration is written. Nothing here has been implemented.
+This is the **preliminary** entity model. It is detailed enough to validate the architecture and the business rules. It becomes v1.0 only after the client's first real location is run through the SG-INV-1.0 template (`../requirements/INVENTORY_IMPORT_SPEC.md`) and M-1…M-6 (§11) are closed. Nothing here has been implemented.
 
 ---
 
@@ -101,13 +101,15 @@ erDiagram
 | `cities` | Market city | `name`, `slug`, `state`, `country_code`, `is_active` | unique `slug` |
 | `micro_markets` | Business district within a city (Indian search behaviour; see research) | `city_id`, `name`, `slug` | unique (`city_id`, `slug`) |
 | `buildings` | The physical building | `name`, `address_line_1/2`, `postal_code`, `city_id`, `latitude`, `longitude`, `landlord_name`, `certifications` (JSON list, e.g. LEED/IGBC, only if documented) | index `city_id` |
-| `locations` | A SmartGro-operated centre (operational unit) | `building_id`, `city_id`, `micro_market_id`, `code` (e.g. `BLR-KOR`), `name`, `slug`, `timezone`, `operational_status` (`planned`, `pre_opening`, `open`, `temporarily_closed`, `closed`), `opens_on`, `operating_hours` (structured), `centre_manager_id` | unique `code`; unique (`city_id`, `slug`) |
+| `locations` | A SmartGro-operated centre (operational unit) | `building_id`, `city_id`, `micro_market_id`, `code` (e.g. `BLR-KOR`), `name`, `slug`, `timezone`, `operational_status` (`planned`, `pre_opening`, `open`, `temporarily_closed`, `closed`), `opens_on`, `operating_hours` (structured), `centre_manager_id`, `external_system`, `external_ref` (nullable; D-06) | unique `code`; unique (`city_id`, `slug`); unique (`external_system`, `external_ref`) |
 | `floors` | A floor SmartGro operates in the building | `location_id`, `building_level` (int), `label`, `sort_order`, `floor_plan_asset_id` | unique (`location_id`, `building_level`) |
-| `spaces` | **Canonical workspace record** | `location_id`, `floor_id`, `offering_id` (nullable), `code` (unique human ref, e.g. `BLR-KOR-03-PO-12`), `name`, `space_type` (enum, §3.1), `booking_mode` (`contract`, `exclusive_slot`, `shared_capacity`), `capacity_seats`, `area_sqft`, `operational_status` (`active`, `maintenance`, `out_of_service`, `decommissioned`), `is_publicly_listable` (ops-controlled), `turnaround_minutes`, `min_booking_minutes`, `max_booking_minutes` | unique `code`; index (`location_id`, `space_type`, `operational_status`); check `capacity_seats > 0` |
+| `spaces` | **Canonical workspace record** | `location_id`, `floor_id`, `offering_id` (nullable), `code` (unique human ref, e.g. `BLR-KOR-03-PO-12`), `name`, `space_type` (enum, §3.1), `booking_mode` (`contract`, `exclusive_slot`, `shared_capacity`), `capacity_seats`, `area_sqft`, `operational_status` (`active`, `maintenance`, `out_of_service`, `decommissioned`), `is_publicly_listable` (ops-controlled), `turnaround_minutes`, `min_booking_minutes`, `max_booking_minutes`, `external_system`, `external_ref` (nullable; D-06) | unique `code`; unique (`external_system`, `external_ref`); index (`location_id`, `space_type`, `operational_status`); check `capacity_seats > 0` |
 | `space_seats` | Individual seats inside a desk zone (only if D-05 = per-seat tracking) | `space_id`, `label`, `is_active` | unique (`space_id`, `label`) |
 | `space_allocations` | Long-term occupancy (contracts, licences, reservations) | `space_id`, `space_seat_id` (nullable), `company_id`, `deal_id` (nullable), `seats_allocated`, `starts_on`, `ends_on` (nullable = open-ended), `notice_given_on`, `status` (`reserved`, `active`, `notice_period`, `ended`, `cancelled`), `source` (`manual`, `import`, `integration`), `external_ref` | index (`space_id`, `status`, `starts_on`, `ends_on`) |
 | `amenities` | Controlled vocabulary (e.g. "Video-conference screen", "Shower") | `name`, `slug`, `category`, `icon_key` | unique `slug` |
 | `amenity_location`, `amenity_space` | Pivots | | composite PK |
+| `inventory_imports` | One uploaded SG-INV workbook and its lifecycle (ADR-0012) | `uploaded_by`, `file_path` (private), `file_sha256`, `template_id`, `status` (`uploaded` → `validating` → `invalid`/`valid` → `awaiting_approval` → `approved` → `committing` → `committed`, or `rejected`/`failed`), `summary`, `warnings_acknowledged_by/at`, `approved_by/at`, `committed_at`, `environment` | index (`status`, `created_at`); `approved_by` ≠ `uploaded_by` enforced in the action |
+| `inventory_import_issues` | Validation findings | `inventory_import_id`, `sheet`, `row`, `column`, `rule`, `severity`, `message`, `value_excerpt` (truncated, personal data masked) | index (`inventory_import_id`, `severity`) |
 
 ### 3.1 `space_type` (initial list, to confirm under D-03)
 `private_office`, `managed_suite`, `dedicated_desk_zone`, `hot_desk_zone`, `meeting_room`, `board_room`, `event_space`, `phone_booth`, `training_room`.
@@ -155,7 +157,7 @@ erDiagram
 
 | Table | Purpose | Key columns | Notes |
 |---|---|---|---|
-| `bookings` | Time-bound reservation of a space (meeting room, day pass, event) | `reference`, `space_id`, `contact_id`, `company_id`, `lead_id`, `starts_at`, `ends_at`, `quantity` (seats, for `shared_capacity`), `status` (`held`, `pending_payment`, `confirmed`, `cancelled`, `completed`, `no_show`), `hold_expires_at`, `price_snapshot` (JSON: plan id, unit, amount, tax, offer), `channel` (`web`, `admin`, `sales`), `cancelled_reason`, `idempotency_key` | unique `reference`; unique `idempotency_key`; index (`space_id`, `status`, `starts_at`, `ends_at`); check `ends_at > starts_at` |
+| `bookings` | Time-bound reservation of a space (meeting room, day pass, event) | `reference`, `space_id`, `contact_id`, `company_id`, `lead_id`, `starts_at`, `ends_at`, `quantity` (seats, for `shared_capacity`), `status` (`held`, `pending_payment`, `confirmed`, `cancelled`, `completed`, `no_show`), `hold_expires_at`, `price_snapshot` (JSON: plan id, unit, amount, tax, offer), `channel` (`web`, `admin`, `sales`), `cancelled_reason`, `idempotency_key`, `external_system`, `external_ref` (nullable; only if an external booking engine is master, D-06) | unique `reference`; unique `idempotency_key`; index (`space_id`, `status`, `starts_at`, `ends_at`); check `ends_at > starts_at` |
 | `payments` | Gateway transactions (Phase 8, only if D-07/D-08 approve online payment) | `booking_id`, `gateway`, `gateway_order_id`, `gateway_payment_id`, `amount_minor`, `currency`, `status`, `raw_status`, `paid_at` | unique (`gateway`, `gateway_payment_id`) |
 | `tour_requests` | Site-visit scheduling | `reference`, `lead_id`, `location_id`, `scheduled_start_at`, `duration_minutes`, `status` (`requested`, `confirmed`, `rescheduled`, `completed`, `no_show`, `cancelled`), `host_user_id`, `visitor_count`, `notes` | index (`location_id`, `scheduled_start_at`) |
 | `tour_availability_rules` | When tours can happen | `location_id`, `weekday`, `start_time`, `end_time`, `slot_minutes`, `max_concurrent_tours` | |
@@ -279,11 +281,13 @@ Hotspot state (available, occupied, maintenance) is **never stored** on hotspots
 
 ## 11. Open modelling questions
 
-| # | Question | Default if unanswered |
-|---|---|---|
-| M-1 | Can one SmartGro location span more than one building? | No. One building per location; one building may host several locations. |
-| M-2 | Are dedicated desks sold and tracked per seat? (D-05) | Yes: `space_seats` for dedicated-desk zones; hot desks are pooled capacity. |
-| M-3 | Is an existing coworking-management system (e.g. member billing or access control) the operational source of truth? (D-06) | No. SmartGro platform is the source of truth. If yes, `spaces`/`space_allocations` become a synchronised mirror with `external_ref`, and the sync direction must be documented in `INTEGRATION_CONTRACTS.md`. |
-| M-4 | Prices tax-inclusive or tax-exclusive on the website? (D-04) | Store exclusive, display with the explicit label "+ GST". |
-| M-5 | Multi-currency or multi-country? | INR only; the schema keeps `currency` so it can extend later. |
-| M-6 | Multi-language content? (D-16) | English only. No translation tables yet; revisit before Phase 4 build. |
+None of these is answered yet. The "recommended default" column is **not** an approved fact (see `../decisions/DECISION_REGISTER.md`).
+
+| # | Question | Decision | Classification | Recommended default |
+|---|---|---|---|---|
+| M-1 | Can one SmartGro location span more than one building? | CLIENT_INPUTS C-2.4 | Requires client input | No. One building per location; one building may host several locations. |
+| M-2 | Are dedicated desks sold and tracked per seat? | D-05 | Requires client input | Yes: `space_seats` for dedicated-desk zones; hot desks are pooled capacity. |
+| M-3 | Does an existing system own any operational data? | D-06 ([assessment](EXISTING_SYSTEMS_ASSESSMENT.md)) | Requires client input | Scenario A: SmartGro is master. If not, `spaces`/`space_allocations` become a mirror via `external_system` + `external_ref`, with the sync design in the assessment §5. |
+| M-4 | Prices tax-inclusive or tax-exclusive on the website? | D-04 | Deferred to Phase 5 | Store exclusive, display "+ GST". |
+| M-5 | Multi-currency or multi-country? | D-01 | Requires client input | INR only; the schema keeps `currency` so it can extend later. |
+| M-6 | Multi-language content? | D-16 | Requires client input | English only. No translation tables; revisit before the Phase 4 build. |

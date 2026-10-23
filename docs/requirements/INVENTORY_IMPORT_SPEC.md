@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **DRAFT v1.0 — Phase 1, ready for review.** The importer itself is built in Phase 5. |
+| Status | **v1.0-rc — Phase 1, ready for owner review** (approval tracked as D-35). The importer itself is built in Phase 5. |
 | Last updated | 2026-10-24 |
 | Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.0.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.0.xlsx) (template ID `SG-INV-1.0`) |
 | Synthetic fixtures | [`tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx) · [`tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx) |
@@ -112,7 +112,7 @@ Severity: **E** = error (blocks commit) · **W** = warning (must be acknowledged
 | Rule | Sev | Check |
 |---|---|---|
 | V-101 | E | required value missing |
-| V-102 | E | codes match `^[A-Z0-9](?:[A-Z0-9-]{0,38}[A-Z0-9])?$` after trimming. Lowercase is auto-uppercased **with a note**. Spaces and symbols are errors. |
+| V-102 | E | codes are 2–40 characters matching `^[A-Z0-9][A-Z0-9-]{0,38}[A-Z0-9]$` after trimming: capitals, digits and inner hyphens. Lowercase is auto-uppercased **with a note**. Spaces and symbols are errors. |
 | V-103 | E | text length limits (names 120, addresses 190, notes 1,000, contract reference 60) |
 | V-104 | E | dates are real dates (ISO `YYYY-MM-DD` or an Excel date) between 2000-01-01 and 2099-12-31 |
 | V-105 | E | list values are one of the allowed labels or keys |

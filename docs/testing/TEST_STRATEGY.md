@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — Phase 1, ready for review** |
+| Status | **v1.0-rc — Phase 1, ready for owner review** |
 | Last updated | 2026-10-24 |
-| Current state (verified) | Pest 5.3.3 with `pest-plugin-laravel` 5.0.1 and `pest-plugin-arch` installed. Suite = 2 example tests, both passing (`php artisan test --compact`, 2026-10-24). `phpunit.xml` uses SQLite `:memory:`. |
+| Current state (verified) | Pest 5.3.3, `pest-plugin-laravel` 5.0.1, `pest-plugin-arch`. **Suite runs on MySQL 8.4** (`phpunit.xml` forces `mysql` + `smartgro_testing`). 9 tests: 2 Laravel examples + 7 MySQL harness tests. **9/9 passed in three consecutive runs** against a throwaway MySQL 8.4.11 instance (2026-10-24). |
 
 ---
 
@@ -37,13 +37,23 @@
 
 ## 3. Database strategy for tests
 
+**Implemented 2026-10-24 (ADR-0002 accepted).**
+
 | Suite | Connection | Reset strategy |
 |---|---|---|
-| Default (`tests/Feature`, `tests/Unit`) | **MySQL 8.4** test database `smartgro_testing` [DEFAULT, requires D-26 credentials] | `RefreshDatabase` (transaction per test) |
-| Concurrency (`tests/Concurrency`, Pest group `concurrency`) | MySQL 8.4, separate connections per worker | `DatabaseTruncation`, because transactions cannot wrap multi-process tests |
-| Fast local loop (optional) | SQLite `:memory:` (current `phpunit.xml`) | allowed only for tests not tagged `mysql` |
+| All feature and unit tests | **MySQL 8.4**, database `smartgro_testing`. Forced in `phpunit.xml`; credentials from the local `.env` only. | `RefreshDatabase` for domain tests (transaction per test) |
+| Concurrency (Pest group `concurrency`) | MySQL 8.4; one OS process per competing request, each with its own connection | the test creates and drops its own tables, or uses `DatabaseTruncation`; transactions cannot wrap multi-process tests |
 
-**Proposal:** change `phpunit.xml` to MySQL once a test database exists. Until then, tests that rely on MySQL locking are tagged `->group('mysql')` and skipped with an explicit message, never silently passed.
+* **Safety guard:** `tests/TestCase.php` throws before any database trait runs if the configured database does not end in `_testing`. This was verified by pointing a temporary config at `smartgro`, which was refused.
+* **No SQLite fallback.** Without the local MySQL setup (`docs/operations/LOCAL_DEVELOPMENT.md` §2) the suite fails loudly rather than passing on a database that ignores locks.
+* **Fast loop:** `php artisan test --compact --exclude-group=concurrency`.
+
+### 3.1 Concurrency harness (implemented)
+
+`tests/Feature/Infrastructure/MySqlConcurrencyHarnessTest.php` with `tests/Support/Concurrency/`:
+* A worker script boots the app in **separate processes**. Each waits for a shared release instant, then attempts a reservation with a chosen strategy: `locked`, `naive` or `stale_snapshot`.
+* Throwaway `harness_*` tables isolate it from the domain schema.
+* **Negative controls** prove the harness can detect double booking. A test suite that cannot fail proves nothing.
 
 ---
 
@@ -80,10 +90,45 @@
 
 ---
 
-## 7. Phase 0 evidence
+## 7. Evidence log
 
-| Date | Command | Result |
+| Date | Environment | Command | Result |
+|---|---|---|---|
+| 2026-10-24 | SQLite (Phase 0 baseline) | `php artisan test --compact` | 2 passed (Laravel examples only) |
+| 2026-10-24 | throwaway MySQL 8.4.11 (private socket, scratch data directory) | `php artisan test` ×3 | **9 passed, 18 assertions**, each run about 16.5 s |
+| 2026-10-24 | same | temporary config with `DB_DATABASE=smartgro` | refused by the `*_testing` guard, as intended |
+| pending (owner action A-1) | local MySQL created by the setup script | `php artisan test --compact` | expected 9 passed |
+
+No SmartGro features exist yet, so there is no feature coverage yet.
+
+---
+
+## 8. Booking-domain test catalogue (must pass **before** booking code is merged)
+
+These are written in Phase 5/8 against the real schema, reusing the harness pattern. Each one runs on MySQL.
+
+| ID | Scenario | Expected |
 |---|---|---|
-| 2026-10-24 | `php artisan test --compact` | passed: 2 tests, 2 assertions (Laravel skeleton examples only) |
+| T-BK-01 | N parallel `HoldSlot` calls for the same meeting-room interval | exactly one `held`; the rest `SlotUnavailable` |
+| T-BK-02 | Parallel requests with partially overlapping intervals, plus one disjoint | one per overlapping group, plus the disjoint one |
+| T-BK-03 | Back-to-back bookings with and without turnaround | allowed only when `turnaround_minutes` is respected (BR-BK-1) |
+| T-BK-04 | Parallel day-pass requests beyond shared capacity | confirmed quantity = capacity, never more (BR-BK-2) |
+| T-BK-05 | An expired hold competing with a new request | the new request succeeds; the expired hold does not block (BR-BK-3/4) |
+| T-BK-06 | `ConfirmBooking` after the hold expired, slot taken meanwhile | `SlotUnavailable`; no confirmation; refund path triggered if paid |
+| T-BK-07 | Failure after a partial write (booking inserted, then exception) | full rollback; no booking, no event emitted |
+| T-BK-08 | Same idempotency key submitted twice in parallel | one booking; the second returns the first |
+| T-BK-09 | Space set to `maintenance` while a booking is being created | either the booking commits first and status change follows, or the booking is refused; never a booking on a non-bookable space |
+| T-BK-10 | Inventory consistency: allocations + bookings vs capacity after a randomised parallel workload | invariant holds: no overlapping exclusive bookings; capacity never exceeded |
+| T-TR-01 | N parallel `ClaimTourSlot` calls beyond `max_concurrent_tours` | confirmed tours = capacity (BR-TR-2) |
+| T-ARCH-01 | Arch test: booking/allocation actions perform `lockForUpdate()` before any read | enforced by test + code-review checklist (ADR-0004 constraint) |
 
-No SmartGro features exist yet, so no feature coverage exists yet.
+## 9. Inventory import test catalogue (Phase 5)
+
+| ID | Scenario | Expected |
+|---|---|---|
+| T-IMP-01 | `SYNTHETIC_inventory_valid.xlsx` with time frozen at 2026-10-24 | 0 errors, 0 warnings; preview counts match the fixture |
+| T-IMP-02 | `SYNTHETIC_inventory_with_errors.xlsx` | issues equal **exactly** the hidden `_expected_issues` sheet (15 issues) |
+| T-IMP-03 | Commit of the valid file, then re-import of the same file | second run: "no changes" |
+| T-IMP-04 | Import committing while a booking holds the space lock | serialised; no lost update |
+| T-IMP-05 | Synthetic file in a `production` environment | rejected by V-180 |
+| T-IMP-06 | Uploader attempts to approve their own import | denied (four-eyes) |

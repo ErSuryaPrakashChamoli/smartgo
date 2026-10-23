@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| Status | **DRAFT — pre-Phase 2.** Tokens are **provisional**. |
+| Status | **v1.0-rc foundation — Phase 1, ready for owner review.** The provisional palette was **approved as provisional** by the project owner on 2026-10-24 (D-11a). Full design system is a Phase 2 deliverable. |
 | Last updated | 2026-10-24 |
-| Blocking input | **D-11: the official SmartGro logo files.** No logo or brand asset was found in the repository or alongside it (searched 2026-10-24). The palette below comes from the project brief, **not** from sampling the logo. |
+| Blocking input | **D-11b: the original SmartGro logo files.** The owner directed that the logo already supplied is the authoritative reference. The original file was **not found** in the project environment: searched the repository, its parent folder, and the home directory by name and by recent image files on 2026-10-24. It is recorded as an **outstanding asset requirement** (CLIENT_INPUTS C-6.1). The logo will not be recreated or substituted. The palette below comes from the brief, not from sampling the logo; it will be re-verified once the original file is available. |
 
 This document records what can be decided before Phase 2 (principles, accessibility constraints and a verified contrast analysis) and what is waiting for brand inputs. The full visual design, component library and page designs are Phase 2 deliverables.
 
@@ -16,7 +16,8 @@ This document records what can be decided before Phase 2 (principles, accessibil
 |---|---|
 | Brand name | "SmartGro" per brief. The repository folder is named `smartGrow`, so the canonical spelling for domain, schema `Organization.name` and legal name needs confirming (D-22). |
 | Tagline | "WORK SMART. GROW TOGETHER." per brief |
-| Logo (vector master + raster) | **Not supplied** (D-11). It must not be redrawn, approximated or replaced. |
+| Logo (vector master + raster) | **Original file not available in the project environment** (D-11b). The owner states it has been supplied; it must be provided as a file. It must not be redrawn, approximated or replaced. |
+| Palette | **Approved as provisional** (D-11a, 2026-10-24): Smart Green `#2E8B18` (logo and decorative/large elements), Action Green `#287A15` (normal-size text and buttons), Deep Forest `#073B2C`, Warm White `#F7F7F2`, Charcoal `#252D29` |
 | Logo usage rules (clear space, minimum size, mono/reversed versions) | Not supplied |
 | Brand typefaces and licences | Not supplied. The current scaffold uses Instrument Sans via Bunny Fonts, which is a Laravel default and **not** a brand decision. |
 | Photography | Not supplied (D-12) |
@@ -52,7 +53,7 @@ WCAG 2.x contrast ratios were computed on 2026-10-24 with the standard relative-
 | Smart Green on Deep Forest | 2.89 : 1 | **Fails** (not even large text) |
 | Smart Green on Charcoal | 3.25 : 1 | large text / UI only |
 
-**Consequence:** Smart Green as given cannot be the colour for body links, small labels or white-on-green buttons without failing AA. Proposed resolution, subject to Phase 2 and logo sampling:
+**Consequence:** Smart Green as given cannot be the colour for body links, small labels or white-on-green buttons without failing AA. The resolution below was **approved as provisional by the owner on 2026-10-24**, subject to re-verification once the logo file is sampled in Phase 2:
 
 | Token | Value | Use | Contrast evidence |
 |---|---|---|---|

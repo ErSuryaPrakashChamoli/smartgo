@@ -1,6 +1,6 @@
 # ADR-0001 — Modular monolith on Laravel 13
 
-* **Status:** PROPOSED (awaiting owner approval)
+* **Status:** ACCEPTED (project owner, 2026-10-24: "Retain a modular monolith unless there is evidence that another architecture is needed.")
 * **Date:** 2026-10-24
 
 ## Context
