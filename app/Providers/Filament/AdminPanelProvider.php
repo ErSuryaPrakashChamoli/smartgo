@@ -11,6 +11,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -28,6 +29,13 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path(config('backoffice.path'))
             ->brandName('SmartGro')
+            ->brandLogo(fn (): string => asset('brand/smartgro-logo.webp'))
+            ->brandLogoHeight(fn (): string => request()->routeIs(
+                'filament.admin.auth.login',
+                'filament.admin.auth.password-reset.*',
+                'filament.admin.auth.multi-factor-authentication.*',
+            ) ? '6rem' : '3rem')
+            ->darkMode(false)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->passwordReset()
@@ -39,7 +47,8 @@ class AdminPanelProvider extends PanelProvider
             ->strictAuthorization()
             ->databaseTransactions()
             ->colors([
-                'primary' => '#2E8B18',
+                // Keeps Smart Green as shade 500, so shade 600 (#297D15) carries white button text at AA contrast (DESIGN_SYSTEM §3).
+                'primary' => Color::generateV3Palette('#2E8B18'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
