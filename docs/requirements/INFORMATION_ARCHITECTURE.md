@@ -15,8 +15,8 @@ No page in this sitemap will publish invented content. A ◇ page is built only 
 
 1. **Three-level discovery, matching how Indian buyers search:** city → micro-market (business district) → centre. This mirrors observed WeWork India and Awfis hierarchies and the locality-led search behaviour in the research.
 2. **One canonical page per search intent.** The research found an Indian operator running two parallel city-page sets that compete with each other, and another with truncated or duplicated slugs. SmartGro has exactly one city page per city, one product × city page per pair, and stable, human-readable slugs managed by the CMS with automatic 301s on change (BR-CMS-6).
-3. **City-name aliases redirect.** For example `gurugram` → `gurgaon` (or the reverse), once the owner chooses the public name (Q-OW-4). Aliases are stored as redirects, not duplicate pages.
-6. **Only real places are presented as SmartGro locations.** At launch that is Noida (OD-03). Target-market cities get pages only when a property is confirmed (BR-PROP-4; "coming soon" pages only if Q-OW-5 approves them).
+3. **Official current city names (OD-16):** Noida, Gurugram, Delhi, Faridabad, Ghaziabad. Old names are aliases that redirect (`gurgaon` → `gurugram`), stored as redirects, not duplicate pages.
+6. **Only real places are presented as SmartGro locations.** At launch that is Noida (OD-03). **Cities are hidden by default.** An administrator can toggle a city visible (OD-18, BR-PROP-4). What a visible city without a property shows is Q-OW-12.
 7. **No content is published for categories, properties or spaces that do not exist**, and no demo inventory is created (BR-PROP-1, BR-PRODCFG-4).
 4. **Every indexable page is server-rendered** with complete content in the HTML (ADR-0010).
 5. **Product × city pages exist only when there is real inventory** behind them. There are no thin doorway pages.
@@ -135,9 +135,9 @@ Requirement form with seat bands (e.g. 20–49, 50–99, 100–249, 250+), citie
 
 ## 6. Existing website migration (OD-11)
 
-The current WordPress site at smartgro.space has 14 pages, 6 blog posts, 13 tag archives and 24 feeds (`../research/EXISTING_WEBSITE_AUDIT.md` §3). The new IA must give each legitimate URL a destination at cut-over:
+**Owner decision (OD-19): nothing is taken from the old site.** No copy, images, files or data are reused. The current WordPress site at smartgro.space has 14 pages, 6 blog posts, 13 tag archives and 24 feeds (`../research/EXISTING_WEBSITE_AUDIT.md` §3). The new IA must give each legitimate URL a destination at cut-over:
 * **Pages and posts:** 301 to the closest new page (draft map in the audit §4). The posts keep their slugs under `/insights/`.
 * **Tag and feed URLs:** 301 where they have value, otherwise 410.
 * **`/pin/*`** (1,038 injected spam URLs): **410 Gone**.
 
-The final map is a Phase 11 deliverable (R-17), checked against a fresh crawl and Search Console data.
+Whether to redirect at all is **Q-OW-11**. Redirecting reuses no content; it only preserves rankings and old links. If approved, the final map is a Phase 11 deliverable (R-17), checked against a fresh crawl and Search Console data.

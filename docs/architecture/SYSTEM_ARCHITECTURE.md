@@ -76,7 +76,7 @@ flowchart TB
 | Module | Owns (writes) | Reads from | Primary roles |
 |---|---|---|---|
 | **Identity & Access** | users, roles, permissions, location scopes, audit log | — | Platform Admin |
-| **Portfolio & Inventory** | cities, micro-markets, properties (`locations`), buildings, floors, space types, spaces, seats, amenities, allocations, closures, lease facts | Identity | Operations, Centre Manager |
+| **Portfolio & Inventory** | cities, micro-markets, properties (`properties`), buildings, floors, space types, spaces, seats, amenities, allocations, closures, lease facts | Identity | Operations, Centre Manager |
 | **Commerce** | product categories and their configuration, offerings (incl. space eligibility), price plans, offers, cancellation policies | Inventory | Finance, Operations |
 | **Availability** (service, no own tables except the optional snapshot) | `space_availability_snapshots` (derived) | Inventory, Commerce, Booking | system |
 | **Booking** | bookings, holds, payments, tour requests, tour rules | Inventory, Availability, CRM | Front desk, Sales |
@@ -282,5 +282,7 @@ No version downgrade or replacement of the requested stack is needed based on cu
 | OD-10: individual, pooled, hybrid | `inventory_mode` per space; lock targets per mode; ascending-id multi-space locking | ADR-0004 (invariant unchanged); ADR-0013; BR-BK-2a/2b |
 | OD-01: logo managed once | brand settings reference media assets; templates never embed copies | ERD §7; DESIGN_SYSTEM §1.1 |
 | OD-11: existing WordPress site (compromised) | redirect manager needs prefix matching (`/pin/*` → 410); never import files from the old site | ERD §7; `../research/EXISTING_WEBSITE_AUDIT.md` |
+
+**Round 3 (OD-12…OD-20):** entity renamed to Property throughout (`properties`, `property_id`); `hybrid` inventory mode with the BR-AV-3d invariant (same zone-row lock); city visibility toggle (hidden cities answer 404); lease tracking deferred; nothing reused from the old site.
 
 Unchanged: modular monolith (ADR-0001), MySQL (ADR-0002), the lock-before-read invariant and its harness, server-rendered public pages (ADR-0010).

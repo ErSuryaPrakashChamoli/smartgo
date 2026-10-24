@@ -32,6 +32,7 @@ Therefore:
 | `exclusive` space (cabin, room, suite) | that space | no overlapping blocking booking or allocation, including turnaround; space status; closures |
 | `per_seat` zone (dedicated desks) | the **zone's** space row, never only the seat row | the chosen seat is active and free for the interval; zone status |
 | `pooled` zone (hot desks) | the zone's space row | Σ blocking quantities + allocations + requested ≤ `capacity_seats` at every instant of the interval |
+| `hybrid` zone (assigned seats + shared pool; OD-15) | the zone's space row: the **same** row for seat-level and pool-level writes | for every instant: individually committed seats + pooled usage + request ≤ active seats (BR-AV-3d); for a seat request, the chosen seat is also active and free |
 | Multi-space agreement or combined booking (e.g. managed office over several spaces) | every involved space, **ascending `id`** (prevents deadlocks; retried on deadlock) | each space per its own mode |
 | Cancellation, extension, reschedule | the same rows as creation | status transition rules; released inventory is immediately available, because availability is derived |
 | Admin inventory change that reduces supply (capacity reduction, seat deactivation, status → maintenance or decommissioned, closure) | the affected spaces, ascending `id` | future committed usage still fits; otherwise the change is refused with a list of conflicts (BR-INV-4) |

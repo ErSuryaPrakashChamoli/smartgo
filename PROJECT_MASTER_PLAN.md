@@ -6,7 +6,7 @@
 | | |
 |---|---|
 | Last updated | 2026-10-24 |
-| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: IN PROGRESS.** Owner decisions of 2026-10-24 (round 2) incorporated; documents at v1.1-rc; floor allocation, pricing brief and other inputs outstanding. |
+| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: IN PROGRESS.** Owner decisions rounds 2–3 incorporated; documents at v1.2-rc; floors per property, pricing brief and a few approvals outstanding. |
 | Live status register | [`docs/phases/PHASE_STATUS.md`](docs/phases/PHASE_STATUS.md) |
 | Decisions and risks | [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) |
 
@@ -58,9 +58,9 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
   * ADRs
 * **AC (exact):**
   * **AC-1.1 Documents complete and consistent.** Every deliverable above is at v1.0 after owner review comments are resolved. All relative links resolve (link check reports 0 broken). No document contradicts another on routes, entities or rules.
-  * **AC-1.2 Blocking inputs answered.** D-02 (including floor allocation Q-OW-1 and property grouping Q-OW-2), D-33, Q-OW-3, Q-OW-4, Q-OW-7 and Q-OW-8 are answered, **or** explicitly deferred by the owner in the decision register with the default and the risk recorded. (D-03, D-05, D-06, D-16, D-19 and D-22 were answered on 2026-10-24; D-01 legal details may defer to Phase 6.)
+  * **AC-1.2 Blocking inputs answered.** Floors per property (Q-OW-1), D-33 (team roles), Q-OW-11 and Q-OW-12 are answered, **or** explicitly deferred by the owner in the decision register with the default and the risk recorded. (Answered on 2026-10-24: D-03, D-05, D-06, D-16, D-19, D-22 and Q-OW-2…8. D-01 legal details may defer to Phase 6.)
   * **AC-1.3 Existing systems.** D-06 is answered by the client (questionnaire Q1–Q3 and Q7 at minimum), **or** the owner records an explicit deferral that accepts Scenario A as the working design and makes D-06 a Phase 5 entry gate.
-  * **AC-1.4 ERD validated against reality.** The first real property is supplied in the SG-INV-1.1 template (or a later version) and walked through the validation rules. Every finding is either corrected in the data or turned into an ERD change. M-1…M-6 are closed or deferred with a recorded default.
+  * **AC-1.4 ERD validated against reality.** The first real property is supplied in the SG-INV-1.2 template (or a later version) and walked through the validation rules. Every finding is either corrected in the data or turned into an ERD change. M-1…M-6 are closed or deferred with a recorded default.
   * **AC-1.5 No silent defaults.** Every [DEFAULT] value in the PRD and business rules is confirmed by its decider or listed as "Deferred to Phase N" in the register.
   * **AC-1.6 Architecture approvals.** ADR-0003…0012 are ACCEPTED or REJECTED (D-34). The dependency list (D-24), code layout (D-25), release slicing (D-32) and import process (D-35) are approved.
   * **AC-1.7 Engineering baseline verified.** Git history is reviewed and pushed to the private remote (D-31). `php artisan test --compact` passes on the local MySQL `smartgro_testing` database created by the setup script, including the concurrency harness. Pint is clean.
@@ -87,7 +87,7 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
   * Git repo and CI
   * MySQL dev and test databases
   * Filament panel with custom theme and required MFA
-  * roles and permissions per the matrix, with location scoping
+  * roles and permissions per the matrix, with property scoping
   * audit log
   * security headers
   * Pest architecture tests
@@ -278,7 +278,7 @@ flowchart LR
 | [`docs/research/EXISTING_WEBSITE_AUDIT.md`](docs/research/EXISTING_WEBSITE_AUDIT.md) | existing smartgro.space site: URL inventory, redirect plan, compromise finding |
 | [`docs/phases/PHASE_1_PROGRESS_REPORT.md`](docs/phases/PHASE_1_PROGRESS_REPORT.md) | Phase 1 progress report (2026-10-24) |
 | [`docs/requirements/CLIENT_INPUTS_REQUIRED.md`](docs/requirements/CLIENT_INPUTS_REQUIRED.md) | checklist of business facts and assets needed from the client |
-| [`docs/requirements/INVENTORY_IMPORT_SPEC.md`](docs/requirements/INVENTORY_IMPORT_SPEC.md) | inventory import template SG-INV-1.1 and validation rules |
+| [`docs/requirements/INVENTORY_IMPORT_SPEC.md`](docs/requirements/INVENTORY_IMPORT_SPEC.md) | inventory import template SG-INV-1.2 and validation rules |
 | [`docs/architecture/API_CONTRACTS.md`](docs/architecture/API_CONTRACTS.md) | public API, form, webhook and domain-action contracts |
 | [`docs/architecture/EXISTING_SYSTEMS_ASSESSMENT.md`](docs/architecture/EXISTING_SYSTEMS_ASSESSMENT.md) | D-06 questionnaire, scenarios, source-of-truth recommendation |
 | [`docs/operations/LOCAL_DEVELOPMENT.md`](docs/operations/LOCAL_DEVELOPMENT.md) | local MySQL setup, tests, Git and GitHub remote steps |

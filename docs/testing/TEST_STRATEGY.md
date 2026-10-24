@@ -26,7 +26,7 @@
 | Architecture | Pest `arch()` (plugin already installed) | module boundaries: content/marketing classes may not write inventory/pricing models; no `env()` outside config; no debug functions; controllers are thin | every commit |
 | Unit | Pest | availability calculator, slot generator, price resolver, reference generator, GLB anchor-name parser | every commit |
 | Feature: HTTP | Pest + Laravel HTTP testing | public pages render (SSR, status, meta, canonical, JSON-LD validity), API v1 resources, webhooks (signature, idempotency) | every commit |
-| Feature: back office | Pest + Livewire testing helpers for Filament 5 | each role × capability from `SECURITY_MODEL.md` §3.1 (allowed and **denied**); approval workflow transitions; location scoping on lists, search and exports | every commit |
+| Feature: back office | Pest + Livewire testing helpers for Filament 5 | each role × capability from `SECURITY_MODEL.md` §3.1 (allowed and **denied**); approval workflow transitions; property scoping on lists, search and exports | every commit |
 | Concurrency | Pest on MySQL + parallel processes | BR-BK-1/2/5, BR-TR-2: N simultaneous attempts on one slot → exactly one success | every PR touching booking/inventory; nightly |
 | Browser / E2E | Pest browser testing (plugin **not installed**; compatibility to be verified in Phase 3) or Playwright | critical journeys (§4) on mobile and desktop viewports | pre-merge to main, nightly |
 | Accessibility | axe-core in E2E runs + manual screen-reader pass | WCAG 2.2 AA on every page template and the back-office core flows | per release |
@@ -107,7 +107,7 @@ No SmartGro features exist yet, so there is no feature coverage yet.
 
 ## 8. Booking-domain test catalogue (must pass **before** booking code is merged)
 
-These are written in Phase 5/8 against the real schema, reusing the harness pattern. Each one runs on MySQL. T-BK-11…16 were added on 2026-10-24 for the owner-confirmed inventory modes (OD-10) and product categories (OD-07). The existing harness and its negative controls stay unchanged. **The lock-before-read invariant is the acceptance gate for every test here.**
+These are written in Phase 5/8 against the real schema, reusing the harness pattern. Each one runs on MySQL. T-BK-11…17 were added on 2026-10-24 for the owner-confirmed inventory modes (OD-10, OD-15 hybrid zones) and product categories (OD-07). The existing harness and its negative controls stay unchanged. **The lock-before-read invariant is the acceptance gate for every test here.**
 
 | ID | Scenario | Expected |
 |---|---|---|
@@ -127,6 +127,7 @@ These are written in Phase 5/8 against the real schema, reusing the harness patt
 | T-BK-14 | **One room sold as two categories:** parallel meeting-room and training-room bookings for overlapping times on the same space | exactly one succeeds (BR-AV-3c) |
 | T-BK-15 | **Admin supply reduction** (capacity cut, seat deactivation, maintenance) racing a booking | either the booking commits and the change is refused with the conflict listed, or the change commits and the booking is refused. Never both (BR-INV-4). |
 | T-BK-16 | **Cancellation release:** cancel, then immediately rebook the same slot or seat in parallel with another request | released inventory is available at once; exactly one rebooking succeeds (BR-BK-11) |
+| T-BK-17 | **Hybrid zone (OD-15):** concurrent seat assignments, seat bookings and pooled bookings on one hybrid zone, including an assignment that would over-commit the pool | BR-AV-3d holds at every instant; the over-committing request is refused; all writes serialise on the zone row (BR-BK-2c) |
 | T-TR-01 | N parallel `ClaimTourSlot` calls beyond `max_concurrent_tours` | confirmed tours = capacity (BR-TR-2) |
 | T-ARCH-01 | Arch test: booking/allocation actions perform `lockForUpdate()` before any read | enforced by test + code-review checklist (ADR-0004 constraint) |
 
@@ -134,8 +135,8 @@ These are written in Phase 5/8 against the real schema, reusing the harness patt
 
 | ID | Scenario | Expected |
 |---|---|---|
-| T-IMP-01 | `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.1) with time frozen at 2026-10-24 | 0 errors, 0 warnings; preview counts match the fixture (2 properties, 3 buildings, 4 floors, 14 spaces) |
-| T-IMP-02 | `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.1) | issues equal **exactly** the hidden `_expected_issues` sheet (19 issues, 18 rules) |
+| T-IMP-01 | `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.2) with time frozen at 2026-10-24 | 0 errors, 0 warnings; preview counts match the fixture (2 properties, 3 buildings, 4 floors, 15 spaces including a hybrid zone) |
+| T-IMP-02 | `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.2) | issues equal **exactly** the hidden `_expected_issues` sheet (20 issues, 18 rules) |
 | T-IMP-03 | Commit of the valid file, then re-import of the same file | second run: "no changes" |
 | T-IMP-04 | Import committing while a booking holds the space lock | serialised; no lost update |
 | T-IMP-05 | Synthetic file in a `production` environment | rejected by V-180 |

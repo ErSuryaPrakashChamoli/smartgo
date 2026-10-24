@@ -19,7 +19,7 @@ Examples use **synthetic** identifiers (`synthville`, `SYN-…`). They are not r
 | Identifiers | No database IDs are exposed. Locations by `city` + `slug`; spaces by permanent `code` (ERD `spaces.code`); customer records by `reference` (e.g. `SG-TR-7F3K9Q`). |
 | Time | ISO 8601 with the location's UTC offset (e.g. `2026-10-24T10:00:00+05:30`). `timezone` is included where slots are listed. Dates are `YYYY-MM-DD`. |
 | Money | `{ "amount_minor": 1499900, "currency": "INR", "tax": "exclusive", "display": "₹14,999 + GST" }`. Only returned where the price display policy allows (BR-PR-3). |
-| Visibility | Only published locations and publicly listable, non-decommissioned spaces are returned. Hidden records answer **404**, never 403, so they cannot be discovered. |
+| Visibility | Only published properties in **publicly visible cities** (OD-18), and publicly listable, non-decommissioned spaces, are returned. Hidden records answer **404**, never 403, so they cannot be discovered. |
 | Personal data | **Never returned** by public endpoints |
 | Auth | Public read endpoints: none. No public write endpoints at launch (forms go through Livewire, §3). A future write API would use Sanctum tokens. |
 | CORS | same-origin only |
@@ -57,7 +57,7 @@ Live availability states for the location's listable spaces (BR-AV-1). Used by t
 }
 ```
 
-* `inventory_mode` ∈ `exclusive`, `per_seat`, `pooled` (ADR-0013). For `per_seat` zones the state summarises the zone ("available" while any active seat is free). Seat-level detail is staff-only.
+* `inventory_mode` ∈ `exclusive`, `per_seat`, `pooled`, `hybrid` (ADR-0013). Hybrid zones report the zone state; dedicated and flexible availability are summarised separately for staff. For `per_seat` zones the state summarises the zone ("available" while any active seat is free). Seat-level detail is staff-only.
 * `state` ∈ `available_now`, `available_from`, `limited`, `waitlist`. Remaining-seat **counts are never exposed** (BR-AV-3).
 * `cta` ∈ `book` (only if online booking is enabled, D-07), `book_tour`, `enquire`, `waitlist`.
 * Headers: `Cache-Control: public, max-age=30, stale-while-revalidate=30`.
@@ -220,7 +220,7 @@ These signatures are what other modules may call (`SYSTEM_ARCHITECTURE.md` §3).
 
 | Action | Input | Output | Failure |
 |---|---|---|---|
-| `Availability\ForLocation` | location, date | collection of `{space, state, available_from}` | — |
+| `Availability\ForProperty` | location, date | collection of `{space, state, available_from}` | — |
 | `Booking\HoldSlot` | space, interval, quantity, idempotency key, channel | booking (`held`) | `SlotUnavailable`, `OutsideBookingWindow`, `SpaceNotBookable` |
 | `Booking\ConfirmBooking` | booking, payment reference (optional) | booking (`confirmed`) | `HoldExpired`, `SlotUnavailable` |
 | `Booking\CancelBooking` | booking, actor, reason | booking (`cancelled`) | `CancellationNotAllowed` |

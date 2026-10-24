@@ -2,11 +2,11 @@
 
 | | |
 |---|---|
-| Status | **v1.1-rc — Phase 1, ready for owner review** (approval tracked as D-35). Updated for the owner decisions of 2026-10-24 (OD-07…OD-10). The importer itself is built in Phase 5. |
+| Status | **v1.2-rc — Phase 1, ready for owner review** (approval tracked as D-35). Updated for the owner decisions of 2026-10-24 (OD-07…OD-10, OD-13…OD-16). The importer itself is built in Phase 5. |
 | Last updated | 2026-10-24 |
-| Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.1.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.1.xlsx) (template ID `SG-INV-1.1`). SG-INV-1.0 is superseded; it was removed from the working tree and remains in Git history. |
-| Synthetic fixtures | [`tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx) · [`tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx) (regenerated for 1.1) |
-| Depends on | Q-OW-1 floor allocation, Q-OW-2 property grouping, Q-OW-7 hybrid zones (not in 1.1). D-03, D-05 and D-06 are resolved (OD-07, OD-10, OD-06). |
+| Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.2.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.2.xlsx) (template ID `SG-INV-1.2`). SG-INV-1.0 and 1.1 are superseded; they were removed from the working tree and remain in Git history. |
+| Synthetic fixtures | [`tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx) · [`tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx) (regenerated for 1.2) |
+| Depends on | Q-OW-1 (floors per property and their levels; still open). Resolved: each address is its own property (OD-13), all current properties owned (OD-14), hybrid zones required (OD-15), official city names (OD-16), D-03, D-05 and D-06. |
 
 ---
 
@@ -18,7 +18,12 @@ The owner will supply the first real property's inventory when available. This t
 
 The same template is later downloadable from the back office for every new property and every bulk update. **Only confirmed facts are entered: never estimated floors, rooms or capacities (BR-PROP-1).**
 
-**Out of scope for SG-INV-1.1:** prices (brief §9 pending), marketing copy, photos and 3D models. Each has its own workflow.
+**Out of scope for SG-INV-1.2:** prices (brief §9 pending), marketing copy, photos and 3D models. Each has its own workflow.
+
+**What changed in 1.2:**
+* inventory mode **Hybrid (seats + pool)** (OD-15)
+* city help text asks for the official current name (e.g. Gurugram; OD-16)
+* synthetic fixtures include a hybrid zone, plus a hybrid over-allocation error
 
 **What changed in 1.1:**
 * a **Property** sheet with `operating_model`
@@ -40,7 +45,7 @@ The same template is later downloadable from the back office for every new prope
 | Hours | property × weekday | (`property_code`, `day_of_week`) | 7 rows per property |
 | Floors | operated floor | (`building_code`, `building_level`) | optional floor-plan file name |
 | Spaces | physical workspace | `space_code` (globally unique, permanent) | type, **inventory mode**, capacity, area, status, listability, **sellable as**, amenities, time-booking limits |
-| Seats | seat in a `Per seat` space | (`space_code`, `seat_label`) | individual tracking (OD-10 A) |
+| Seats | seat in a `Per seat` or `Hybrid` space | (`space_code`, `seat_label`) | individual tracking (OD-10 A, OD-15) |
 | Occupancy | long-term agreement on a space or seat | (`contract_reference`, `space_code`, `seat_label`, `starts_on`) | **no personal data**: an internal agreement number only |
 | Amenities | amenity name | `amenity_name` | controlled vocabulary referenced from Spaces |
 | Lists (hidden) | — | — | dropdown values (named ranges) |
@@ -60,8 +65,8 @@ Dropdown values are human labels. The importer maps labels to stored keys case-i
 | Space type label | Stored key (`space_types`, ERD §3.1) | Allowed inventory modes (proposed defaults) |
 |---|---|---|
 | Private cabin | `private_cabin` | Whole space |
-| Dedicated desk zone | `desk_zone_dedicated` | Per seat |
-| Flexible seating zone | `desk_zone_flexible` | Pooled, Per seat |
+| Dedicated desk zone | `desk_zone_dedicated` | Per seat, Hybrid |
+| Flexible seating zone | `desk_zone_flexible` | Pooled, Per seat, Hybrid |
 | Meeting room | `meeting_room` | Whole space |
 | Conference / training room | `conference_training_room` | Whole space |
 | Office suite | `office_suite` | Whole space |
@@ -71,12 +76,13 @@ Dropdown values are human labels. The importer maps labels to stored keys case-i
 | Whole space | `exclusive` |
 | Per seat | `per_seat` |
 | Pooled | `pooled` |
+| Hybrid (seats + pool) | `hybrid` |
 
 | Product category (`sellable_as`, OD-07) | Required inventory mode (BR-PRODCFG-2) |
 |---|---|
 | Private cabins / private offices | Whole space |
-| Dedicated desks | Per seat |
-| Hot desks / flexible seating | Pooled or Per seat |
+| Dedicated desks | Per seat or Hybrid |
+| Hot desks / flexible seating | Pooled, Per seat or Hybrid |
 | Meeting rooms | Whole space |
 | Conference and training rooms | Whole space |
 | Managed offices for enterprises | Whole space (one or many spaces) |
@@ -166,15 +172,15 @@ Severity: **E** = error (blocks commit) · **W** = warning (must be acknowledged
 | V-131 | E | every `property_code` on Buildings, Hours, Floors and Spaces exists on the Property sheet or in the database |
 | V-132 | E | every property has at least one building and **exactly one** primary building (a second primary is reported on the later row) |
 | V-133 | E | every `building_code` on Floors and Spaces exists and belongs to the same property |
-| V-135 | E | Seats rows only for `Per seat` spaces. The number of active seats equals `capacity_seats`. |
+| V-135 | E | Seats rows only for `Per seat` and `Hybrid` spaces. The number of active seats equals `capacity_seats`. |
 
 ### 4.4 Occupancy and business rules
 
 | Rule | Sev | Check |
 |---|---|---|
 | V-140 | E | `ends_on` ≥ `starts_on`; `notice_given_on` ≤ `ends_on`. Status agrees with the dates: Notice period needs both `notice_given_on` and `ends_on`; Ended needs an `ends_on` in the past; Active needs `starts_on` ≤ today. |
-| V-145 | E | `seat_label` only for `Per seat` spaces, and it must exist on Seats or in the database |
-| V-150 | E | **No over-allocation:** for every date, the seats in blocking agreements (Reserved, Active, Notice period) on a space must not exceed `capacity_seats`. A seat holds one agreement at a time (BR-AV-3/3a). |
+| V-145 | E | `seat_label` only for `Per seat` and `Hybrid` spaces, and it must exist on Seats or in the database. In a `Hybrid` space a blank `seat_label` means pooled seats. |
+| V-150 | E | **No over-allocation:** for every date, the seats in blocking agreements (Reserved, Active, Notice period) on a space must not exceed `capacity_seats`. A seat holds one agreement at a time (BR-AV-3/3a). **Hybrid:** assigned seats + pooled seats ≤ active seats (BR-AV-3d). |
 | V-151 | E | Occupancy rows only for spaces sellable under a term-agreement category (cabins, dedicated desks, hot desks on monthly terms, managed offices). Rooms used only by time are booked, not allocated. |
 | V-152 | W | an agreement on a space in Maintenance, Out of service or Decommissioned |
 | W-160 | W | an amenity on Spaces that is not on the Amenities sheet or in the database vocabulary (with a "did you mean" suggestion) |
@@ -213,8 +219,8 @@ Both are added to `../architecture/DATABASE_ERD.md` §3.
 
 | File | Content | Purpose |
 |---|---|---|
-| `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.1) | 2 fictional properties ("SYNTHETIC Property Alpha/Beta", city "Synthville", codes `SYN-*`): one **owned and operated** with **two buildings**, one **leased and operated** in pre-opening. 3 buildings, 14 hour rows, 4 floors, 14 spaces covering all three inventory modes (a hybrid mix within Alpha), every space type and status, and one room sellable as two categories. 12 seats, 7 agreements (active, reserved, notice period, per seat), 5 amenities. | must validate with **zero errors and zero warnings** |
-| `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.1) | the valid data plus deliberately broken rows; a hidden `_expected_issues` sheet lists **19** expected issues (sheet, row, column, rule, severity) covering V-101, V-102, V-105, V-110, V-112, V-115, **V-116, V-117**, V-120, V-130, **V-132, V-133**, V-135, V-140, V-145, V-150, W-160, W-170 | the validator must report **exactly** these issues |
+| `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.2) | 2 fictional properties ("SYNTHETIC Property Alpha/Beta", city "Synthville", codes `SYN-*`): one **owned and operated** with **two buildings**, one **leased and operated** in pre-opening. 3 buildings, 14 hour rows, 4 floors, 15 spaces covering **all four inventory modes**, including a **hybrid zone** (10 seats: 2 assigned + a 5-seat pooled agreement) and a mixed property. Every space type and status, and one room sellable as two categories. 22 seats, 10 agreements, 5 amenities. | must validate with **zero errors and zero warnings** |
+| `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.2) | the valid data plus deliberately broken rows; a hidden `_expected_issues` sheet lists **20** expected issues (including a hybrid-zone over-allocation) (sheet, row, column, rule, severity) covering V-101, V-102, V-105, V-110, V-112, V-115, **V-116, V-117**, V-120, V-130, **V-132, V-133**, V-135, V-140, V-145, V-150, W-160, W-170 | the validator must report **exactly** these issues |
 
 Fixture test conditions:
 * time frozen at **2026-10-24**, because status and date rules depend on "today"
@@ -227,4 +233,4 @@ Rules for synthetic data:
 3. V-180 prevents synthetic codes from ever being imported outside local or testing environments.
 4. Real client spreadsheets are **never** committed to Git or used as test fixtures. They are uploaded only through the back office.
 
-SG-INV-1.1 was generated on 2026-10-24 with openpyxl 3.1.5. Structure was verified on read-back: 8 data sheets, headers, data validations and 11 named lists present; no formulas. (SG-INV-1.0 was additionally rendered through LibreOffice; 1.1 uses the same layout code.)
+SG-INV-1.2 was generated on 2026-10-24 with openpyxl 3.1.5. Structure was verified on read-back: 8 data sheets, headers, data validations and 11 named lists present; no formulas. (SG-INV-1.0 was additionally rendered through LibreOffice; 1.1 uses the same layout code.)

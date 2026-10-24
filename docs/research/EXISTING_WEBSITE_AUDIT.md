@@ -5,7 +5,7 @@
 | Date | 2026-10-24 |
 | Source | Owner-supplied URL `https://www.smartgro.space/coworking-space/#` (D-19) |
 | Method | Read-only HTTP requests: `robots.txt`, `sitemap.xml`, `sitemap_index.xml`, `wp-sitemap.xml`, the supplied page, and two sample URLs fetched as a normal browser and as Googlebot. No login was used and nothing on the site was changed. |
-| Use | URL inventory for redirects at launch (Phase 11) and a security warning. **Content on the existing site is not treated as confirmed business fact.** |
+| Use | URL inventory for possible redirects at launch (Q-OW-11) and a security warning. **Owner decision (OD-19): nothing is taken from the old site. It is for information only.** |
 
 ---
 
@@ -62,7 +62,7 @@ Serving different content to search engines than to visitors ("cloaking"), toget
 | Existing | Proposed new destination | Code |
 |---|---|---|
 | `/` | `/` | — |
-| `/coworking-space/` | `/workspaces/hot-desks` or a coworking hub page (owner choice, Q-OW-6) | 301 |
+| `/coworking-space/` | `/workspaces` (coworking hub) | 301 |
 | `/managed-office-space/` | `/workspaces/managed-offices` | 301 |
 | `/meeting-rooms/` | `/workspaces/meeting-rooms` | 301 |
 | `/virtual-office/` | `/workspaces/virtual-office` | 301 |
@@ -82,4 +82,4 @@ Before cut-over, a fresh crawl plus Search Console data (top landing pages) must
 
 ## 5. Observations not treated as fact
 
-The existing site's copy (products, pricing, addresses, claims) was **not** reviewed for accuracy and is **not** used as a source of business facts. The owner should confirm which existing content, if any, may be reused (Q-OW-6).
+The existing site's copy (products, pricing, addresses, claims) was **not** reviewed for accuracy and is **not** used as a source of business facts. **The owner confirmed that no content is reused (OD-19).**

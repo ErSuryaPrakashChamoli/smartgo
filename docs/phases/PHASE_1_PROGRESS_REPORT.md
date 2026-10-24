@@ -9,6 +9,24 @@
 
 ---
 
+## 0A. Update — owner answers incorporated (2026-10-24, round 3)
+
+Documentation only. No packages, application code, migrations, GitHub or local setup were touched. **Phase 1 is not approved or complete.**
+
+| Answer | Recorded as | Effect |
+|---|---|---|
+| Floors: "Separate property" | OD-12 | floors recorded per property; **the split of the 10 floors is still not given**, so Q-OW-1 is re-asked in a fill-in format |
+| Each address is its own centre | OD-13 | four separate properties; ERD M-1 closed |
+| Owned | OD-14 | all four current properties owned and operated; lease tracking deferred; R-18 resolved for now |
+| Latest city names | OD-16 | Noida, **Gurugram**, Delhi, Faridabad, Ghaziabad; `gurgaon` is an alias that redirects |
+| Hidden cities with an admin toggle | OD-18 | `cities.is_publicly_visible` (default off), FR-CITY-1, BR-PROP-4; follow-up Q-OW-12 |
+| Nothing from the old site | OD-19 | BR-CMS-8; redirect question Q-OW-11 (redirects reuse no content) |
+| Hybrid zones: yes | OD-15 | inventory mode `hybrid` with invariant BR-AV-3d, lock rule BR-BK-2c, test T-BK-17, template **SG-INV-1.2** |
+| "Properties": yes | OD-17 | entity renamed in all documents (`properties`, `property_id`, …); the public site keeps "Locations" |
+| Logo later | OD-20 | D-11b stays open |
+
+---
+
 ## 0. Update — owner decisions incorporated (2026-10-24, round 2)
 
 **Scope of this update:** documentation, requirements validation and architecture reconciliation only. No packages were installed, no application code was changed, no migrations were run, and GitHub and local-development setup were not resumed. **Phase 1 is not approved or complete**, and Phase 2 has not begun.
@@ -134,7 +152,7 @@ Full register: [`../decisions/DECISION_REGISTER.md`](../decisions/DECISION_REGIS
 | D-31 Repository owner | **Create the private repository under a GitHub organisation** (yours or the client's, per the contract on IP ownership), not a personal account | access control, transfer at handover, branch protection |
 | D-32 Release slicing | **Approve R1** as drafted (`PROJECT_MASTER_PLAN.md` §4) | delivers a credible launch without waiting for 3D assets or automation |
 | D-34 ADRs | **Accept ADR-0003…0012** | each records alternatives and consequences; ADR-0004 is now backed by MySQL evidence |
-| D-35 Import process | **Approve** SG-INV-1.1, and ask operations to trial the template on the first property | validates both the template and the ERD |
+| D-35 Import process | **Approve** SG-INV-1.2, and ask operations to trial the template on the first property | validates both the template and the ERD |
 | D-30 (Phase 3) | non-default back-office path + Cloudflare Access in production | defence in depth for staff accounts |
 | D-14 (Phase 3) | client-owned accounts on managed Laravel hosting behind Cloudflare, India region; decide using `DEPLOYMENT_RUNBOOK.md` §6 | operational simplicity; residency pending legal advice |
 
@@ -144,7 +162,7 @@ Full register: [`../decisions/DECISION_REGISTER.md`](../decisions/DECISION_REGIS
 
 The full checklist, ready to send, is in `../requirements/CLIENT_INPUTS_REQUIRED.md`. Priority order:
 1. **Original SmartGro logo files** (vector master + variants). Not found anywhere on the project machine. Blocks Phase 2.
-2. **Floor allocation and grouping** of the four Noida properties (Q-OW-1, Q-OW-2), then the **first property's inventory** in the SG-INV-1.1 template. Validates the ERD (AC-1.4).
+2. **Floors per property** for the four Noida properties (Q-OW-1; grouping answered by OD-13), then the **first property's inventory** in the SG-INV-1.2 template. Validates the ERD (AC-1.4).
 3. **Existing systems questionnaire** (Q1–Q10). Decides the source of truth (D-06).
 4. **Products actually sold** (D-03), and **seat tracking** (D-05).
 5. Company profile and market (D-01), brand spelling and domain (D-22), languages (D-16), existing website URLs (D-19), team structure (D-33).
@@ -171,9 +189,9 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 | AC | Criterion (summary; full text in `PROJECT_MASTER_PLAN.md` §2) | Status |
 |---|---|---|
 | AC-1.1 | Documents complete, consistent, all links resolve | **Partly met.** All at v1.0-rc; link check 0 broken (2026-10-24); awaiting owner review. |
-| AC-1.2 | Blocking inputs answered or explicitly deferred | **Partly met (2026-10-24):** D-03, D-05, D-16, D-19, D-22 answered; D-01 market answered (legal details can defer to Phase 6). **Open:** D-02 floor allocation and grouping (Q-OW-1/2), D-33 team roles, Q-OW-3/4/7/8. |
+| AC-1.2 | Blocking inputs answered or explicitly deferred | **Mostly met (round 3):** D-03, D-05, D-06, D-16, D-19, D-22, Q-OW-2…8 answered. **Open:** floors per property (Q-OW-1), D-33 team roles, Q-OW-11, Q-OW-12. D-01 legal details can defer to Phase 6. |
 | AC-1.3 | D-06 answered, or Scenario A deferral recorded with a Phase 5 gate | **Met (2026-10-24):** no existing software (OD-06) |
-| AC-1.4 | ERD validated against the first real property via SG-INV-1.1 | **Not met.** ERD v1.1-rc and template SG-INV-1.1 ready; waiting for floor allocation and inventory. |
+| AC-1.4 | ERD validated against the first real property via SG-INV-1.2 | **Not met.** ERD v1.2-rc and template SG-INV-1.2 ready; waiting for floors per property and inventory. |
 | AC-1.5 | No silent defaults: each confirmed or deferred in the register | **Partly met.** All classified; confirmations pending. |
 | AC-1.6 | ADR-0003…0012, D-24, D-25, D-32, D-35 approved | **Partly met.** ADR-0001/0002 accepted. |
 | AC-1.7 | Git pushed to private remote; tests pass on local MySQL; Pint clean | **Partly met.** Local Git done. **Suite passes on the owner's local MySQL (9/9, 2026-10-24).** Pint clean. Remote push (A-2) pending. R-14: replace the `root` DB user. |
@@ -181,18 +199,18 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 
 ---
 
-## 9. Next recommended action (updated 2026-10-24, round 2)
+## 9. Next recommended action (updated 2026-10-24, round 3)
 
 1. **Owner, urgent and outside this project:** act on the compromise of the existing WordPress site (`../research/EXISTING_WEBSITE_AUDIT.md` §2).
 2. **Owner:**
+   * give the floors per property and their levels (Q-OW-1)
    * resend section 9 onward of the brief (Q-OW-9)
-   * place the original logo at `resources/brand/source/` (Q-OW-10)
-   * answer Q-OW-1 (floor allocation), Q-OW-2 (property grouping) and Q-OW-3 (operating model per property)
-3. **Owner:** answer Q-OW-4…8 and decide D-24, D-25, D-31, D-32, D-34 (ADR-0003…0014) and D-35 (SG-INV-1.1).
+   * answer Q-OW-11 (old-URL redirects) and Q-OW-12 (what a visible city without a property shows)
+   * add the logo when ready (Q-OW-10)
+3. **Owner:** decide D-24, D-25, D-31, D-32, D-34 (ADR-0003…0014) and D-35 (SG-INV-1.2), and confirm the team roles (D-33).
 4. **Project team, after inputs arrive:**
    * fold the pricing brief into the ERD and business rules
-   * run the first property's SG-INV-1.1 workbook through the validation rules
-   * close M-7…M-10
+   * run the first property's SG-INV-1.2 workbook through the validation rules
    * present Phase 1 for approval
 
 **No Phase 2 or later implementation will start before Phase 1 is approved.**

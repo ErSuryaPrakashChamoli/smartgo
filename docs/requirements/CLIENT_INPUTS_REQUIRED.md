@@ -18,7 +18,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
 | C-1.1 | Legal entity name, registered address, CIN/registration number, GSTIN | footer, legal pages, invoices, `Organization` structured data | none (must be provided) | Phase 6 |
-| C-1.2 | ~~Countries and cities~~ **Answered 2026-10-24 (OD-02, OD-03):** India; target markets Noida, Gurgaon, Delhi, Faridabad, Ghaziabad; operating in Noida | — | — | resolved |
+| C-1.2 | ~~Countries and cities~~ **Answered 2026-10-24 (OD-02, OD-03):** India; target markets Noida, Gurugram (official name, OD-16), Delhi, Faridabad, Ghaziabad; operating in Noida | — | — | resolved |
 | C-1.3 | Positioning statement, brand story, founding year, leadership bios (if public) | About page, tone of voice, trust | none | Phase 6 |
 | C-1.4 | Target customers by priority (startups, SMEs, enterprises/GCCs, freelancers) | IA emphasis, journeys, sales routing | premium SMEs + enterprise, with flexible products as entry points | Phase 2 |
 | C-1.5 | ~~Brand spelling and domain~~ **Answered (OD-01):** SmartGro · smartgro.space · tagline "WORK SMART. GROW TOGETHER." | — | — | resolved |
@@ -29,10 +29,10 @@ Legend: **Blocks** = the phase that cannot finish without it.
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
 | C-2.1 | **Partly answered (OD-08):** four Noida properties (A-70, Sector 2 · A-71, Sector 2 · A-23, Sector 3 · H-105, Sector 62); 10 floors in total. **Still needed:** floor allocation per property and building levels (Q-OW-1); full addresses (PIN code, building names); status and opening dates per property | property pages and inventory are built around real properties; nothing is created by assumption | none (must be provided) | Phase 1 (ERD validation), Phase 5 |
-| C-2.2 | **First property's full inventory** in the SG-INV-1.1 template (`../templates/inventory-import/`) | validates the data model against reality before it is built | none | Phase 1 AC-1.4 |
-| C-2.3 | ~~Seat tracking~~ **Answered (OD-10):** individual, pooled and hybrid-within-property are all supported. **Still asked:** hybrid inside one zone? (Q-OW-7) | — | not needed unless confirmed | Phase 5 |
-| C-2.4 | Is each address a separate property, or do any form one centre spanning buildings (e.g. A-70 and A-71, Sector 2)? (Q-OW-2) | property pages, tours and inventory grouping | the model supports both | Phase 1 (ERD) |
-| C-2.5 | Public city names for URLs: Gurgaon or Gurugram; Delhi or New Delhi (Q-OW-4). Show target cities without a property? (Q-OW-5) | permanent URLs; avoid implying non-existent centres | owner's preferred names; hide cities without a property | Phase 6 |
+| C-2.2 | **First property's full inventory** in the SG-INV-1.2 template (`../templates/inventory-import/`) | validates the data model against reality before it is built | none | Phase 1 AC-1.4 |
+| C-2.3 | ~~Seat tracking~~ **Answered (OD-10, OD-15):** individual, pooled, mixed within a property, and **hybrid zones** | — | — | resolved |
+| C-2.4 | ~~Property grouping~~ **Answered (OD-13):** each address is its own centre | — | — | resolved |
+| C-2.5 | ~~City names and visibility~~ **Answered (OD-16, OD-18):** official current names (Gurugram, Delhi …); cities hidden by default with an admin toggle. **Still asked:** what a visible city without a property shows (Q-OW-12). | — | "coming soon / register interest" page | Phase 6 |
 | C-2.6 | Operating hours per location, holidays, after-hours access rules | availability, tour slots, booking windows | none | Phase 5 |
 | C-2.7 | Amenities per location and space (only real ones) | listings and filters | none | Phase 5 |
 
@@ -40,7 +40,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
-| C-2.8 | Operating model per property: owned and operated, or leased and operated. Can it differ within a property? Track lease end and lock-in dates internally? (Q-OW-3) | BR-PROP-2/5; avoids selling beyond a lease | record per property; track lease end dates (restricted access) | Phase 5 |
+| C-2.8 | ~~Operating model~~ **Answered (OD-14):** all four current properties are owned and operated. Lease tracking is deferred until a leased property exists. | — | — | resolved |
 | C-3.8 | **Pricing configuration:** section 9 onward of the owner's brief was not received (Q-OW-9) | pricing, payment and cancellation rules per category and property | — | Phase 5 |
 | C-3.9 | Marketing priority among the eight customer segments (optional) | homepage emphasis, segment landing pages | no priority until set | Phase 2/6 |
 

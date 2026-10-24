@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.1-rc — Phase 1, ready for owner review.** Not approved. Incorporates the owner decisions of 2026-10-24 (OD-01…OD-11). Pricing configuration is pending (brief §9 not received). |
+| Status | **v1.2-rc — Phase 1, ready for owner review.** Not approved. Incorporates the owner decisions of 2026-10-24 (OD-01…OD-20). Pricing configuration is pending (brief §9 not received). |
 | Version | 0.3 (2026-10-24) |
 | Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` · `../architecture/*` (incl. `API_CONTRACTS.md`, `EXISTING_SYSTEMS_ASSESSMENT.md`) · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
 | Decision references | D-xx items: `../decisions/DECISION_REGISTER.md` (living register) |
@@ -18,13 +18,16 @@ SmartGro is a premium coworking and managed-workspace brand ("WORK SMART. GROW T
 **Confirmed business decisions (owner, 2026-10-24; `../decisions/DECISION_REGISTER.md` §0):**
 * **Brand:** SmartGro; tagline "WORK SMART. GROW TOGETHER."; domain **smartgro.space**; official logo used as supplied (file still to be placed in the project).
 * **Market and language:** India; English only.
-* **Geography:** Delhi NCR target markets (Noida, Gurgaon, Delhi, Faridabad, Ghaziabad); currently operating in **Noida** only.
-* **Properties:** four identified Noida properties (A-70, Sector 2; A-71, Sector 2; A-23, Sector 3; H-105, Sector 62), with 10 floors in total. **The floor allocation is unknown.**
+* **Geography:** Delhi NCR target markets (Noida, Gurugram, Delhi, Faridabad, Ghaziabad); currently operating in **Noida** only.
+* **Properties:** four Noida properties, **each its own centre** (A-70, Sector 2; A-71, Sector 2; A-23, Sector 3; H-105, Sector 62), all **owned and operated**, with 10 floors in total. **Floors per property are unknown.**
 * **Operating models:** both owned-and-operated and leased-and-operated.
 * **Existing software:** none.
 * **Customers:** eight customer segments.
 * **Products:** seven product categories.
-* **Inventory:** individual, pooled and hybrid inventory.
+* **Inventory:** individual, pooled and mixed inventory, including **hybrid zones** (assigned seats plus a shared pool).
+* **Cities:** official current names (Noida, Gurugram, Delhi, Faridabad, Ghaziabad). Cities stay hidden until an admin turns them on.
+* **Old website:** nothing is taken from it.
+* **Back office:** the term "Property" is used throughout.
 * **Existing website:** a WordPress site to be replaced (`../research/EXISTING_WEBSITE_AUDIT.md`).
 
 **Not yet known:**
@@ -93,7 +96,7 @@ The segment-to-product mapping is admin-managed (`product_customer_segment`) and
 
 ### 4.5 Product and geographic coverage
 * The platform supports **all seven product categories** (OD-07), configured per category and per property (ADR-0013). Which categories are promoted at launch is part of release slicing (D-32).
-* Launch geography is **Noida**. Gurgaon, Delhi, Faridabad and Ghaziabad are target markets. They gain public pages only when a property is confirmed there (BR-PROP-4, Q-OW-5). New cities and properties are added through the back office, without code.
+* Launch geography is **Noida**. Gurugram, Delhi, Faridabad and Ghaziabad are target markets. They gain public pages only when a property is confirmed there (BR-PROP-4, Q-OW-5). New cities and properties are added through the back office, without code.
 
 ## 5. Functional requirements
 
@@ -128,7 +131,7 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-INV-1 | Guided setup: City → Property → Buildings → Floors → Spaces (wizard), plus bulk import with the SG-INV-1.1 template (`INVENTORY_IMPORT_SPEC.md`, ADR-0012). | A non-technical ops user can create a location with 3 floors and 40 spaces in one session. The import validates against rules V-001…V-180 and reports sheet/row/column issues. It is approved by a second person and committed all-or-nothing. Synthetic fixtures pass T-IMP-01…06. |
+| FR-INV-1 | Guided setup: City → Property → Buildings → Floors → Spaces (wizard), plus bulk import with the SG-INV-1.2 template (`INVENTORY_IMPORT_SPEC.md`, ADR-0012). | A non-technical ops user can create a location with 3 floors and 40 spaces in one session. The import validates against rules V-001…V-180 and reports sheet/row/column issues. It is approved by a second person and committed all-or-nothing. Synthetic fixtures pass T-IMP-01…06. |
 | FR-INV-2 | Space operational status changes with reason; history kept. | Every change is audit-logged and emits `SpaceAvailabilityChanged`. |
 | FR-INV-3 | Allocations (long-term occupancy) with start/end/notice; seat-level for desk zones if D-05. | Availability states follow BR-AV-1…6 exactly (unit tests per rule). |
 | FR-INV-4 | Products, offerings and price plans with approval (BR-PR-*). | Four-eyes enforced. Only one active plan per scope and unit at a time. |
@@ -141,9 +144,10 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 |---|---|---|
 | FR-PROP-1 | Authorised administrators can add and edit **properties**, their **buildings** and **floors**, address and location data, operational status and **operating model** (owned/leased). | A property can be created with partial details and completed later. Publishing is blocked until BR-PROP-3 is met. Every change is audited. |
 | FR-PROP-2 | Inventory (spaces, seats) can be added to any floor later, and updated at any time, subject to BR-INV-1…5. | Supply reductions that conflict with future commitments are refused with a list of the conflicts (lock-first, ADR-0004). |
-| FR-PROP-3 | Each space declares its **inventory mode** (whole space / per seat / pooled), and the categories it can be **sold as**. | Incompatible combinations are rejected (BR-PRODCFG-2). One availability per space across all categories (BR-AV-3c). |
+| FR-PROP-3 | Each space declares its **inventory mode** (whole space / per seat / pooled / hybrid zone), and the categories it can be **sold as**. | Incompatible combinations are rejected (BR-PRODCFG-2). One availability per space across all categories (BR-AV-3c). |
 | FR-PROP-4 | Property-specific pricing through offerings and price plans | **Rules pending** brief §9 (Q-OW-9). The model supports per-property and per-space prices. |
-| FR-PROP-5 | Restricted lease facts for leased properties (if Q-OW-3 confirms) | Visible only to the permitted roles. Warnings on agreements extending beyond lease end (BR-PROP-5). |
+| FR-PROP-5 | Restricted lease facts for leased properties: **deferred** (all current properties owned, OD-14) | Built when the first leased property is added (BR-PROP-5) |
+| FR-CITY-1 | Administrators can add cities and **toggle each city's public visibility** (default hidden, OD-18) | A hidden city has no public page and no menu entry. A visible city without a property follows Q-OW-12 and never implies an operating centre. Toggles are audited. |
 | FR-PROD-1 | Product categories are managed in the back office: name, visibility, compatible space types and modes, fulfilment, durations, workflow, approval, payment rule, cancellation policy, capacity limits, booking window, required customer fields, segment relevance (ERD §4.1). | No code change is needed to add a category or change its rules. Changes affecting money require pricing permissions. All changes are audited. |
 | FR-PROD-2 | Category rules can be overridden per property (offering). | The effective rule is shown in the admin UI and used by booking and enquiry flows. |
 | FR-PROD-3 | Enquiry, quote and booking flows adapt to the category's workflow and required fields. | E.g. a virtual-office enquiry collects business details; a meeting-room request collects time and attendees. |

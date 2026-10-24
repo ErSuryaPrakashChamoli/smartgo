@@ -39,12 +39,12 @@
 
 * `spatie/laravel-permission` (proposed) holds roles and permissions. **Permissions are business capabilities** (e.g. `inventory.update_status`, `pricing.approve`), not one per CRUD screen.
 * Every Filament resource and page, Livewire action and controller checks a **Policy**. Hiding a UI element is never the control.
-* **Location scoping:** Centre Managers, Front Desk and Sales Executives act only on locations in their `location_user` scope. This is enforced in policies **and** in query scopes so lists, exports, global search and relation managers cannot leak other locations' records.
+* **Property scoping:** Centre Managers, Front Desk and Sales Executives act only on properties in their `property_user` scope. This is enforced in policies **and** in query scopes so lists, exports, global search and relation managers cannot leak other locations' records.
 * **Separation of duties:** authors cannot approve their own content (BR-CMS-2) or their own price plans (BR-PR-2).
 
 ### 3.1 Role and permission matrix (proposed)
 
-Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to assigned locations or own records · — no access
+Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to assigned properties or own records · — no access
 
 | Capability | Super Admin | Platform Admin | Marketing Mgr | Content Editor | SEO Specialist | Ops Mgr | Centre Mgr | Finance | Sales Mgr | Sales Exec | Front Desk | 3D Tech | Analyst |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -58,9 +58,10 @@ Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** vi
 | Media library | M | — | M | M | V | V | M (S) | — | — | — | — | M (3D) | — |
 | Properties, buildings, floors: create, edit, address, status (OD-08) | M | — | V | V | V | M | M (S; edit only, no create/delete) | V | V | V | V (S) | V | V |
 | Property operating model: owned / leased (OD-09) | M | — | V | — | — | M | V (S) | V | V | V | — | — | V |
-| Lease facts, if tracked (Q-OW-3; restricted, never public) | M | — | — | — | — | M | — | M | — | — | — | — | — |
+| Lease facts (deferred until a leased property exists, OD-14; restricted, never public) | M | — | — | — | — | M | — | M | — | — | — | — | — |
 | Product categories and non-financial rules (ADR-0013) | M | — | V | V | V | M | V | V | V | V | V | — | V |
 | Category rules affecting money (payment rule, cancellation policy) | M/A | — | — | — | — | V | — | M/A (not own) | V | — | — | — | V |
+| Cities: add, edit, **public visibility toggle** (OD-18) | M | — | M | — | V | V | — | — | — | — | — | — | V |
 | Customer segments list (OD-04) | M | — | M | V | V | V | — | — | V | V | — | — | V |
 | Spaces: capacity, status, dimensions | M | — | V | V | — | M | M (S) | V | V | V | V (S) | V | V |
 | Space visibility on website | M | — | M | — | — | M | M (S) | — | — | — | — | — | — |

@@ -41,7 +41,7 @@ Please answer for **every** system in use today, including spreadsheets that act
 
 | Scenario | Description | Effect on SmartGro design |
 |---|---|---|
-| **A. No operational system** (spreadsheets only) | Inventory and occupancy live in spreadsheets. Bookings by phone or email. | SmartGro is master for everything in §4. The first load uses the SG-INV-1.1 import (`../requirements/INVENTORY_IMPORT_SPEC.md`). **This is the current ERD default.** |
+| **A. No operational system** (spreadsheets only) | Inventory and occupancy live in spreadsheets. Bookings by phone or email. | SmartGro is master for everything in §4. The first load uses the SG-INV-1.2 import (`../requirements/INVENTORY_IMPORT_SPEC.md`). **This is the current ERD default.** |
 | **B. Coworking-management platform in use** (members, agreements, billing, room bookings, possibly door access) | A specialised platform already runs operations. | Choose **B1** (platform stays master for agreements and bookings; SmartGro mirrors inventory and availability) or **B2** (SmartGro becomes master for inventory, availability, pricing and bookings; the platform consumes them for billing and access). In both cases **one system only** accepts bookings for a given room. |
 | **C. Separate CRM in use** | Leads and pipeline in an external CRM | Choose between keeping that CRM as master (SmartGro pushes leads with attribution; Phase 9 shrinks to an integration) and migrating to the built-in CRM (Phase 9 as planned plus data migration). |
 | **D. Accounting/ERP in use** | Invoices, GST and ledgers | It stays master for invoices and payments accounting. SmartGro sends booking and payment records (D-08). SmartGro does not replicate accounting. |

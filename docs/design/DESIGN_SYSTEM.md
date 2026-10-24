@@ -17,7 +17,7 @@ This document records what can be decided before Phase 2 (principles, accessibil
 | Brand name | **Confirmed (OD-01, 2026-10-24): "SmartGro"**, the official public-facing name. The repository folder name `smartGrow` is not a brand reference. |
 | Domain | **Confirmed: smartgro.space** |
 | Tagline | **Confirmed: "WORK SMART. GROW TOGETHER."** Not to be replaced by another slogan. |
-| Logo (vector master + raster) | **Official logo confirmed as the authoritative reference (OD-01).** The owner states it was supplied as an image in conversation. That image is **not available to the working session**, and **no logo file exists in the project directory** (re-checked 2026-10-24). **Request:** place the original at `resources/brand/source/` (Q-OW-10). It must not be redrawn, reinterpreted or replaced by text, and no AI-generated substitute may be used. |
+| Logo (vector master + raster) | **Official logo confirmed as the authoritative reference (OD-01).** The owner states it was supplied as an image in conversation. That image is **not available to the working session**, and **no logo file exists in the project directory** (re-checked 2026-10-24). **Request:** place the original at `resources/brand/source/` (Q-OW-10). The owner will add it later (OD-20). Phase 2 cannot finalise the brand system until it is there. It must not be redrawn, reinterpreted or replaced by text, and no AI-generated substitute may be used. |
 
 ### 1.1 Logo management (FR-BRAND-1)
 

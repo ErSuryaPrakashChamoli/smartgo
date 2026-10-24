@@ -27,7 +27,7 @@ Source: the owner's brief "Phase 1 — Incorporate Business Owner Decisions", se
 |---|---|---|
 | OD-01 | **Brand:** public name **SmartGro**. Tagline **"WORK SMART. GROW TOGETHER."** (confirmed; not to be replaced). The official logo must be used as supplied: no redrawing, reinterpretation or text substitute. | DESIGN_SYSTEM §1; ERD `site_settings` brand group. **The logo file is not in the project (D-11b).** |
 | OD-02 | **Market:** India at launch; no international markets without further approval | ERD M-5; PRD §1, §4 |
-| OD-03 | **Geography:** target markets in Delhi NCR are Noida, Gurgaon, Delhi, Faridabad and Ghaziabad. **Currently operating: Noida only.** No centre is assumed elsewhere. The platform must support adding properties and cities without code. | BR-PROP-4; IA §2; ERD `cities.is_target_market` |
+| OD-03 | **Geography:** target markets in Delhi NCR are Noida, Gurgaon (now named Gurugram, OD-16), Delhi, Faridabad and Ghaziabad. **Currently operating: Noida only.** No centre is assumed elsewhere. The platform must support adding properties and cities without code. | BR-PROP-4; IA §2; ERD `cities.is_target_market` |
 | OD-04 | **Customer segments (eight):** startups and small businesses; freelancers and independent professionals; SMEs and growing companies; large enterprises and corporates; remote and hybrid employees; consultants and business travellers; companies seeking managed offices; businesses needing virtual offices or registered addresses. **No marketing priority implied.** | ERD `customer_segments`; BR-CRM-1a; PRD §3 |
 | OD-05 | **Language:** English only for the initial release | ERD M-6 |
 | OD-06 | **Existing operational software: none.** The SmartGro platform is the master for everything operational. | BR-SOT-7; EXISTING_SYSTEMS_ASSESSMENT §7 |
@@ -41,16 +41,41 @@ Source: the owner's brief "Phase 1 — Incorporate Business Owner Decisions", se
 
 | ID | Question | Why it matters | Recommendation |
 |---|---|---|---|
-| Q-OW-1 | How are the **10 floors** split across A-70, A-71, A-23 and H-105, and at which building levels (e.g. ground, 1, 2…)? | floors cannot be created without it (M-7) | provide via the SG-INV-1.1 template, or as a short list |
-| Q-OW-2 | Is each address a **separate property** customers see as its own centre, or are any of them (e.g. A-70 and A-71, Sector 2) **one centre spanning two buildings**? | property pages, tours, inventory grouping | the model supports both; please state which |
-| Q-OW-3 | Which properties are **owned and operated**, and which **leased and operated**? Could this differ within a property? Do you want lease end and lock-in dates tracked internally (restricted access)? | BR-PROP-2/5; protects against selling beyond a lease | record per property; track lease end dates |
-| Q-OW-4 | Use **"Gurgaon"** or **"Gurugram"**, and **"Delhi"** or **"New Delhi"**, in public names and URLs? | permanent URLs and SEO | your preferred customer-facing names; the other spelling redirects |
-| Q-OW-5 | Should target cities without a property appear on the website at all (hidden, or "coming soon" with a waitlist)? | avoids implying centres that do not exist | hidden until a property is confirmed; optional waitlist page only with your approval |
-| Q-OW-6 | May content from the existing website (copy, photos) be reused after review? Should `/coworking-space/` map to a coworking hub page or to the hot-desk page? | migration and redirects | review first; map `/coworking-space/` to a coworking hub |
-| Q-OW-7 | Do any desk zones need to be **hybrid within the zone** (some seats individually assigned, the rest a shared pool)? | adds a fourth inventory mode | not needed unless you confirm |
-| Q-OW-8 | May the system call the entity **"Property"** throughout the back office and code (renaming "location")? | consistent language for administrators | yes; rename before Phase 5 |
-| Q-OW-9 | Please resend **section 9 onward** of the brief (pricing configuration and anything after it). | pricing, payment and cancellation rules | — |
-| Q-OW-10 | **Logo file:** please place the original logo in the project at `resources/brand/source/` (SVG preferred; otherwise AI/EPS/PDF, plus a high-resolution PNG). The image referred to in the brief is not available to this session or in the project. | Phase 2 cannot start without it | — |
+| Q-OW-1 | **→ still open (re-asked in §0.3)** How are the **10 floors** split across A-70, A-71, A-23 and H-105, and at which building levels (e.g. ground, 1, 2…)? | floors cannot be created without it (M-7) | provide via the SG-INV-1.1 template, or as a short list |
+| Q-OW-2 | **→ answered: OD-13** Is each address a **separate property** customers see as its own centre, or are any of them (e.g. A-70 and A-71, Sector 2) **one centre spanning two buildings**? | property pages, tours, inventory grouping | the model supports both; please state which |
+| Q-OW-3 | **→ answered: OD-14** Which properties are **owned and operated**, and which **leased and operated**? Could this differ within a property? Do you want lease end and lock-in dates tracked internally (restricted access)? | BR-PROP-2/5; protects against selling beyond a lease | record per property; track lease end dates |
+| Q-OW-4 | **→ answered: OD-16** Use **"Gurgaon"** or **"Gurugram"**, and **"Delhi"** or **"New Delhi"**, in public names and URLs? | permanent URLs and SEO | your preferred customer-facing names; the other spelling redirects |
+| Q-OW-5 | **→ answered: OD-18** (follow-up Q-OW-12) Should target cities without a property appear on the website at all (hidden, or "coming soon" with a waitlist)? | avoids implying centres that do not exist | hidden until a property is confirmed; optional waitlist page only with your approval |
+| Q-OW-6 | **→ answered: OD-19** (redirects: Q-OW-11) May content from the existing website (copy, photos) be reused after review? Should `/coworking-space/` map to a coworking hub page or to the hot-desk page? | migration and redirects | review first; map `/coworking-space/` to a coworking hub |
+| Q-OW-7 | **→ answered: OD-15** Do any desk zones need to be **hybrid within the zone** (some seats individually assigned, the rest a shared pool)? | adds a fourth inventory mode | not needed unless you confirm |
+| Q-OW-8 | **→ answered: OD-17** May the system call the entity **"Property"** throughout the back office and code (renaming "location")? | consistent language for administrators | yes; rename before Phase 5 |
+| Q-OW-9 | **→ still open (re-asked in §0.3)** Please resend **section 9 onward** of the brief (pricing configuration and anything after it). | pricing, payment and cancellation rules | — |
+| Q-OW-10 | **→ acknowledged: OD-20** **Logo file:** please place the original logo in the project at `resources/brand/source/` (SVG preferred; otherwise AI/EPS/PDF, plus a high-resolution PNG). The image referred to in the brief is not available to this session or in the project. | Phase 2 cannot start without it | — |
+
+### 0.2 Owner answers — 2026-10-24 (round 3)
+
+Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more than one way, the interpretation is stated so the owner can correct it.
+
+| ID | Confirmed decision | Implications recorded in |
+|---|---|---|
+| OD-12 | Floors are recorded **per property** (reply to Q-OW-1: "Separate property"). **The split of the 10 floors and their levels was not given**, so Q-OW-1 stays open, re-asked below. | ERD M-7 |
+| OD-13 | **Each address is its own centre/property:** A-70 (Sector 2), A-71 (Sector 2), A-23 (Sector 3) and H-105 (Sector 62) are four separate properties. A-70 and A-71 are **not** one centre. | ERD glossary and M-1; ADR-0014 |
+| OD-14 | **All four current properties are owned and operated.** The leased-and-operated model stays supported (OD-09) for future properties. Lease-date tracking is **deferred** until a leased property exists. | ERD `property_leases` (deferred); BR-PROP-5; R-18 |
+| OD-15 | **Hybrid zones are required:** a desk zone can have some individually assigned seats while the rest form a shared pool. | ERD §3.2 mode `hybrid`; BR-AV-3d; BR-BK-2c; ADR-0004; SG-INV-1.2 |
+| OD-16 | **City names follow the latest official names:** Noida, **Gurugram** (not Gurgaon), **Delhi**, Faridabad, Ghaziabad. Interpretation: Delhi has not been renamed; "New Delhi" is a district within Delhi, so the city is "Delhi". The old name "Gurgaon" is kept only as an alias that redirects. | ERD `cities`; IA §1 |
+| OD-17 | **The back office and code call the entity "Property"** (interpretation: the "Yes" on the line after Q-OW-8 answers Q-OW-8). The public site keeps "Locations" in navigation and URLs. | ERD C-13 (rename done in all documents) |
+| OD-18 | **Cities without a property stay hidden.** A CMS administrator can add a city and switch its visibility on or off with a toggle. | ERD `cities.is_publicly_visible`; BR-PROP-4; FR-CITY-1 |
+| OD-19 | **Nothing is taken from the old website.** It was provided for information only: no copy, images, files or data are reused. | BR-CMS-8; `../research/EXISTING_WEBSITE_AUDIT.md` |
+| OD-20 | **Logo:** the owner will add the original file later (Q-OW-10 acknowledged). | D-11b remains open until the file is in `resources/brand/source/` |
+
+### 0.3 Remaining owner questions (after round 3)
+
+| ID | Question | Why it matters |
+|---|---|---|
+| Q-OW-1 (re-asked) | Please give the number of floors for each property, and which levels they are (they total 10). For example: *A-70: Ground, 1st, 2nd · A-71: … · A-23: … · H-105: …* | floors and inventory cannot be created without it; it is needed to validate the ERD (AC-1.4) |
+| Q-OW-9 | Please resend section 9 onward of the brief (pricing configuration and anything after it) | pricing, payment and cancellation rules per category and property |
+| Q-OW-11 (new) | At launch, should the old site's addresses (e.g. `/coworking-space/`, the 6 blog-post URLs) **redirect** to the matching new pages? This reuses **no content**; it only keeps Google rankings and old links working. The spam `/pin/…` URLs would return "Gone" either way. | search visibility at cut-over (R-17) |
+| Q-OW-12 (new) | When a city is switched **visible** before any property opens there, what should its page show: a "coming soon / register interest" page, or only a listing in the city menu? | what a visible city without a property displays (BR-PROP-4) |
 
 ---
 
@@ -59,7 +84,7 @@ Source: the owner's brief "Phase 1 — Incorporate Business Owner Decisions", se
 | ID | Decision | Who | Classification | Current state / evidence | Recommended answer | Needed by |
 |---|---|---|---|---|---|---|
 | D-01 | Company profile, market, legal entity | Owner + Client | **Requires client input** (partly answered) | **Market confirmed:** India; Delhi NCR target markets; operating in Noida (OD-02, OD-03). Still missing: legal entity name, CIN, GSTIN, registered address, positioning statement. | supply legal details before public launch | Phase 6 (legal details); market resolved |
-| D-02 | Properties, floors and canonical city slugs | Owner | **Requires client input** (partly answered) | **Four Noida properties confirmed** (OD-08); 10 floors in total. **Floor allocation (Q-OW-1), property grouping (Q-OW-2), full addresses and inventory outstanding.** City naming: Q-OW-4. | supply via template SG-INV-1.1 | Phase 1 (AC-1.4) |
+| D-02 | Properties, floors and canonical city slugs | Owner | **Requires owner input** (mostly answered) | Four Noida properties, **each its own centre** (OD-13), all **owned** (OD-14); official city names (OD-16). **Open: floors per property and levels (Q-OW-1)**, full addresses (PIN, building names) and inventory. | supply via template SG-INV-1.2 | Phase 1 (AC-1.4) |
 | D-03 | Product catalogue | Owner | **Resolved** (2026-10-24, OD-07) | Seven admin-manageable categories. Rule **values** (pricing, payment, cancellation, durations) are not yet confirmed (brief §9 not received). | — | — |
 | D-04 | Pricing rules and public price display | Client | **Deferred to Phase 5** | The ERD price model is generic and does not depend on the answer | "from" prices for flexible products, "+ GST" display (CLIENT_INPUTS C-3.4/3.5) | Phase 5 |
 | D-05 | Inventory granularity | Owner | **Resolved** (2026-10-24, OD-10) | Individual (per-seat), pooled and hybrid-within-property are all supported, with product-specific rules. A hybrid *zone* is a separate question (Q-OW-7). | — | — |
@@ -93,15 +118,15 @@ Source: the owner's brief "Phase 1 — Incorporate Business Owner Decisions", se
 | D-32 | **New:** Release slicing (R1 scope, `PROJECT_MASTER_PLAN.md` §4) | Owner + Client | **Requires owner approval** | — | approve R1 as drafted | Phase 1 |
 | D-33 | **New:** Team structure and role/permission matrix confirmation | Client | **Requires client input** | Matrix drafted (`../security/SECURITY_MODEL.md` §3.1) | confirm or adjust roles | Phase 1 |
 | D-34 | **New:** ADR-0003…0012 acceptance (ADR-0001/0002 accepted) | Owner | **Requires owner approval** | `ADR_INDEX.md` | accept all as proposed | Phase 1 |
-| D-35 | **New:** Inventory import template SG-INV-1.1 (supersedes 1.0) and the four-eyes import approval | Owner (+ client ops review) | **Requires owner approval** | `../requirements/INVENTORY_IMPORT_SPEC.md` | approve; client ops to trial the template | Phase 1 |
+| D-35 | **New:** Inventory import template SG-INV-1.2 (supersedes 1.0 and 1.1) and the four-eyes import approval | Owner (+ client ops review) | **Requires owner approval** | `../requirements/INVENTORY_IMPORT_SPEC.md` | approve; client ops to trial the template | Phase 1 |
 
 ### Summary
 
 | Classification | Decisions |
 |---|---|
 | Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-26 (MySQL part) |
-| Requires owner approval | D-24, D-25, D-31, D-32, D-34 (now ADR-0003…0014), D-35 (now SG-INV-1.1), Q-OW-8 |
-| Requires client input | D-01 (legal details), D-02 (floors, grouping, addresses, inventory), D-11b (logo file), D-33 (team/roles), Q-OW-1…7, Q-OW-9, Q-OW-10 |
+| Requires owner approval | D-24, D-25, D-31, D-32, D-34 (ADR-0003…0014), D-35 (SG-INV-1.2) |
+| Requires client input | D-01 (legal details), D-02 (floors per property, addresses, inventory), D-11b (logo file, owner will add), D-33 (team/roles), Q-OW-1, Q-OW-9, Q-OW-11, Q-OW-12 |
 | Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
 
 ---
@@ -124,10 +149,10 @@ Source: the owner's brief "Phase 1 — Incorporate Business Owner Decisions", se
 | R-12 | **New:** slow client inputs keep Phase 1 open and delay Phase 2 | **Requires client input** | `../requirements/CLIENT_INPUTS_REQUIRED.md` is ready to send. Owner-approved deferrals are possible for non-structural items. |
 | R-13 | **New:** "snapshot before lock" pitfall: a plain read before taking the lock causes double booking even with a lock | **Resolved at design level** | Reproduced by a negative-control test. ADR-0004 now requires the lock to be the first statement in the transaction. |
 | R-14 | **New (2026-10-24):** the local `.env` connects as MySQL **`root`** on a server that also hosts other projects' databases, including personal-data tables such as candidates and employees. A misconfiguration or bug in SmartGro could read or damage another project's data. | **Requires owner approval** | Mitigations already in place: tests are forced to `smartgro_testing` and the `*_testing` guard blocks other databases. **Recommended:** switch to a least-privileged `smartgro` user limited to `smart_go` and `smartgro_testing` by running `SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh`. Never use `root` in staging or production. |
-| R-15 | **New:** floor allocation, grouping and full addresses of the four properties are unknown, so the ERD cannot be validated against real data | **Requires client input** (Q-OW-1, Q-OW-2) | Nothing is created by assumption (BR-PROP-1). Template SG-INV-1.1 is ready. |
+| R-15 | Floors per property and full addresses of the four properties are unknown, so the ERD cannot be validated against real data | **Requires client input** (Q-OW-1 re-asked) | Grouping resolved (OD-13). Nothing is created by assumption (BR-PROP-1). Template SG-INV-1.2 is ready. |
 | R-16 | **New:** the existing WordPress site at smartgro.space shows signs of compromise: 1,038 injected `/pin/` spam URLs, cloaked to serve Japanese spam to Googlebot | **Requires owner action now** (outside this project) | Evidence and recommended actions in `../research/EXISTING_WEBSITE_AUDIT.md` §2. The new platform must not reuse any files from it, and must return 410 for `/pin/*`. |
-| R-17 | **New:** loss of search visibility at cut-over from WordPress | **Deferred to Phase 11** | 57-URL inventory captured; draft redirect map; final map from a fresh crawl and Search Console data |
-| R-18 | **New:** selling long-term agreements beyond a leased property's lease end | **Requires client input** (Q-OW-3) | BR-PROP-5 warning, if lease dates are tracked |
+| R-17 | Loss of search visibility at cut-over from WordPress | **Requires owner input** (Q-OW-11) | No content will be reused (OD-19). Redirecting old URLs is recommended; it transfers rankings, not content. |
+| R-18 | Selling long-term agreements beyond a leased property's lease end | **Resolved for now** (OD-14: all current properties owned) | Lease tracking (BR-PROP-5) is activated when the first leased property is added |
 | R-19 | **New:** configuration breadth (7 categories × per-property rules) increases build and test effort | **Requires owner approval** (D-32 release slicing) | Typed configuration (ADR-0013); categories can launch in stages |
 
 ---
