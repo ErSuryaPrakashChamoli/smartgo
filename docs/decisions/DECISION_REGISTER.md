@@ -191,6 +191,17 @@ Source: the owner's instruction "Proceed with the approved design-system decisio
 | OD-46 | **Owner-approved: the tagline lettering is white in the dark-background logo** (Q-OW-16, option a). Conditions set by the owner: only the dark-grey tagline lettering changes to white; the tagline stays exactly "WORK SMART. GROW TOGETHER."; the thin side lines are unchanged; the original green elements, proportions, shapes and alignment are preserved; the original logo is unchanged, and this applies only to the dark-background variant. Implemented 2026-10-24 (`App\Actions\Brand\GenerateBrandRenditions`); evidence in `../design/DESIGN_SYSTEM.md` §7.6. |
 | P2-C | **Still not signed off** (round 10). The remaining page layouts (step 2.6) are not started until the owner approves the home page. |
 
+### 0.15 Owner instruction — 2026-10-24 (round 11): "Phase 2 continuation prompt"
+
+Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete remaining page designs and admin UX". **The brief was cut off** in section 5 after item "7. Mixed zones" (Q-OW-17).
+
+| ID | Decision |
+|---|---|
+| OD-47 | **Design the remaining Phase 2 pages and the back-office screens now, before the home page is signed off.** This replaces the round-10 instruction to wait. The home page stays **unapproved and frozen**: its layout, styling, content, components and responsive behaviour must not change, and shared components may change only where the home page renders identically (verified pixel-for-pixel). |
+| OD-48 | Scope confirmed by the brief: city pages (5 canonical cities; Gurgaon redirects to Gurugram; administrator-controlled visibility; coming-soon page), property listing and detail for the 4 confirmed Noida properties, the 7 workspace types, enterprise, the enquiry, tour, request-to-book, online-booking and payment journeys, and back-office screens 1–7 (dashboard, property create and edit, buildings and floors, workspace products, individual seats, pooled capacity, mixed zones), keeping the light back-office theme. |
+| Q-OW-17 | **Open.** Please resend section 5 of the brief from after "7. Mixed zones", and anything that followed it (further back-office screens, deliverables, reporting). Nothing after the cut is assumed. |
+| P2-C | **Still not signed off** (round 11). |
+
 ---
 
 ## 1. Decisions

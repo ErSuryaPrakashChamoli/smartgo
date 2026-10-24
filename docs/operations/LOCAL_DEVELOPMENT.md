@@ -81,6 +81,7 @@ Optional hardening: `chmod 600 .env .env.backup`. Skip this if a separate web-se
 | Build frontend assets | `npm run build` |
 | Bring staff roles and capabilities in line with the code | `php artisan access:sync` |
 | View the Phase 2 design previews (never served in production) | open `/design` on the local server |
+| View the back-office design previews (Super Admin only, never in production) | open `/admin/design-previews` |
 | Give an existing user a staff role | `php artisan access:assign-role <email> <role>` |
 
 ### Back office (Phase 3)

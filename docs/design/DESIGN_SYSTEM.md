@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Phase 2 in progress (started 2026-10-24, OD-41).** Steps 2.1, 2.2, 2.4 and 2.5 are built and waiting for the owner's visual-direction sign-off (AC-2.5); the proposals that need a decision are in §7.4. Phase 1 baseline v1.0 approved (OD-38); provisional palette D-11a. |
+| Status | **Phase 2 in progress (started 2026-10-24, OD-41).** Approved: P2-A palette, P2-B type, P2-D tab icon, P2-E/OD-46 dark-background logo. Built for review: foundations, components, all page designs and journeys (§9), back-office screens (§10). **The home page (P2-C, AC-2.5) is not signed off and is frozen.** |
 | Last updated | 2026-10-24 |
 | Logo input | **Raster logo supplied 2026-10-24 (OD-39)** and stored unmodified at `resources/brand/source/smartgro-logo.webp` (WebP, 388 × 218 px, transparent background). Still requested (D-11b, CLIENT_INPUTS C-6.1): a vector master or a PNG at least 2000 px wide, and a reversed version for dark backgrounds. The logo will not be recreated or substituted. The palette below comes from the brief; the colours observed in the logo are listed in §3.1 for the Phase 2 decision. |
 
@@ -214,4 +214,46 @@ Applies to every public template. Verified on the design previews on 2026-10-24:
 | Motion | Transitions of 200 ms or less; with "reduce motion" switched on, pulsing, sliding and smooth scrolling are turned off. |
 | Tables | Wide tables scroll sideways inside their card on small screens; the page itself never scrolls sideways. |
 | Back office | Filament's responsive layout; staff work mainly on desktop and tablet. Phone use is checked at 360 px for the tasks that need it (today's tours, calling a new lead) when those screens are built. |
+
+---
+
+## 9. Page designs and journeys (Phase 2 step 2.6, round 11)
+
+All are design previews at `/design/…` (never served in production, `noindex`), built from the shared components, with screenshots at 360 and 1440 px in `review/2026-10-24/`. The home page is frozen and renders pixel-identically to the screenshots under review (OD-47).
+
+| Page | Preview | What it shows |
+|---|---|---|
+| Locations | `/design/locations` | Visible cities with properties (Noida), all properties, map placeholder. Hidden cities are not listed (OD-18). |
+| City | `/design/locations/noida` | Properties filterable by area (Sector 2, 3, 62; no JavaScript), map beside the list on desktop and behind "Show map" on phones, workspace types, enterprise prompt, FAQs. |
+| Coming soon | `/design/locations/gurugram` | Example state for a city made visible before a property opens (OD-22): register-interest form and its confirmation; no properties, prices or inventory (BR-PROP-4). `/design/locations/gurgaon` returns a 301 to Gurugram; hidden cities return 404. |
+| Property | `/design/locations/noida/{a-70, a-71, a-23, h-105}` | One template for every property; the address is the only confirmed fact, so everything else is a labelled placeholder ("To be confirmed", empty states). In-page navigation, tour request, nearby properties. |
+| Sample property | `/design/sample-property` | A **fictional** property showing the same template fully populated (offerings with capacity, included and not included, all BR-AV-1 availability states, amenities, getting here). No real property is ever shown with invented data. |
+| Workspaces | `/design/workspaces`, `/design/workspaces/{slug}` | Hub with comparison table; one template for all seven types, whose next step follows the category's workflow (proposal-led or request-then-confirm). |
+| Enterprise | `/design/enterprise` | Dark hero with the dark-background logo, process, consultation request (seat bands, locations stating that SmartGro currently operates in Noida, timeline, set-up), no customer stories until verified ones exist. |
+| Journeys | `/design/flows/{enquiry, tour, request-to-book, online-booking}` | Each screen of the journey in order, including errors, conflicts ("taken a moment ago") and payment outcomes. Online booking is marked unavailable until D-07/D-08 (BR-PRODCFG-5). |
+
+**Status wording rule.** Only "Tour confirmed" and "Booking confirmed" say confirmed. Every other post-submission state says "not yet confirmed" (requested, held, awaiting payment) or "not booked" (payment failed, slot taken); payment status is shown separately from the booking. The full list, with whether anything is reserved, is in the component gallery.
+
+**New components:** `ui/status`, `ui/stepper`, `ui/slot-picker` (ready, loading, empty and "not published yet" states), `form/radio-cards`, `ui/timeline`, `ui/placeholder`, `ui/badge`, `card/offering`, `site/tour-request-form`, `site/flow-screen`, `site/design-note` (preview-only annotations). `ui/availability` now uses the BR-AV-1 labels (Available now, Available from {date}, Limited availability, Join waitlist).
+
+**Sample data rule.** Times, rooms, desks and amounts appear only on the fictional Sample property or in the component gallery, always labelled "sample"; real properties show only confirmed facts.
+
+---
+
+## 10. Back-office screens (Phase 2, round 11)
+
+Real Filament screens in a **Design previews** section of the back office (`/admin/design-previews/…`), visible only to the Super Admin and never in production. They validate their forms like the real screens will, then save nothing; the Phase 5 resources replace them. The section is an addition to the code layout of SYSTEM_ARCHITECTURE §3.1 (`app/Filament/Clusters/DesignPreviews`) and is removed when the real screens exist.
+
+| Screen | What it shows |
+|---|---|
+| Dashboard overview | Cards by job (today's tours, new leads, spaces needing attention, awaiting approval), the four properties with confirmed and pending facts, and the launch checklist. |
+| Property: create and edit | Five-step wizard (identity, buildings, opening hours, website, review), pre-filled with A-70's confirmed facts only. |
+| Buildings and floors | Floors per building with level rules; shown on the Sample property because the real floor allocation is pending (OD-32). |
+| Workspace products | The seven categories and the full per-category settings form; instant booking cannot be selected before D-07/D-08 (a test proves it); money rules locked until the Phase 5 gate. |
+| Individual seats | Seat map (icon, colour and legend), seat list, assign and deactivate actions. |
+| Pooled capacity | Usage bar (allocated, confirmed, held, free), commitments, capacity form, an example of a refused request. |
+| Mixed zones | Assigned seats plus shared pool, the BR-AV-3d rule in plain words, an example of a refused assignment. |
+| Cities | Visibility per city with what visitors will see; making a city visible asks for confirmation and explains the coming-soon page. |
+
+The back office keeps the approved light theme.
 
