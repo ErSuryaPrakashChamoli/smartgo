@@ -30,10 +30,19 @@ trait IsDesignPreview
             $this->form->getState();
         }
 
+        $this->notifyNothingSaved();
+    }
+
+    /**
+     * Confirms to the reviewer that a preview action changed nothing: no record was stored and no
+     * email, SMS or WhatsApp message was sent.
+     */
+    protected function notifyNothingSaved(): void
+    {
         Notification::make()
             ->info()
             ->title('Design preview: nothing was saved')
-            ->body('This screen shows the planned workflow. Saving arrives with the inventory module in Phase 5.')
+            ->body('No record was changed and no message was sent. This screen only shows the planned workflow.')
             ->send();
     }
 
