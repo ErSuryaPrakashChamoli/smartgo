@@ -37,8 +37,8 @@
                     </figure>
                 @endforeach
             </div>
-            <x-ui.alert type="warning" title="Tagline on dark backgrounds">
-                The reversed logo changes only the dark lettering and buildings to Warm White (OD-45). The tagline keeps its original dark grey, which reaches only 1.55:1 on forest, so it is not readable there. Use the reversed logo on dark backgrounds only once SmartGro decides how the tagline should appear.
+            <x-ui.alert type="info" title="Reversed logo for dark backgrounds">
+                Only the dark lettering, the buildings and the tagline lettering are Warm White (OD-45, OD-46). Every green element, the tagline's side lines, the shapes and the proportions are exactly as supplied. Use it on forest and forest soft; the original logo stays unchanged for light backgrounds.
             </x-ui.alert>
             <div class="flex flex-wrap items-end gap-8 rounded-2xl bg-surface p-6 ring-1 ring-line">
                 @foreach ([16, 32, 48] as $size)

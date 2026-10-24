@@ -9,8 +9,9 @@ use RuntimeException;
 /**
  * Generates the web renditions of the official logo (FR-BRAND-1) without redrawing it:
  * the browser-tab icon is the "SG" symbol cropped and scaled, unchanged in shape and colour
- * (OD-44), and the reversed logo recolours only the dark ink of the symbol and wordmark to
- * Warm White, keeping every green element and the tagline row as supplied (OD-45).
+ * (OD-44), and the reversed logo recolours only the dark ink of the symbol and wordmark (OD-45)
+ * and the tagline lettering (OD-46) to Warm White, keeping every green element, the tagline's
+ * side lines, the shapes and the transparency exactly as supplied.
  */
 class GenerateBrandRenditions
 {
@@ -59,6 +60,14 @@ class GenerateBrandRenditions
     private const BAND_GAP = 3;
 
     /**
+     * In the tagline row, a run of at least this many columns no taller than the line height
+     * is one of the thin side lines, which stay as supplied; everything else is lettering.
+     */
+    private const TAGLINE_LINE_MAX_HEIGHT = 3;
+
+    private const TAGLINE_LINE_MIN_LENGTH = 10;
+
+    /**
      * @return list<string> paths of the files written, relative to the output directory
      */
     public function handle(string $sourcePath, string $outputDirectory): array
@@ -78,7 +87,7 @@ class GenerateBrandRenditions
         File::ensureDirectoryExists("{$outputDirectory}/brand");
 
         File::copy($sourcePath, "{$outputDirectory}/brand/smartgro-logo.webp");
-        imagewebp($this->reversed($logo, [$bands[0], $bands[1]]), "{$outputDirectory}/brand/smartgro-logo-reversed.webp", IMG_WEBP_LOSSLESS);
+        imagewebp($this->reversed($logo, $bands), "{$outputDirectory}/brand/smartgro-logo-reversed.webp", IMG_WEBP_LOSSLESS);
 
         $mark = $this->squareMark($logo, $bands[0]);
         imagepng($mark, "{$outputDirectory}/brand/smartgro-mark.png");
@@ -135,27 +144,34 @@ class GenerateBrandRenditions
     }
 
     /**
-     * Each pixel is treated as a blend of the ink and its nearest other logo colour; only the ink
-     * share is swapped for Warm White, so anti-aliased edges and transparency are preserved.
+     * In the symbol and wordmark rows each pixel is treated as a blend of the ink and its nearest
+     * other logo colour, and only the ink share is swapped for Warm White. In the tagline row the
+     * lettering (one grey, anti-aliased only against transparency) becomes Warm White and the side
+     * lines are untouched. Alpha is never changed, so every shape stays exactly as supplied.
      *
      * @param  list<array{top: int, bottom: int}>  $bands
      */
     private function reversed(GdImage $logo, array $bands): GdImage
     {
         $reversed = $this->transparentCanvas(imagesx($logo), imagesy($logo));
+        $tagline = $bands[2] ?? null;
+        $taglineLineColumns = $tagline === null ? [] : $this->taglineLineColumns($logo, $tagline);
 
         for ($y = 0; $y < imagesy($logo); $y++) {
-            $recolour = collect($bands)->contains(fn (array $band): bool => $y >= $band['top'] && $y <= $band['bottom']);
+            $inSymbolOrWordmark = ($y >= $bands[0]['top'] && $y <= $bands[0]['bottom']) || ($y >= $bands[1]['top'] && $y <= $bands[1]['bottom']);
+            $inTagline = $tagline !== null && $y >= $tagline['top'] && $y <= $tagline['bottom'];
 
             for ($x = 0; $x < imagesx($logo); $x++) {
                 $pixel = imagecolorat($logo, $x, $y);
                 [$red, $green, $blue] = [($pixel >> 16) & 0xFF, ($pixel >> 8) & 0xFF, $pixel & 0xFF];
 
-                if ($recolour) {
+                if ($inSymbolOrWordmark) {
                     $inkShare = $this->inkShare([$red, $green, $blue]);
                     $red = $this->channel($red + $inkShare * (self::WARM_WHITE[0] - self::INK[0]));
                     $green = $this->channel($green + $inkShare * (self::WARM_WHITE[1] - self::INK[1]));
                     $blue = $this->channel($blue + $inkShare * (self::WARM_WHITE[2] - self::INK[2]));
+                } elseif ($inTagline && ! isset($taglineLineColumns[$x])) {
+                    [$red, $green, $blue] = self::WARM_WHITE;
                 }
 
                 imagesetpixel($reversed, $x, $y, imagecolorallocatealpha($reversed, $red, $green, $blue, $this->alpha($pixel)));
@@ -163,6 +179,41 @@ class GenerateBrandRenditions
         }
 
         return $reversed;
+    }
+
+    /**
+     * Columns of the tagline row that belong to its thin side lines.
+     *
+     * @param  array{top: int, bottom: int}  $band
+     * @return array<int, true>
+     */
+    private function taglineLineColumns(GdImage $logo, array $band): array
+    {
+        $thinColumns = [];
+
+        for ($x = 0; $x < imagesx($logo); $x++) {
+            $rows = array_filter(range($band['top'], $band['bottom']), fn (int $y): bool => $this->alpha(imagecolorat($logo, $x, $y)) < 120);
+            $thinColumns[$x] = $rows !== [] && max($rows) - min($rows) + 1 <= self::TAGLINE_LINE_MAX_HEIGHT;
+        }
+
+        $lineColumns = [];
+        $run = [];
+
+        foreach ([...$thinColumns, imagesx($logo) => false] as $x => $isThin) {
+            if ($isThin) {
+                $run[] = $x;
+
+                continue;
+            }
+
+            if (count($run) >= self::TAGLINE_LINE_MIN_LENGTH) {
+                $lineColumns += array_fill_keys($run, true);
+            }
+
+            $run = [];
+        }
+
+        return $lineColumns;
     }
 
     /**

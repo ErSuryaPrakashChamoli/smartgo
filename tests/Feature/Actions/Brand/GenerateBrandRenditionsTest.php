@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\Brand\GenerateBrandRenditions;
+use App\Services\Design\DesignTokens;
 use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
@@ -61,7 +62,7 @@ it('builds a tab icon with 16, 32 and 48 pixel images', function () {
         ->and($sizes)->toBe([16, 32, 48]);
 });
 
-it('turns only the dark lettering and buildings white in the reversed logo', function (int $x, int $y) {
+it('turns only the dark lettering, the buildings and the tagline lettering white in the reversed logo', function (int $x, int $y) {
     app(GenerateBrandRenditions::class)->handle($this->source, $this->output);
 
     $pixel = brandPixel(imagecreatefromwebp("{$this->output}/brand/smartgro-logo-reversed.webp"), $x, $y);
@@ -74,9 +75,10 @@ it('turns only the dark lettering and buildings white in the reversed logo', fun
     'wordmark "SMART"' => [20, 156],
     'upper arc of the G' => [230, 6],
     'buildings' => [218, 60],
+    'tagline lettering' => [189, 208],
 ]);
 
-it('keeps green elements, building faces and the tagline exactly as supplied in the reversed logo', function (int $x, int $y) {
+it('keeps green elements, building faces and the tagline side lines exactly as supplied in the reversed logo', function (int $x, int $y) {
     app(GenerateBrandRenditions::class)->handle($this->source, $this->output);
 
     expect(brandPixel(imagecreatefromwebp("{$this->output}/brand/smartgro-logo-reversed.webp"), $x, $y))
@@ -85,8 +87,44 @@ it('keeps green elements, building faces and the tagline exactly as supplied in 
     'green S' => [85, 30],
     'green "GRO"' => [270, 155],
     'building face' => [208, 60],
-    'tagline' => [189, 208],
+    'left tagline line' => [20, 211],
+    'right tagline line' => [368, 211],
 ]);
+
+it('keeps the size and the transparency of every pixel of the logo, so shapes and alignment are unchanged', function () {
+    app(GenerateBrandRenditions::class)->handle($this->source, $this->output);
+
+    $original = imagecreatefromwebp($this->source);
+    $reversed = imagecreatefromwebp("{$this->output}/brand/smartgro-logo-reversed.webp");
+    $differences = 0;
+
+    for ($y = 0; $y < imagesy($original); $y++) {
+        for ($x = 0; $x < imagesx($original); $x++) {
+            $differences += (int) (brandPixel($original, $x, $y)['alpha'] !== brandPixel($reversed, $x, $y)['alpha']);
+        }
+    }
+
+    expect([imagesx($reversed), imagesy($reversed)])->toBe([imagesx($original), imagesy($original)])
+        ->and($differences)->toBe(0);
+});
+
+it('makes the tagline lettering readable on the forest background', function () {
+    app(GenerateBrandRenditions::class)->handle($this->source, $this->output);
+
+    $lettering = brandPixel(imagecreatefromwebp("{$this->output}/brand/smartgro-logo-reversed.webp"), 189, 208);
+    $tokens = app(DesignTokens::class);
+
+    expect($tokens->contrastRatio(sprintf('#%02x%02x%02x', $lettering['red'], $lettering['green'], $lettering['blue']), $tokens->colors()['forest']))
+        ->toBeGreaterThanOrEqual(4.5);
+});
+
+it('never modifies the original logo file', function () {
+    $before = hash_file('sha256', $this->source);
+
+    app(GenerateBrandRenditions::class)->handle($this->source, $this->output);
+
+    expect(hash_file('sha256', $this->source))->toBe($before);
+});
 
 it('keeps the background of the reversed logo transparent', function () {
     app(GenerateBrandRenditions::class)->handle($this->source, $this->output);
