@@ -14,6 +14,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#f7f7f2">
+        <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="16x16 32x32 48x48">
+        <link rel="apple-touch-icon" href="{{ asset('brand/apple-touch-icon.png') }}">
         <title>{{ $title ? $title.' · SmartGro' : 'SmartGro · Work smart. Grow together.' }}</title>
         @if ($description)
             <meta name="description" content="{{ $description }}">

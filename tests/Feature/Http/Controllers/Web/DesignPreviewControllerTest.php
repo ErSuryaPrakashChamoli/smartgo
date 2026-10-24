@@ -26,6 +26,22 @@ it('shows the seven confirmed workspace categories', function () {
     ]);
 });
 
+it('gives every preview one main heading, a skip link, the page language and alt text on every image', function (string $path) {
+    $html = get($path)->assertOk()->getContent();
+
+    expect(substr_count($html, '<h1'))->toBe(1)
+        ->and($html)->toContain('<html lang="en-IN"')
+        ->and($html)->toContain('<a href="#content"')
+        ->and($html)->toContain('<main id="content">')
+        ->and(preg_match_all('/<img\b/', $html))->toBe(preg_match_all('/<img\b[^>]*\balt="/', $html));
+})->with(['/design', '/design/foundations', '/design/components', '/design/home']);
+
+it('links the SmartGro tab and home-screen icons', function () {
+    get('/design/home')
+        ->assertSee('<link rel="icon" href="'.asset('favicon.ico').'"', escape: false)
+        ->assertSee('<link rel="apple-touch-icon" href="'.asset('brand/apple-touch-icon.png').'">', escape: false);
+});
+
 it('lists every colour pairing with its contrast result on the foundations page', function () {
     get('/design/foundations')
         ->assertSee('ink on paper')

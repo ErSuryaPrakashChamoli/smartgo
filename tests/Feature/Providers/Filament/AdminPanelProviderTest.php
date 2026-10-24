@@ -44,6 +44,10 @@ it('sends staff without two-step login to set it up before they can continue', f
         ->assertRedirect(Filament::getSetUpRequiredMultiFactorAuthenticationUrl());
 });
 
+it('shows the SmartGro tab icon in the back office', function () {
+    get(Filament::getLoginUrl())->assertSee(asset('favicon.ico'), escape: false);
+});
+
 it('offers authenticator-app and email two-step login with recovery codes', function () {
     $providers = Filament::getPanel('admin')->getMultiFactorAuthenticationProviders();
 

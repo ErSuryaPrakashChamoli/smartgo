@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->path(config('backoffice.path'))
             ->brandName('SmartGro')
             ->brandLogo(fn (): string => asset('brand/smartgro-logo.webp'))
+            ->favicon(fn (): string => asset('favicon.ico'))
             ->brandLogoHeight(fn (): string => request()->routeIs(
                 'filament.admin.auth.login',
                 'filament.admin.auth.password-reset.*',

@@ -27,9 +27,32 @@
                     </figure>
                 @endforeach
             </div>
-            <x-ui.alert type="warning" title="No dark backgrounds yet">
-                The wordmark is dark green, so the logo is only placed on light backgrounds until SmartGro supplies or approves a reversed version (D-11b).
+            <div class="grid gap-4 sm:grid-cols-2">
+                @foreach (['bg-forest' => 'Reversed, on forest', 'bg-forest-soft' => 'Reversed, on forest soft'] as $background => $label)
+                    <figure class="flex flex-col gap-2">
+                        <div class="{{ $background }} flex aspect-[16/10] items-center justify-center rounded-2xl">
+                            <x-site.brand-logo size="lg" reversed />
+                        </div>
+                        <figcaption class="text-sm text-muted">{{ $label }}</figcaption>
+                    </figure>
+                @endforeach
+            </div>
+            <x-ui.alert type="warning" title="Tagline on dark backgrounds">
+                The reversed logo changes only the dark lettering and buildings to Warm White (OD-45). The tagline keeps its original dark grey, which reaches only 1.55:1 on forest, so it is not readable there. Use the reversed logo on dark backgrounds only once SmartGro decides how the tagline should appear.
             </x-ui.alert>
+            <div class="flex flex-wrap items-end gap-8 rounded-2xl bg-surface p-6 ring-1 ring-line">
+                @foreach ([16, 32, 48] as $size)
+                    <figure class="flex flex-col items-center gap-2">
+                        <img src="{{ asset('brand/smartgro-mark.png') }}" alt="" width="{{ $size }}" height="{{ $size }}">
+                        <figcaption class="text-xs text-muted">{{ $size }} px tab icon</figcaption>
+                    </figure>
+                @endforeach
+                <figure class="flex flex-col items-center gap-2">
+                    <img src="{{ asset('brand/apple-touch-icon.png') }}" alt="" width="90" height="90" class="rounded-[1.25rem] ring-1 ring-line">
+                    <figcaption class="text-xs text-muted">Home-screen icon (180 px)</figcaption>
+                </figure>
+                <p class="max-w-sm text-sm text-muted">Cropped from the "SG" symbol of the supplied logo, unchanged in shape and colour (OD-44). Regenerate with <code class="font-mono text-xs">php artisan brand:renditions</code> whenever the logo file changes.</p>
+            </div>
         </section>
 
         {{-- Colour --}}
