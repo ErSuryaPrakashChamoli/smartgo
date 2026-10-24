@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **OPEN, partly answered.** The owner answered C-1.2, C-1.5, C-2.3, C-3.1, C-7.1, C-7.6 and D-06 on 2026-10-24 (`../decisions/DECISION_REGISTER.md` §0); C-2.1 and C-6.1 are partly answered. Everything else is unconfirmed. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Answered items are marked. Open items are deferred with their phase gates (`../decisions/DECISION_REGISTER.md`). |
 | Last updated | 2026-10-24 |
 | Audience | SmartGro (client) leadership, operations, sales, marketing, finance, legal |
 | How to use | Answer each item, or reply "use the recommended default". A default is **not** a fact until the client confirms it. |

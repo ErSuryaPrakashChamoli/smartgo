@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review.** ADR-0001 (modular monolith) and ADR-0002 (MySQL) accepted 2026-10-24. Other ADRs PROPOSED. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** ADR-0001…0014 accepted. |
 | Last updated | 2026-10-24 |
 | Related | `DATABASE_ERD.md` · `API_CONTRACTS.md` · `INTEGRATION_CONTRACTS.md` · `EXISTING_SYSTEMS_ASSESSMENT.md` · `../decisions/ADR_INDEX.md` · `../decisions/DECISION_REGISTER.md` · `../requirements/BUSINESS_RULES.md` |
 

@@ -121,8 +121,20 @@ Interpretation: this approves every item for which the project team gave a recom
 
 | ID | Question | Proposal |
 |---|---|---|
-| Q-OW-13 | Without a separate sales-manager role, who configures lead assignment rules and pipeline stages, approves lead exports, receives SLA-breach alerts, and which leads can Sales/CRM Executives see? | **Super Admin** configures assignment rules and pipeline stages and approves exports. SLA breaches alert the **Operations Manager and Super Admin**. **Sales/CRM Executives see all leads**, with optional per-user restriction to properties. |
-| Q-OW-14 | Who uploads 3D models and maps hotspots (formerly "3D Technician")? | An **external 3D-modelling supplier** prepares the model files. The **Marketing Manager** uploads them and maps hotspots; Super Admin can too. |
+| Q-OW-13 | **→ accepted: OD-36** Without a separate sales-manager role, who configures lead assignment rules and pipeline stages, approves lead exports, receives SLA-breach alerts, and which leads can Sales/CRM Executives see? | **Super Admin** configures assignment rules and pipeline stages and approves exports. SLA breaches alert the **Operations Manager and Super Admin**. **Sales/CRM Executives see all leads**, with optional per-user restriction to properties. |
+| Q-OW-14 | **→ accepted: OD-37** Who uploads 3D models and maps hotspots (formerly "3D Technician")? | An **external 3D-modelling supplier** prepares the model files. The **Marketing Manager** uploads them and maps hotspots; Super Admin can too. |
+### 0.8 Owner acceptance — 2026-10-24 (round 7): "ok"
+
+Interpretation: "ok" accepts the four items in the request "accept S-1, S-2, Q-OW-13, Q-OW-14".
+
+| ID | Accepted | Effect |
+|---|---|---|
+| OD-34 | **S-1:** the push to the private GitHub remote moves to **Phase 3, step 3.1**, together with naming the organisation (D-31) | AC-1.7 amended; Phase 3 deliverables updated |
+| OD-35 | **S-2:** the pricing-proposal **structure** is approved; values PR-1…PR-11 are decided at the **Phase 5 entry gate** | `../requirements/PRICING_CONFIGURATION_PROPOSAL.md` status |
+| OD-36 | **Q-OW-13:** the Super Admin configures assignment rules and pipeline stages and approves lead exports; SLA breaches alert the Operations Manager and Super Admin; Sales/CRM Executives see all leads (optional per-user property restriction) | BR-CRM-3/4/6, FR-CRM-1/6, security matrix † cells |
+| OD-37 | **Q-OW-14:** an external 3D-modelling supplier prepares models; the Marketing Manager uploads them and maps hotspots (Super Admin can too) | security matrix † cells |
+
+With these, all Phase 1 acceptance criteria except the owner's sign-off (AC-1.8) are met or deferred by owner decision. Phase 1 is **READY FOR REVIEW**.
 
 ---
 
@@ -161,7 +173,7 @@ Interpretation: this approves every item for which the project team gave a recom
 | D-28 | Tour rules | Client | **Deferred to Phase 8** | — | 30-min slots within operating hours | Phase 8 |
 | D-29 | Lead data retention | Client (counsel) | **Deferred to Phase 9** | — | counsel to confirm | Phase 9 |
 | D-30 | Back-office path and access restriction | Owner | **Deferred to Phase 3** | — | non-default path + Cloudflare Access in production | Phase 3 |
-| D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29): a GitHub **organisation**, not a personal account. **The name is needed**; setup is deferred by the owner. | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation when GitHub setup resumes | Phase 3 (or the AC-1.7 decision) |
+| D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29, OD-34): a GitHub **organisation**; creation and push at **Phase 3 step 3.1**. **Name needed then.** | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation at Phase 3 start | Phase 3 step 3.1 |
 | D-32 | Release slicing (R1) | Owner | **Resolved** (2026-10-24, OD-25) | `PROJECT_MASTER_PLAN.md` §4 | — | — |
 | D-33 | Team structure and role/permission matrix | Owner | **Resolved** (2026-10-24, **OD-33**: six owner-defined roles; supersedes OD-28) | `../security/SECURITY_MODEL.md` §3.1. Duties of removed draft roles: Q-OW-13, Q-OW-14 (proposals). | confirm the † proposals | Phase 3 |
 | D-34 | ADR-0003…0014 acceptance | Owner | **Resolved** (2026-10-24, OD-26) | all ADRs accepted | — | — |
@@ -173,7 +185,7 @@ Interpretation: this approves every item for which the project team gave a recom
 | Classification | Decisions |
 |---|---|
 | Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-24, D-25, D-26 (MySQL part), D-32, D-33, D-34, D-35 |
-| Requires owner approval | S-1 (remote push → Phase 3); S-2 (pricing structure now, values PR-1…PR-11 at the Phase 5 gate); Q-OW-13 and Q-OW-14 (role duties); D-31 organisation name |
+| Requires owner approval | **Phase 1 approval (AC-1.8)**. D-31 organisation name at Phase 3 step 3.1. |
 | Requires client input | D-01 (legal details, may defer to Phase 6); D-11b (logo file, owner will add) |
 | Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
 
@@ -193,7 +205,7 @@ Interpretation: this approves every item for which the project team gave a recom
 | R-8 | Dev/prod parity (SQLite hid locking bugs) | **Resolved** — owner action A-1 pending | Tests forced to MySQL. A `*_testing` guard is verified to refuse the dev DB. |
 | R-9 | Content inconsistency (prices, counts) | **Deferred to Phase 4/5** | Price tokens and inventory-driven blocks designed |
 | R-10 | Lead spam and bots | **Deferred to Phase 8** | Form contract §3 in `../architecture/API_CONTRACTS.md` |
-| R-11 | **New:** the only copy of the repository is on one machine | **Requires owner approval** (D-31) | Push to a private remote as soon as the owner chooses the repository owner |
+| R-11 | The only copy of the repository is on one machine | **Deferred to Phase 3 step 3.1** (OD-34) | Push to the private remote as the first Phase 3 step. Until then, keep a local backup of the project folder. |
 | R-12 | **New:** slow client inputs keep Phase 1 open and delay Phase 2 | **Requires client input** | `../requirements/CLIENT_INPUTS_REQUIRED.md` is ready to send. Owner-approved deferrals are possible for non-structural items. |
 | R-13 | **New:** "snapshot before lock" pitfall: a plain read before taking the lock causes double booking even with a lock | **Resolved at design level** | Reproduced by a negative-control test. ADR-0004 now requires the lock to be the first statement in the transaction. |
 | R-14 | **New (2026-10-24):** the local `.env` connects as MySQL **`root`** on a server that also hosts other projects' databases, including personal-data tables such as candidates and employees. A misconfiguration or bug in SmartGro could read or damage another project's data. | **Requires owner approval** | Mitigations already in place: tests are forced to `smartgro_testing` and the `*_testing` guard blocks other databases. **Recommended:** switch to a least-privileged `smartgro` user limited to `smart_go` and `smartgro_testing` by running `SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh`. Never use `root` in staging or production. |

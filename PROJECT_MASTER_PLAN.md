@@ -6,7 +6,7 @@
 | | |
 |---|---|
 | Last updated | 2026-10-24 |
-| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: IN PROGRESS.** All architecture decisions accepted; six owner-defined roles; documents at v1.2-rc. Remaining before READY FOR REVIEW: accept S-1, S-2 and the role-duty proposals Q-OW-13/14. |
+| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: READY FOR REVIEW**: all criteria met or deferred by owner decision; awaiting the owner's approval (AC-1.8). |
 | Live status register | [`docs/phases/PHASE_STATUS.md`](docs/phases/PHASE_STATUS.md) |
 | Decisions and risks | [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) |
 
@@ -63,7 +63,7 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
   * **AC-1.4 ERD validated against reality** (*deferred to the Phase 5 entry gate by owner decision OD-30*). The first real property is supplied in the SG-INV-1.3 template (or a later version) and walked through the validation rules. Every finding is either corrected in the data or turned into an ERD change. M-1…M-6 are closed or deferred with a recorded default.
   * **AC-1.5 No silent defaults.** Every [DEFAULT] value in the PRD and business rules is confirmed by its decider or listed as "Deferred to Phase N" in the register.
   * **AC-1.6 Architecture approvals.** ADR-0003…0012 are ACCEPTED or REJECTED (D-34). The dependency list (D-24), code layout (D-25), release slicing (D-32) and import process (D-35) are approved.
-  * **AC-1.7 Engineering baseline verified.** Git history is reviewed and pushed to the private remote (D-31). `php artisan test --compact` passes on the local MySQL `smartgro_testing` database created by the setup script, including the concurrency harness. Pint is clean.
+  * **AC-1.7 Engineering baseline verified.** Git history is reviewed. `php artisan test --compact` passes on the local MySQL `smartgro_testing` database, including the concurrency harness. Pint is clean. *(Amended by owner decision OD-34: the push to the private remote moves to Phase 3 step 3.1.)*
   * **AC-1.8 Sign-off.** Owner approval recorded in `docs/phases/PHASE_STATUS.md`.
 
 ### Phase 2: Brand system, UX/UI design, responsive design system
@@ -82,7 +82,8 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
   5. The owner signs off on the visual direction.
 
 ### Phase 3: Application foundation, authentication, permissions, security, engineering standards
-* **Depends on:** Phase 1; D-23 (Git), D-24 (dependencies), D-25 (layout), D-26 (MySQL/Redis).
+* **Depends on:** Phase 1 approval (D-23, D-24, D-25, D-26 resolved).
+* **Step 3.1 (first):** name the GitHub organisation (D-31), create the private repository, push the history (OD-34); create a dedicated least-privileged MySQL user (R-14).
 * **Deliverables:**
   * Git repo and CI
   * MySQL dev and test databases
@@ -108,7 +109,8 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
   3. No routine CMS task requires code, JSON or SQL.
 
 ### Phase 5: Locations, buildings, floors, spaces, inventory, pricing, availability engine
-* **Depends on:** Phase 3; D-02…D-06.
+* **Depends on:** Phase 3.
+* **Entry gate (owner decisions OD-30, OD-32, OD-35, D-36):** floors per property and the first property's real inventory supplied via SG-INV-1.3 and run through the validation rules (deferred AC-1.4); pricing values PR-1…PR-11 decided; the Phase 5 [DEFAULT] business values confirmed.
 * **Deliverables:** inventory wizard and import, allocations, products, offerings, price plans with four-eyes approval, offers, availability service, the `SpaceAvailabilityChanged` pipeline.
 * **AC:**
   1. FR-INV-1…6 pass.

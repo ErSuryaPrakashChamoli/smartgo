@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.1-rc foundation — Phase 1, ready for owner review.** The provisional palette was **approved as provisional** (D-11a). Brand name, tagline and domain were **confirmed** on 2026-10-24 (OD-01). The full design system is a Phase 2 deliverable. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval. Foundation only.** Provisional palette approved (D-11a); brand name, tagline and domain confirmed (OD-01). The full design system is a Phase 2 deliverable and needs the logo file (OD-20). |
 | Last updated | 2026-10-24 |
 | Blocking input | **D-11b: the original SmartGro logo files.** The owner directed that the logo already supplied is the authoritative reference. The original file was **not found** in the project environment: searched the repository, its parent folder, and the home directory by name and by recent image files on 2026-10-24. It is recorded as an **outstanding asset requirement** (CLIENT_INPUTS C-6.1). The logo will not be recreated or substituted. The palette below comes from the brief, not from sampling the logo; it will be re-verified once the original file is available. |
 

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.2-rc — Phase 1, ready for owner review** (template and process **approved** 2026-10-24, D-35). Updated for the owner decisions of 2026-10-24 (OD-07…OD-10, OD-13…OD-16). The importer itself is built in Phase 5. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Template SG-INV-1.3 and process approved (D-35; the column rename carried over under OD-33). The importer is built in Phase 5. |
 | Last updated | 2026-10-24 |
 | Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.3.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.3.xlsx) (template ID `SG-INV-1.3`). SG-INV-1.0, 1.1 and 1.2 are superseded; they were removed from the working tree and remain in Git history. |
 | Synthetic fixtures | [`tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx) · [`tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx) (regenerated for 1.2) |

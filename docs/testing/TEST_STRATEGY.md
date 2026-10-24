@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review** |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** |
 | Last updated | 2026-10-24 |
 | Current state (verified) | Pest 5.3.3, `pest-plugin-laravel` 5.0.1, `pest-plugin-arch`. **Suite runs on MySQL 8.4** (`phpunit.xml` forces `mysql` + `smartgro_testing`). 9 tests: 2 Laravel examples + 7 MySQL harness tests. **9/9 passed in three consecutive runs** against a throwaway MySQL 8.4.11 instance (2026-10-24). |
 

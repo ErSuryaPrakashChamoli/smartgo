@@ -10,11 +10,11 @@
 | # | Phase | Status | Blocked by / waiting on |
 |---|---|---|---|
 | 0 | Discovery, audit, requirements clarification | **APPROVED in principle** (project owner, 2026-10-24) | — (open items carried into Phase 1) |
-| 1 | PRD, IA, architecture, database design, acceptance criteria | **IN PROGRESS.** Rounds 2–6 recorded: all ADRs accepted; six owner-defined roles; floors pending by owner decision; pricing proposal drafted. | owner to accept S-1, S-2 and the role-duty proposals Q-OW-13/14; then Phase 1 sign-off |
-| 2 | Brand system, UX/UI, design system | NOT STARTED | Phase 1 approval; **logo (D-11)** |
-| 3 | Foundation, auth, permissions, security | NOT STARTED | Phase 1 approval; D-23, D-24, D-25, D-26 |
+| 1 | PRD, IA, architecture, database design, acceptance criteria | **READY FOR REVIEW** (2026-10-24) | owner approval (AC-1.8) |
+| 2 | Brand system, UX/UI, design system | NOT STARTED | Phase 1 approval; **logo file** (OD-20) |
+| 3 | Foundation, auth, permissions, security | NOT STARTED | Phase 1 approval; step 3.1 needs the GitHub organisation name (D-31) |
 | 4 | CMS, page builder, media, publishing | NOT STARTED | Phases 2, 3 |
-| 5 | Inventory, pricing, availability | NOT STARTED | Phase 3; D-02…D-06 |
+| 5 | Inventory, pricing, availability | NOT STARTED | Phase 3; entry gate: floors and real inventory, pricing values PR-1…PR-11 |
 | 6 | Public website | NOT STARTED | Phases 2, 4, 5 |
 | 7 | 3D digital twin | NOT STARTED | Phases 4, 5, 6; D-13 |
 | 8 | Enquiries, tours, bookings | NOT STARTED | Phases 5, 6; D-07, D-08, D-10, D-28 |
@@ -39,19 +39,19 @@
 | Acceptance criteria | Report §10: criteria 0.1–0.5 met; 0.6 (owner approval) pending |
 | Tests and results | `php artisan test --compact` on 2026-10-24: **2 passed** (Laravel example tests only). No application code was changed in Phase 0. |
 | Evidence | Commands and outputs summarised in report §1; 4 research claims independently re-fetched (benchmark §7); WCAG contrast computed for the brief's palette (design system §3) |
-| Known issues | Not a Git repository (R-2); app on SQLite while MySQL is available (R-8); Redis, `phpredis` and `bcmath` missing; no brand assets found; IWG sites blocked automated research (snippet-only findings) |
-| Decisions requiring approval | Approve Phase 0; then the P1 items in the decision register (report §5.2) |
+| Known issues | Logo file not yet supplied (blocks Phase 2 finalisation). Floors and inventory pending (Phase 5 gate). Pricing values pending (Phase 5 gate). Existing WordPress site compromised (R-16, owner action outside the project). Local `.env` uses MySQL `root` (R-14, fix at Phase 3 step 3.1). No remote repository until Phase 3 step 3.1 (R-11). |
+| Decisions requiring approval | **Phase 1 approval.** Everything else is resolved or deferred to a named phase gate (`../decisions/DECISION_REGISTER.md`). |
 | Next phase | Phase 1 finalisation |
 
 ## Phase 1: Product requirements, IA, system architecture, database design, acceptance criteria
 
 | Field | Detail |
 |---|---|
-| Status | **IN PROGRESS.** Owner decisions of 2026-10-24 (rounds 2–3, OD-01…OD-20) are incorporated, and documents are at v1.2-rc, ready for owner review. **Not approved and not complete.** Cannot close until the remaining owner inputs arrive (floors per property, pricing brief section 9, Q-OW-11/12, logo file, team roles) and the approvals below are given. |
+| Status | **READY FOR REVIEW** (2026-10-24). All Phase 1 acceptance criteria are met, or deferred by explicit owner decision (AC-1.4 → Phase 5 entry gate; remote push in AC-1.7 → Phase 3 step 3.1). **Not approved:** awaiting the owner's sign-off (AC-1.8). |
 | Scope | PRD, sitemap and journeys, role matrix, business rules, ERD, system architecture, API contracts, integration inventory, existing-systems assessment, security model, test strategy, design system foundation, deployment plan, inventory import, decision register, phase acceptance criteria; safe local setup (Git, MySQL test configuration) |
 | Dependencies | Phase 0 (approved in principle); client inputs; owner approvals |
 | Deliverables (v1.2-rc, 2026-10-24) | **Requirements:** `PRD.md` · `INFORMATION_ARCHITECTURE.md` · `BUSINESS_RULES.md` · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` (+ template SG-INV-1.3 + synthetic fixtures). **Architecture:** `SYSTEM_ARCHITECTURE.md` · `DATABASE_ERD.md` · `API_CONTRACTS.md` · `INTEGRATION_CONTRACTS.md` · `EXISTING_SYSTEMS_ASSESSMENT.md`. **Other:** `SECURITY_MODEL.md` · `TEST_STRATEGY.md` · `DESIGN_SYSTEM.md` (foundation) · `DEPLOYMENT_RUNBOOK.md` (plan) · `LOCAL_DEVELOPMENT.md` · `DECISION_REGISTER.md` · ADR-0001…0014 (0001/0002 ACCEPTED) · `EXISTING_WEBSITE_AUDIT.md` |
-| Acceptance criteria | `PROJECT_MASTER_PLAN.md` §2, AC-1.1…AC-1.8. Status in `PHASE_1_PROGRESS_REPORT.md` §8. |
+| Acceptance criteria | `PROJECT_MASTER_PLAN.md` §2: AC-1.1, 1.2, 1.3, 1.5, 1.6 met; AC-1.4 deferred (OD-30/32); AC-1.7 met as amended (OD-34); AC-1.8 pending. Evidence table: `PHASE_1_PROGRESS_REPORT.md` §0E. |
 | Tests and results | 2026-10-24: 9/9 passed ×4 runs on a throwaway MySQL 8.4.11, then **9/9 on the owner's local MySQL** (`smartgro_testing`, 17.0 s; harness left 0 tables; dev DB `smart_go` unchanged). `*_testing` guard verified; Pint clean. |
 | Evidence | Git history (`git log`); test outputs (TEST_STRATEGY §7); workbook structure read-back and LibreOffice render (INVENTORY_IMPORT_SPEC §7); contrast calculations (DESIGN_SYSTEM §3) |
 | Known issues | Logo file not in the project (D-11b, Q-OW-10). Pricing brief §9 not received (Q-OW-9). Floor allocation unknown (Q-OW-1). Existing website compromised (R-16, owner action). No remote repository yet (R-11). Local dev `.env` still on SQLite until A-1. M-1…M-6 open. |
@@ -68,6 +68,7 @@ Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.
 | Date | Change |
 |---|---|
 | 2026-10-24 | Register created. Phase 0 → READY FOR REVIEW. Phase 1 → IN PROGRESS with drafts. |
+| 2026-10-24 | Round 7: "ok" accepts S-1, S-2, Q-OW-13, Q-OW-14 (OD-34…OD-37). Documents set to Phase 1 baseline v1.0. Tests 9/9 on local MySQL, Pint clean. **Phase 1 → READY FOR REVIEW.** |
 | 2026-10-24 | Round 6: floor allocation stays pending (OD-32); six owner-defined roles (OD-33) supersede the drafted roles. Permission matrix rebuilt; template SG-INV-1.3 (column rename). Proposals Q-OW-13/14 raised. Phase 1 remains IN PROGRESS. |
 | 2026-10-24 | Round 5: "Approve all as recommended", recorded as OD-23…OD-31. ADR-0003…0014 accepted. Pricing-configuration proposal drafted (no prices). Remaining before READY FOR REVIEW: S-1, S-2. Phase 1 remains IN PROGRESS. |
 | 2026-10-24 | Round 4: OD-21 (old URLs redirect at launch) and OD-22 (coming-soon page for visible cities without a property) recorded. Floors, pricing and approvals still unanswered; unblocking options P-1…P-3 offered. Phase 1 remains IN PROGRESS. |

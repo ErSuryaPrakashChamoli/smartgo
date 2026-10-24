@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **PROPOSAL — for the owner to edit and approve.** Drafted 2026-10-24 under option P-2, because section 9 of the owner's brief ("Pricing configuration") was not received. |
+| Status | **Structure approved (OD-35, 2026-10-24).** Values PR-1…PR-11 are decided at the **Phase 5 entry gate**. No prices, rates or terms are set in this document. |
 | What this is | **How** prices, charges, taxes, offers, payment and cancellation rules are configured in the back office |
 | What this is not | It sets **no prices, rates, deposits, fees, discounts or terms.** Every value is either "Owner to set" or a clearly marked proposal. |
 | Builds on | BR-PR-1…6 (`BUSINESS_RULES.md`), ERD §4 and §4.1 (`../architecture/DATABASE_ERD.md`), ADR-0013 |

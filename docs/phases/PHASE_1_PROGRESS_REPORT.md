@@ -3,9 +3,36 @@
 | | |
 |---|---|
 | Date | 2026-10-24 |
-| Phase status | **Phase 0: APPROVED in principle · Phase 1: IN PROGRESS** (owner decisions of round 2 incorporated; not ready for approval: floor allocation, property grouping, pricing brief §9, logo file and owner approvals outstanding) |
+| Phase status | **Phase 0: APPROVED in principle · Phase 1: READY FOR REVIEW** (submitted 2026-10-24; awaiting owner approval) |
 | Prepared for | Project owner |
 | Evidence | Git history, test outputs and file checks cited inline. No result is claimed without a command or file to verify it. |
+
+---
+
+## 0E. Phase 1 submitted for approval (2026-10-24, round 7)
+
+The owner accepted S-1, S-2, Q-OW-13 and Q-OW-14 ("ok"; OD-34…OD-37). The documents are set to the **Phase 1 baseline v1.0**. **Phase 1 is READY FOR REVIEW. It is not approved until the owner says so.**
+
+| AC | Criterion | Status | Evidence |
+|---|---|---|---|
+| AC-1.1 | Documents complete, consistent, all links resolve | **Met** (baseline v1.0, §0E) |
+| AC-1.2 | Blocking inputs answered or explicitly deferred | **Met** (§0E) |
+| AC-1.3 | Existing systems | **Met** | OD-06: none |
+| AC-1.4 | ERD validated against the first real property | **Deferred by owner decision** to the Phase 5 entry gate (OD-30, OD-32) |
+| AC-1.5 | No silent defaults | **Met** | D-36 (defaults confirmed at phase gates); pricing values at the Phase 5 gate (OD-35) |
+| AC-1.6 | Architecture approvals | **Met** | ADR-0001…0014 ACCEPTED; D-24, D-25, D-32, D-35 approved |
+| AC-1.7 | Engineering baseline (as amended by OD-34) | **Met:** tests 9/9 on local MySQL, Pint clean, Git history reviewed; remote push at Phase 3 step 3.1 |
+| AC-1.8 | Owner sign-off recorded | **Pending:** Phase 1 submitted for approval |
+
+**Approving Phase 1 means accepting the baseline documents and the deferrals above.** It does **not** approve any business values still marked [DEFAULT], or the pricing values: those are confirmed at their phase gates.
+
+**Carried forward:**
+* **Phase 2:** the logo file is needed to finalise the brand system.
+* **Phase 3 step 3.1:**
+  * name the GitHub organisation, create the private repository and push
+  * create a dedicated MySQL user (R-14)
+* **Phase 5 entry gate:** floors and real inventory via SG-INV-1.3; pricing values PR-1…PR-11; the Phase 5 [DEFAULT] values.
+* **Owner action now, outside the project:** clean the compromised WordPress site (R-16).
 
 ---
 
@@ -238,10 +265,11 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 
 ---
 
-## 9. Next recommended action (updated 2026-10-24, round 6)
+## 9. Next recommended action (updated 2026-10-24, round 7)
 
-1. **Owner, urgent and outside this project:** act on the compromise of the existing WordPress site (`../research/EXISTING_WEBSITE_AUDIT.md` §2).
-2. **Owner, one reply:** "accept S-1, S-2, Q-OW-13, Q-OW-14", or adjust any of them. After that, every Phase 1 criterion except the owner's sign-off is met. The project team will then finalise the documents at v1.0 and mark Phase 1 **READY FOR REVIEW**.
-3. **Owner:** approve Phase 1 (AC-1.8). Only then does Phase 2 or Phase 3 begin.
-
-**No Phase 2 or later implementation will start before Phase 1 is approved.**
+1. **Owner:** approve Phase 1 (reply "Phase 1 approved"), or send review comments.
+2. **Owner, urgent and outside this project:** clean the compromised WordPress site (R-16).
+3. **After approval:**
+   * **Phase 3** can start with step 3.1 (GitHub organisation name needed).
+   * **Phase 2** can start once the logo file is placed at `resources/brand/source/`.
+   * The two phases can run in parallel.

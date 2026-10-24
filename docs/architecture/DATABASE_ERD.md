@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.2-rc — Phase 1, ready for owner review.** Incorporates owner decisions of 2026-10-24: round 2 (OD-01…OD-11) and round 3 (OD-12…OD-18); change log §12. Not yet validated against real inventory. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Model revision 1.2 (change log §12). Validation against real inventory is deferred to the Phase 5 entry gate (OD-30, OD-32). |
 | Last updated | 2026-10-24 |
 | Target engine | MySQL 8.4 (ADR-0002 accepted; test suite verified on 8.4.11) |
 | Confirmed inputs | OD-07 product categories · OD-08 four Noida properties, each **its own property/centre** (OD-13) · all four **owned and operated** (OD-14) · OD-10 + OD-15 individual, pooled, mixed and **hybrid-zone** inventory · OD-06 no existing software · OD-05 English only · OD-16 official city names · OD-17 entity named "Property" (`../decisions/DECISION_REGISTER.md` §0) |
@@ -273,7 +273,7 @@ erDiagram
 | `lead_property` | pivot of properties of interest | |
 | `customer_segments` | **Admin-managed** list seeded with the owner's eight segments (OD-04): startups and small businesses; freelancers and independent professionals; SMEs and growing companies; large enterprises and corporates; remote and hybrid employees; consultants and business travellers; companies seeking managed offices; businesses requiring virtual offices / registered addresses. `marketing_priority` stays empty until the owner sets priorities. | `name`, `slug`, `sort_order`, `marketing_priority` (nullable), `is_active` |
 | `leads.customer_segment_id`, `companies.customer_segment_id` | Optional self-identified segment ("Which best describes you?"), used for routing and reporting | nullable FK |
-| `pipeline_stages` | `name`, `sort_order`, `probability_pct`, `is_won`, `is_lost` | configurable by the Super Admin (proposal, Q-OW-13) |
+| `pipeline_stages` | `name`, `sort_order`, `probability_pct`, `is_won`, `is_lost` | configurable by the Super Admin (confirmed, OD-36) |
 | `deals` | `lead_id`, `company_id`, `pipeline_stage_id`, `owner_user_id`, `seats`, `monthly_value_minor`, `expected_close_on`, `lost_reason` | |
 | `deal_space` | proposed spaces (references canonical `spaces`) | |
 | `activities` | `subject_type`, `subject_id`, `type` (`call`, `email`, `whatsapp`, `meeting`, `note`, `task`), `user_id`, `due_at`, `completed_at`, `body`, `outcome` | index (`subject_type`, `subject_id`) |

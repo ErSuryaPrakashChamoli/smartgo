@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.2-rc — Phase 1, ready for owner review.** Incorporates the owner decisions of 2026-10-24 (OD-01…OD-20). Values marked [DEFAULT] are still not approved. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** [DEFAULT] values are confirmed at the gate of the phase that implements each rule (D-36). |
 | Last updated | 2026-10-24 |
 | Sign-off required | Project owner (structure); client operations, sales, marketing and finance leads (values) |
 
@@ -119,10 +119,10 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 | BR-CRM-1 | Every enquiry, tour request, booking request, call-back request and WhatsApp click-to-chat (where trackable) creates or updates a lead with source and attribution data. |
 | BR-CRM-1a | Forms may ask "Which best describes you?" with the eight customer segments (OD-04) as optional answers. The segment is used for routing and reporting. Segments carry **no** priority until the owner sets one. |
 | BR-CRM-2 | Contact de-duplication: match on normalised email **or** E.164 phone. A match attaches the new lead to the existing contact; it never overwrites contact fields without staff confirmation. |
-| BR-CRM-3 | New leads are assigned by the first matching active `assignment_rule` (by priority). If none match, the lead goes to a shared **unassigned** queue visible to all Sales/CRM Executives, and the Super Admin and Operations Manager are notified (proposal, Q-OW-13). |
-| BR-CRM-4 | First-response SLA target: **15 minutes during business hours** [DEFAULT]. A breach notifies the Operations Manager and the Super Admin (proposal, Q-OW-13). **[UNRESOLVED → D-09]** |
+| BR-CRM-3 | New leads are assigned by the first matching active `assignment_rule` (by priority). If none match, the lead goes to a shared **unassigned** queue visible to all Sales/CRM Executives, and the Super Admin and Operations Manager are notified (confirmed, OD-36). |
+| BR-CRM-4 | First-response SLA target: **15 minutes during business hours** [DEFAULT]. A breach notifies the Operations Manager and the Super Admin (confirmed, OD-36). **[UNRESOLVED → D-09]** |
 | BR-CRM-5 | A lead can only be marked `lost` or `disqualified` with a reason from a managed list. |
-| BR-CRM-6 | Sales/CRM Executives see **all** leads by default, because there is no separate sales-manager role (proposal, Q-OW-13). Access can be restricted per user to assigned properties. Property Managers see leads for their properties (read-only). |
+| BR-CRM-6 | Sales/CRM Executives see **all** leads by default, because there is no separate sales-manager role (confirmed, OD-36). Access can be restricted per user to assigned properties. Property Managers see leads for their properties (read-only). |
 | BR-CRM-7 | A won deal with allocated spaces creates `space_allocations` through the inventory service, so the availability rules apply. Sales cannot edit inventory directly. |
 
 ## 7. Content and publishing

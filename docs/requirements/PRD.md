@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.2-rc — Phase 1, ready for owner review.** Not approved. Incorporates the owner decisions of 2026-10-24 (OD-01…OD-22). Pricing configuration is pending (brief §9 not received). |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Incorporates owner decisions OD-01…OD-37. Pricing values are decided at the Phase 5 entry gate (OD-35). |
 | Version | 0.3 (2026-10-24) |
 | Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` · `../architecture/*` (incl. `API_CONTRACTS.md`, `EXISTING_SYSTEMS_ASSESSMENT.md`) · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
 | Decision references | D-xx items: `../decisions/DECISION_REGISTER.md` (living register) |
@@ -179,12 +179,12 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-CRM-1 | Lead inbox with filters, ownership, status, SLA timers, duplicate detection (BR-CRM-2). | Sales/CRM Executives see all leads unless restricted per user (Q-OW-13); Property Managers see their properties' leads read-only (policy tests). |
+| FR-CRM-1 | Lead inbox with filters, ownership, status, SLA timers, duplicate detection (BR-CRM-2). | Sales/CRM Executives see all leads unless restricted per user (OD-36); Property Managers see their properties' leads read-only (policy tests). |
 | FR-CRM-2 | Assignment rules (round-robin, fixed, least-loaded) by city, location, product or seat band. | Deterministic assignment with tests per strategy. Unmatched leads go to the manager queue. |
 | FR-CRM-3 | Activities (call, WhatsApp, email, meeting, note, task) with reminders. | One-tap call/WhatsApp from the lead screen logs an activity. |
 | FR-CRM-4 | Pipeline (configurable stages), deals with proposed spaces from canonical inventory. | Proposed spaces show live availability. Won deals create allocations through the inventory service (BR-CRM-7). |
 | FR-CRM-5 | Lost reasons and disqualification reasons (managed lists). | Required on status change. |
-| FR-CRM-6 | Export with permission and audit. | Super Admin only (proposal, Q-OW-13). Export events logged. |
+| FR-CRM-6 | Export with permission and audit. | Super Admin only (confirmed, OD-36). Export events logged. |
 
 ### 5.7 Marketing automation (Phase 10)
 

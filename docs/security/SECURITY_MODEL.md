@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review.** Role matrix awaits client confirmation of the team structure (D-33). Implementation begins in Phase 3. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Six owner-defined roles (OD-33); duties of removed draft roles confirmed (OD-36, OD-37). Implementation begins in Phase 3. |
 | Last updated | 2026-10-24 |
 | Target baseline | OWASP ASVS 4.0 Level 2 for the back office and booking flows; OWASP Top 10 for the public site |
 
@@ -46,7 +46,7 @@
 
 **Roles (OD-33):** Super Admin · Operations Manager · Property Manager · Sales/CRM Executive · Marketing Manager · Finance. These replace the 13 draft roles.
 
-Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to the user's assigned properties (`property_user`) · — no access. Cells marked † are **proposals for duties of draft roles that no longer exist** (Q-OW-13, Q-OW-14).
+Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to the user's assigned properties (`property_user`) · — no access. Cells marked † cover **duties of draft roles that no longer exist**. They were proposed and then **confirmed by the owner on 2026-10-24** (OD-36, OD-37).
 
 | Capability | Super Admin | Operations Manager | Property Manager | Sales/CRM Executive | Marketing Manager | Finance |
 |---|---|---|---|---|---|---|
@@ -96,9 +96,9 @@ Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** vi
 | Platform Admin, Analyst | Super Admin (reports per role) |
 | Content Editor, SEO Specialist | Marketing Manager |
 | Centre Manager, Front Desk | Property Manager (scoped) |
-| Sales Manager | Super Admin for configuration, exports and oversight; Sales/CRM Executives for day-to-day (proposal †, Q-OW-13) |
+| Sales Manager | Super Admin for configuration, exports and oversight; Sales/CRM Executives for day-to-day (confirmed, OD-36) |
 | Sales Executive | Sales/CRM Executive |
-| 3D Technician | an external 3D-modelling supplier prepares models; the Marketing Manager uploads and maps them (proposal †, Q-OW-14) |
+| 3D Technician | an external 3D-modelling supplier prepares models; the Marketing Manager uploads and maps them (confirmed, OD-37) |
 
 ---
 

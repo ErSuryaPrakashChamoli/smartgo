@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.1-rc — Phase 1, ready for owner review.** Updated for the owner decisions of 2026-10-24 (seven categories, Noida-first geography, eight segments, existing-site migration). Items marked ◇ depend on further owner decisions. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Items marked ◇ depend on decisions deferred to later phases. |
 | Last updated | 2026-10-24 |
 | Evidence | `../research/MARKET_BENCHMARK.md` (research of 2026-10-24) |
 | Decisions | D-02 locations, D-03 products, D-16 languages, D-19 existing site/URLs, D-27 partner pages (`../decisions/DECISION_REGISTER.md`). City slugs: CLIENT_INPUTS C-2.5. |

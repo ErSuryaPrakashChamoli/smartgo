@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review.** No provider has been selected or connected. Public API and form contracts: [`API_CONTRACTS.md`](API_CONTRACTS.md). |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** No provider has been selected or connected. Public API and form contracts: [`API_CONTRACTS.md`](API_CONTRACTS.md). |
 | Last updated | 2026-10-24 |
 | Decisions | D-06 existing systems, D-08 payments, D-10 messaging, D-14 hosting, D-18 analytics |
 

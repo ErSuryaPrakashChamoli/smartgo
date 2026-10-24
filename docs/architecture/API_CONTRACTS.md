@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.1-rc — Phase 1, ready for owner review.** Updated 2026-10-24 for product categories (OD-07), inventory modes (OD-10) and customer segments (OD-04). |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** |
 | Last updated | 2026-10-24 |
 | Related | `SYSTEM_ARCHITECTURE.md` §4 · `INTEGRATION_CONTRACTS.md` · `../requirements/BUSINESS_RULES.md` · ADR-0010 |
 

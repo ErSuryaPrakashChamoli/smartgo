@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc deployment plan — Phase 1, ready for owner review.** Hosting provider not chosen (D-14, deferred to Phase 3). No environment has been deployed. The provider-specific runbook is completed in Phase 15. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval. Deployment plan.** Hosting provider to be chosen in Phase 3 (D-14). The provider-specific runbook is completed in Phase 15. |
 | Last updated | 2026-10-24 |
 | Local development | [`LOCAL_DEVELOPMENT.md`](LOCAL_DEVELOPMENT.md) |
 
