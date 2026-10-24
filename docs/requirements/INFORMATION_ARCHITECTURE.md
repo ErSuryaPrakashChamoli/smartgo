@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Items marked ◇ depend on decisions deferred to later phases. |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Evidence | `../research/MARKET_BENCHMARK.md` (research of 2026-10-24) |
 | Decisions | D-02 locations, D-03 products, D-16 languages, D-19 existing site/URLs, D-27 partner pages (`../decisions/DECISION_REGISTER.md`). City slugs: CLIENT_INPUTS C-2.5. |
 
@@ -126,7 +126,7 @@ Requirement form with seat bands (e.g. 20–49, 50–99, 100–249, 250+), citie
 | ID | Persona | Journey | Success signal |
 |---|---|---|---|
 | UJ-7 | Marketing Manager (author) | Opens centre profile → uploads photos (alt text, focal point, origin, licence) → reorders gallery → previews → submits | no code or JSON; can't publish without alt text or licence data |
-| UJ-8 | Marketing manager (approver) | "Awaiting approval" dashboard → diff/preview → approve/publish or reject with note | change live within 60 s of publish; revision kept |
+| UJ-8 | Marketing manager (approver) | "Awaiting approval" dashboard → diff/preview → approve or reject with note → a **different** authorised person, for example the author, publishes the approved version. The approver never publishes it (OD-65). | change live within 60 s of publish; revision kept; author, approver and publisher recorded |
 | UJ-9 | Operations Manager / Property Manager | Marks office "maintenance" or records an allocation with end date | website, 3D and CRM reflect it within 60 s; no marketing role can override |
 | UJ-10 | Sales/CRM Executive | Gets notified of a new lead → WhatsApp/call from the lead screen → logs outcome → schedules tour → moves stage | first response logged; SLA visible |
 | UJ-11 | 3D-modelling supplier + Marketing Manager | Supplier delivers a named-node GLB; Marketing Manager uploads it → validation passes → marketing links anchors to spaces from dropdowns → preview → submit | scene published without entering any coordinate |

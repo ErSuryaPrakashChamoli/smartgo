@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Related | `SYSTEM_ARCHITECTURE.md` §4 · `INTEGRATION_CONTRACTS.md` · `../requirements/BUSINESS_RULES.md` · ADR-0010 |
 
 Examples use **synthetic** identifiers (`synthville`, `SYN-…`). They are not real SmartGro data.
@@ -241,6 +241,6 @@ These signatures are what other modules may call (`SYSTEM_ARCHITECTURE.md` §3).
 | `Inventory\AllocateSpace` | space or seat, agreement data, actor | allocation | `OverAllocation` |
 | `Inventory\ImportInventoryWorkbook` | import record (approved) | commit summary | `ImportStale`, validation issues |
 | `Crm\CaptureLead` | contact data, context, attribution, consent | lead (created or updated) | — |
-| `Content\Publish` | revision, actor | published model | `NotApproved`, `SelfApprovalNotAllowed` |
+| `Content\Publish` | revision, actor | published model | `NotApproved`, `SelfApprovalNotAllowed`, `ApproverCannotPublish` (OD-65) |
 
 Domain events emitted after commit are listed in `INTEGRATION_CONTRACTS.md` §4.

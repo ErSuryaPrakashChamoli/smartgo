@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Incorporates owner decisions OD-01…OD-37. Pricing values are decided at the Phase 5 entry gate (OD-35). |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Incorporates owner decisions OD-01…OD-37. Pricing values are decided at the Phase 5 entry gate (OD-35). Approval and publishing acceptance criteria updated 2026-10-25 for OD-56 and OD-60 to OD-67 (approved policy, not implemented). |
 | Version | 0.3 (2026-10-24) |
 | Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` · `../architecture/*` (incl. `API_CONTRACTS.md`, `EXISTING_SYSTEMS_ASSESSMENT.md`) · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
 | Decision references | D-xx items: `../decisions/DECISION_REGISTER.md` (living register) |
@@ -119,13 +119,13 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 | ID | Requirement | Acceptance |
 |---|---|---|
 | FR-CMS-1 | Page builder with a fixed library of brand blocks (hero, text, media, cards, FAQ, CTA band, testimonials, location list, stats, comparison table, form embed). | Editors compose pages with no code/JSON/CSS. Every block renders accessibly on mobile and desktop. |
-| FR-CMS-2 | Workflow Draft → Submitted → Approved → Published, with rejection notes and scheduling (BR-CMS-1…5). | Author cannot self-approve. Published state never changes until a publish action runs. Full revision history with rollback. |
+| FR-CMS-2 | Workflow Draft → Submitted → Approved → Published, with rejection notes and scheduling (BR-CMS-1…5). | Author cannot self-approve. The approver cannot publish, schedule or roll back the version they approved, for any role including the Super Admin (BR-CMS-2a, OD-65). Published state never changes until a publish action runs. Full revision history with rollback. |
 | FR-CMS-3 | Signed preview links (BR-CMS-4). | Preview shows exactly the draft, carries `noindex`, and expires. |
 | FR-CMS-4 | Navigation, header and footer editors; links pick from pages and locations, not typed URLs (external allowed). | Renaming a page's slug never breaks menus. |
 | FR-CMS-5 | Media library with upload, alt text, focal point, origin, licence and expiry; responsive renditions (BR-MED-*). | Cannot publish an image without alt text (or a decorative flag). AI/concept assets are blocked from location galleries. Licence expiry unpublishes. |
 | FR-CMS-6 | Location and offering profiles (marketing face) separate from operational records. | Marketing users cannot edit capacity, status, availability or price from any screen (policy test per role). |
 | FR-CMS-7 | Blog/insights, FAQs (global, location, product scope), testimonials, case studies, legal pages. | Testimonials and case studies require consent-on-file to publish. |
-| FR-CMS-8 | Brand settings: contact numbers, social links, tracking IDs, limited design tokens with automatic contrast validation. | A token that fails WCAG AA for its role is rejected with an explanation. |
+| FR-CMS-8 | Brand settings: contact numbers, social links, tracking IDs, limited design tokens with automatic contrast validation. | A token that fails WCAG AA for its role is rejected with an explanation. Contact details, social links and design tokens go live only after approval by someone other than the author, and are published by someone other than the approver (BR-CMS-9; OD-64, OD-65, OD-67). Tracking IDs are not covered by these decisions (Q-OW-20.4). |
 
 ### 5.3 Inventory, pricing and availability (Phase 5)
 
@@ -148,12 +148,12 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 | FR-PROP-4 | Property-specific pricing through offerings and price plans | Rules **proposed** in `PRICING_CONFIGURATION_PROPOSAL.md` (option P-2, pending owner review). The model supports per-property and per-space prices, quotations, deposits, fees, add-ons, GST per category, offers and cancellation policies. No price is hard-coded. |
 | FR-PROP-5 | Restricted lease facts for leased properties: **deferred** (all current properties owned, OD-14) | Built when the first leased property is added (BR-PROP-5) |
 | FR-CITY-1 | Administrators can add cities and **toggle each city's public visibility** (default hidden, OD-18) | A hidden city has no public page and no menu entry (404). A visible city without a property shows a **"Coming soon — register interest"** page (OD-22): no properties, prices or inventory; a register-interest form creates a lead (`city_waitlist`, city set); `noindex` by default (proposed). Toggles are audited. |
-| FR-SEO-6 | **Migration redirects from the old site (OD-21)** | Every legitimate old URL answers 301 to its mapped new page in one hop; `/pin/*` answers 410; no old content is reused. The map is approved before cut-over. |
+| FR-SEO-6 | **Migration redirects from the old site (OD-21)** | Every legitimate old URL answers 301 to its mapped new page in one hop; `/pin/*` answers 410; no old content is reused. The map is approved before cut-over, by someone other than its author, and published by someone other than the approver (OD-66, BR-CMS-9). |
 | FR-PROD-1 | Product categories are managed in the back office: name, visibility, compatible space types and modes, fulfilment, durations, workflow, approval, payment rule, cancellation policy, capacity limits, booking window, required customer fields, segment relevance (ERD §4.1). | No code change is needed to add a category or change its rules. Changes affecting money require pricing permissions. All changes are audited. |
 | FR-PROD-2 | Category rules can be overridden per property (offering). | The effective rule is shown in the admin UI and used by booking and enquiry flows. |
 | FR-PROD-3 | Enquiry, quote and booking flows adapt to the category's workflow and required fields. | E.g. a virtual-office enquiry collects business details; a meeting-room request collects time and attendees. |
 | FR-SEG-1 | The eight customer segments are admin-managed and optionally captured on forms. | Segment is visible on leads and in reports. No priority until the owner sets one. |
-| FR-BRAND-1 | The official logo (original source retained, SVG preferred, plus optimised web renditions; primary, reversed, mark and favicon) is managed once in brand settings and referenced by every template. | Replacing the logo updates every page. Only brand-permitted users can change it. Uploaded SVGs are sanitised. The logo is never recreated or replaced by text. |
+| FR-BRAND-1 | The official logo (original source retained, SVG preferred, plus optimised web renditions; primary, reversed, mark and favicon) is managed once in brand settings and referenced by every template. | Replacing the logo updates every page. Only brand-permitted users can change it. A replacement goes live only after approval by someone other than the author, and is published by someone other than the approver (OD-67, BR-CMS-9). Uploaded SVGs are sanitised. The logo is never recreated or replaced by text. |
 
 ### 5.4 3D digital twin (Phase 7)
 
@@ -201,7 +201,7 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 | FR-SEO-1 | Per-page metadata with sensible automatic defaults and overrides. | Titles and descriptions unique site-wide (validator report). |
 | FR-SEO-2 | Structured data: Organization, WebSite, BreadcrumbList, LocalBusiness (+Geo, OpeningHours) and Offer on centre pages, FAQPage where FAQs are visible, Article on posts. | Passes schema validation. Data always matches visible content (no mismatched schema). |
 | FR-SEO-3 | XML sitemaps regenerated on publish; robots rules; canonical URLs. | Sitemap contains every published indexable page and nothing unpublished. |
-| FR-SEO-4 | Redirect manager with automatic 301 on slug change and a 404 monitor. | Old URLs redirect in one hop. Redirect loops prevented at save. |
+| FR-SEO-4 | Redirect manager with automatic 301 on slug change and a 404 monitor. | Old URLs redirect in one hop. Redirect loops prevented at save. Redirect changes made by hand go live only after independent approval, and are published by someone other than the approver. An automatic slug-change redirect goes live with its approved page (OD-66, BR-CMS-6, BR-CMS-9). |
 | FR-SEO-5 | Inventory-driven content blocks (e.g. city FAQs answered from live data). | Numbers always match the inventory service at render time. |
 
 ### 5.9 Analytics (Phase 12)

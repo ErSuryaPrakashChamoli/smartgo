@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Six owner-defined roles (OD-33); duties of removed draft roles confirmed (OD-36, OD-37). Phase 3 implementation status: §10. Owner permission decisions for back-office items 8 to 14 (OD-51 to OD-57, **approved policy, not implemented**): §11. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Six owner-defined roles (OD-33); duties of removed draft roles confirmed (OD-36, OD-37). Phase 3 implementation status: §10. Owner permission and publishing decisions (OD-51 to OD-67, **approved policy, not implemented**): §11. |
 | Last updated | 2026-10-25 |
 | Target baseline | OWASP ASVS 4.0 Level 2 for the back office and booking flows; OWASP Top 10 for the public site |
 
@@ -40,29 +40,39 @@
 * `spatie/laravel-permission` (proposed) holds roles and permissions. **Permissions are business capabilities** (e.g. `inventory.update_status`, `pricing.approve`), not one per CRUD screen.
 * Every Filament resource and page, Livewire action and controller checks a **Policy**. Hiding a UI element is never the control.
 * **Property scoping:** Property Managers act only on properties in their `property_user` scope (Sales/CRM Executives can optionally be restricted the same way per user). This is enforced in policies **and** in query scopes so lists, exports, global search and relation managers cannot leak other locations' records.
-* **Separation of duties:** authors cannot approve their own content (BR-CMS-2) or their own price plans (BR-PR-2). A Marketing Manager publishes only a version that **another** authorised person approved (OD-56, BR-CMS-2a). Legal entity and GST details are verified by a **different person** from the one who edited them (OD-55).
-* **Capabilities, not role names:** a person may act only when a role they hold has been **explicitly granted** the capability, and, where scoped, only on their assigned properties. Policies check the capability, never a role name, so holding a role such as "Property Manager" authorises nothing by itself (§11.2).
-* **Approval never overrides availability:** approving a booking request, or any staff override, runs the same lock-and-recheck as a booking (BR-BK-5, BR-BK-9, ADR-0004). No role, including the Super Admin, can force a booking that fails the availability rules.
+* **Separation of duties: the author, the approver and the publisher of a change are kept apart.**
+  * Authors cannot approve their own work: content (BR-CMS-2, OD-65), price plans (BR-PR-2), imports.
+  * Nobody, including the Super Admin, publishes a version they approved (OD-65; it was OD-56 for the Marketing Manager only).
+  * The author may publish a version that someone else approved.
+  * The same author → approver → publisher rule covers public contact details (OD-64), redirect changes (OD-66) and public-facing brand settings (OD-67).
+  * Legal entity and GST details are verified by a **different person** from anyone who edited them (OD-55, OD-62).
+  * There is no self-verification, and no Super Admin override, emergency publish or forced approval (§11.2).
+* **Authorised means explicitly granted (OD-60):** a user may act only when **that user** has been explicitly granted the permission, and, where scoped, only on their assigned properties. A role sets the most its members may be granted (§3.1). Holding a role, or a role name such as "Property Manager", grants nothing by itself. Policies check the permission, never a role name (§11.2).
+* **Approval never overrides availability:** approving a booking request or a reschedule, and any staff override, runs the same lock-and-recheck as a booking (BR-BK-5, BR-BK-9, BR-BK-13, ADR-0004). **Every reschedule re-checks availability under lock**, whether or not it needs approval (OD-63). No role, including the Super Admin, can force a booking that fails the availability rules.
 
-### 3.1 Role and permission matrix (owner-defined roles, 2026-10-24; rows marked ‡ added 2026-10-25)
+### 3.1 Role and permission matrix (owner-defined roles, 2026-10-24; rows marked ‡ added or changed 2026-10-25)
 
-**Roles (OD-33):** Super Admin · Operations Manager · Property Manager · Sales/CRM Executive · Marketing Manager · Finance. These replace the 13 draft roles. The owner's answers name a "Sales/CRM Manager" and a "Finance Manager"; they are recorded as the Sales/CRM Executive and Finance roles (§11.1, to be confirmed in Q-OW-19).
+**Roles (OD-33):** Super Admin · Operations Manager · Property Manager · Sales/CRM Executive · Marketing Manager · Finance. These replace the 13 draft roles. The owner's answers name a "Sales/CRM Manager" and a "Finance Manager". **For now these mean the existing Sales/CRM Executive and Finance roles** (owner, OD-58, OD-59). No role was added or changed.
 
-Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to the user's assigned properties (`property_user`) · — no access. Cells marked † cover **duties of draft roles that no longer exist**. They were proposed and then **confirmed by the owner on 2026-10-24** (OD-36, OD-37). Rows marked ‡ are **owner decisions of 2026-10-25 (OD-51 to OD-57). They are approved policy, not yet implemented** (§11.3).
+Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to the user's assigned properties (`property_user`) · — no access. Cells marked † cover **duties of draft roles that no longer exist**. They were proposed and then **confirmed by the owner on 2026-10-24** (OD-36, OD-37). Rows marked ‡ are **owner decisions of 2026-10-25 (OD-51 to OD-67). They are approved policy, not yet implemented** (§11.3). Wherever an **A** approves or verifies someone's work, it is "not own" for the Super Admin too. The Super Admin holds no bypass (§10).
 
-**Approve and publish are separate rights.** For publishable content (BR-CMS-1), **A** means two capabilities: `content.approve` (never for one's own work, BR-CMS-2) and `content.publish` (only an approved version). A Marketing Manager publishes **only a version approved by another authorised person**, never one they approved themselves (OD-56). This covers scheduled publishing and rollback, which run the same publish action (BR-CMS-3, BR-CMS-5).
+**Approve and publish are separate rights.** For publishable changes, **A** means two permissions: approve (never one's own work) and publish (only a version **someone else** approved). This applies to every role, including the Super Admin (OD-65). It covers scheduled publishing and rollback, which run the same publish action (BR-CMS-3, BR-CMS-5). Publishable changes are:
+* content (BR-CMS-1);
+* public contact details (OD-64);
+* redirect changes (OD-66);
+* public-facing brand settings (OD-67).
 
-Every cell is a grant that must be **explicitly given** to the role (§11.2).
+**Each cell is the most a user in that role may be granted.** A user is authorised only once that permission has been **explicitly granted to them** (OD-60, §11.2).
 
 | Capability | Super Admin | Operations Manager | Property Manager | Sales/CRM Executive | Marketing Manager | Finance |
 |---|---|---|---|---|---|---|
 | Users, roles, MFA reset | M | — | — | — | — | — |
 | Integrations (connection status), tracking IDs | M | — | — | — | V (tracking IDs: M) | — |
-| Brand settings, design tokens, **logo** | M | — | — | — | M/A | — |
+| Brand settings, design tokens, **logo**, social links ‡ (OD-67: independent approval before publication; the Super Admin's approve and publish rights are open, Q-OW-20) | M | — | — | — | M/A (not own) | — |
 | Pages, sections, navigation | M/A | — | — | — | M/A (not own) | — |
 | Property and offering profiles (copy, media) | M/A | V | M (S) | V | M/A (not own) | — |
 | Blog, FAQs, testimonials, case studies | M/A | — | — | — | M/A (not own) | — |
-| SEO metadata, redirects | M/A | — | — | — | M/A | — |
+| SEO metadata, redirects ‡ (page metadata follows its page's approval; redirect changes need independent approval, OD-66) | M/A | — | — | — | M/A (not own) | — |
 | Media library | M | V | M (S) | — | M | — |
 | Properties, buildings, floors: create, edit, address, status | M | M | M (S; edit only, no create/delete) | V | V | V |
 | Property operating model (owned / leased) | M | M | V (S) | V | V | V |
@@ -81,7 +91,7 @@ Every cell is a grant that must be **explicitly given** to the role (§11.2).
 | Offers (create) | M | — | — | V | M | M |
 | Quotations (managed offices, custom deals) | M/A | — | — | M (approval above the discretion limit) | — | A |
 | Bookings (create/modify/cancel) | M | M | M (S) | M | — | V |
-| Booking requests: approve or reject ‡ (OD-52; approval re-checks availability under lock, BR-BK-5) | A | A | A (S) | — | — | — |
+| Booking requests, and reschedules that change inventory, price or terms: approve or reject ‡ (OD-52, OD-61, OD-63; every approval re-checks availability under lock, BR-BK-5) | A | A | A (S) | — | — | — |
 | Booking override (outside hours) | M | M | M (S) | — | — | — |
 | Tours | M | V | M (S) | M | — | — |
 | Leads, contacts, deals | M | V (aggregates) | V (S) | M (all leads †) | V (aggregates) | V (deal values) |
@@ -92,16 +102,26 @@ Every cell is a grant that must be **explicitly given** to the role (§11.2).
 | Message templates, campaigns, automations | M/A | — | — | V | M/A (not own) | — |
 | 3D model upload and anchors (models prepared by a 3D-modelling supplier) | M | V | — | — | M † | — |
 | 3D scenes, hotspot ↔ space mapping | M/A | V | M (S) | — | M/A (not own) | — |
-| Public contact details (business email, phone, business address) ‡ (OD-53) | M | — | — | — | M | — |
+| Public contact details (business email, phone, business address) ‡ (OD-53; independent approval before going live, OD-64; approvers are an interpretation, Q-OW-20) | M/A (not own) | — | — | — | M/A (not own) | — |
 | Legal entity and GST details: view ‡ (derived from OD-54, OD-55) | V | — | — | — | — | V |
 | Legal entity and GST details: edit ‡ (OD-54) | M | — | — | — | — | M |
-| Legal entity and GST details: verify ‡ (OD-55) | A (not own) | — | — | — | — | A (not own) |
+| Legal entity and GST details: verify ‡ (OD-55, OD-62) | A (not own) | — | — | — | — | A (not own) |
 | Reports and dashboards | V (all) | V (operations) | V (S) | V (sales) | V (marketing) | V (finance) |
 | Audit log | V | — | — | — | — | — |
 
-**Separation of duties with fewer roles:** "not own" means a **different person** holding the approving permission. If only one person holds a role (e.g. one Marketing Manager), the Super Admin acts as the second approver for content, prices and imports, and as the second person for legal verification. A person may hold more than one role, but can never approve their own submission, verify legal details they edited, or (as Marketing Manager) publish content they approved. **A rule that needs a second person is never relaxed for lack of staff:** if no second authorised person exists, the action waits. For example, invoices and legal pages stay blocked until another authorised person verifies the legal details. The number of people per role is undecided and stays configurable (OD-57).
+**Separation of duties with fewer roles:** "not own" means a **different person** who has been granted the approving permission. If only one person holds a role (e.g. one Marketing Manager), the Super Admin acts as the second approver for content, contact details, redirects, prices and imports, and as the second person for legal verification. A person may hold more than one role, but still counts as one person. They can never:
+* approve their own work;
+* verify legal details they edited;
+* publish a version they approved.
 
-**Booking requests (OD-52):** Sales/CRM Executives keep "create, modify, cancel" bookings, but they cannot approve or reject a request. For a product that requires staff approval (`requires_staff_approval`), a booking entered by someone without `bookings.approve` is created as a **request**, never as a confirmed booking. This is derived from OD-52 so that the restriction cannot be bypassed. Whether rescheduling a confirmed booking needs approval again is open (Q-OW-19).
+**A rule that needs a second person is never relaxed for lack of staff** (owner response to R-20, 2026-10-25): if no second authorised person exists, the action waits. For example, invoices and legal pages stay blocked until another authorised person verifies the legal details. §11.5 lists when a second person is needed. The number of people per role is undecided and stays configurable (OD-57).
+
+**Booking requests (OD-52, OD-61):** Sales/CRM Executives keep "create, modify, cancel" bookings, but they cannot approve or reject a request. For a product that requires staff approval (`requires_staff_approval`), a booking entered by someone without `bookings.approve` is created as a **request**, never as a confirmed booking. This is derived from OD-52 so that the restriction cannot be bypassed.
+
+**Reschedules (OD-63, BR-BK-13):**
+* Every reschedule re-checks availability under the lock-first rule.
+* A reschedule that changes inventory, price or booking terms waits for approval by a user granted `bookings.approve`.
+* Until it is approved and confirmed, the booking keeps its current space, time, price and terms.
 
 **Mapping from the earlier draft roles:**
 
@@ -157,11 +177,15 @@ Audited actions (who, when, IP, before/after):
 * login success and failure, MFA changes, role and permission changes, user activation and deactivation
 * price plan create, update, approve, activate; offer approve
 * space status/capacity changes, allocations, booking overrides and cancellations
-* booking request approval and rejection, with the approver and the result of the availability re-check (OD-52)
+* booking request approval and rejection, with the approver and the result of the availability re-check (OD-52, OD-61)
+* booking reschedules: before and after (space, seat or quantity, time, price, terms), whether approval was needed, the approver, and the result of the availability re-check (OD-63)
 * inventory imports: upload, warnings acknowledged, approval, commit (with file checksum)
-* content submit, approve, reject, publish, schedule, rollback, with the author, approver and publisher recorded separately (OD-56); redirect changes
+* content submit, approve, reject, publish, schedule, rollback, with the author, approver and publisher recorded separately (OD-56, OD-65)
+* redirect changes and public-facing brand setting changes (logo, design-system settings, social links): submit, approve, reject, publish, with the author, approver and publisher recorded separately (OD-66, OD-67)
 * lead export, lead assignment and reassignment by hand (OD-51), consent changes, data deletion requests
-* public contact detail changes (OD-53); legal entity and GST detail changes and verification, with the editor and verifier recorded separately (OD-54, OD-55)
+* public contact detail changes: submit, approve, reject, publish, with the author, approver and publisher recorded separately (OD-53, OD-64)
+* legal entity and GST detail changes and verification, with the editor and verifier recorded separately (OD-54, OD-55, OD-62)
+* permission grants and removals per user, with who granted them (OD-60)
 * integration and tracking setting changes
 
 Audit records are append-only for application roles; retention 2 years [DEFAULT, D-15].
@@ -203,17 +227,33 @@ What exists in code now, and where it differs from the plan above. Each row is c
 
 ---
 
-## 11. Capabilities for back-office items 8 to 14 (proposed round 12, 2026-10-24; owner decisions round 13, 2026-10-25)
+## 11. Capabilities for back-office items 8 to 14 and public settings (proposed round 12, 2026-10-24; owner decisions rounds 13 and 14, 2026-10-25)
 
-A review of the role design for pricing, enquiries, booking requests, tours, contact and legal details, and website content. **Viewing, editing, approving, verifying and publishing are separate capabilities.** The owner answered the open rows on 2026-10-25 (Q-OW-18 → OD-51 to OD-57, §11.1).
+A review of the role design for pricing, enquiries, booking requests, tours, contact and legal details, website content, redirects and brand settings. **Viewing, editing, approving, verifying and publishing are separate capabilities.** The owner answered the open rows on 2026-10-25: Q-OW-18 → OD-51 to OD-57 (round 13), Q-OW-19 → OD-58 to OD-67 (round 14). See §11.1.
 
 **An approved decision is not an implemented permission.** Only `users.manage` and `audit_log.view` exist in code (§10). Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review, which **still shows the round-12 proposals** (§11.3).
 
-Values: Yes · Own properties (only properties assigned to that user) · Totals (aggregates only) · Not own (approves or verifies only other people's work) · After another's approval (publishes only a version approved by a different authorised person). Basis: **Implemented** (in code and tested) · **Approved matrix** (restates §3.1) · **OD-xx** (owner decision of 2026-10-25) · **Derived** (follows from a decision, as explained). Approved matrix, OD and Derived rows are **not implemented**.
+**Each value is the most a user in that role may be granted.** A user is authorised only once that permission has been **explicitly granted to them** (OD-60).
+
+Values:
+* Yes;
+* Own properties (only properties assigned to that user);
+* Totals (aggregates only);
+* Not own (approves or verifies only other people's work);
+* After another's approval (publishes only a version that a different authorised person approved);
+* Open (owner to decide, §11.4).
+
+Basis:
+* **Implemented** (in code and tested);
+* **Approved matrix** (restates §3.1);
+* **OD-xx** (owner decision of 2026-10-25);
+* **Derived** (follows from a decision, as explained).
+
+Approved matrix, OD and Derived rows are **not implemented**.
 
 | Area | Capability | Purpose | Super Admin | Operations | Property | Sales/CRM | Marketing | Finance | Basis |
 |---|---|---|---|---|---|---|---|---|---|
-| Staff and audit | `users.manage` | Manage staff, roles and two-step login resets | Yes | — | — | — | — | — | Implemented |
+| Staff and audit | `users.manage` | Manage staff, roles, permission grants and two-step login resets | Yes | — | — | — | — | — | Implemented (per-user grants: OD-60, not implemented) |
 | Staff and audit | `audit_log.view` | Read the audit log | Yes | — | — | — | — | — | Implemented |
 | Pricing | `pricing.view` | See prices | Yes | Yes | Own properties | Yes | Yes | Yes | Approved matrix |
 | Pricing | `pricing.manage` | Create and edit draft prices | Yes | — | — | — | — | Yes | Approved matrix |
@@ -221,85 +261,149 @@ Values: Yes · Own properties (only properties assigned to that user) · Totals 
 | Pricing | `quotations.manage` | Prepare enterprise quotations | Yes | — | — | Up to limit | — | Approves | Approved matrix |
 | Enquiries | `leads.view` | See enquiries | Yes | Totals | Own properties | Yes | Totals | Deal values | Approved matrix |
 | Enquiries | `leads.manage` | Change status, log follow-ups | Yes | — | — | Yes | — | — | Approved matrix |
-| Enquiries | `leads.assign` | Assign or reassign an owner by hand | Yes | — | — | Yes | — | — | OD-51 |
+| Enquiries | `leads.assign` | Assign or reassign an owner by hand | Yes | — | — | Yes | — | — | OD-51, OD-58 |
 | Enquiries | `leads.export` | Export enquiries (audited) | Yes | — | — | — | — | — | Approved matrix |
 | Bookings | `bookings.view` | See booking requests and bookings | Yes | Yes | Own properties | Yes | — | Yes | Approved matrix |
-| Bookings | `bookings.approve` | Approve or reject booking requests; approval re-checks availability under lock | Yes | Yes | Own properties | — | — | — | OD-52 |
+| Bookings | `bookings.approve` | Approve or reject booking requests, and reschedules that change inventory, price or terms; every approval re-checks availability under lock | Yes | Yes | Own properties | — | — | — | OD-52, OD-61, OD-63 |
 | Bookings | `bookings.cancel` | Cancel bookings | Yes | Yes | Own properties | Yes | — | — | Approved matrix |
 | Tours | `tours.view` | See tours | Yes | Yes | Own properties | Yes | — | — | Approved matrix |
 | Tours | `tours.manage` | Confirm, reschedule and cancel tours | Yes | — | Own properties | Yes | — | — | Approved matrix |
-| Contact and legal | `settings.contact.manage` | Edit public contact details | Yes | — | — | — | Yes | — | OD-53 |
+| Contact and legal | `settings.contact.manage` | Draft changes to public contact details | Yes | — | — | — | Yes | — | OD-53 |
+| Contact and legal | `settings.contact.approve` | Approve contact-detail changes | Not own | — | — | — | Not own | — | OD-64 (holders: interpretation, Q-OW-20) |
+| Contact and legal | `settings.contact.publish` | Put approved contact details live | After another's approval | — | — | — | After another's approval | — | OD-64, OD-65 |
 | Contact and legal | `settings.legal.view` | See legal entity and GST details | Yes | — | — | — | — | Yes | Derived: editors and verifiers (OD-54, OD-55) must see the details; no other role was proposed |
-| Contact and legal | `settings.legal.manage` | Edit legal entity and GST details | Yes | — | — | — | — | Yes | OD-54 |
-| Contact and legal | `settings.legal.verify` | Verify legal details against the registration documents | Not own | — | — | — | — | Not own | OD-55 |
+| Contact and legal | `settings.legal.manage` | Edit legal entity and GST details | Yes | — | — | — | — | Yes | OD-54, OD-59 |
+| Contact and legal | `settings.legal.verify` | Verify legal details against the registration documents | Not own | — | — | — | — | Not own | OD-55, OD-62 |
 | Website content | `content.view` | Read drafts and previews | Yes | Profiles | Own properties | Profiles | Yes | — | Approved matrix |
 | Website content | `content.edit` | Edit drafts | Yes | — | Own properties | — | Yes | — | Approved matrix |
-| Website content | `content.approve` | Approve submitted content | Not own | — | — | — | Not own | — | Approved matrix |
-| Website content | `content.publish` | Publish, schedule or roll back an approved version | Yes | — | — | — | After another's approval | — | OD-56 |
-| Website content | `testimonials.publish` | Publish testimonials and case studies (consent on file) | Yes | — | — | — | After another's approval | — | Approved matrix; OD-56 |
+| Website content | `content.approve` | Approve submitted content | Not own | — | — | — | Not own | — | Approved matrix; OD-65 |
+| Website content | `content.publish` | Publish, schedule or roll back an approved version | After another's approval | — | — | — | After another's approval | — | OD-56, OD-65 |
+| Website content | `testimonials.publish` | Publish testimonials and case studies (consent on file) | After another's approval | — | — | — | After another's approval | — | Approved matrix; OD-56, OD-65 |
 | Website content | `media.manage` | Upload media with origin and licence | Yes | — | Own properties | — | Yes | — | Approved matrix |
+| Redirects | `redirects.manage` | Draft redirect changes | Yes | — | — | — | Yes | — | Approved matrix |
+| Redirects | `redirects.approve` | Approve redirect changes | Not own | — | — | — | Not own | — | OD-66 |
+| Redirects | `redirects.publish` | Put approved redirects live | After another's approval | — | — | — | After another's approval | — | OD-66, OD-65 |
+| Brand | `brand.manage` | Draft changes to the logo, design-system settings and social links | Yes | — | — | — | Yes | — | Approved matrix |
+| Brand | `brand.approve` | Approve brand changes | Open | — | — | — | Not own | — | OD-67; Super Admin open (§3.1 gives M only) |
+| Brand | `brand.publish` | Put approved brand changes live | Open | — | — | — | After another's approval | — | OD-67, OD-65; Super Admin open |
 
-Changes from the round-12 table: the seven rows marked "Needs owner confirmation" now show the owner's decisions. The proposal that Sales/CRM Executives approve booking requests was **not** adopted (OD-52). The Super Admin is shown as "Not own" for price activation, content approval and legal verification, as the existing rule already required: the Super Admin holds every capability explicitly, without a bypass, so four-eyes rules apply to the Super Admin too. The Marketing Manager's publishing changed from a proposal ("Yes?") and from "Not own" to "After another's approval" (OD-56).
+**Changes from the round-12 table (round 13):**
+* The seven rows marked "Needs owner confirmation" now show the owner's decisions.
+* The proposal that Sales/CRM Executives approve booking requests was **not** adopted (OD-52).
+* The Super Admin is shown as "Not own" for price activation, content approval and legal verification. The existing rule already required this: the Super Admin holds every capability explicitly, without a bypass, so four-eyes rules apply to the Super Admin too.
+* The Marketing Manager's publishing changed from a proposal ("Yes?") and from "Not own" to "After another's approval" (OD-56).
 
-### 11.1 Owner decisions (Q-OW-18, 2026-10-25)
+**Changes in round 14:**
+* The Super Admin's publishing is now "After another's approval" too (OD-65).
+* `bookings.approve` also covers reschedules that change inventory, price or terms (OD-63).
+* Contact details, redirects and brand settings now have separate approve and publish rights (OD-64, OD-66, OD-67).
 
-Recorded in `../decisions/DECISION_REGISTER.md` §0.17. Each decision approves the **intended policy only**.
+### 11.1 Owner decisions (Q-OW-18 and Q-OW-19, 2026-10-25)
+
+Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57) and §0.18 (OD-58 to OD-67). Each decision approves the **intended policy only**. Rows OD-51 to OD-57 are kept as recorded in round 13. Where a round-14 decision confirms or changes how one is applied, the row says so.
 
 | ID | Owner's answer | Applied as |
 |---|---|---|
-| OD-51 | "Enquiry owner assignment: Super Admin and Sales/CRM Manager." | `leads.assign` for the Super Admin and the Sales/CRM Executive role. **Interpretation:** OD-33 has no "Sales/CRM Manager" role. Day-to-day sales work belongs to the Sales/CRM Executive role (OD-36), so that role is meant. Automatic assignment rules stay with the Super Admin (§3.1 †; values D-09). |
-| OD-52 | "Booking request approval: Super Admin and authorised Operations/Property Manager." | `bookings.approve` for the Super Admin, the Operations Manager and the Property Manager, **Property Managers only for their assigned properties**. Sales/CRM Executives, Marketing and Finance cannot approve. **Interpretation:** rejecting a request uses the same capability. "Authorised" means the role has been explicitly granted the capability (§11.2). A category's `approver_role` (ERD §4.1) may narrow approval to one of these roles, but never grants it. |
-| OD-53 | "Public contact details editing: Super Admin and Marketing Manager." | `settings.contact.manage` for the Super Admin and the Marketing Manager. |
-| OD-54 | "Legal/GST editing: Super Admin and Finance Manager." | `settings.legal.manage` for the Super Admin and the Finance role. **Interpretation:** OD-33's "Finance" role is the one meant. |
-| OD-55 | "Legal/GST verification: A second authorised person distinct from the editor." | `settings.legal.verify`, held by the roles OD-54 authorises for legal and GST details: the Super Admin and Finance (**interpretation**). The verifier must be a different person from **everyone who edited** the version being verified, including when the editor is the Super Admin. **Derived:** any later edit clears the verification, otherwise an editor could change verified details unchecked. Until verified, invoices and legal pages cannot use the details (D-01). |
-| OD-56 | "Publishing approved content: Marketing Manager may publish only after separate approval by another authorised person." | The Marketing Manager holds `content.publish` and `testimonials.publish`, but can publish (including schedule and roll back) only a version **approved by another person** who holds `content.approve`. A Marketing Manager never approves and publishes the same version. BR-CMS-2 still applies: authors never approve their own work. **Existing workflow checked:** BR-CMS-1 already required approval before publishing, and BR-CMS-2 required an approver other than the author. Nothing required an approver other than the **publisher**, and the matrix's combined "A approve/publish" allowed it. OD-56 closes that gap for the Marketing Manager. Partly answers D-17; whether one approval is enough stays open. |
+| OD-51 | "Enquiry owner assignment: Super Admin and Sales/CRM Manager." | `leads.assign` for the Super Admin and the Sales/CRM Executive role. **Interpretation:** OD-33 has no "Sales/CRM Manager" role. Day-to-day sales work belongs to the Sales/CRM Executive role (OD-36), so that role is meant. Automatic assignment rules stay with the Super Admin (§3.1 †; values D-09). **Round 14:** interpretation confirmed for now (OD-58); only users explicitly granted `leads.assign` may assign (OD-60). |
+| OD-52 | "Booking request approval: Super Admin and authorised Operations/Property Manager." | `bookings.approve` for the Super Admin, the Operations Manager and the Property Manager, **Property Managers only for their assigned properties**. Sales/CRM Executives, Marketing and Finance cannot approve. **Interpretation:** rejecting a request uses the same capability. "Authorised" means the role has been explicitly granted the capability (§11.2). A category's `approver_role` (ERD §4.1) may narrow approval to one of these roles, but never grants it. **Round 14:** rejection confirmed (OD-61). "Authorised" now means **the user** has been explicitly granted the permission, not the whole role (OD-60). Reschedules that change inventory, price or terms also need this approval (OD-63). |
+| OD-53 | "Public contact details editing: Super Admin and Marketing Manager." | `settings.contact.manage` for the Super Admin and the Marketing Manager. **Round 14:** changes now need independent approval before going live (OD-64). |
+| OD-54 | "Legal/GST editing: Super Admin and Finance Manager." | `settings.legal.manage` for the Super Admin and the Finance role. **Interpretation:** OD-33's "Finance" role is the one meant. **Round 14:** confirmed for now (OD-59). |
+| OD-55 | "Legal/GST verification: A second authorised person distinct from the editor." | `settings.legal.verify`, held by the roles OD-54 authorises for legal and GST details: the Super Admin and Finance (**interpretation**). The verifier must be a different person from **everyone who edited** the version being verified, including when the editor is the Super Admin. **Derived:** any later edit clears the verification, otherwise an editor could change verified details unchecked. Until verified, invoices and legal pages cannot use the details (D-01). **Round 14:** confirmed (OD-62). |
+| OD-56 | "Publishing approved content: Marketing Manager may publish only after separate approval by another authorised person." | The Marketing Manager holds `content.publish` and `testimonials.publish`, but can publish (including schedule and roll back) only a version **approved by another person** who holds `content.approve`. A Marketing Manager never approves and publishes the same version. BR-CMS-2 still applies: authors never approve their own work. **Existing workflow checked:** BR-CMS-1 already required approval before publishing, and BR-CMS-2 required an approver other than the author. Nothing required an approver other than the **publisher**, and the matrix's combined "A approve/publish" allowed it. OD-56 closes that gap for the Marketing Manager. Partly answers D-17; whether one approval is enough stays open. **Round 14:** extended to every publisher, including the Super Admin (OD-65). |
 | OD-57 | "Role headcount: Undecided; keep role assignments and headcount configurable." | No limit on the number of people per role. The Super Admin assigns and changes roles in the back office (`users.manage`, implemented, audited). Four-eyes rules are never relaxed when staff are few (§3.1 note). |
+| OD-58 | "Interpret Sales/CRM Manager as the existing Sales/CRM Executive role for now." | Confirms the OD-51 interpretation. No new role. "For now" means until the owner changes the role structure (OD-33). |
+| OD-59 | "Interpret Finance Manager as the existing Finance role for now." | Confirms the OD-54 interpretation, and that the Finance role is the one for OD-55 verification. No new role. |
+| OD-60 | "'Authorised' means the user has been explicitly granted the relevant permission. Role names alone do not grant access." | A user may act only when **that user** has been explicitly granted the permission, and only within their property scope where it applies. The role matrix (§3.1) is the most a user in each role may be granted. Being in a role, or having a role name, grants nothing by itself. Grants are made per user by a holder of `users.manage`, and every grant and removal is audited (§7). **Interpretation:** grants are per user, answering Q-OW-19.2 ("named people"); Q-OW-20.1 asks the owner to confirm. **Effect:** the current code grants the two implemented permissions to every Super Admin through the role. That differs from OD-60 and is listed in §11.3. It is not changed. |
+| OD-61 | "The same authorised roles permitted to approve booking requests may reject them." | `bookings.approve` covers approve and reject, for users explicitly granted it (OD-60). The roles are the Super Admin, the Operations Manager, and Property Managers for their assigned properties. |
+| OD-62 | "Legal/GST verification must be performed by a person different from the editor." | Confirms OD-55: the verifier is never anyone who edited the version, the Super Admin included. A later edit clears the verification. |
+| OD-63 | "Rescheduling a confirmed booking requires approval again if it changes inventory, price or booking terms. Availability must be rechecked for every reschedule, and existing concurrency safeguards must remain in force." | **Every reschedule**, by anyone including the Super Admin, runs the BR-BK-5 lock-first transaction: lock, re-check availability for the new time and space, then write. A reschedule needs approval again, by a user granted `bookings.approve` (OD-61), when it changes any of:<br>• **inventory**: the space, seat, zone or quantity;<br>• **price**: the server-recomputed price differs from the booking's price snapshot;<br>• **booking terms**: product, duration, payment rule or cancellation policy.<br>**Interpretation:** a change of time alone that keeps the same space, quantity, duration, price and terms needs no new approval. Otherwise the owner's condition would cover every reschedule. It still re-checks availability under lock. **Derived:** until the change is approved and confirmed, the booking keeps its current space, time, price and terms. The change is written in one transaction after the lock and re-check. If the re-check fails, nothing changes. See BR-BK-13. |
+| OD-64 | "Changes to public contact details require independent approval before going live." | Contact details follow the author → approver → publisher workflow:<br>• a holder of `settings.contact.manage` drafts the change;<br>• a different person holding `settings.contact.approve` approves it;<br>• someone other than the approver publishes it (OD-65).<br>Until then the website keeps showing the previously published details. **Interpretation:** the approvers are the roles OD-53 authorises for contact details (Super Admin and Marketing Manager), each only for other people's changes (Q-OW-20.2). |
+| OD-65 | "A content approver must not publish the same content version they approved. The author must also remain distinct from the approver." | For **every role, including the Super Admin** (answers Q-OW-19.6):<br>• author ≠ approver;<br>• approver ≠ publisher of that version, including scheduling and rollback.<br>The author may publish a version that someone else approved, so two people are enough. Extends OD-56. Following the owner's instruction to separate author, approver and publisher, the same rule applies to contact details, redirects and brand settings. |
+| OD-66 | "SEO redirect changes require independent approval before publication." | Redirects created, changed or removed by hand follow the author → approver → publisher workflow. This includes the launch redirect map and the `/pin/*` 410 rules (OD-21, FR-SEO-6). **Interpretation:** a redirect created automatically by publishing an approved slug change (BR-CMS-6) is covered by that page's approval. Page SEO metadata is part of the page version and follows content approval. |
+| OD-67 | "Changes to public-facing brand settings, including logo and design-system settings, require independent approval before publication." | Covers the logo and its renditions (FR-BRAND-1), design tokens and other design-system settings, and social links. **Interpretation:** FR-CMS-8 lists social links as brand settings. All follow the author → approver → publisher workflow. The Marketing Manager approves only other people's changes. **Contradiction found:** the approved matrix gives the Super Admin "M" but not "A" for brand settings. With one Marketing Manager, that person's brand changes could never be approved. The Super Admin's approve and publish rights are left open (Q-OW-20.3) rather than changed. |
 
 ### 11.2 Rules every capability follows
 
-1. **Explicit grant, never a role name.** A person can use a capability only through a role that has been explicitly granted it. Today that grant is made in code (`StaffRole::capabilities()`, synchronised by `SyncAccessControl`), so changing it is a reviewed code change. Policies and actions check the capability, plus property scope where it applies. They never check a role name. Holding the Operations Manager, Property Manager, Sales/CRM Executive, Marketing Manager or Finance role grants nothing until that role is granted the capability.
-2. **Least privilege.** Grants are only those in §3.1 and the table above. Holding one capability never implies another. Holding both an edit and an approve or verify capability never allows approving or verifying one's own work.
+1. **Explicit grant to the user, never a role name (OD-60).**
+   * A user can use a permission only after it has been explicitly granted **to that user**, within the most their role allows (§3.1).
+   * Policies and actions check the permission, plus property scope where it applies. They never check a role name.
+   * Being in the Operations Manager, Property Manager, Sales/CRM Executive, Marketing Manager or Finance role grants nothing until the user is granted the permission.
+   * Today the two implemented permissions are granted per role in code (`StaffRole::capabilities()`, synchronised by `SyncAccessControl`). Moving to per-user grants is a code change (§11.3).
+2. **Least privilege.** Grants are only those in §3.1 and the table above. Holding one permission never implies another. Holding both an edit and an approve, verify or publish permission never allows approving, verifying or publishing past one's own involvement.
 3. **Separation of duties is checked against people, not roles**, at the moment of the action:
-   * approver ≠ author for content, prices and imports;
-   * verifier ≠ any editor of the legal and GST version being verified;
-   * for the Marketing Manager, publisher ≠ approver of the version being published.
+   * approver ≠ author, for content, contact details, redirects, brand settings, prices and imports;
+   * publisher ≠ approver of the version being published, for every role including the Super Admin (OD-65);
+   * verifier ≠ any editor of the legal and GST version being verified (OD-55, OD-62).
 
-   One person holding two roles is still one person.
-4. **No bypass of booking availability or concurrency.** Approving a request (`bookings.approve`), a staff override (`bookings.override`) and every Super Admin action confirm a booking only through the booking service. The service takes the lock first, then re-checks BR-BK-1 to BR-BK-3, BR-AV rules and booking windows (BR-BK-5, ADR-0004). There is no "force approve". A failed re-check leaves the request unconfirmed ("Could not confirm"), and the customer is offered other times.
-5. **Audit.** Every action in §7, including the new entries for OD-51 to OD-56, records who acted. Role changes are already audited (§10).
-6. **Headcount stays configurable** (OD-57). Code never assumes one person per role, and never lets one person satisfy a four-eyes rule alone.
+   One person holding two roles is still one person. **One account per person:** checks compare user accounts, so each account belongs to one named person and is never shared. Creating accounts and granting permissions are audited (§7). There is **no Super Admin override, emergency publish, self-verification or forced approval** anywhere.
+4. **No bypass of booking availability or concurrency.**
+   * Every path that confirms or changes a booking goes only through the booking service: approving a request, rejecting a request, approving a reschedule (`bookings.approve`), every reschedule with or without approval (OD-63), a staff override (`bookings.override`), and every Super Admin action.
+   * The service takes the lock first, then re-checks BR-BK-1 to BR-BK-3, BR-AV rules and booking windows (BR-BK-5, ADR-0004).
+   * There is no "force approve".
+   * A failed re-check leaves the request unconfirmed ("Could not confirm"), or leaves the original booking unchanged, and the customer is offered other times.
+5. **Audit.** Every action in §7, including the entries for OD-51 to OD-67, records who acted. Author, approver and publisher are recorded separately, and so are editor and verifier. Role changes are already audited (§10).
+6. **Headcount stays configurable** (OD-57). Code never assumes one person per role, and never lets one person satisfy a four-eyes rule alone (§11.5).
 
 ### 11.3 Implementation and test gaps (not resolved by this documentation update)
 
-**Implementation:** none of OD-51 to OD-57 is in code.
+**Implementation:** none of OD-51 to OD-67 is in code.
 
-* The capabilities `leads.assign`, `bookings.approve`, `settings.contact.manage`, `settings.legal.view`, `settings.legal.manage`, `settings.legal.verify`, `content.approve`, `content.publish` and `testimonials.publish` are not in `App\Enums\Access\Capability`. No role holds them, and no policy checks them. Each is added by the module that builds the feature.
-* When they are added, `StaffRole::capabilities()` gives the Super Admin every capability in the enum. This matches OD-51 to OD-56, which all include the Super Admin. The other five roles must be given their grants one by one.
-* No people-level checks exist yet:
-  * verifier ≠ editor, and verification cleared on edit;
-  * publisher ≠ approver for the Marketing Manager;
-  * approver ≠ author for real content and prices.
-* The real booking-approval code (Phase 8) does not exist. The lock-first rule is proven only by the MySQL concurrency harness (R-7; booking tests T-BK-01 to T-BK-10 must pass before booking code merges).
-* No audit events exist for the new §7 entries.
+* **Missing capabilities.** The following are not in `App\Enums\Access\Capability`:
+  * `leads.assign`, `bookings.approve`;
+  * `settings.contact.manage`, `settings.contact.approve`, `settings.contact.publish`;
+  * `settings.legal.view`, `settings.legal.manage`, `settings.legal.verify`;
+  * `content.approve`, `content.publish`, `testimonials.publish`;
+  * `redirects.manage`, `redirects.approve`, `redirects.publish`;
+  * `brand.manage`, `brand.approve`, `brand.publish`.
+
+  No user holds them, and no policy checks them. Each is added by the module that builds the feature.
+* **Per-user grants (OD-60).** Today's code grants permissions per role: `StaffRole::capabilities()` gives every Super Admin every capability in the enum through the role. OD-60 needs:
+  * per-user grants, within the role's limits;
+  * a screen to grant and remove them, with an audit entry;
+  * the console command that assigns roles to also grant permissions explicitly.
+
+  This applies to the two implemented permissions as well.
+* **People-level checks.** None exist yet:
+  * author ≠ approver for real content, contact details, redirects, brand settings and prices;
+  * approver ≠ publisher;
+  * verifier ≠ editor, and verification cleared on edit.
+* **Booking approval and rescheduling (OD-63).** The real code does not exist (Phase 8). The lock-first rule is proven only by the MySQL concurrency harness (R-7; booking tests T-BK-01 to T-BK-10 must pass before booking code merges). `../architecture/API_CONTRACTS.md` §5 defines no reschedule action yet.
+* **Data model** (ERD notes added, model not changed):
+  * `revisions` records the author and reviewer but not the publisher;
+  * `redirects` and `site_settings` (contact details, brand) have no draft, approval or publish state;
+  * `bookings` cannot hold a reschedule waiting for approval.
+
+  ADR-0005's revisions cover pages, posts, profiles, FAQs and scenes. Extending them to settings and redirects is one option, decided when built.
+* **Audit.** No audit events exist for the new §7 entries.
 
 **Design previews out of date** (code changes, not made because this round is documentation only):
 
-* `PermissionsReview::catalogue()` still shows the round-12 "Yes?" proposals and the Q-OW-18 questions.
+* `PermissionsReview::catalogue()` still shows the round-12 "Yes?" proposals and the Q-OW-18 questions. It has no rows for contact approval, redirects or brand.
 * The Workspace products preview offers all six roles under "Approved by" (`approver_role`). OD-52 allows only the Super Admin, Operations Manager and Property Manager.
-* The Contact and legal details preview says verification is "proposed: Finance or the Super Admin; needs owner confirmation".
+* The Contact and legal details preview:
+  * says verification is "proposed: Finance or the Super Admin; needs owner confirmation";
+  * says contact details show "once verified", where OD-64 needs independent approval and a separate publish.
 * The Website content preview disables Approve and Publish for the author, but has no approver ≠ publisher case.
-* Every preview is Super Admin only, so none of them shows per-role behaviour.
+* The Booking requests preview has no reschedule action.
+* Every preview is Super Admin only, so none of them shows per-role or per-user behaviour.
 
-**Tests:** no test proves any OD-51 to OD-57 rule. Each needs policy tests per role × capability (§9), including:
+**Tests:** no test proves any OD-51 to OD-67 rule. Each needs policy tests per role × capability (§9), including:
 
-* a role without the grant is refused;
-* Property Manager approval only for assigned properties;
-* Sales/CRM, Marketing and Finance refused for booking approval;
-* the verifier cannot be an editor, including the Super Admin;
-* verification is cleared by an edit;
-* a Marketing Manager cannot publish a version they approved, including by scheduling or rollback;
-* approval of a request whose time is taken is refused under concurrent load;
-* each action writes its audit entry.
+* **grants:** a user in an eligible role without an explicit grant is refused;
+* **bookings:**
+  * Property Manager approval only for assigned properties;
+  * Sales/CRM, Marketing and Finance refused for approval and rejection;
+  * every reschedule re-checks availability under lock;
+  * a reschedule that changes inventory, price or terms waits for approval;
+  * a failed re-check leaves the original booking unchanged;
+  * concurrent reschedule and booking attempts on the same space never double-book;
+* **legal:** the verifier cannot be an editor, including the Super Admin; verification is cleared by an edit;
+* **publishing (content, contact details, redirects, brand settings):**
+  * the author cannot approve;
+  * nobody, including the Super Admin, publishes a version they approved, including by scheduling or rollback;
+  * nothing goes live before approval;
+* **redirects:** an automatic slug-change redirect goes live with its approved page;
+* **audit:** each action writes its audit entry.
 
 Existing tests cover only the previews:
 
@@ -309,14 +413,48 @@ Existing tests cover only the previews:
 
 They do not prove production enforcement.
 
-### 11.4 Open points for the owner (Q-OW-19)
+### 11.4 Points raised with the owner
 
-1. **Role names:** "Sales/CRM Manager" and "Finance Manager" are recorded as the Sales/CRM Executive and Finance roles (OD-33). Confirm this, or say that a separate manager-level role is wanted, which would change OD-33.
-2. **"Authorised":** recorded as "the role is granted the capability", so every holder of that role is authorised. Should only named people within a role be authorised, for example some Property Managers but not others? That needs per-person grants.
-3. **Rejecting booking requests** is recorded as part of approval (same roles). Confirm.
-4. **Rescheduling a confirmed booking** by Sales/CRM (who keep "modify"): does it need approval again? It always re-checks availability under lock (BR-BK-5).
-5. **Contact details:** do the Marketing Manager's changes go live when saved, or does a second person check them first? The preview currently says "entered and verified".
-6. **Super Admin publishing:** OD-56 names the Marketing Manager. Should the Super Admin also be unable to publish a version they approved? Recommended: yes, the same rule for every publisher.
-7. **SEO redirects and brand settings:** §3.1 lets the Marketing Manager approve their own changes. These are not publishable content under BR-CMS-1, so OD-56 does not cover them. Keep this, or require a second person?
+**Q-OW-19 (answered 2026-10-25, OD-58 to OD-67):**
+
+1. **Role names:** "Sales/CRM Manager" and "Finance Manager" are recorded as the Sales/CRM Executive and Finance roles (OD-33). Confirm this, or say that a separate manager-level role is wanted, which would change OD-33. **→ OD-58, OD-59** (for now).
+2. **"Authorised":** recorded as "the role is granted the capability", so every holder of that role is authorised. Should only named people within a role be authorised, for example some Property Managers but not others? That needs per-person grants. **→ OD-60** (the user must be explicitly granted the permission).
+3. **Rejecting booking requests** is recorded as part of approval (same roles). Confirm. **→ OD-61.**
+4. **Rescheduling a confirmed booking** by Sales/CRM (who keep "modify"): does it need approval again? It always re-checks availability under lock (BR-BK-5). **→ OD-63.**
+5. **Contact details:** do the Marketing Manager's changes go live when saved, or does a second person check them first? The preview currently says "entered and verified". **→ OD-64.**
+6. **Super Admin publishing:** OD-56 names the Marketing Manager. Should the Super Admin also be unable to publish a version they approved? Recommended: yes, the same rule for every publisher. **→ OD-65.**
+7. **SEO redirects and brand settings:** §3.1 lets the Marketing Manager approve their own changes. These are not publishable content under BR-CMS-1, so OD-56 does not cover them. Keep this, or require a second person? **→ OD-66, OD-67.**
+
+**Q-OW-20 (open):**
+
+1. **Per-user grants:** OD-60 is recorded as "each user is granted each permission individually, within their role's limits". Confirm. Alternatively, a permission granted to a role could count as granted to its members; then only §11.2 rule 1 changes, and the current code already matches.
+2. **Contact-detail approvers:** recorded as the Super Admin and the Marketing Manager, each only for other people's changes (OD-64). Confirm.
+3. **Brand settings and the Super Admin:** the approved matrix gives the Super Admin "M" but not "A". May the Super Admin approve brand changes (not own) and publish them (after another's approval), as for content? Without this, a single Marketing Manager's brand changes cannot be approved. **Recommended: yes.**
+4. **Tracking IDs:** the Marketing Manager manages them (§3.1) without a second person. They are not public-facing brand settings, so OD-67 does not cover them. Keep this, or require approval?
+5. **Booking approval by one person:** OD-52, OD-61 and OD-63 do not ask for a second person. A user granted `bookings.approve` may therefore approve a request or reschedule they entered themselves, and availability is still re-checked under lock. Confirm, or require a different approver.
 
 Single or double content approval remains D-17 (Phase 4 gate).
+
+### 11.5 When a second authorised person is required (owner response to R-20)
+
+The owner's response to the staffing risk (2026-10-25): **keep strict separation of duties**. A rule that needs a second person waits until one exists; it is never relaxed, and the Super Admin cannot override it.
+
+| Action | Second person? | Rule |
+|---|---|---|
+| Publishing website content (pages, navigation, profiles, posts, FAQs, testimonials, case studies, 3D scenes, page SEO metadata) | **Yes** | approver ≠ author; publisher ≠ approver (BR-CMS-2, OD-65) |
+| Public contact details | **Yes** | same (OD-64, OD-65) |
+| Redirects changed by hand | **Yes** | same (OD-66) |
+| Public-facing brand settings | **Yes** | same (OD-67) |
+| Legal entity and GST details | **Yes** | verifier ≠ every editor of the version (OD-55, OD-62) |
+| Price plan and offer activation; category rules affecting money | **Yes** | approver ≠ author (BR-PR-2, §3.1) |
+| Inventory import commit | **Yes** | approver ≠ uploader (OD-27, §3.1) |
+| Message templates, campaigns, automations | **Yes** | approver ≠ author (§3.1) |
+| Booking request approval or rejection; approval of a reschedule that changes inventory, price or terms | No (Q-OW-20.5) | one user granted `bookings.approve`; availability always re-checked under lock |
+| Manual enquiry assignment, bookings, tours, overrides, exports | No | one authorised user; audited |
+
+**Minimum staffing:** each "Yes" row needs **at least two different people** who have been explicitly granted the permissions for that area. Two are enough: one authors, the other approves, and the author publishes. A person counts once, however many roles they hold.
+
+Example: one Super Admin and one Marketing Manager.
+* Content, contact details and redirects work: either one authors and the other approves.
+* Brand changes by the Marketing Manager cannot be approved until Q-OW-20.3 is answered.
+* Legal and GST details cannot be verified until a second Super Admin or a Finance user exists, so invoices and legal pages stay blocked.

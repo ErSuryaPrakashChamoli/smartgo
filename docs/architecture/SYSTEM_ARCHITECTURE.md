@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** ADR-0001…0014 accepted. |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Related | `DATABASE_ERD.md` · `API_CONTRACTS.md` · `INTEGRATION_CONTRACTS.md` · `EXISTING_SYSTEMS_ASSESSMENT.md` · `../decisions/ADR_INDEX.md` · `../decisions/DECISION_REGISTER.md` · `../requirements/BUSINESS_RULES.md` |
 
 ---
@@ -189,7 +189,7 @@ sequenceDiagram
   BO->>Q: ValidateTwinModel job
   Q-->>BO: size/triangles/compression check, extract anchors, suggest space matches
   M->>BO: Create scene → pick floors → confirm anchor↔space links (dropdowns)
-  M->>BO: Preview → Submit → Approver publishes
+  M->>BO: Preview → Submit → another user approves → a user other than the approver publishes (OD-65)
   V->>V: Location page loads poster (no 3D yet)
   V->>BO: Click "Explore in 3D" → GET /api/v1/scenes/{id}
   V->>V: Dynamic import Three.js + GLTFLoader (+ Draco/Meshopt/KTX2 decoders)
