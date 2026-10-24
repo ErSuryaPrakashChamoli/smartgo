@@ -142,6 +142,13 @@ With these, all Phase 1 acceptance criteria except the owner's sign-off (AC-1.8)
 |---|---|
 | OD-38 | **Phase 1 approved.** The owner instructed "continue next phase" after the Phase 1 baseline was submitted for approval. This is recorded as approval of the baseline, including its deferrals (AC-1.4 → Phase 5 entry gate; remote push → Phase 3 step 3.1). |
 
+### 0.10 Logo supplied — 2026-10-24
+
+| ID | Decision or question |
+|---|---|
+| OD-39 | **Logo supplied.** The owner attached the logo in conversation with the instruction "add this logo". It is stored unmodified at `resources/brand/source/smartgro-logo.webp`: WebP, 388 × 218 px, transparent background, SHA-256 `295745308066c2f2187cb82bdec5b5b03c26a8dd210092a7e3dcd3bee203964b`. An identical copy is served at `public/brand/smartgro-logo.webp` and shown in the back office. Interpretation: this is the authoritative logo for screen use. No vector master or reversed version was supplied (D-11b stays partly open). |
+| Q-OW-15 | **Open.** The logo's wordmark reads "SMART GRO" (two words), while OD-01 records the name as "SmartGro". **Recommended:** keep "SmartGro" as the written name in text, page titles, emails and the back office; the logo keeps its own lettering. |
+
 ---
 
 ## 1. Decisions
@@ -159,7 +166,7 @@ With these, all Phase 1 acceptance criteria except the owner's sign-off (AC-1.8)
 | D-09 | Sales process, assignment, SLA | Client | **Deferred to Phase 9** | — | ERD stages; 15-min first response | Phase 9 |
 | D-10 | Email / WhatsApp / SMS providers | Client | **Deferred to Phase 8/10** | — | transactional email at launch; WhatsApp once the number is verified | Phase 8 |
 | D-11a | Provisional brand palette | Owner | **Resolved** (2026-10-24) | Approved by the owner as **provisional**. Action Green `#287A15` verified: 5.03:1 on Warm White, 5.41:1 on white (WCAG AA). Smart Green `#2E8B18` kept for the logo and decorative/large elements only. To be re-checked when the logo is sampled. | — | — |
-| D-11b | Original SmartGro logo files (vector master) | Owner | **Requires client input** | The owner states the logo was supplied as an image in the conversation. **That image is not available to this working session, and no logo file exists in the project** (checked 2026-10-24). Never recreated. | place the original at `resources/brand/source/` (Q-OW-10) | Phase 2 |
+| D-11b | Original SmartGro logo files (vector master) | Owner | **Partly resolved** (OD-39) | The raster logo (388 × 218 px WebP) was supplied and stored on 2026-10-24. Still requested: a vector master (SVG preferred; otherwise AI/EPS/PDF) or a high-resolution PNG (at least 2000 px wide), plus a reversed version for dark backgrounds if one exists. Never recreated or redrawn. | place the files at `resources/brand/source/` | Phase 2 |
 | D-12 | Photography (existing, rights, shoots) | Client | **Deferred to Phase 6** | Design can proceed with clearly marked placeholders; no AI imagery is ever presented as real | professional shoot per open location | Phase 6 |
 | D-13 | Floor plans and 3D capture | Client | **Deferred to Phase 7** | — | pilot one flagship location with a measured scan | Phase 7 |
 | D-14 | Hosting, DNS, account ownership | Client + Owner | **Deferred to Phase 3** | — | client-owned accounts; managed Laravel hosting + Cloudflare; India region | Phase 3 (staging) |
@@ -192,7 +199,7 @@ With these, all Phase 1 acceptance criteria except the owner's sign-off (AC-1.8)
 |---|---|
 | Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-24, D-25, D-26 (MySQL part), D-32, D-33, D-34, D-35 |
 | Requires owner approval | D-31 organisation name (Phase 3 step 3.1); D-14 hosting for staging (Phase 3); D-30 back-office path for production |
-| Requires client input | D-01 (legal details, may defer to Phase 6); D-11b (logo file, owner will add) |
+| Requires client input | D-01 (legal details, may defer to Phase 6); D-11b (vector master and reversed version; the raster logo was supplied, OD-39) |
 | Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
 
 ---
@@ -203,7 +210,7 @@ With these, all Phase 1 acceptance criteria except the owner's sign-off (AC-1.8)
 |---|---|---|---|
 | R-1 | An existing system must stay authoritative, changing the inventory model | **Resolved** (OD-06: no existing software) | SmartGro is the master. `external_*` columns kept for future integrations. |
 | R-2 | No version control | **Resolved** | Git initialised, with a reviewed baseline commit (§3). Residual: no off-machine copy yet (R-11). |
-| R-3 | No logo file or real photography | **Requires client input** (D-11b, D-12) | Logo not in the project, and not available to the working session. BR-MED rules prevent non-genuine imagery. |
+| R-3 | No vector logo or real photography | **Requires client input** (D-11b, D-12) | The raster logo is in the project (OD-39), but at 388 × 218 px it cannot serve large hero, print or high-density uses. No real photography yet. BR-MED rules prevent non-genuine imagery. |
 | R-4 | 3D capture cost and device performance | **Deferred to Phase 7** | Budgets (NFR-PERF-4) and the fallback (BR-3D-5) are defined |
 | R-5 | Scope breadth versus timeline | **Resolved** (OD-25: release slicing approved) | R1 scope as in the master plan |
 | R-6 | Regulatory: DPDP, SMS DLT, WhatsApp templates | **Deferred to Phase 6/8/10** | Legal review (D-15). Provider registration should start early. |

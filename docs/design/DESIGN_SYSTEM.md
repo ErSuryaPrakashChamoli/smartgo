@@ -2,9 +2,9 @@
 
 | | |
 |---|---|
-| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval. Foundation only.** Provisional palette approved (D-11a); brand name, tagline and domain confirmed (OD-01). The full design system is a Phase 2 deliverable and needs the logo file (OD-20). |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval. Foundation only.** Provisional palette approved (D-11a); brand name, tagline and domain confirmed (OD-01). The full design system is a Phase 2 deliverable. The raster logo was supplied on 2026-10-24 (OD-39). |
 | Last updated | 2026-10-24 |
-| Blocking input | **D-11b: the original SmartGro logo files.** The owner directed that the logo already supplied is the authoritative reference. The original file was **not found** in the project environment: searched the repository, its parent folder, and the home directory by name and by recent image files on 2026-10-24. It is recorded as an **outstanding asset requirement** (CLIENT_INPUTS C-6.1). The logo will not be recreated or substituted. The palette below comes from the brief, not from sampling the logo; it will be re-verified once the original file is available. |
+| Logo input | **Raster logo supplied 2026-10-24 (OD-39)** and stored unmodified at `resources/brand/source/smartgro-logo.webp` (WebP, 388 × 218 px, transparent background). Still requested (D-11b, CLIENT_INPUTS C-6.1): a vector master or a PNG at least 2000 px wide, and a reversed version for dark backgrounds. The logo will not be recreated or substituted. The palette below comes from the brief; the colours observed in the logo are listed in §3.1 for the Phase 2 decision. |
 
 This document records what can be decided before Phase 2 (principles, accessibility constraints and a verified contrast analysis) and what is waiting for brand inputs. The full visual design, component library and page designs are Phase 2 deliverables.
 
@@ -17,7 +17,7 @@ This document records what can be decided before Phase 2 (principles, accessibil
 | Brand name | **Confirmed (OD-01, 2026-10-24): "SmartGro"**, the official public-facing name. The repository folder name `smartGrow` is not a brand reference. |
 | Domain | **Confirmed: smartgro.space** |
 | Tagline | **Confirmed: "WORK SMART. GROW TOGETHER."** Not to be replaced by another slogan. |
-| Logo (vector master + raster) | **Official logo confirmed as the authoritative reference (OD-01).** The owner states it was supplied as an image in conversation. That image is **not available to the working session**, and **no logo file exists in the project directory** (re-checked 2026-10-24). **Request:** place the original at `resources/brand/source/` (Q-OW-10). The owner will add it later (OD-20). Phase 2 cannot finalise the brand system until it is there. It must not be redrawn, reinterpreted or replaced by text, and no AI-generated substitute may be used. |
+| Logo (vector master + raster) | **Official logo confirmed as the authoritative reference (OD-01). Raster supplied 2026-10-24 (OD-39)**: `resources/brand/source/smartgro-logo.webp`, SHA-256 `295745308066c2f2187cb82bdec5b5b03c26a8dd210092a7e3dcd3bee203964b`. Its 388 × 218 px size suits on-screen use up to about 200 px wide (about 100 px tall); large hero, print and high-density uses need the vector master (D-11b). The wordmark reads "SMART GRO"; the written brand name stays "SmartGro" unless the owner decides otherwise (Q-OW-15). It must not be redrawn, reinterpreted or replaced by text, and no AI-generated substitute may be used. |
 
 ### 1.1 Logo management (FR-BRAND-1)
 
@@ -80,6 +80,19 @@ WCAG 2.x contrast ratios were computed on 2026-10-24 with the standard relative-
 On dark Forest backgrounds, brand green must not carry text. Use Warm White text with a lighter green tint for accents, which will be validated in Phase 2.
 
 Semantic availability colours (available, limited, unavailable) must **never rely on colour alone**. They always pair with a text label and an icon, both on the site and in 3D hotspots.
+
+### 3.1 Colours observed in the supplied logo (2026-10-24)
+
+Sampled from the opaque pixels of `resources/brand/source/smartgro-logo.webp` by median-cut clustering. The logo uses gradients, so these are representative values, not official brand colours. **No token has been changed**; adopting any of them is a Phase 2 decision.
+
+| Where in the logo | Observed | Contrast on white | Compared with the provisional palette |
+|---|---|---|---|
+| Wordmark "SMART GRO", buildings | ≈ `#0B2C1B` | 15.1 : 1 | darker and greener than Deep Forest `#073B2C` |
+| Monogram, main green | ≈ `#3F9B24` | 3.5 : 1 | lighter than Smart Green `#2E8B18`; large text and graphics only |
+| Monogram, shadow | ≈ `#195625` | 8.8 : 1 | none |
+| Monogram, highlight | ≈ `#84BD53` | 2.2 : 1 | decorative only |
+
+**Back office (Phase 3):** Filament's palette is generated so that shade 500 is Smart Green `#2E8B18` and shade 600, used for buttons and links, is `#297D15` (white text 5.2 : 1, AA). This is close to the provisional Action Green `#287A15`; the two are unified when the tokens are shared in Phase 2. **Dark mode is off** in the back office until a reversed logo exists, because the dark wordmark is unreadable on dark backgrounds.
 
 ---
 

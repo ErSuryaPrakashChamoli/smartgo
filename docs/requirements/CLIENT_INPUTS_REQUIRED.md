@@ -79,7 +79,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
-| C-6.1 | **Original SmartGro logo files.** The owner states the logo was supplied as an image in conversation, but the file is **not in the project and not available to the working session** (checked 2026-10-24). Please place the original (SVG preferred; otherwise AI/EPS/PDF) plus a high-resolution PNG at `resources/brand/source/`. Include reversed/mono versions and guidelines if they exist. | the logo must be used as supplied, never recreated | none; required | **Phase 2** |
+| C-6.1 | **Original SmartGro logo files.** **Raster logo received 2026-10-24** (OD-39; 388 × 218 px WebP, now at `resources/brand/source/smartgro-logo.webp`). Still needed: the vector master (SVG preferred; otherwise AI/EPS/PDF) or a high-resolution PNG (at least 2000 px wide), plus reversed/mono versions and guidelines if they exist. | the logo must be used as supplied, never recreated | none; required | **Phase 2** |
 | C-6.2 | Brand typefaces and licences (if any) | typography system | a licensed web font chosen in Phase 2 if none exists | Phase 2 |
 | C-6.3 | Existing professional photography per location, with ownership/licence; plans for new shoots | real imagery only (BR-MED) | professional shoot per open location before launch | Phase 6 |
 | C-6.4 | Floor plans (CAD, PDF or image) per floor | interactive floor plans, 3D fallback | none | Phase 7 |
