@@ -14,7 +14,7 @@
 |---|---|
 | Repository | Git, branch `main`, initialised 2026-10-24 with a reviewed baseline. **Private GitHub remote pending** owner choice of repository owner (D-31; steps in `LOCAL_DEVELOPMENT.md` §5). |
 | Branching | short-lived feature branches → pull request → `main`. `main` is protected once the remote exists. |
-| CI (Phase 3; GitHub Actions proposed) | on every PR: PHP 8.5 + MySQL 8.4 service container → `composer install` → `npm ci && npm run build` → `vendor/bin/pint --test` → `php artisan test` (full suite, including the `concurrency` group) → `composer audit` and `npm audit --omit=dev`. A green CI is required to merge. |
+| CI (Phase 3, `.github/workflows/ci.yml`) | on every push to `main` and every PR: PHP 8.5 + MySQL 8.4 service container → `composer install` → `npm ci && npm run build` → `vendor/bin/pint --test` → `php artisan test` (full suite, including the `concurrency` group) → `composer audit` and `npm audit --audit-level=high`. A green CI is required to merge. The workflow is committed and starts running once the remote exists (D-31). |
 | Secrets in CI | the CI MySQL uses throwaway credentials defined in the workflow (test-only). Deployment secrets live only in the host's secret store or encrypted CI secrets. |
 | Deploy flow | `main` → automatic deploy to **staging** → owner/client acceptance → manual promotion to **production** (§4) |
 
@@ -48,7 +48,7 @@
 
 ## 3. Environment variables (names only; values live in the host secret store)
 
-Present in the current `.env.example`: `APP_*`, `DB_*`, `SESSION_*`, `CACHE_STORE`, `QUEUE_CONNECTION`, `REDIS_*`, `MAIL_*`, `AWS_*`, `FILESYSTEM_DISK`, `VITE_APP_NAME`.
+Present in the current `.env.example`: `APP_*`, `BACKOFFICE_PATH` (use a non-default value in production, D-30), `DB_*`, `SESSION_*`, `CACHE_STORE`, `QUEUE_CONNECTION`, `REDIS_*`, `MAIL_*`, `AWS_*`, `FILESYSTEM_DISK`, `VITE_APP_NAME`.
 
 To be added as integrations are chosen: payment gateway keys and webhook secret, WhatsApp/SMS provider credentials, Turnstile site/secret keys, error-monitoring DSN, CDN purge token. **Never commit real values.**
 
@@ -61,11 +61,14 @@ To be added as integrations are chosen: payment gateway keys and webhook secret,
 3. `npm ci && npm run build`
 4. `php artisan down --render="errors::503" --retry=60` (only for migrations that need it; prefer zero-downtime)
 5. `php artisan migrate --force` (backups taken first; destructive migrations need a separately approved plan)
-6. `php artisan optimize` and `php artisan filament:optimize`
-7. `php artisan horizon:terminate` (or `queue:restart`) so workers load the new code
-8. `php artisan up`
-9. Smoke test: `/up` health route, home, one location page, back-office login, a test enquiry in staging.
-10. Purge the CDN for changed static paths, if not fingerprinted.
+6. `php artisan access:sync` (brings staff roles and capabilities in line with the code; safe on every release)
+7. `php artisan optimize` and `php artisan filament:optimize`
+8. `php artisan horizon:terminate` (or `queue:restart`) so workers load the new code
+9. `php artisan up`
+10. Smoke test: `/up` health route, home, one location page, back-office login, a test enquiry in staging.
+11. Purge the CDN for changed static paths, if not fingerprinted.
+
+**First deployment only:** create the first back-office account with `php artisan make:filament-user` (this command does not apply the staff password policy, so choose a password of at least 12 characters with mixed case and a number), then `php artisan access:assign-role <email> super_admin`. The Super Admin then signs in, sets up two-step login and creates the other staff accounts in Settings → Staff users.
 
 **Rollback:** redeploy the previous release artefact. Migrations must be backward-compatible for one release (expand → migrate → contract) so a code rollback never needs a schema rollback.
 
@@ -98,4 +101,6 @@ Candidates (to be assessed against the criteria, none selected): managed Laravel
 
 * D-14: host, accounts and ownership, region, domain/DNS access (deferred to Phase 3)
 * D-19: existing website and URLs to redirect at cut-over
-* D-31: GitHub repository owner, then CI setup in Phase 3
+* D-31: GitHub repository owner; the CI workflow is ready and runs once the remote exists
+* Trusted proxies: behind Cloudflare, configure Laravel to trust Cloudflare's proxy IP ranges so that `request()->ip()` is the visitor's address. Login throttling and the IP addresses in the audit log depend on it.
+* Production session settings: `SESSION_SECURE_COOKIE=true`; confirm the staff idle timeout (`SESSION_LIFETIME`, 120 minutes proposed)

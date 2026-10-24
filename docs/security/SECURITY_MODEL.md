@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Six owner-defined roles (OD-33); duties of removed draft roles confirmed (OD-36, OD-37). Implementation begins in Phase 3. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Six owner-defined roles (OD-33); duties of removed draft roles confirmed (OD-36, OD-37). Phase 3 implementation status: §10. |
 | Last updated | 2026-10-24 |
 | Target baseline | OWASP ASVS 4.0 Level 2 for the back office and booking flows; OWASP Top 10 for the public site |
 
@@ -165,3 +165,23 @@ Audit records are append-only for application roles; retention 2 years [DEFAULT,
 * Automated: Pest policy tests per role × capability (generated from §3.1), IDOR tests, upload validation tests, webhook signature tests, `composer audit` and `npm audit` in CI.
 * Manual: authenticated penetration test of the back office and booking/payment flows before launch.
 * Any finding rated High or above blocks launch.
+
+---
+
+## 10. Implementation status (Phase 3, 2026-10-24)
+
+What exists in code now, and where it differs from the plan above. Each row is covered by Pest tests on MySQL (`../phases/PHASE_STATUS.md`, Phase 3).
+
+| Control | Implemented as | Difference from the plan |
+|---|---|---|
+| Staff login | Filament panel login at `BACKOFFICE_PATH` (default `admin`); no registration; password reset by email | none |
+| MFA | required for every staff user; authenticator app (8 recovery codes, regenerable) or email code | none |
+| Panel access | only users who are active **and** hold at least one of the six roles; checked on every request | none |
+| Passwords | `Password::defaults()`: at least 12 characters, mixed case, numbers | the breached-password check (`uncompromised()`) runs **in production only**, because it calls an external service |
+| Throttling | Filament login limit: 5 attempts per minute per IP address | not per email + IP. Behind Cloudflare the app must trust Cloudflare's proxy ranges, otherwise every visitor shares one IP (`../operations/DEPLOYMENT_RUNBOOK.md` §7). A per-email limit is reviewed in Phase 14. |
+| Sessions | Laravel defaults; Filament regenerates the session at login | secure-cookie and idle-timeout values are set per environment at deployment. No session regeneration on privilege change: permissions are re-checked on every request, so a role change applies on the next request. |
+| Capabilities | `users.manage` and `audit_log.view`, both Super Admin only (matrix rows "Users, roles, MFA reset" and "Audit log"). Super Admin receives each capability explicitly; there is no blanket bypass, so "not own" rules will still apply to the Super Admin. | other capabilities are added by the module that needs them; property scoping arrives with properties in Phase 5 |
+| User lifecycle | create, edit, change roles, deactivate, reset two-step login. Accounts are never deleted. Staff cannot deactivate themselves or remove their own Super Admin role. | none |
+| Headers | `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: SAMEORIGIN`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`; HSTS over HTTPS in production | Content Security Policy (including `frame-ancestors 'none'` for the back office) is added in Phase 14 |
+| Audit trail | sign-in, failed sign-in (email address only, never the password), sign-out, role changes (old and new roles), activation and name/email changes, two-step login changes (which methods are on, never secrets or codes), two-step login resets. Read-only viewer at Settings → Audit log. | the other §7 actions are audited by the modules that introduce them |
+

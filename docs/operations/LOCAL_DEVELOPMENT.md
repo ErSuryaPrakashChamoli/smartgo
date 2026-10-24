@@ -79,6 +79,19 @@ Optional hardening: `chmod 600 .env .env.backup`. Skip this if a separate web-se
 | Only the MySQL concurrency harness | `php artisan test --compact --group=concurrency` |
 | Format PHP before committing | `vendor/bin/pint --dirty --format agent` |
 | Build frontend assets | `npm run build` |
+| Bring staff roles and capabilities in line with the code | `php artisan access:sync` |
+| Give an existing user a staff role | `php artisan access:assign-role <email> <role>` |
+
+### Back office (Phase 3)
+
+The staff back office is a Filament panel at `/{BACKOFFICE_PATH}` (default `/admin`). To sign in locally for the first time:
+
+1. `php artisan migrate` and `php artisan access:sync`
+2. `php artisan make:filament-user` to create your account. The command does not apply the staff password policy, so choose at least 12 characters with mixed case and a number.
+3. `php artisan access:assign-role you@example.com super_admin`
+4. Open the back office and sign in. Two-step login is required: set up an authenticator app (save the recovery codes) or email codes. With `MAIL_MAILER=log`, email codes are written to `storage/logs/laravel.log`.
+
+Other staff accounts are then created in **Settings → Staff users**. Only active users with at least one of the six staff roles can enter. The audit log is at **Settings → Audit log**.
 
 ### MySQL concurrency harness
 
