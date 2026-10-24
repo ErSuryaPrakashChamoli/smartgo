@@ -57,7 +57,7 @@ To be added as integrations are chosen: payment gateway keys and webhook secret,
 ## 4. Standard release procedure (to be adapted to the chosen host)
 
 1. CI green: tests (MySQL), Pint, `composer audit`, `npm audit`, build.
-2. `composer install --no-dev --optimize-autoloader`
+2. `composer install --no-dev --optimize-autoloader`. Once the Filament panel exists, this also runs `filament:upgrade`, which republishes Filament's git-ignored `public/{css,js,fonts}/filament` assets. Never skip it.
 3. `npm ci && npm run build`
 4. `php artisan down --render="errors::503" --retry=60` (only for migrations that need it; prefer zero-downtime)
 5. `php artisan migrate --force` (backups taken first; destructive migrations need a separately approved plan)

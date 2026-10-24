@@ -98,6 +98,8 @@
 | 2026-10-24 | throwaway MySQL 8.4.11 (private socket, scratch data directory) | `php artisan test` ×3 | **9 passed, 18 assertions**, each run about 16.5 s |
 | 2026-10-24 | same | temporary config with `DB_DATABASE=smartgro` | refused by the `*_testing` guard, as intended |
 | 2026-10-24 | **the owner's local MySQL 8.4.11** (dev DB `smart_go` configured by the owner; `smartgro_testing` created through the configured connection) | `php artisan test --compact` | **9 passed, 18 assertions, 17.0 s.** Afterwards `smartgro_testing` had 0 tables (harness cleaned up) and `smart_go` was unchanged (9 Laravel tables). |
+| 2026-10-24 | owner's local MySQL, `error_reporting=-1`, deprecations to stderr | `php artisan test --compact` | 9 passed; **0 PHP 8.5 deprecations** |
+| 2026-10-24 | disposable copy with `filament:install --panels` (SQLite) | 5 Filament smoke tests + real `artisan serve` | 5 passed (guest redirect, login page and assets, 403 for a non-`FilamentUser` outside local, dashboard after implementing `FilamentUser`, Livewire login success and failure). HTTP: login 200, 6/6 assets 200, `/up` 200. Copy deleted. |
 
 No SmartGro features exist yet, so there is no feature coverage yet.
 

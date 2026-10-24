@@ -231,7 +231,7 @@ Compatibility was checked against Packagist and npm metadata on 2026-10-24.
 | `laravel/horizon` | v5.50.1 | illuminate ^13 supported; ext-pcntl, ext-posix | queue supervision | 3/15 |
 | `predis/predis` **or** `php8.5-redis` extension | v3.7.0 | php ^8.0 | Redis client (ADR-0007) | 3 |
 | `three` (npm) | 0.186.1 | — | 3D viewer | 7 |
-| `openspout/openspout` (declare as direct) | 4.32.0 installed | already resolved by Composer under Laravel 13 / PHP 8.5 | XLSX inventory import (ADR-0012) | 5 |
+| `openspout/openspout` (declare as direct, **`^4`**) | 4.32.0 installed | `filament/actions` 5.10.3 requires `^4.23`, so **5.x (12.2 available) must not be required** | XLSX inventory import (ADR-0012) | 5 |
 
 **Considered and not recommended now:** `bezhansalleh/filament-shield` (supports Filament ^5, but generates permissions per CRUD resource, which conflicts with the business-oriented permission model in `SECURITY_MODEL.md`); `laravel/scout` (MySQL queries suffice for tens of locations; revisit only if search volume demands it).
 
@@ -247,3 +247,25 @@ Compatibility was checked against Packagist and npm metadata on 2026-10-24.
 | S3 / CDN / Cloudflare | No provider or credentials yet | Use the `local`/`public` disk in development; provider is decided under D-14. |
 
 No version downgrade or replacement of the requested stack is needed based on current evidence.
+
+---
+
+## 11. Stack verification (2026-10-24)
+
+| Check | Result |
+|---|---|
+| Latest releases (Packagist) | laravel/framework **13.38.0** (latest; no 14.x release or pre-release), filament/filament **5.10.3** (latest; no 6.x), livewire/livewire **4.4.8**, pestphp/pest **5.3.3**, laravel/boost **2.10.3**: all installed versions are the latest |
+| `composer outdated --direct` / `npm outdated` | everything up to date |
+| `composer audit` / `npm audit` | 0 advisories / 0 vulnerabilities |
+| `composer validate`, `check-platform-reqs` | valid; all satisfied |
+| PHP 8.5 deprecations | **0** during a full test run with `error_reporting=-1` and deprecations logged to stderr |
+| `npm run build` (Vite 8, Tailwind 4) | success (366 ms) |
+| Test suite on the owner's local MySQL 8.4.11 | 9/9 passed |
+| **Filament panel smoke test** (disposable copy of the repository, deleted afterwards; the project was not changed) | `filament:install --panels` succeeded. 5/5 tests passed: guest redirect, login page with assets, dashboard access, sign-in through Filament's Livewire login form, wrong password rejected. A real `artisan serve` returned 200 for `/admin/login` and all 6 referenced Filament CSS/JS assets. |
+
+### Changes required when the panel is installed in Phase 3 (verified in the smoke test)
+
+1. `php artisan filament:install --panels` creates and registers `App\Providers\Filament\AdminPanelProvider`. It adds `@php artisan filament:upgrade` to Composer `post-autoload-dump`, and adds `/public/css/filament`, `/public/fonts/filament` and `/public/js/filament` to `.gitignore`.
+2. **`App\Models\User` must implement `Filament\Models\Contracts\FilamentUser`** with a real `canAccessPanel()` based on active status and role (`../security/SECURITY_MODEL.md`). Without it, **every** user gets 403 outside `APP_ENV=local`. This was confirmed in the smoke test (a plain `User` received 403 in the testing environment).
+3. Required MFA, custom theme (`make:filament-theme`), clusters and dashboards per ADR-0003.
+4. Deployments must run `composer install` (which triggers `filament:upgrade` to republish the git-ignored assets) and `php artisan filament:optimize` (`../operations/DEPLOYMENT_RUNBOOK.md` §4).
