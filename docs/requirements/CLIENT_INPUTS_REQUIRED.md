@@ -72,7 +72,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 |---|---|---|---|---|
 | C-5.1 | ~~Team structure~~ **Approved as drafted (D-33, OD-28):** role matrix in `../security/SECURITY_MODEL.md` §3.1 | — | — | resolved (adjust in Phase 3) |
 | C-5.2 | Sales stages, lead assignment rules (by city, location, product, seat band), response-time target | CRM configuration, SLA alerts | stages in the ERD; 15-minute first response in business hours | Phase 9 |
-| C-5.3 | Who approves website content; one approver or two. **Partly answered (OD-56, OD-65):** the author never approves their own work, and nobody, including the Super Admin, publishes a version they approved. Still open: one approver or two (D-17). | publishing workflow | one approver; nobody approves their own work | Phase 4 |
+| C-5.3 | ~~Who approves website content; one approver or two~~ **Answered (OD-56, OD-65, OD-73):** one approval by a person other than the author is enough. Nobody, including the Super Admin, publishes a version they approved. The author may publish if they are not the approver (D-17 resolved). | publishing workflow | — | resolved |
 | C-5.4 | Lost-reason and disqualification lists | CRM reporting | draft lists provided in Phase 9 | Phase 9 |
 
 ## 6. Brand and assets (D-11, D-12, D-13)
@@ -94,7 +94,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 | C-7.2 | Hosting, domain registrar, DNS (Cloudflare) and account ownership | deployment and legal control | client-owned accounts; managed Laravel hosting + Cloudflare | Phase 3 (staging) |
 | C-7.3 | Email sending domain and provider; WhatsApp Business number and provider; SMS provider with DLT registration | confirmations and follow-up | transactional email at launch; WhatsApp when the number is verified | Phase 8/10 |
 | C-7.4 | Privacy notice, terms, cookie policy, grievance officer contact, data retention periods | legal compliance (DPDP Act 2023 and Rules to be confirmed by counsel) | counsel to provide | Phase 6 |
-| C-7.5 | Analytics and advertising accounts (GA4, Google Ads, Meta, LinkedIn); consent approach | measurement and attribution | GA4 + GTM with consent mode | Phase 6/12 |
+| C-7.5 | Analytics and advertising accounts (GA4, Google Ads, Meta, LinkedIn); consent approach. Tracking changes in SmartGro need independent approval before going live (OD-71). If a tag manager is used, who controls it (Q-OW-21.2). | measurement and attribution | GA4 + GTM with consent mode | Phase 6/12 |
 | C-7.6 | ~~Languages~~ **Answered (OD-05):** English only | — | — | resolved |
 
 ## 8. Existing systems (D-06)

@@ -126,7 +126,7 @@ Requirement form with seat bands (e.g. 20–49, 50–99, 100–249, 250+), citie
 | ID | Persona | Journey | Success signal |
 |---|---|---|---|
 | UJ-7 | Marketing Manager (author) | Opens centre profile → uploads photos (alt text, focal point, origin, licence) → reorders gallery → previews → submits | no code or JSON; can't publish without alt text or licence data |
-| UJ-8 | Marketing manager (approver) | "Awaiting approval" dashboard → diff/preview → approve or reject with note → a **different** authorised person, for example the author, publishes the approved version. The approver never publishes it (OD-65). | change live within 60 s of publish; revision kept; author, approver and publisher recorded |
+| UJ-8 | Marketing manager (approver) | "Awaiting approval" dashboard → diff/preview → approve or reject with note → a **different** authorised person, for example the author, publishes the approved version. The approver never publishes it (OD-65). One approval is enough (OD-73). | change live within 60 s of publish; revision kept; author, approver and publisher recorded |
 | UJ-9 | Operations Manager / Property Manager | Marks office "maintenance" or records an allocation with end date | website, 3D and CRM reflect it within 60 s; no marketing role can override |
 | UJ-10 | Sales/CRM Executive | Gets notified of a new lead → WhatsApp/call from the lead screen → logs outcome → schedules tour → moves stage | first response logged; SLA visible |
 | UJ-11 | 3D-modelling supplier + Marketing Manager | Supplier delivers a named-node GLB; Marketing Manager uploads it → validation passes → marketing links anchors to spaces from dropdowns → preview → submit | scene published without entering any coordinate |

@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** No provider has been selected or connected. Public API and form contracts: [`API_CONTRACTS.md`](API_CONTRACTS.md). |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Decisions | D-06 existing systems, D-08 payments, D-10 messaging, D-14 hosting, D-18 analytics |
 
 This document defines **what SmartGro needs from each integration**, independent of vendor, so a provider can be chosen without changing the domain model. Provider names are examples to help the owner decide, not selections.
@@ -15,7 +15,7 @@ This document defines **what SmartGro needs from each integration**, independent
 | ID | Rule |
 |---|---|
 | IC-1 | **Secrets** (API keys, tokens, webhook secrets) live only in environment variables or the host's secret manager. They are never stored in the database, CMS, Git, logs, frontend bundles or documentation. The CMS shows only connection *status* and non-secret identifiers. |
-| IC-2 | **Non-secret tracking IDs** (GA4 measurement ID, GTM container ID, Meta Pixel ID) may be managed in the CMS, are validated by format, and are changed only by the Super Admin or Marketing Manager. |
+| IC-2 | **Non-secret tracking IDs** (GA4 measurement ID, GTM container ID, Meta Pixel ID) may be managed in the CMS, are validated by format, and are changed only by the Super Admin or Marketing Manager who have been explicitly granted the permission (OD-68). A change becomes active on the public website only after approval by a different person and publication by someone other than the approver (OD-71, BR-CMS-9; not implemented). Approving an ID never adds a script domain to the Content Security Policy (SECURITY_MODEL §5). Tags added inside an external tag manager are outside this approval (Q-OW-21.2). |
 | IC-3 | **Outbound calls** run in queued jobs with timeouts, bounded retries with back-off, and an idempotency key. A failed provider never blocks a customer request; the customer sees a success state and staff see the failed dispatch. |
 | IC-4 | **Inbound webhooks** verify the provider's signature, persist the receipt with a unique (`provider`, `external_event_id`) **before** processing, process on the queue, and return 2xx quickly. Duplicates are acknowledged and ignored. |
 | IC-5 | Every provider is accessed through **one adapter class per capability** (e.g. `WhatsAppSender`), so swapping vendors touches one class. Interfaces are introduced only where two implementations really exist (no speculative abstraction). |

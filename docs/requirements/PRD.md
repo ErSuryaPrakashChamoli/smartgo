@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Incorporates owner decisions OD-01…OD-37. Pricing values are decided at the Phase 5 entry gate (OD-35). Approval and publishing acceptance criteria updated 2026-10-25 for OD-56 and OD-60 to OD-67 (approved policy, not implemented). |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Incorporates owner decisions OD-01…OD-37. Pricing values are decided at the Phase 5 entry gate (OD-35). Approval and publishing acceptance criteria updated 2026-10-25 for OD-56 and OD-60 to OD-73 (approved policy, not implemented). |
 | Version | 0.3 (2026-10-24) |
 | Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` · `../architecture/*` (incl. `API_CONTRACTS.md`, `EXISTING_SYSTEMS_ASSESSMENT.md`) · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
 | Decision references | D-xx items: `../decisions/DECISION_REGISTER.md` (living register) |
@@ -119,13 +119,13 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 | ID | Requirement | Acceptance |
 |---|---|---|
 | FR-CMS-1 | Page builder with a fixed library of brand blocks (hero, text, media, cards, FAQ, CTA band, testimonials, location list, stats, comparison table, form embed). | Editors compose pages with no code/JSON/CSS. Every block renders accessibly on mobile and desktop. |
-| FR-CMS-2 | Workflow Draft → Submitted → Approved → Published, with rejection notes and scheduling (BR-CMS-1…5). | Author cannot self-approve. The approver cannot publish, schedule or roll back the version they approved, for any role including the Super Admin (BR-CMS-2a, OD-65). Published state never changes until a publish action runs. Full revision history with rollback. |
+| FR-CMS-2 | Workflow Draft → Submitted → Approved → Published, with rejection notes and scheduling (BR-CMS-1…5). | Author cannot self-approve. The approver cannot publish, schedule or roll back the version they approved, for any role including the Super Admin (BR-CMS-2a, OD-65). One approval by a person other than the author is enough, and the author may publish if they are not the approver (OD-73; cases in SECURITY_MODEL §11.6). Published state never changes until a publish action runs. Full revision history with rollback. |
 | FR-CMS-3 | Signed preview links (BR-CMS-4). | Preview shows exactly the draft, carries `noindex`, and expires. |
 | FR-CMS-4 | Navigation, header and footer editors; links pick from pages and locations, not typed URLs (external allowed). | Renaming a page's slug never breaks menus. |
 | FR-CMS-5 | Media library with upload, alt text, focal point, origin, licence and expiry; responsive renditions (BR-MED-*). | Cannot publish an image without alt text (or a decorative flag). AI/concept assets are blocked from location galleries. Licence expiry unpublishes. |
 | FR-CMS-6 | Location and offering profiles (marketing face) separate from operational records. | Marketing users cannot edit capacity, status, availability or price from any screen (policy test per role). |
 | FR-CMS-7 | Blog/insights, FAQs (global, location, product scope), testimonials, case studies, legal pages. | Testimonials and case studies require consent-on-file to publish. |
-| FR-CMS-8 | Brand settings: contact numbers, social links, tracking IDs, limited design tokens with automatic contrast validation. | A token that fails WCAG AA for its role is rejected with an explanation. Contact details, social links and design tokens go live only after approval by someone other than the author, and are published by someone other than the approver (BR-CMS-9; OD-64, OD-65, OD-67). Tracking IDs are not covered by these decisions (Q-OW-20.4). |
+| FR-CMS-8 | Brand settings: contact numbers, social links, tracking IDs, limited design tokens with automatic contrast validation. | A token that fails WCAG AA for its role is rejected with an explanation. Contact details, social links and design tokens go live only after approval by someone other than the author, and are published by someone other than the approver (BR-CMS-9; OD-64, OD-65, OD-67). Tracking IDs, analytics identifiers and advertising pixels become active only after the same approval and publication steps (OD-71). The Super Admin may approve brand changes but never publishes a version they approved (OD-70). |
 
 ### 5.3 Inventory, pricing and availability (Phase 5)
 
@@ -173,7 +173,7 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 | FR-BK-2 | Live tour scheduler per location (BR-TR-*): pick a slot, confirm instantly, receive confirmation and ICS, reschedule or cancel via signed link. | Concurrent claims of the last slot produce exactly one confirmation (MySQL concurrency test). |
 | FR-BK-3 | Meeting-room booking ◇ (D-07): slot picker, hold, details, (payment), confirmation, self-service cancel per policy. | BR-BK-1…10 pass, including concurrency tests. The price shown equals the price snapshot. |
 | FR-BK-4 | Day-pass booking ◇ against shared capacity (BR-BK-2). | Capacity never exceeded under concurrency. |
-| FR-BK-5 | Staff booking console: calendar per location/space, create/move/cancel with reasons, overrides per permission. | Overrides audit-logged. Overlap rules can never be bypassed. |
+| FR-BK-5 | Staff booking console: calendar per location/space, create/move/cancel with reasons, overrides per permission. | Overrides audit-logged. Overlap rules can never be bypassed. Every create and move re-checks availability under lock. A move that changes inventory, price or terms waits for approval (BR-BK-13). The user who created or submitted a request or move never approves it, and an override never skips approval (OD-63, OD-72). |
 
 ### 5.6 CRM (Phase 9)
 
@@ -208,7 +208,7 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-AN-1 | Consent-aware tag loading; first-party attribution capture onto leads. | No marketing tags fire before consent where consent is required (D-18). |
+| FR-AN-1 | Consent-aware tag loading; first-party attribution capture onto leads. | No marketing tags fire before consent where consent is required (D-18). A new or changed tracking ID, analytics identifier or advertising pixel becomes active only after independent approval and publication (OD-71, BR-CMS-9). |
 | FR-AN-2 | Dashboards: funnel (visits → enquiries → tours → deals), lead response SLA, occupancy and availability by location, content freshness. | Figures reconcile with source tables. |
 
 ### 5.10 Concierge (Phase 13, future)
