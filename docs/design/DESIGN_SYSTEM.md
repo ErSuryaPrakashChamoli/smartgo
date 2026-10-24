@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 2 in progress (started 2026-10-24, OD-41).** Approved: P2-A palette, P2-B type, P2-D tab icon, P2-E/OD-46 dark-background logo. Built for review: foundations, components, all page designs and journeys (§9), back-office screens (§10). **The home page (P2-C, AC-2.5) is not signed off and is frozen.** |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Logo input | **Raster logo supplied 2026-10-24 (OD-39)** and stored unmodified at `resources/brand/source/smartgro-logo.webp` (WebP, 388 × 218 px, transparent background). Still requested (D-11b, CLIENT_INPUTS C-6.1): a vector master or a PNG at least 2000 px wide, and a reversed version for dark backgrounds. The logo will not be recreated or substituted. The palette below comes from the brief; the colours observed in the logo are listed in §3.1 for the Phase 2 decision. |
 
 This document records what can be decided before Phase 2 (principles, accessibility constraints and a verified contrast analysis) and what is waiting for brand inputs. The full visual design, component library and page designs are Phase 2 deliverables.
@@ -260,7 +260,7 @@ Real Filament screens in a **Design previews** section of the back office (`/adm
 | Tours (item 11) | Requested and confirmed tours side by side ("Visitor asked for" versus "Confirmed time"); confirm, propose another time, cancel, completed, no-show. No message is sent. |
 | Contact and legal details (item 12) | Brand facts marked confirmed; every contact and legal field starts empty and says it is missing; registered legal entity kept apart from the SmartGro brand; GSTIN format check; invoices and legal pages blocked until details are verified. |
 | Website content (item 13) | Pages and their status (none published), block editor (introduction, text, FAQs, image, testimonial), search-engine fields, Draft → Submit → Approve (not own) → Publish. Images must declare their origin and confirm they are not from the old website; testimonials need consent and verification. |
-| Permissions review (item 14) | The approved matrix and proposed capabilities for items 8 to 14, with view, edit, approve and publish separated and the rows needing owner confirmation marked (SECURITY_MODEL §11). |
+| Permissions review (item 14) | The approved matrix and proposed capabilities for items 8 to 14, with view, edit, approve and publish separated and the rows needing owner confirmation marked (SECURITY_MODEL §11). **Out of date since 2026-10-25:** the owner decided those rows (OD-51 to OD-57). The preview, the "Approved by" choice in Workspace products and the verification note in Contact and legal details still show the round-12 proposals. Updating them is a code change that has not been made (SECURITY_MODEL §11.3). |
 
 The back office keeps the approved light theme.
 

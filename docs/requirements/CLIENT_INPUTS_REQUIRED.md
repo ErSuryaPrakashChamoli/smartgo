@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Answered items are marked. Open items are deferred with their phase gates (`../decisions/DECISION_REGISTER.md`). |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Audience | SmartGro (client) leadership, operations, sales, marketing, finance, legal |
 | How to use | Answer each item, or reply "use the recommended default". A default is **not** a fact until the client confirms it. |
 
@@ -72,7 +72,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 |---|---|---|---|---|
 | C-5.1 | ~~Team structure~~ **Approved as drafted (D-33, OD-28):** role matrix in `../security/SECURITY_MODEL.md` §3.1 | — | — | resolved (adjust in Phase 3) |
 | C-5.2 | Sales stages, lead assignment rules (by city, location, product, seat band), response-time target | CRM configuration, SLA alerts | stages in the ERD; 15-minute first response in business hours | Phase 9 |
-| C-5.3 | Who approves website content; one approver or two | publishing workflow | one approver; nobody approves their own work | Phase 4 |
+| C-5.3 | Who approves website content; one approver or two. **Partly answered (OD-56):** a Marketing Manager publishes only after a separate approval by another authorised person. Still open: one approver or two (D-17). | publishing workflow | one approver; nobody approves their own work | Phase 4 |
 | C-5.4 | Lost-reason and disqualification lists | CRM reporting | draft lists provided in Phase 9 | Phase 9 |
 
 ## 6. Brand and assets (D-11, D-12, D-13)

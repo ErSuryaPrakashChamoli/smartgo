@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Model revision 1.2 (change log §12). Validation against real inventory is deferred to the Phase 5 entry gate (OD-30, OD-32). |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Target engine | MySQL 8.4 (ADR-0002 accepted; test suite verified on 8.4.11) |
 | Confirmed inputs | OD-07 product categories · OD-08 four Noida properties, each **its own property/centre** (OD-13) · all four **owned and operated** (OD-14) · OD-10 + OD-15 individual, pooled, mixed and **hybrid-zone** inventory · OD-06 no existing software · OD-05 English only · OD-16 official city names · OD-17 entity named "Property" (`../decisions/DECISION_REGISTER.md` §0) |
 | Still open | **how many floors each property has, and at which levels** (10 in total; Q-OW-1 re-asked); full addresses; pricing configuration (brief §9 not received, Q-OW-9) |
@@ -196,7 +196,7 @@ Each category may differ in pricing, availability, booking workflow, capacity, a
 | Fulfilment pattern | `fulfilment` | `term_agreement` (monthly/term), `time_slot` (hourly/half-day/day), `day_pass`, `service_subscription` | determines whether availability is consumed by allocations or by bookings |
 | Duration options | `allowed_durations`, `min_duration`, `max_duration` | `hourly`, `half_day`, `daily`, `monthly`, `term_months` | stored as validated enum lists; edited as checkboxes |
 | Acquisition workflow | `acquisition_workflow` | `enquiry_quote`, `request_then_approve`, `instant_booking` | `instant_booking` is only selectable once D-07/D-08 permit it |
-| Approval | `requires_staff_approval`, `approver_role` | boolean, role | |
+| Approval | `requires_staff_approval`, `approver_role` | boolean, role | `approver_role` is limited to roles that hold `bookings.approve`: Super Admin, Operations Manager, Property Manager (OD-52). It only **narrows** who approves for the category; it never grants approval. The check at approval time is the capability plus property scope, never the role name (SECURITY_MODEL §11.2). |
 | Payment rule | `payment_rule` | `none`, `deposit`, `full_prepayment`, `invoice` | **values deferred** (brief §9, D-08) |
 | Cancellation | `cancellation_policy_id` | FK | values deferred |
 | Capacity rules | `min_seats_per_order`, `max_seats_per_order` | integers | |
@@ -406,3 +406,4 @@ A "recommended default" is **not** an approved fact (see `../decisions/DECISION_
 | | | **C-15** inventory mode `hybrid` (hybrid zone) with the BR-AV-3d invariant | OD-15 |
 | | | **C-16** `property_leases` deferred (all current properties owned) | OD-14 |
 | | | each of the four addresses is its own property; M-1, M-8, M-9, M-10 closed | OD-13 |
+| v1.2 (note) | 2026-10-25 | §4.1 `approver_role` limited to roles holding `bookings.approve`; no table or column change | OD-52 |

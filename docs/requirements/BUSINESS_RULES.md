@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** [DEFAULT] values are confirmed at the gate of the phase that implements each rule (D-36). |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Sign-off required | Project owner (structure); client operations, sales, marketing and finance leads (values) |
 
 Each rule has an ID so tests and code can reference it.
@@ -99,7 +99,7 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 | BR-BK-7 | Booking windows [DEFAULT]: earliest start is 30 minutes from now; latest start is 60 days ahead; minimum and maximum duration come from the space; bookings must fall within location operating hours. |
 | BR-BK-8 | Cancellation and refund policy: **[UNRESOLVED → D-07, D-08, D-15]** |
 | BR-BK-9 | Staff overrides (e.g. booking outside hours) require `bookings.override` and are always audit-logged with a reason. Overrides can never bypass BR-BK-1/2. |
-| BR-BK-10 | Online payment is in scope only if D-07/D-08 approve it. Until then, bookable products produce a **booking request** that staff confirm, and confirmation still runs BR-BK-5. |
+| BR-BK-10 | Online payment is in scope only if D-07/D-08 approve it. Until then, bookable products produce a **booking request** that staff confirm, and confirmation still runs BR-BK-5. Only staff holding `bookings.approve` may approve or reject a request: the Super Admin, the Operations Manager and Property Managers for their assigned properties (OD-52; not implemented). Approval cannot override BR-BK-1 to BR-BK-5 for any role, including the Super Admin, and there is no forced approval. |
 | BR-BK-11 | **Cancellation and release:** cancelling a booking or ending an allocation runs under the same locks as creation. Inventory is released immediately, because availability is derived. No job is needed to "free" a seat or room. Expired holds stop blocking automatically (BR-BK-3). |
 | BR-BK-12 | Booking rules per product category (durations, notice, approval, payment, cancellation) come from the category configuration (`DATABASE_ERD.md` §4.1). Their **values** are unconfirmed until the owner's pricing and policy decisions arrive (brief §9 not received). |
 
@@ -120,6 +120,7 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 | BR-CRM-1a | Forms may ask "Which best describes you?" with the eight customer segments (OD-04) as optional answers. The segment is used for routing and reporting. Segments carry **no** priority until the owner sets one. |
 | BR-CRM-2 | Contact de-duplication: match on normalised email **or** E.164 phone. A match attaches the new lead to the existing contact; it never overwrites contact fields without staff confirmation. |
 | BR-CRM-3 | New leads are assigned by the first matching active `assignment_rule` (by priority). If none match, the lead goes to a shared **unassigned** queue visible to all Sales/CRM Executives, and the Super Admin and Operations Manager are notified (confirmed, OD-36). |
+| BR-CRM-3a | Assigning or reassigning a lead's owner by hand requires `leads.assign`: the Super Admin and the Sales/CRM Executive role (OD-51; not implemented). Every manual assignment is audited. |
 | BR-CRM-4 | First-response SLA target: **15 minutes during business hours** [DEFAULT]. A breach notifies the Operations Manager and the Super Admin (confirmed, OD-36). **[UNRESOLVED → D-09]** |
 | BR-CRM-5 | A lead can only be marked `lost` or `disqualified` with a reason from a managed list. |
 | BR-CRM-6 | Sales/CRM Executives see **all** leads by default, because there is no separate sales-manager role (confirmed, OD-36). Access can be restricted per user to assigned properties. Property Managers see leads for their properties (read-only). |
@@ -131,6 +132,7 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 |---|---|
 | BR-CMS-1 | Publishable content (pages, posts, property and offering profiles, scenes, FAQs, testimonials, case studies) follows **Draft → Submitted → Approved → Published**. Content can be **Rejected** with a note at the review step. |
 | BR-CMS-2 | Authors cannot approve their own submission [DEFAULT]. Single-approver workflow [DEFAULT]. **[UNRESOLVED → D-17]** |
+| BR-CMS-2a | A Marketing Manager may publish only a version that **another** authorised person (holding `content.approve`) has approved, never a version they approved themselves. This applies to scheduled publishing (BR-CMS-5) and rollback (BR-CMS-3) as well (OD-56; not implemented). Whether one approval is enough remains D-17. |
 | BR-CMS-3 | Every published version is retained as a revision. Rolling back republishes a previous revision, which is itself an audited action. |
 | BR-CMS-4 | Preview uses a signed, expiring URL that renders the draft exactly as it would publish, and is `noindex`. |
 | BR-CMS-5 | Scheduled publishing and unpublishing are supported. The scheduler runs the same publish action as a manual publish. |

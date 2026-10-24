@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Living document**; supersedes the snapshot in `../phases/PHASE_0_DISCOVERY_REPORT.md` §5 |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 
 **Who decides**
 * **Owner:** the project owner, who approves phases, architecture, process and scope.
@@ -208,8 +208,44 @@ Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete re
 |---|---|
 | OD-49 | **Back-office items 8 to 14 are designed as previews** (answers Q-OW-17): pricing configuration, enquiry management, booking-request review, tour management, contact and legal details, website content management, permissions and publishing safeguards. Previews keep their safeguards: no real bookings, inventory changes, messages, payments or saved business changes. |
 | OD-50 | **Stop after this Phase 2 work and wait for owner review.** No deployment, GitHub setup or package installation. Phase 2 is not complete until AC-2.1 to AC-2.5, including the home-page sign-off, are met. |
-| Q-OW-18 | **Open.** Six permission questions for the new areas (SECURITY_MODEL §11): manual enquiry assignment, who approves booking requests, who edits contact details, who edits and verifies legal and GST details, whether the Marketing Manager may publish (D-17), and how many people hold each role. |
+| Q-OW-18 | **→ answered: OD-51 to OD-57** (§0.17). Six permission questions for the new areas (SECURITY_MODEL §11): manual enquiry assignment, who approves booking requests, who edits contact details, who edits and verifies legal and GST details, whether the Marketing Manager may publish (D-17), and how many people hold each role. |
 | Note | The instruction "do not begin Phase 3" conflicts with the record: Phase 3 steps 3.2 to 3.10 were already built on 2026-10-24 after the owner's "continue next phase" (OD-38). No further Phase 3 work was done in round 12; steps 3.1 and 3.11 still wait for owner inputs (D-31, R-14, D-14). |
+
+### 0.17 Owner decisions — 2026-10-25 (round 13): "Record Q-OW-18 owner decisions"
+
+Source: the owner's seven answers to Q-OW-18. **These decisions approve the intended policy. They do not authorise any change to live permissions or role assignments, and none of them is implemented.** How each is applied, the rules every capability follows, and the implementation and test gaps are in `../security/SECURITY_MODEL.md` §11.
+
+In every decision, a role is authorised only once it has been **explicitly granted** the named capability. A role name alone authorises nothing.
+
+| ID | Decision (owner's words) | Recorded as |
+|---|---|---|
+| OD-51 | "Enquiry owner assignment: Super Admin and Sales/CRM Manager." | `leads.assign` for the Super Admin and the Sales/CRM Executive role. Interpretation: OD-33 has no "Sales/CRM Manager" role, so the Sales/CRM Executive role is meant (Q-OW-19.1). |
+| OD-52 | "Booking request approval: Super Admin and authorised Operations/Property Manager." | `bookings.approve` for the Super Admin, the Operations Manager and the Property Manager (assigned properties only). Sales/CRM Executives, Marketing and Finance cannot approve. Interpretations: rejection uses the same capability (Q-OW-19.3); "authorised" means the role is granted the capability (Q-OW-19.2). Approval always re-checks availability under lock; no role, including the Super Admin, can force a booking (BR-BK-5). |
+| OD-53 | "Public contact details editing: Super Admin and Marketing Manager." | `settings.contact.manage` for the Super Admin and the Marketing Manager. |
+| OD-54 | "Legal/GST editing: Super Admin and Finance Manager." | `settings.legal.manage` for the Super Admin and the Finance role (interpretation: OD-33's "Finance"; Q-OW-19.1). |
+| OD-55 | "Legal/GST verification: A second authorised person distinct from the editor." | `settings.legal.verify` for the Super Admin and Finance. Interpretation: these are the roles OD-54 authorises for legal and GST details. The verifier must be a different person from everyone who edited the version, the Super Admin included. Derived rule: a later edit clears the verification. |
+| OD-56 | "Publishing approved content: Marketing Manager may publish only after separate approval by another authorised person." | The Marketing Manager publishes (including scheduling and rollback) only a version that another person holding `content.approve` approved. BR-CMS-2 (no self-approval by authors) is kept. Partly answers D-17. |
+| OD-57 | "Role headcount: Undecided; keep role assignments and headcount configurable." | No limit per role; roles stay assignable in the back office (`users.manage`). Four-eyes rules are never relaxed when staff are few. |
+
+**Reconciliation (documentation only, 2026-10-25).** Where the documents disagreed with, or did not cover, these decisions:
+
+| Document | Contradiction or gap found | Change made |
+|---|---|---|
+| `../security/SECURITY_MODEL.md` §3.1 | No rows for manual enquiry assignment, booking-request approval, contact details or legal and GST details. The combined "A approve/publish" let a Marketing Manager approve someone else's content and then publish it themselves, which OD-56 rules out. Sales/CRM could "create/modify" bookings, which could bypass approval. | Rows added and marked ‡ (not implemented). Approve and publish are now separate rights for content. A booking entered by someone without `bookings.approve` stays a request when the product needs approval. Note added: four-eyes rules are never relaxed for lack of staff. |
+| SECURITY_MODEL §11 | Seven rows "Needs owner confirmation". Sales/CRM was proposed for booking approval. The Super Admin was shown as "Yes" on four-eyes approvals, although §10 says the Super Admin has no bypass. | Rows now show OD-51 to OD-56, each marked "not implemented". The Sales/CRM proposal is dropped. The Super Admin is shown as "Not own" for those approvals. New sections: §11.1 decisions, §11.2 rules, §11.3 gaps, §11.4 open points. |
+| SECURITY_MODEL §3, §7 | Separation of duties covered only author ≠ approver. The audit list had no booking approval, manual assignment or contact and legal changes. | Separation of duties now also covers verifier ≠ editor and Marketing Manager publisher ≠ approver. New rules: capabilities are checked, never role names; approval never overrides availability. Audit entries added. |
+| `../requirements/BUSINESS_RULES.md` | BR-BK-10 said "staff confirm" without saying who. There was no rule for manual lead assignment or for publisher ≠ approver. | BR-BK-10 now names the approvers (OD-52). BR-CRM-3a (OD-51) and BR-CMS-2a (OD-56) added. |
+| `../architecture/DATABASE_ERD.md` §4.1 | `approver_role` accepted any role. | It is limited to roles holding `bookings.approve`. It narrows approval but never grants it. No model change. |
+| `../requirements/CLIENT_INPUTS_REQUIRED.md` C-5.3; D-01, D-09, D-17, D-33 below | Did not reflect the decisions. | Cross-references added. D-17 is partly resolved. |
+| `../design/DESIGN_SYSTEM.md` §10; `../phases/PHASE_STATUS.md` | The permissions review preview was described as current. Q-OW-18 was listed as open. | Preview marked out of date; Q-OW-18 answered. |
+| ADR-0004, ADR-0005, ADR-0011 | None found: lock-first booking, approved-revision publishing and capability permissions with separation of duties all agree with the decisions. | Unchanged. |
+
+**Not resolved by this update:** none of OD-51 to OD-57 is implemented or tested, and the permissions, workspace-product and legal-details previews still show the round-12 proposals (SECURITY_MODEL §11.3). Documenting a rule does not close its implementation gap.
+
+| ID | Decision |
+|---|---|
+| Q-OW-19 | **Open.** Points the seven answers leave open (SECURITY_MODEL §11.4): (1) whether "Sales/CRM Manager" and "Finance Manager" mean the OD-33 roles Sales/CRM Executive and Finance; (2) whether "authorised" means the whole role or named people; (3) whether rejecting a booking request follows approval; (4) whether rescheduling a confirmed booking needs approval again; (5) whether contact-detail changes need a second person before going live; (6) whether the Super Admin may publish a version they approved (recommended: no); (7) whether SEO redirects and brand settings need a second person. |
+| Note | Documentation only. No permission, role assignment, application code, database, authentication or MFA setting was changed. No Phase 3 work was started; steps 3.1 and 3.11 still wait for owner inputs (D-31, R-14, D-14). |
 
 ---
 
@@ -217,7 +253,7 @@ Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete re
 
 | ID | Decision | Who | Classification | Current state / evidence | Recommended answer | Needed by |
 |---|---|---|---|---|---|---|
-| D-01 | Company profile, market, legal entity | Owner + Client | **Requires client input** (partly answered) | **Market confirmed:** India; Delhi NCR target markets; operating in Noida (OD-02, OD-03). Still missing: legal entity name, CIN, GSTIN, registered address, positioning statement. | supply legal details before public launch | Phase 6 (legal details); market resolved |
+| D-01 | Company profile, market, legal entity | Owner + Client | **Requires client input** (partly answered) | **Market confirmed:** India; Delhi NCR target markets; operating in Noida (OD-02, OD-03). Still missing: legal entity name, CIN, GSTIN, registered address, positioning statement. Who enters and who verifies them: OD-54, OD-55 (a second person; not implemented). | supply legal details before public launch | Phase 6 (legal details); market resolved |
 | D-02 | Properties, floors and canonical city slugs | Owner | **Requires owner input** (mostly answered) | Four Noida properties, **each its own centre** (OD-13), all **owned** (OD-14); official city names (OD-16). **Open: floors per property and levels (Q-OW-1)**, full addresses (PIN, building names) and inventory. | supply via template SG-INV-1.3 | Phase 1 (AC-1.4) |
 | D-03 | Product catalogue | Owner | **Resolved** (2026-10-24, OD-07) | Seven admin-manageable categories. Rule **values** (pricing, payment, cancellation, durations) are not yet confirmed (brief §9 not received). | — | — |
 | D-04 | Pricing rules and public price display | Client | **Deferred to Phase 5** | The ERD price model is generic and does not depend on the answer | "from" prices for flexible products, "+ GST" display (CLIENT_INPUTS C-3.4/3.5) | Phase 5 |
@@ -225,7 +261,7 @@ Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete re
 | D-06 | Existing systems and source of truth | Owner | **Resolved** (2026-10-24, OD-06) | **No existing operational software.** SmartGro is the master for inventory, availability, pricing, bookings and CRM (Scenario A). The assessment is kept for future integrations. | — | — |
 | D-07 | Online booking scope at launch | Client | **Deferred to Phase 8** | API contract §2.2/§3.3 is conditional on this | live tour scheduling at launch; instant room booking only with payments | Phase 8 |
 | D-08 | Payment gateway; GST invoice ownership | Client | **Deferred to Phase 8** | — | decide with finance; webhooks authoritative | Phase 8 |
-| D-09 | Sales process, assignment, SLA | Client | **Deferred to Phase 9** | — | ERD stages; 15-min first response | Phase 9 |
+| D-09 | Sales process, assignment, SLA | Client | **Deferred to Phase 9** | Who may assign an enquiry owner by hand is decided (OD-51, not implemented); assignment rules and SLA values stay open. | ERD stages; 15-min first response | Phase 9 |
 | D-10 | Email / WhatsApp / SMS providers | Client | **Deferred to Phase 8/10** | — | transactional email at launch; WhatsApp once the number is verified | Phase 8 |
 | D-11a | Provisional brand palette | Owner | **Resolved** (2026-10-24) | Approved by the owner as **provisional**. Action Green `#287A15` verified: 5.03:1 on Warm White, 5.41:1 on white (WCAG AA). Smart Green `#2E8B18` kept for the logo and decorative/large elements only. To be re-checked when the logo is sampled. | — | — |
 | D-11b | Original SmartGro logo files (vector master) | Owner | **Partly resolved** (OD-39) | The raster logo (388 × 218 px WebP) was supplied and stored on 2026-10-24. Still requested: a vector master (SVG preferred; otherwise AI/EPS/PDF) or a high-resolution PNG (at least 2000 px wide), plus a reversed version for dark backgrounds if one exists. Never recreated or redrawn. | place the files at `resources/brand/source/` | Phase 2 |
@@ -234,7 +270,7 @@ Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete re
 | D-14 | Hosting, DNS, account ownership | Client + Owner | **Deferred to Phase 3** | — | client-owned accounts; managed Laravel hosting + Cloudflare; India region | Phase 3 (staging) |
 | D-15 | Legal policies, DPDP responsibilities, retention | Client (counsel) | **Deferred to Phase 6** | — | counsel to provide | Phase 6 |
 | D-16 | Website languages | Owner | **Resolved** (2026-10-24, OD-05) | English only for the initial release | — | — |
-| D-17 | Content approval workflow | Client | **Deferred to Phase 4** | — | single approver; no self-approval | Phase 4 |
+| D-17 | Content approval workflow | Client | **Partly resolved** (OD-56); the rest **deferred to Phase 4** | OD-56: a Marketing Manager publishes only after a separate approval by another authorised person; authors never approve their own work (BR-CMS-2). Still open: whether one approval is enough (single or double approval), and whether the Super Admin may publish a version they approved (Q-OW-19.6). Not implemented. | single approver; no self-approval | Phase 4 |
 | D-18 | Analytics, ads, consent, maps | Client | **Deferred to Phase 6** | — | GA4 + GTM with consent mode | Phase 6 |
 | D-19 | Existing website and URLs to preserve | Owner | **Resolved** (2026-10-24, OD-11) | Existing WordPress site at smartgro.space. 57 legitimate URLs inventoried (`../research/EXISTING_WEBSITE_AUDIT.md`). The final redirect map is a Phase 11 task. **The site shows signs of compromise (R-16).** | 301 legitimate URLs; 410 `/pin/*` | Phase 11 (map) |
 | D-20 | Customer/member portal | Client + Owner | **Deferred to Phase 8** | — | none at launch; signed self-service links | Phase 8 |
@@ -250,7 +286,7 @@ Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete re
 | D-30 | Back-office path and access restriction | Owner | **Deferred to Phase 3** | — | non-default path + Cloudflare Access in production | Phase 3 |
 | D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29, OD-34): a GitHub **organisation**; creation and push at **Phase 3 step 3.1**. **Name needed then.** | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation at Phase 3 start | Phase 3 step 3.1 |
 | D-32 | Release slicing (R1) | Owner | **Resolved** (2026-10-24, OD-25) | `PROJECT_MASTER_PLAN.md` §4 | — | — |
-| D-33 | Team structure and role/permission matrix | Owner | **Resolved** (2026-10-24, **OD-33**: six owner-defined roles; supersedes OD-28) | `../security/SECURITY_MODEL.md` §3.1. Duties of removed draft roles: Q-OW-13, Q-OW-14 (proposals). | confirm the † proposals | Phase 3 |
+| D-33 | Team structure and role/permission matrix | Owner | **Resolved** (2026-10-24, **OD-33**: six owner-defined roles; supersedes OD-28) | `../security/SECURITY_MODEL.md` §3.1. Duties of removed draft roles: Q-OW-13, Q-OW-14 (proposals). Permissions for back-office items 8 to 14 decided (OD-51 to OD-57, approved policy, not implemented); the number of people per role is undecided and stays configurable (OD-57). | confirm the † proposals | Phase 3 |
 | D-34 | ADR-0003…0014 acceptance | Owner | **Resolved** (2026-10-24, OD-26) | all ADRs accepted | — | — |
 | D-35 | Inventory import template SG-INV-1.3 and four-eyes import approval | Owner | **Resolved** (2026-10-24, OD-27) | `../requirements/INVENTORY_IMPORT_SPEC.md` | — | — |
 | D-36 | **New:** business values marked [DEFAULT] in the PRD and business rules (hold times, SLAs, windows, horizons) | Owner | **Deferred** to the gate of the phase that implements each rule. They are confirmed there, never silently adopted. | listed in `../requirements/BUSINESS_RULES.md` | confirm at each phase gate | Phases 5–9 |
@@ -262,7 +298,7 @@ Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete re
 | Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-24, D-25, D-26 (MySQL part), D-32, D-33, D-34, D-35 |
 | Requires owner approval | D-31 organisation name (Phase 3 step 3.1); D-14 hosting for staging (Phase 3); D-30 back-office path for production |
 | Requires client input | D-01 (legal details, may defer to Phase 6); D-11b (vector master and reversed version; the raster logo was supplied, OD-39) |
-| Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
+| Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4; partly resolved by OD-56), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
 
 ---
 
@@ -289,6 +325,7 @@ Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete re
 | R-17 | Loss of search visibility at cut-over from WordPress | **Deferred to Phase 11** (redirects approved, OD-21) | 57-URL inventory captured; final map from a fresh crawl and Search Console data; `/pin/*` → 410 |
 | R-18 | Selling long-term agreements beyond a leased property's lease end | **Resolved for now** (OD-14: all current properties owned) | Lease tracking (BR-PROP-5) is activated when the first leased property is added |
 | R-19 | Configuration breadth (7 categories × per-property rules) increases build and test effort | **Resolved** (OD-25, OD-26) | Typed configuration (ADR-0013 accepted); staged release |
+| R-20 | **New (2026-10-25):** with few staff, rules that need a second person block work. Examples: one person holds both the Super Admin and Finance roles, so legal details can never be verified; or only one person can approve content. | **Requires owner input** (staffing; headcount undecided, OD-57) | The rules are never relaxed (SECURITY_MODEL §3.1). Until a second authorised person exists, invoices and legal pages stay blocked and content cannot be published. **Recommended:** before launch, at least two people who can edit and verify legal details, and two who can approve content. |
 
 ---
 
