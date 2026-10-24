@@ -97,7 +97,7 @@
 | 2026-10-24 | SQLite (Phase 0 baseline) | `php artisan test --compact` | 2 passed (Laravel examples only) |
 | 2026-10-24 | throwaway MySQL 8.4.11 (private socket, scratch data directory) | `php artisan test` ×3 | **9 passed, 18 assertions**, each run about 16.5 s |
 | 2026-10-24 | same | temporary config with `DB_DATABASE=smartgro` | refused by the `*_testing` guard, as intended |
-| pending (owner action A-1) | local MySQL created by the setup script | `php artisan test --compact` | expected 9 passed |
+| 2026-10-24 | **the owner's local MySQL 8.4.11** (dev DB `smart_go` configured by the owner; `smartgro_testing` created through the configured connection) | `php artisan test --compact` | **9 passed, 18 assertions, 17.0 s.** Afterwards `smartgro_testing` had 0 tables (harness cleaned up) and `smart_go` was unchanged (9 Laravel tables). |
 
 No SmartGro features exist yet, so there is no feature coverage yet.
 

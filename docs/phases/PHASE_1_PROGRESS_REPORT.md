@@ -155,7 +155,7 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 | AC-1.4 | ERD validated against the first real location via SG-INV-1.0 | **Not met.** Template and rules ready. |
 | AC-1.5 | No silent defaults: each confirmed or deferred in the register | **Partly met.** All classified; confirmations pending. |
 | AC-1.6 | ADR-0003…0012, D-24, D-25, D-32, D-35 approved | **Partly met.** ADR-0001/0002 accepted. |
-| AC-1.7 | Git pushed to private remote; tests pass on local MySQL; Pint clean | **Partly met.** Local Git done; suite verified on throwaway MySQL 8.4.11; remote (A-2) and local DB run (A-1) pending. |
+| AC-1.7 | Git pushed to private remote; tests pass on local MySQL; Pint clean | **Partly met.** Local Git done. **Suite passes on the owner's local MySQL (9/9, 2026-10-24).** Pint clean. Remote push (A-2) pending. R-14: replace the `root` DB user. |
 | AC-1.8 | Owner sign-off recorded | **Pending** |
 
 ---

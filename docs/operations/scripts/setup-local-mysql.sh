@@ -5,7 +5,8 @@
 # Run from the project root:   bash docs/operations/scripts/setup-local-mysql.sh
 #
 # What it does:
-#   1. Creates databases `smartgro` and `smartgro_testing` (utf8mb4) on the local MySQL server.
+#   1. Creates databases `smartgro` (or $SMARTGRO_DB_NAME, e.g. an existing `smart_go`) and
+#      `smartgro_testing` (always this name; phpunit.xml forces it) on the local MySQL server.
 #   2. Creates or updates the MySQL user `smartgro` (localhost and 127.0.0.1) with a NEW random
 #      password and grants it access to those two databases only.
 #   3. Writes the DB_* settings into your local .env (a copy is kept in .env.backup).
@@ -24,7 +25,7 @@ if [[ ! -f artisan || ! -f .env ]]; then
 fi
 
 DB_NAME="${SMARTGRO_DB_NAME:-smartgro}"
-TEST_DB_NAME="${DB_NAME}_testing"
+TEST_DB_NAME="smartgro_testing"   # fixed: phpunit.xml forces this name for every developer
 DB_USER="${SMARTGRO_DB_USER:-smartgro}"
 DB_PASSWORD="$(openssl rand -hex 24)"
 

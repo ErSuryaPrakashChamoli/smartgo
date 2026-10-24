@@ -52,7 +52,7 @@
 | Dependencies | Phase 0 (approved in principle); client inputs; owner approvals |
 | Deliverables (v1.0-rc, 2026-10-24) | **Requirements:** `PRD.md` · `INFORMATION_ARCHITECTURE.md` · `BUSINESS_RULES.md` · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` (+ template SG-INV-1.0 + synthetic fixtures). **Architecture:** `SYSTEM_ARCHITECTURE.md` · `DATABASE_ERD.md` · `API_CONTRACTS.md` · `INTEGRATION_CONTRACTS.md` · `EXISTING_SYSTEMS_ASSESSMENT.md`. **Other:** `SECURITY_MODEL.md` · `TEST_STRATEGY.md` · `DESIGN_SYSTEM.md` (foundation) · `DEPLOYMENT_RUNBOOK.md` (plan) · `LOCAL_DEVELOPMENT.md` · `DECISION_REGISTER.md` · ADR-0001…0012 (0001/0002 ACCEPTED) |
 | Acceptance criteria | `PROJECT_MASTER_PLAN.md` §2, AC-1.1…AC-1.8. Status in `PHASE_1_PROGRESS_REPORT.md` §8. |
-| Tests and results | 2026-10-24: 9/9 passed ×3 runs on a throwaway MySQL 8.4.11 (2 examples + 7 concurrency-harness tests); `*_testing` guard verified; Pint clean. Pending: the same run on the local DB created by owner action A-1. |
+| Tests and results | 2026-10-24: 9/9 passed ×4 runs on a throwaway MySQL 8.4.11, then **9/9 on the owner's local MySQL** (`smartgro_testing`, 17.0 s; harness left 0 tables; dev DB `smart_go` unchanged). `*_testing` guard verified; Pint clean. |
 | Evidence | Git history (`git log`); test outputs (TEST_STRATEGY §7); workbook structure read-back and LibreOffice render (INVENTORY_IMPORT_SPEC §7); contrast calculations (DESIGN_SYSTEM §3) |
 | Known issues | Logo file not found (D-11b). No remote repository yet (R-11). Local dev `.env` still on SQLite until A-1. M-1…M-6 open. |
 | Decisions requiring approval | Owner: D-24, D-25, D-31, D-32, D-34, D-35. Client: D-01, D-02, D-03, D-05, D-06, D-11b, D-16, D-19, D-22, D-33. |

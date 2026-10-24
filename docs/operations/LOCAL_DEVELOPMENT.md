@@ -45,6 +45,16 @@ Run this from the project root. It needs `sudo` for the local MySQL server.
 bash docs/operations/scripts/setup-local-mysql.sh
 ```
 
+To keep an existing development database name (e.g. `smart_go`), run:
+
+```bash
+SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh
+```
+
+The test database is always `smartgro_testing`.
+
+**Do not connect the application as MySQL `root`.** On a shared development server, `root` can read and change every other project's database. The script creates a `smartgro` user limited to the two SmartGro databases.
+
 The script:
 1. creates both databases
 2. creates the `smartgro` user with a **randomly generated password**

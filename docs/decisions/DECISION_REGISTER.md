@@ -88,6 +88,7 @@ A recommended default is **never** treated as an approved business fact. It beco
 | R-11 | **New:** the only copy of the repository is on one machine | **Requires owner approval** (D-31) | Push to a private remote as soon as the owner chooses the repository owner |
 | R-12 | **New:** slow client inputs keep Phase 1 open and delay Phase 2 | **Requires client input** | `../requirements/CLIENT_INPUTS_REQUIRED.md` is ready to send. Owner-approved deferrals are possible for non-structural items. |
 | R-13 | **New:** "snapshot before lock" pitfall: a plain read before taking the lock causes double booking even with a lock | **Resolved at design level** | Reproduced by a negative-control test. ADR-0004 now requires the lock to be the first statement in the transaction. |
+| R-14 | **New (2026-10-24):** the local `.env` connects as MySQL **`root`** on a server that also hosts other projects' databases, including personal-data tables such as candidates and employees. A misconfiguration or bug in SmartGro could read or damage another project's data. | **Requires owner approval** | Mitigations already in place: tests are forced to `smartgro_testing` and the `*_testing` guard blocks other databases. **Recommended:** switch to a least-privileged `smartgro` user limited to `smart_go` and `smartgro_testing` by running `SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh`. Never use `root` in staging or production. |
 
 ---
 
@@ -109,7 +110,7 @@ Later commits are listed by `git log`.
 
 | ID | Action | Instructions |
 |---|---|---|
-| A-1 | Create the local MySQL databases and user, then run the tests | `bash docs/operations/scripts/setup-local-mysql.sh`, then `php artisan test --compact` (expect 9 passed) |
+| A-1 | ~~Create the local MySQL databases and user, then run the tests~~ **Done 2026-10-24.** The owner configured `.env` for MySQL (`smart_go`); `smartgro_testing` was created; **9/9 tests pass**. Follow-up for R-14: switch from `root` to a dedicated user. | `SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh` |
 | A-2 | Choose the repository owner (D-31), create the private GitHub repository, push | `../operations/LOCAL_DEVELOPMENT.md` §5 |
 | A-3 | Send the client the inputs checklist and the systems questionnaire | `../requirements/CLIENT_INPUTS_REQUIRED.md`; `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md` §2 |
 | A-4 | Approve or amend D-24, D-25, D-32, D-34, D-35 | this register |
