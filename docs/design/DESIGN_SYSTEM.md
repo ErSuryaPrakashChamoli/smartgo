@@ -166,16 +166,50 @@ Sampled from the supplied logo (§3.1) where a logo colour exists; the rest keep
 
 | ID | Proposal | Recommendation |
 |---|---|---|
-| P2-A | Colour tokens in §7.2 (forest from the logo, new tints and status colours) | approve |
-| P2-B | Sora for headings, Inter for text | approve |
-| P2-C | **Visual direction** shown in `review/2026-10-24/` and at `/design/home` (AC-2.5) | approve, or name what to change |
-| P2-D | Favicon and app icons made by **cropping the "SG" monogram** from the supplied logo, without reshaping or recolouring | approve (FR-BRAND-1 needs a favicon; the rules require approval for a mark-only variant) |
-| P2-E | A **reversed logo** for dark backgrounds made by recolouring only the dark wordmark and buildings to Warm White; geometry unchanged | approve, or supply a reversed version |
+| P2-A | Colour tokens in §7.2 (forest from the logo, new tints and status colours) | **approved (OD-42)** |
+| P2-B | Sora for headings, Inter for text | **approved (OD-43)** |
+| P2-C | **Visual direction** shown in `review/2026-10-24/` and at `/design/home` (AC-2.5) | **under owner review**; not signed off |
+| P2-D | Favicon and app icons made by **cropping the "SG" monogram** from the supplied logo, without reshaping or recolouring | **approved (OD-44)**; built (§7.6) |
+| P2-E | A **reversed logo** for dark backgrounds made by recolouring only the dark wordmark and buildings to Warm White; geometry unchanged | **approved (OD-45)**; built (§7.6); tagline question Q-OW-16 open |
 
 ### 7.5 Engineering decisions made in Phase 2
 
 * **No framework JavaScript on marketing pages.** Menus use the native Popover API and FAQs use `<details>`, so the public pages ship 0 KB of first-party JavaScript and 10.7 KB (gzip) of CSS. Livewire (which bundles Alpine, about 86 KB gzip) loads only on pages that render a Livewire component (booking, tour scheduler). Those pages sit close to the 90 KB budget in NFR-PERF-2, which is reviewed in Phase 6.
 * **Images:** components show real photographs when they exist, otherwise a placeholder labelled "Photography to be supplied by SmartGro". No stock or AI image is ever presented as a SmartGro space.
 * **Previews contain only confirmed facts** (OD-01, OD-03, OD-04, OD-07, OD-08). Prices and availability read "on request", and FAQ answers read "Answer to be supplied by SmartGro". A test fails if the home preview ever shows a rupee amount.
-* **Logo:** placed only on light backgrounds (the footer is light for this reason) until P2-E is decided.
+* **Logo:** the page designs still place it only on light backgrounds; the reversed version is available but is not added to the home page while its design is under review.
+
+### 7.6 Logo renditions (OD-44, OD-45)
+
+Generated from the unmodified original by `php artisan brand:renditions` (`App\Actions\Brand\GenerateBrandRenditions`); rerun it whenever the logo file changes, for example when a vector master arrives.
+
+| File | What it is |
+|---|---|
+| `public/brand/smartgro-logo.webp` | byte-identical copy of the original |
+| `public/brand/smartgro-logo-reversed.webp` | dark ink ("SMART", upper arc of the G, buildings, base arc) changed to Warm White `#F7F7F2`; greens, building faces, tagline and transparency unchanged (lossless WebP). Each pixel is treated as a blend of the ink and its nearest other logo colour, so only the ink share changes and soft edges are kept: 11,228 of 11,235 clear-green pixels are byte-identical, and the other 7 are anti-aliased edge pixels. |
+| `public/brand/smartgro-mark.png` | the "SG" symbol cropped from the logo (222 px square, transparent), unchanged |
+| `public/favicon.ico` | the symbol at 16, 32 and 48 px |
+| `public/brand/apple-touch-icon.png` | the symbol at 144 px centred on a 180 px Warm White square, because iOS rounds icon corners; the symbol itself is unchanged |
+
+The site layout and the back office both link the tab icon. The back office keeps dark mode off until Q-OW-16 is decided, so the logo never appears with an unreadable tagline.
+
+---
+
+## 8. Responsive specification (mobile-first; Phase 2 step 2.7)
+
+Applies to every public template. Verified on the design previews on 2026-10-24: no horizontal overflow at 320, 360, 768, 1024 or 1440 px.
+
+| Topic | Rule |
+|---|---|
+| Reference widths | Design and review at **360 px** (mobile) and **1440 px** (desktop); everything must also work at 320 px. Breakpoints: `sm` 640, `md` 768, `lg` 1024, `xl` 1280 px. |
+| Page frame | Content up to 1280 px wide, side margins 20 / 32 / 40 px (phone / tablet / desktop). Sections use 64 px vertical padding on phones, 80 px on tablets and 112 px on desktops. |
+| Header | Sticky at every size (72 px tall on phones, 80 px from `lg`). Below `lg`: logo and a Menu button that opens a full-screen sheet with expandable groups, plus **Book a tour** and **Enquire**. From `lg`: inline menu with drop-down panels and the two actions in the header. |
+| Bottom action bar | Below `lg` only: fixed **Enquire** and **Book a tour**, respecting the phone's safe area; the page reserves 96 px at the bottom so nothing is hidden. Call and WhatsApp join once a number and D-10 are confirmed. |
+| Grids | Workspace types: compact rows on phones, 2 columns from `sm`, 4 from `lg`. Property cards: a swipeable row on phones (each card 82% wide, snapping), 2 columns from `sm`, 4 from `lg`. Process steps: 1 column, 3 from `md`. FAQs: stacked on phones, heading and list side by side from `lg`. |
+| Type | Headings scale smoothly between 360 and 1440 px (§7.3). Body text never below 16 px; metadata never below 14 px. Paragraphs are limited to about 70 characters per line. |
+| Touch and forms | Main actions at least 44 × 44 px (medium buttons 44 px, large 52 px); small 36 px buttons only in dense desktop areas (WCAG 2.5.8 needs 24 px). Inputs are 48 px tall with 16 px text, which also stops iOS zooming on focus. |
+| Images | Fixed aspect ratios (cards 4:3, hero 4:3 on phones and 5:4 from `lg`) so the layout never shifts while images load (NFR-PERF-1 CLS ≤ 0.1). Images below the first screen load lazily. |
+| Motion | Transitions of 200 ms or less; with "reduce motion" switched on, pulsing, sliding and smooth scrolling are turned off. |
+| Tables | Wide tables scroll sideways inside their card on small screens; the page itself never scrolls sideways. |
+| Back office | Filament's responsive layout; staff work mainly on desktop and tablet. Phone use is checked at 360 px for the tasks that need it (today's tours, calling a new lead) when those screens are built. |
 

@@ -170,6 +170,20 @@ Details and evidence: `../design/DESIGN_SYSTEM.md` §7.4; screenshots in `../des
 | P2-D | Favicon and app icons cropped from the logo's "SG" monogram, unchanged in shape and colour | approve |
 | P2-E | Reversed logo for dark backgrounds: only the dark wordmark and buildings recoloured to Warm White, geometry unchanged | approve, or supply one |
 
+### 0.13 Owner decisions — 2026-10-24 (round 9)
+
+Source: the owner's instruction "Proceed with the approved design-system decisions", items 1–5, plus the statement that the home-page design is **not yet signed off**.
+
+| ID | Decision |
+|---|---|
+| OD-40 (confirmed) | **SmartGro** is the official one-word spelling. |
+| OD-42 | **P2-A approved:** forest `#0B2C1B` replaces `#073B2C`; the logo-derived palette is kept, together with the automated WCAG 2.2 AA contrast checks. |
+| OD-43 | **P2-B approved:** Sora for headings; Inter for body text and prices. |
+| OD-44 | **P2-D approved:** the browser-tab icon is the original "SG" symbol, cropped, unchanged in shape and colour. |
+| OD-45 | **P2-E approved:** a dark-background logo that keeps the original green elements and changes only the dark lettering and buildings to white. Interpretation: "dark lettering and buildings" covers every element drawn in the logo's dark ink: the word "SMART", the upper arc of the G (same ink as the buildings), the buildings and the arc beneath them. The tagline is a different, grey colour and was not specified, so it is left unchanged (see Q-OW-16). |
+| P2-C | **Not approved.** The owner will review the desktop and mobile screenshots first. Phase 2 visual sign-off (AC-2.5) stays open; work that depends on the home-page direction (step 2.6) waits. |
+| Q-OW-16 | **Open.** On dark backgrounds the tagline keeps its grey (`#444444`), which reaches only **1.55 : 1** on forest and is not readable. Options: (a) also change the tagline lettering to Warm White (its thin lines stay as supplied, 3.82 : 1); (b) leave it as supplied and accept it is unreadable on dark backgrounds. **Recommended: (a).** |
+
 ---
 
 ## 1. Decisions
