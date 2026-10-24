@@ -136,6 +136,12 @@ Interpretation: "ok" accepts the four items in the request "accept S-1, S-2, Q-O
 
 With these, all Phase 1 acceptance criteria except the owner's sign-off (AC-1.8) are met or deferred by owner decision. Phase 1 is **READY FOR REVIEW**.
 
+### 0.9 Phase 1 approval — 2026-10-24
+
+| ID | Decision |
+|---|---|
+| OD-38 | **Phase 1 approved.** The owner instructed "continue next phase" after the Phase 1 baseline was submitted for approval. This is recorded as approval of the baseline, including its deferrals (AC-1.4 → Phase 5 entry gate; remote push → Phase 3 step 3.1). |
+
 ---
 
 ## 1. Decisions
@@ -185,7 +191,7 @@ With these, all Phase 1 acceptance criteria except the owner's sign-off (AC-1.8)
 | Classification | Decisions |
 |---|---|
 | Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-24, D-25, D-26 (MySQL part), D-32, D-33, D-34, D-35 |
-| Requires owner approval | **Phase 1 approval (AC-1.8)**. D-31 organisation name at Phase 3 step 3.1. |
+| Requires owner approval | D-31 organisation name (Phase 3 step 3.1); D-14 hosting for staging (Phase 3); D-30 back-office path for production |
 | Requires client input | D-01 (legal details, may defer to Phase 6); D-11b (logo file, owner will add) |
 | Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
 

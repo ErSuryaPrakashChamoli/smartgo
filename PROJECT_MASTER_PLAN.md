@@ -6,7 +6,7 @@
 | | |
 |---|---|
 | Last updated | 2026-10-24 |
-| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: READY FOR REVIEW**: all criteria met or deferred by owner decision; awaiting the owner's approval (AC-1.8). |
+| Current phase | Phase 0: APPROVED in principle · **Phase 1: APPROVED (2026-10-24)** · **Phase 3: IN PROGRESS** · Phase 2: BLOCKED (logo file) |
 | Live status register | [`docs/phases/PHASE_STATUS.md`](docs/phases/PHASE_STATUS.md) |
 | Decisions and risks | [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) |
 

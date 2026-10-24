@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Date | 2026-10-24 |
-| Phase status | **Phase 0: APPROVED in principle · Phase 1: READY FOR REVIEW** (submitted 2026-10-24; awaiting owner approval) |
+| Phase status | **Phase 1: APPROVED** by the owner on 2026-10-24 ("continue next phase"). Phase 3 in progress. |
 | Prepared for | Project owner |
 | Evidence | Git history, test outputs and file checks cited inline. No result is claimed without a command or file to verify it. |
 
@@ -22,7 +22,7 @@ The owner accepted S-1, S-2, Q-OW-13 and Q-OW-14 ("ok"; OD-34…OD-37). The docu
 | AC-1.5 | No silent defaults | **Met** | D-36 (defaults confirmed at phase gates); pricing values at the Phase 5 gate (OD-35) |
 | AC-1.6 | Architecture approvals | **Met** | ADR-0001…0014 ACCEPTED; D-24, D-25, D-32, D-35 approved |
 | AC-1.7 | Engineering baseline (as amended by OD-34) | **Met:** tests 9/9 on local MySQL, Pint clean, Git history reviewed; remote push at Phase 3 step 3.1 |
-| AC-1.8 | Owner sign-off recorded | **Pending:** Phase 1 submitted for approval |
+| AC-1.8 | Owner sign-off recorded | **Met:** approved 2026-10-24 (OD-38) |
 
 **Approving Phase 1 means accepting the baseline documents and the deferrals above.** It does **not** approve any business values still marked [DEFAULT], or the pricing values: those are confirmed at their phase gates.
 

@@ -10,9 +10,9 @@
 | # | Phase | Status | Blocked by / waiting on |
 |---|---|---|---|
 | 0 | Discovery, audit, requirements clarification | **APPROVED in principle** (project owner, 2026-10-24) | — (open items carried into Phase 1) |
-| 1 | PRD, IA, architecture, database design, acceptance criteria | **READY FOR REVIEW** (2026-10-24) | owner approval (AC-1.8) |
-| 2 | Brand system, UX/UI, design system | NOT STARTED | Phase 1 approval; **logo file** (OD-20) |
-| 3 | Foundation, auth, permissions, security | NOT STARTED | Phase 1 approval; step 3.1 needs the GitHub organisation name (D-31) |
+| 1 | PRD, IA, architecture, database design, acceptance criteria | **APPROVED** (owner, 2026-10-24: "continue next phase") | — (deferred items carried to the Phase 3 and Phase 5 gates) |
+| 2 | Brand system, UX/UI, design system | **BLOCKED** | the original **logo file** (OD-20) at `resources/brand/source/` |
+| 3 | Foundation, auth, permissions, security | **IN PROGRESS** (started 2026-10-24) | step 3.1 needs the GitHub organisation name (D-31) and a dedicated MySQL user (R-14); staging needs the hosting decision (D-14) |
 | 4 | CMS, page builder, media, publishing | NOT STARTED | Phases 2, 3 |
 | 5 | Inventory, pricing, availability | NOT STARTED | Phase 3; entry gate: floors and real inventory, pricing values PR-1…PR-11 |
 | 6 | Public website | NOT STARTED | Phases 2, 4, 5 |
@@ -47,7 +47,7 @@
 
 | Field | Detail |
 |---|---|
-| Status | **READY FOR REVIEW** (2026-10-24). All Phase 1 acceptance criteria are met, or deferred by explicit owner decision (AC-1.4 → Phase 5 entry gate; remote push in AC-1.7 → Phase 3 step 3.1). **Not approved:** awaiting the owner's sign-off (AC-1.8). |
+| Status | **APPROVED** by the project owner on 2026-10-24 (instruction: "continue next phase", recorded as approval of the submitted baseline). AC-1.8 met. Deferred items: AC-1.4 → Phase 5 entry gate; the remote push → Phase 3 step 3.1. |
 | Scope | PRD, sitemap and journeys, role matrix, business rules, ERD, system architecture, API contracts, integration inventory, existing-systems assessment, security model, test strategy, design system foundation, deployment plan, inventory import, decision register, phase acceptance criteria; safe local setup (Git, MySQL test configuration) |
 | Dependencies | Phase 0 (approved in principle); client inputs; owner approvals |
 | Deliverables (v1.2-rc, 2026-10-24) | **Requirements:** `PRD.md` · `INFORMATION_ARCHITECTURE.md` · `BUSINESS_RULES.md` · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` (+ template SG-INV-1.3 + synthetic fixtures). **Architecture:** `SYSTEM_ARCHITECTURE.md` · `DATABASE_ERD.md` · `API_CONTRACTS.md` · `INTEGRATION_CONTRACTS.md` · `EXISTING_SYSTEMS_ASSESSMENT.md`. **Other:** `SECURITY_MODEL.md` · `TEST_STRATEGY.md` · `DESIGN_SYSTEM.md` (foundation) · `DEPLOYMENT_RUNBOOK.md` (plan) · `LOCAL_DEVELOPMENT.md` · `DECISION_REGISTER.md` · ADR-0001…0014 (0001/0002 ACCEPTED) · `EXISTING_WEBSITE_AUDIT.md` |
@@ -58,7 +58,19 @@
 | Decisions requiring approval | Owner approvals: D-24, D-25, D-31, D-32, D-34 (ADR-0003…0014), D-35 (SG-INV-1.3). Owner inputs: Q-OW-1, Q-OW-9, Q-OW-10 (logo, later), Q-OW-11, Q-OW-12, D-02 (floors, addresses, inventory), D-33; D-01 legal details (may defer to Phase 6). |
 | Next phase | Phase 2 (needs the logo) and Phase 3 (needs D-24, D-25), in parallel, **only after Phase 1 approval** |
 
-## Phases 2–15
+## Phase 3: Application foundation, authentication, permissions, security
+
+| Field | Detail |
+|---|---|
+| Status | **IN PROGRESS** (started 2026-10-24) |
+| Scope | Back-office panel with custom theme and required MFA; the six owner-defined roles and the permission catalogue; user management; audit log; security headers and password policy; architecture tests; CI workflow; GitHub remote and staging (owner inputs) |
+| Dependencies | Phase 1 approved. Packages approved under D-24 (installed now: `spatie/laravel-permission`, `spatie/laravel-activitylog`). Redis client and Horizon wait until Redis is installed locally (ADR-0007). |
+| Steps | **3.1** GitHub organisation, private repository, push; dedicated MySQL user. *Owner inputs needed: organisation name; run the setup script.* · **3.2** install approved packages · **3.3** Filament panel (configurable path, D-30), brand colours, custom theme · **3.4** users: active flag, panel access by role, required MFA · **3.5** roles and permission catalogue (six roles, OD-33) · **3.6** user management for the Super Admin · **3.7** audit log (logins, failures, user and role changes) and viewer · **3.8** security headers, password policy · **3.9** architecture tests · **3.10** CI workflow · **3.11** staging environment (needs D-14) |
+| Acceptance criteria | `PROJECT_MASTER_PLAN.md` §2, Phase 3. AC-3.2 (policy tests) applies to everything that exists in Phase 3; later modules add their own as they are built. |
+| Tests and results | recorded as each step lands |
+| Known issues | Phase 2 blocked on the logo file; Redis not installed locally; no hosting decision yet |
+
+## Phases 2 and 4–15
 Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.md` §2. Each phase gets a full entry here when it starts.
 
 ---
@@ -68,6 +80,7 @@ Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.
 | Date | Change |
 |---|---|
 | 2026-10-24 | Register created. Phase 0 → READY FOR REVIEW. Phase 1 → IN PROGRESS with drafts. |
+| 2026-10-24 | **Phase 1 APPROVED** by the owner ("continue next phase"). Phase 3 started; Phase 2 blocked on the logo file. |
 | 2026-10-24 | Round 7: "ok" accepts S-1, S-2, Q-OW-13, Q-OW-14 (OD-34…OD-37). Documents set to Phase 1 baseline v1.0. Tests 9/9 on local MySQL, Pint clean. **Phase 1 → READY FOR REVIEW.** |
 | 2026-10-24 | Round 6: floor allocation stays pending (OD-32); six owner-defined roles (OD-33) supersede the drafted roles. Permission matrix rebuilt; template SG-INV-1.3 (column rename). Proposals Q-OW-13/14 raised. Phase 1 remains IN PROGRESS. |
 | 2026-10-24 | Round 5: "Approve all as recommended", recorded as OD-23…OD-31. ADR-0003…0014 accepted. Pricing-configuration proposal drafted (no prices). Remaining before READY FOR REVIEW: S-1, S-2. Phase 1 remains IN PROGRESS. |
