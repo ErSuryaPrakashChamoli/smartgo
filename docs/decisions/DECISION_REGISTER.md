@@ -199,8 +199,17 @@ Source: the owner's brief "SmartGro — Phase 2 continuation prompt: complete re
 |---|---|
 | OD-47 | **Design the remaining Phase 2 pages and the back-office screens now, before the home page is signed off.** This replaces the round-10 instruction to wait. The home page stays **unapproved and frozen**: its layout, styling, content, components and responsive behaviour must not change, and shared components may change only where the home page renders identically (verified pixel-for-pixel). |
 | OD-48 | Scope confirmed by the brief: city pages (5 canonical cities; Gurgaon redirects to Gurugram; administrator-controlled visibility; coming-soon page), property listing and detail for the 4 confirmed Noida properties, the 7 workspace types, enterprise, the enquiry, tour, request-to-book, online-booking and payment journeys, and back-office screens 1–7 (dashboard, property create and edit, buildings and floors, workspace products, individual seats, pooled capacity, mixed zones), keeping the light back-office theme. |
-| Q-OW-17 | **Open.** Please resend section 5 of the brief from after "7. Mixed zones", and anything that followed it (further back-office screens, deliverables, reporting). Nothing after the cut is assumed. |
+| Q-OW-17 | **→ answered: OD-49.** Please resend section 5 of the brief from after "7. Mixed zones", and anything that followed it (further back-office screens, deliverables, reporting). Nothing after the cut is assumed. |
 | P2-C | **Still not signed off** (round 11). |
+
+### 0.16 Owner instruction — 2026-10-24 (round 12): "Phase 2 — remaining back-office scope"
+
+| ID | Decision |
+|---|---|
+| OD-49 | **Back-office items 8 to 14 are designed as previews** (answers Q-OW-17): pricing configuration, enquiry management, booking-request review, tour management, contact and legal details, website content management, permissions and publishing safeguards. Previews keep their safeguards: no real bookings, inventory changes, messages, payments or saved business changes. |
+| OD-50 | **Stop after this Phase 2 work and wait for owner review.** No deployment, GitHub setup or package installation. Phase 2 is not complete until AC-2.1 to AC-2.5, including the home-page sign-off, are met. |
+| Q-OW-18 | **Open.** Six permission questions for the new areas (SECURITY_MODEL §11): manual enquiry assignment, who approves booking requests, who edits contact details, who edits and verifies legal and GST details, whether the Marketing Manager may publish (D-17), and how many people hold each role. |
+| Note | The instruction "do not begin Phase 3" conflicts with the record: Phase 3 steps 3.2 to 3.10 were already built on 2026-10-24 after the owner's "continue next phase" (OD-38). No further Phase 3 work was done in round 12; steps 3.1 and 3.11 still wait for owner inputs (D-31, R-14, D-14). |
 
 ---
 

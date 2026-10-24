@@ -185,3 +185,50 @@ What exists in code now, and where it differs from the plan above. Each row is c
 | Headers | `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: SAMEORIGIN`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`; HSTS over HTTPS in production | Content Security Policy (including `frame-ancestors 'none'` for the back office) is added in Phase 14 |
 | Audit trail | sign-in, failed sign-in (email address only, never the password), sign-out, role changes (old and new roles), activation and name/email changes, two-step login changes (which methods are on, never secrets or codes), two-step login resets. Read-only viewer at Settings → Audit log. | the other §7 actions are audited by the modules that introduce them |
 
+---
+
+## 11. Proposed capabilities for back-office items 8 to 14 (round 12, 2026-10-24)
+
+A review of the role design for pricing, enquiries, booking requests, tours, contact and legal details, and website content. **Viewing, editing, approving and publishing are separate capabilities.** "Approved matrix" rows restate §3.1; "Needs owner confirmation" rows are proposals for cases §3.1 does not settle. Only `users.manage` and `audit_log.view` exist in code; each module adds its capabilities when it is built, and no permission was changed by this review. The same table is shown in the back office at Design previews → Permissions review.
+
+Values: Yes · Own properties (only properties assigned to that user) · Totals (aggregates only) · Not own (approves only other people's work) · a "?" marks a proposed grant.
+
+| Area | Capability | Purpose | Super Admin | Operations | Property | Sales/CRM | Marketing | Finance | Basis |
+|---|---|---|---|---|---|---|---|---|---|
+| Staff and audit | `users.manage` | Manage staff, roles and two-step login resets | Yes | — | — | — | — | — | Implemented |
+| Staff and audit | `audit_log.view` | Read the audit log | Yes | — | — | — | — | — | Implemented |
+| Pricing | `pricing.view` | See prices | Yes | Yes | Own properties | Yes | Yes | Yes | Approved matrix |
+| Pricing | `pricing.manage` | Create and edit draft prices | Yes | — | — | — | — | Yes | Approved matrix |
+| Pricing | `pricing.approve` | Activate prices | Yes | — | — | — | — | Not own | Approved matrix |
+| Pricing | `quotations.manage` | Prepare enterprise quotations | Yes | — | — | Up to limit | — | Approves | Approved matrix |
+| Enquiries | `leads.view` | See enquiries | Yes | Totals | Own properties | Yes | Totals | Deal values | Approved matrix |
+| Enquiries | `leads.manage` | Change status, log follow-ups | Yes | — | — | Yes | — | — | Approved matrix |
+| Enquiries | `leads.assign` | Assign an owner by hand | Yes | — | — | Yes? | — | — | **Needs owner confirmation** |
+| Enquiries | `leads.export` | Export enquiries (audited) | Yes | — | — | — | — | — | Approved matrix |
+| Bookings | `bookings.view` | See booking requests and bookings | Yes | Yes | Own properties | Yes | — | Yes | Approved matrix |
+| Bookings | `bookings.approve` | Approve or reject booking requests | Yes | Yes? | Own properties? | Yes? | — | — | **Needs owner confirmation** |
+| Bookings | `bookings.cancel` | Cancel bookings | Yes | Yes | Own properties | Yes | — | — | Approved matrix |
+| Tours | `tours.view` | See tours | Yes | Yes | Own properties | Yes | — | — | Approved matrix |
+| Tours | `tours.manage` | Confirm, reschedule and cancel tours | Yes | — | Own properties | Yes | — | — | Approved matrix |
+| Contact and legal | `settings.contact.manage` | Edit public contact details | Yes | — | — | — | Yes? | — | **Needs owner confirmation** |
+| Contact and legal | `settings.legal.view` | See legal entity and GST details | Yes | — | — | — | — | Yes | **Needs owner confirmation** |
+| Contact and legal | `settings.legal.manage` | Edit legal entity and GST details | Yes | — | — | — | — | Yes | **Needs owner confirmation** |
+| Contact and legal | `settings.legal.verify` | Verify legal details | Yes | — | — | — | — | Not own | **Needs owner confirmation** |
+| Website content | `content.view` | Read drafts and previews | Yes | Profiles | Own properties | Profiles | Yes | — | Approved matrix |
+| Website content | `content.edit` | Edit drafts | Yes | — | Own properties | — | Yes | — | Approved matrix |
+| Website content | `content.approve` | Approve submitted content | Yes | — | — | — | Not own | — | Approved matrix |
+| Website content | `content.publish` | Publish or schedule | Yes | — | — | — | Yes? | — | **Needs owner confirmation** |
+| Website content | `testimonials.publish` | Publish testimonials and case studies (consent on file) | Yes | — | — | — | Not own | — | Approved matrix |
+| Website content | `media.manage` | Upload media with origin and licence | Yes | — | Own properties | — | Yes | — | Approved matrix |
+
+**Safeguards that every module keeps:** separate approve and publish rights; four-eyes ("Not own") for price activation, content approval, inventory imports and legal verification; the Super Admin holds each capability explicitly, so the four-eyes rules apply to the Super Admin too; legal and GST details are limited to the Super Admin and Finance; every change is audited.
+
+**Questions for the owner (Q-OW-18):**
+
+1. Who may assign an enquiry owner by hand: the Super Admin only, or Sales/CRM Executives too?
+2. Which roles approve booking requests: Operations Manager, Property Managers for their own properties, Sales/CRM Executives, or a subset? (Set per workspace type through the category's approver role.)
+3. Who edits the public contact details: the Super Admin only, or the Marketing Manager too?
+4. Legal entity and GST details: Super Admin and Finance edit, and a different one of them verifies?
+5. Publishing: may the Marketing Manager publish approved content, or only the Super Admin (single or double approval, D-17)?
+6. How many people will hold each role? With one person in a role, the Super Admin acts as the second approver.
+

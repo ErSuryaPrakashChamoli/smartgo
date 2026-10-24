@@ -254,6 +254,15 @@ Real Filament screens in a **Design previews** section of the back office (`/adm
 | Pooled capacity | Usage bar (allocated, confirmed, held, free), commitments, capacity form, an example of a refused request. |
 | Mixed zones | Assigned seats plus shared pool, the BR-AV-3d rule in plain words, an example of a refused assignment. |
 | Cities | Visibility per city with what visitors will see; making a city visible asks for confirmation and explains the coming-soon page. |
+| Pricing (item 8) | Price coverage for every property and product, where "Not set" (missing) is visibly different from "Free (₹0)"; editor for starting price, fixed price, price on request, enquiry only and custom quotation, with billing period, unit, GST treatment and website display. ₹0 is refused unless the product is marked free. All real cells are "Not set". |
+| Enquiries (item 9) | Sample enquiries, clearly labelled as invented: status, owner, source; view with activity history, assign owner, log follow-up, change status. |
+| Booking requests (item 10) | Requests listed apart from confirmed bookings, each with property, product, time and the availability check. Approving a request that conflicts with a booking is refused: approval re-checks availability under lock and cannot be forced. |
+| Tours (item 11) | Requested and confirmed tours side by side ("Visitor asked for" versus "Confirmed time"); confirm, propose another time, cancel, completed, no-show. No message is sent. |
+| Contact and legal details (item 12) | Brand facts marked confirmed; every contact and legal field starts empty and says it is missing; registered legal entity kept apart from the SmartGro brand; GSTIN format check; invoices and legal pages blocked until details are verified. |
+| Website content (item 13) | Pages and their status (none published), block editor (introduction, text, FAQs, image, testimonial), search-engine fields, Draft → Submit → Approve (not own) → Publish. Images must declare their origin and confirm they are not from the old website; testimonials need consent and verification. |
+| Permissions review (item 14) | The approved matrix and proposed capabilities for items 8 to 14, with view, edit, approve and publish separated and the rows needing owner confirmation marked (SECURITY_MODEL §11). |
 
 The back office keeps the approved light theme.
+
+**Preview safety (verified by tests):** every back-office preview is Super Admin only and refused in production; forms validate like the real screens but nothing is stored (no database write happens on any preview action); no email, SMS, WhatsApp message or notification is sent; no booking, inventory change or payment is made.
 
