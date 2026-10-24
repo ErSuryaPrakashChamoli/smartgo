@@ -5,8 +5,8 @@
 
 | | |
 |---|---|
-| Last updated | 2026-10-24 |
-| Current phase | Phase 0: APPROVED in principle · **Phase 1: APPROVED (2026-10-24)** · **Phase 3: IN PROGRESS** · **Phase 2: IN PROGRESS** (direction sample awaiting owner sign-off) |
+| Last updated | 2026-10-25 |
+| Current phase | Phase 0: APPROVED in principle · **Phase 1: APPROVED (2026-10-24)** · **Phase 2: READY FOR REVIEW** (AC-2.1 to AC-2.4 met with evidence; AC-2.5 owner sign-off of the visual direction outstanding) · **Phase 3: IN PROGRESS** (AC-3.1 and AC-3.5 wait for D-31, R-14 and D-14; OD-74 back-office access permission not yet implemented) · acceptance records in `docs/phases/PHASE_STATUS.md` |
 | Live status register | [`docs/phases/PHASE_STATUS.md`](docs/phases/PHASE_STATUS.md) |
 | Decisions and risks | [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) |
 
@@ -88,7 +88,7 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
   * Git repo and CI
   * MySQL dev and test databases
   * Filament panel with custom theme and required MFA
-  * roles and permissions per the matrix, with property scoping
+  * roles and permissions per the matrix, with property scoping, including back-office access through the explicit `backoffice.access` permission (OD-74)
   * audit log
   * security headers
   * Pest architecture tests

@@ -319,8 +319,34 @@ Source: the owner's decisions OD-68 to OD-73, with IDs given by the owner, answe
 
 | ID | Decision |
 |---|---|
-| Q-OW-21 | **Open** (SECURITY_MODEL §11.4):<br>1. **Back-office sign-in** is granted by holding any of the six roles, not by an assigned permission. It is the one access right that comes from role membership itself. Keep it, or require an assigned sign-in permission (OD-68)?<br>2. **External tag manager** (if chosen, D-18): tags added inside it bypass the back-office approval required by OD-71. Bring its access controls into D-18, or avoid a tag manager? |
+| Q-OW-21 | **→ answered: OD-74, OD-75** (§0.20). (SECURITY_MODEL §11.4):<br>1. **Back-office sign-in** is granted by holding any of the six roles, not by an assigned permission. It is the one access right that comes from role membership itself. Keep it, or require an assigned sign-in permission (OD-68)? **→ OD-74** (explicit `backoffice.access` permission)<br>2. **External tag manager** (if chosen, D-18): tags added inside it bypass the back-office approval required by OD-71. Bring its access controls into D-18, or avoid a tag manager? **→ OD-75** (optional; never a bypass; not enabled for live tracking unless it enforces the controls) |
 | Note | Documentation only. No application code, permission, role assignment, authentication, MFA, database schema, migration, test, preview, production setting or deployment configuration was changed. No Phase 3 or other implementation work was started. |
+
+### 0.20 Owner decisions — 2026-10-25 (round 16): "Close current phase, verify acceptance, move to the next phase", section 2
+
+Source: the owner's decisions OD-74 and OD-75, with IDs given by the owner, answering Q-OW-21. **These are approved policy recorded in documentation. They are not implemented and change no live permission, role assignment, sign-in or two-step login behaviour.**
+
+| ID | Decision (owner's words, key points) | Resolves | Recorded as, and why |
+|---|---|---|---|
+| OD-74 | "Back-office access requires an explicit backoffice.access permission. Role membership alone does not grant access. A role-level permission applies to every member of that role, consistent with OD-68. Individual grants are optional and must remain within the role's permitted scope. The approved role-permission matrix must explicitly represent which roles receive this permission. Do not assume that Super Admin automatically receives every future permission without reviewing it against the approved permission matrix. Apply the policy to protected back-office pages, routes and APIs. Preserve existing authentication and two-step login behaviour." | Q-OW-21.1 | A new matrix row in SECURITY_MODEL §3.1 and §11 assigns `backoffice.access` to all six roles. **Derived:** every role has back-office duties in §3.1, and this keeps today's access. The Super Admin's assignments must be listed and reviewed one by one (SECURITY_MODEL §3.1, §11.2 rule 1). **Contradictions found:**<br>• `User::canAccessPanel()` admits any active user with a role;<br>• `StaffRole::capabilities()` gives the Super Admin every capability automatically.<br>Both are recorded as implementation gaps (SECURITY_MODEL §10, §11.3). The code was not changed, because OD-74 gives no permission to change sign-in code in a documentation task. |
+| OD-75 | "External tag managers are optional, not prohibited. They must never provide a bypass around OD-71. Changes to tracking IDs, analytics identifiers, advertising pixels and tag configurations must receive independent approval before becoming active, regardless of whether the change originates in SmartGro's CMS or an external provider. … No person may approve their own change or publish a version they approved. If a future provider cannot enforce the required controls, it must not be enabled for live website tracking." | Q-OW-21.2 | SECURITY_MODEL §11.2 rule 7 sets the access-control, authorisation, approval, publication and audit requirements. A provider is enabled for live tracking only if it is shown to enforce them. No vendor, API, provider capability or integration is assumed: D-18 is still open, and GTM is listed only as a recommended candidate. |
+| Q-OW-21 | → answered by OD-74 and OD-75. | | |
+
+**Contradictions resolved (round 16):**
+
+| Contradiction | Where it was | Resolution |
+|---|---|---|
+| Back-office access came from role membership | SECURITY_MODEL §2, §3, §10, §11.3; SYSTEM_ARCHITECTURE (Filament smoke-test notes); `../operations/LOCAL_DEVELOPMENT.md` | OD-74 policy recorded. The current behaviour is described as current and flagged as a gap; no code was changed. |
+| The Super Admin automatically receives every capability | SECURITY_MODEL §10, §11.3 (code: `StaffRole::capabilities()`) | OD-74: each Super Admin assignment is reviewed against §3.1. Implementation gap recorded. |
+| Tags inside an external tag manager bypass approval | SECURITY_MODEL §11.4; INTEGRATION_CONTRACTS IC-2; CLIENT_INPUTS C-7.5; PRD FR-AN-1; D-18 | OD-75 requirements recorded; no provider enabled. |
+| Test journey J-4 had "a different approver … publishes" | `../testing/TEST_STRATEGY.md` J-4 | Changed to match OD-65 and OD-73: a different person approves, and someone other than the approver publishes. |
+| The back-office previews still showed the round-12 proposals | Design previews: permissions review, workspace products, contact and legal details, website content, booking requests | Preview text and choices updated to the decided policy (Phase 2 design work under OD-49). They remain previews and enforce nothing (DESIGN_SYSTEM §10). |
+
+**Not resolved:** none of OD-51 to OD-75 is implemented in production code. See SECURITY_MODEL §11.3 for the gaps.
+
+| ID | Decision |
+|---|---|
+| Note | No owner question is open after this round. Phase 2 still needs the owner's sign-off of the visual direction (AC-2.5). Phase 3 still needs D-31, R-14 and D-14 (`../phases/PHASE_STATUS.md`, acceptance records). |
 
 ---
 
@@ -346,7 +372,7 @@ Source: the owner's decisions OD-68 to OD-73, with IDs given by the owner, answe
 | D-15 | Legal policies, DPDP responsibilities, retention | Client (counsel) | **Deferred to Phase 6** | — | counsel to provide | Phase 6 |
 | D-16 | Website languages | Owner | **Resolved** (2026-10-24, OD-05) | English only for the initial release | — | — |
 | D-17 | Content approval workflow | Client | **Resolved** (2026-10-25, **OD-73**, by the owner; previously partly resolved by OD-56 and OD-65) | **One approval** by a person other than the author is enough. The approver never publishes the version they approved, and the author may publish if they are not the approver, so a two-person workflow is permitted (BR-CMS-2, BR-CMS-2a; cases in SECURITY_MODEL §11.6). Not implemented. | single approver; no self-approval | — |
-| D-18 | Analytics, ads, consent, maps | Client | **Deferred to Phase 6** | Tracking-ID, analytics-identifier and pixel changes need independent approval before going live (OD-71, not implemented). Control of an external tag manager is open (Q-OW-21.2). | GA4 + GTM with consent mode | Phase 6 |
+| D-18 | Analytics, ads, consent, maps | Client | **Deferred to Phase 6** | Tracking-ID, analytics-identifier and pixel changes need independent approval before going live (OD-71, not implemented). An external tag manager is optional, and is enabled for live tracking only if it enforces independent approval, publication and audit (OD-75; SECURITY_MODEL §11.2 rule 7). | GA4 + GTM with consent mode (candidates, not chosen) | Phase 6 |
 | D-19 | Existing website and URLs to preserve | Owner | **Resolved** (2026-10-24, OD-11) | Existing WordPress site at smartgro.space. 57 legitimate URLs inventoried (`../research/EXISTING_WEBSITE_AUDIT.md`). The final redirect map is a Phase 11 task. **The site shows signs of compromise (R-16).** | 301 legitimate URLs; 410 `/pin/*` | Phase 11 (map) |
 | D-20 | Customer/member portal | Client + Owner | **Deferred to Phase 8** | — | none at launch; signed self-service links | Phase 8 |
 | D-21 | AI concierge scope and provider | Owner + Client | **Deferred to Phase 13** | — | defer | Phase 13 |
@@ -358,10 +384,10 @@ Source: the owner's decisions OD-68 to OD-73, with IDs given by the owner, answe
 | D-27 | Partner (landlord/broker) and careers pages | Client | **Deferred to Phase 6** | — | omit until confirmed | Phase 6 |
 | D-28 | Tour rules | Client | **Deferred to Phase 8** | — | 30-min slots within operating hours | Phase 8 |
 | D-29 | Lead data retention | Client (counsel) | **Deferred to Phase 9** | — | counsel to confirm | Phase 9 |
-| D-30 | Back-office path and access restriction | Owner | **Deferred to Phase 3** | — | non-default path + Cloudflare Access in production | Phase 3 |
+| D-30 | Back-office path and access restriction | Owner | **Deferred to Phase 3** | The path is configurable (`BACKOFFICE_PATH`). Inside the application, access requires the explicit `backoffice.access` permission (OD-74, not implemented). The network-level restriction is still open. | non-default path + Cloudflare Access in production | Phase 3 |
 | D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29, OD-34): a GitHub **organisation**; creation and push at **Phase 3 step 3.1**. **Name needed then.** | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation at Phase 3 start | Phase 3 step 3.1 |
 | D-32 | Release slicing (R1) | Owner | **Resolved** (2026-10-24, OD-25) | `PROJECT_MASTER_PLAN.md` §4 | — | — |
-| D-33 | Team structure and role/permission matrix | Owner | **Resolved** (2026-10-24, **OD-33**: six owner-defined roles; supersedes OD-28) | `../security/SECURITY_MODEL.md` §3.1. Duties of removed draft roles: Q-OW-13, Q-OW-14 (proposals). Permissions for back-office items 8 to 14 decided (OD-51 to OD-57, approved policy, not implemented); the number of people per role is undecided and stays configurable (OD-57). Role names confirmed for now (OD-58, OD-59). A permission assigned to a role applies to all its members; individual exceptions are optional, within the role's scope (OD-60, OD-68; not implemented). No role added. | confirm the † proposals | Phase 3 |
+| D-33 | Team structure and role/permission matrix | Owner | **Resolved** (2026-10-24, **OD-33**: six owner-defined roles; supersedes OD-28) | `../security/SECURITY_MODEL.md` §3.1. Duties of removed draft roles: Q-OW-13, Q-OW-14 (proposals). Permissions for back-office items 8 to 14 decided (OD-51 to OD-57, approved policy, not implemented); the number of people per role is undecided and stays configurable (OD-57). Role names confirmed for now (OD-58, OD-59). A permission assigned to a role applies to all its members; individual exceptions are optional, within the role's scope (OD-60, OD-68; not implemented). No role added. Back-office access is the explicit `backoffice.access` permission, assigned to all six roles (OD-74, derived; not implemented). | confirm the † proposals | Phase 3 |
 | D-34 | ADR-0003…0014 acceptance | Owner | **Resolved** (2026-10-24, OD-26) | all ADRs accepted | — | — |
 | D-35 | Inventory import template SG-INV-1.3 and four-eyes import approval | Owner | **Resolved** (2026-10-24, OD-27) | `../requirements/INVENTORY_IMPORT_SPEC.md` | — | — |
 | D-36 | **New:** business values marked [DEFAULT] in the PRD and business rules (hold times, SLAs, windows, horizons) | Owner | **Deferred** to the gate of the phase that implements each rule. They are confirmed there, never silently adopted. | listed in `../requirements/BUSINESS_RULES.md` | confirm at each phase gate | Phases 5–9 |

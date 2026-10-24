@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Incorporates owner decisions OD-01…OD-37. Pricing values are decided at the Phase 5 entry gate (OD-35). Approval and publishing acceptance criteria updated 2026-10-25 for OD-56 and OD-60 to OD-73 (approved policy, not implemented). |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Incorporates owner decisions OD-01…OD-37. Pricing values are decided at the Phase 5 entry gate (OD-35). Approval and publishing acceptance criteria updated 2026-10-25 for OD-56 and OD-60 to OD-75 (approved policy, not implemented). |
 | Version | 0.3 (2026-10-24) |
 | Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` · `../architecture/*` (incl. `API_CONTRACTS.md`, `EXISTING_SYSTEMS_ASSESSMENT.md`) · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
 | Decision references | D-xx items: `../decisions/DECISION_REGISTER.md` (living register) |
@@ -208,7 +208,7 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-AN-1 | Consent-aware tag loading; first-party attribution capture onto leads. | No marketing tags fire before consent where consent is required (D-18). A new or changed tracking ID, analytics identifier or advertising pixel becomes active only after independent approval and publication (OD-71, BR-CMS-9). |
+| FR-AN-1 | Consent-aware tag loading; first-party attribution capture onto leads. | No marketing tags fire before consent where consent is required (D-18). A new or changed tracking ID, analytics identifier or advertising pixel becomes active only after independent approval and publication (OD-71, BR-CMS-9). The same applies to tag configurations in an external tag manager. A tag manager that cannot enforce it is not enabled for live tracking (OD-75). |
 | FR-AN-2 | Dashboards: funnel (visits → enquiries → tours → deals), lead response SLA, occupancy and availability by location, content freshness. | Figures reconcile with source tables. |
 
 ### 5.10 Concierge (Phase 13, future)

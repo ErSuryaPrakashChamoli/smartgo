@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Current state (verified) | Pest 5.3.3, `pest-plugin-laravel` 5.0.1, `pest-plugin-arch`. **Suite runs on MySQL 8.4** (`phpunit.xml` forces `mysql` + `smartgro_testing`). 9 tests: 2 Laravel examples + 7 MySQL harness tests. **9/9 passed in three consecutive runs** against a throwaway MySQL 8.4.11 instance (2026-10-24). |
 
 ---
@@ -26,7 +26,7 @@
 | Architecture | Pest `arch()` (plugin already installed) | module boundaries: content/marketing classes may not write inventory/pricing models; no `env()` outside config; no debug functions; controllers are thin | every commit |
 | Unit | Pest | availability calculator, slot generator, price resolver, reference generator, GLB anchor-name parser | every commit |
 | Feature: HTTP | Pest + Laravel HTTP testing | public pages render (SSR, status, meta, canonical, JSON-LD validity), API v1 resources, webhooks (signature, idempotency) | every commit |
-| Feature: back office | Pest + Livewire testing helpers for Filament 5 | each role × capability from `SECURITY_MODEL.md` §3.1 (allowed and **denied**); approval workflow transitions; property scoping on lists, search and exports | every commit |
+| Feature: back office | Pest + Livewire testing helpers for Filament 5 | each role × capability from `SECURITY_MODEL.md` §3.1 (allowed and **denied**), including `backoffice.access` on every back-office route (OD-74); every permitted and refused case in `SECURITY_MODEL.md` §11.6 (author, approver, publisher; booking creator and approver; editor and verifier); approval workflow transitions; property scoping on lists, search and exports | every commit |
 | Concurrency | Pest on MySQL + parallel processes | BR-BK-1/2/5, BR-TR-2: N simultaneous attempts on one slot → exactly one success | every PR touching booking/inventory; nightly |
 | Browser / E2E | Pest browser testing (plugin **not installed**; compatibility to be verified in Phase 3) or Playwright | critical journeys (§4) on mobile and desktop viewports | pre-merge to main, nightly |
 | Accessibility | axe-core in E2E runs + manual screen-reader pass | WCAG 2.2 AA on every page template and the back-office core flows | per release |
@@ -64,7 +64,7 @@
 | J-1 | Visitor finds a private office in a city on a 360 px mobile viewport and books a tour | slot chosen, confirmation shown, lead + tour created, owner notified, confirmation message dispatched |
 | J-2 | Visitor books a meeting room (if D-07 enables it) | hold → details → (payment) → confirmed; slot disappears for other visitors immediately |
 | J-3 | Enterprise enquiry for a multi-city requirement | lead created with seat band and cities, routed per assignment rules |
-| J-4 | Marketing Manager updates a property gallery and submits; a different approver (Marketing Manager or Super Admin) publishes | change is invisible before approval and visible after; revision retained; alt text enforced |
+| J-4 | Marketing Manager updates a property gallery and submits. A different person (another Marketing Manager or the Super Admin) approves. The author, or anyone other than the approver, publishes (OD-65, OD-73). | change is invisible before approval and visible after; the approver cannot publish; revision retained; alt text enforced |
 | J-5 | Ops marks a space `maintenance` | within 60 s: removed from listings, booking blocked, 3D hotspot shows unavailable, CRM proposal flagged |
 | J-6 | Marketing user links 3D anchors to spaces and publishes a scene | no coordinate input anywhere; live availability colours shown; disclaimer shown for non-scan models |
 | J-7 | Keyboard-only and screen-reader user completes J-1 | all steps operable; the 3D alternative list conveys the same information |

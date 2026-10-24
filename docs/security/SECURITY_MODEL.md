@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Six owner-defined roles (OD-33); duties of removed draft roles confirmed (OD-36, OD-37). Phase 3 implementation status: §10. Owner permission and publishing decisions (OD-51 to OD-73, **approved policy, not implemented**): §11. |
+| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Six owner-defined roles (OD-33); duties of removed draft roles confirmed (OD-36, OD-37). Phase 3 implementation status: §10. Owner permission and publishing decisions (OD-51 to OD-75, **approved policy, not implemented**): §11. |
 | Last updated | 2026-10-25 |
 | Target baseline | OWASP ASVS 4.0 Level 2 for the back office and booking flows; OWASP Top 10 for the public site |
 
@@ -30,6 +30,7 @@
 | Passwords | Laravel `Password::defaults()`: min 12 chars, mixed case, numbers, `uncompromised()` check, bcrypt (existing `BCRYPT_ROUNDS`). |
 | Throttling | login rate limit per email + IP; lockout notice to user; audit-log failed attempts. |
 | Sessions | `SESSION_SECURE_COOKIE=true`, `SameSite=Lax`, `http_only`, idle timeout 120 min for staff [DEFAULT], session regenerated on login and on privilege change. |
+| Back-office access | **Requires the explicit `backoffice.access` permission** (OD-74). It applies to every protected back-office page, route, Livewire action and API. Role membership alone never grants access. Sign-in and two-step login are unchanged by OD-74. **Not implemented:** today any active user holding one of the six roles can enter (§10, §11.3). |
 | Deactivation | `users.is_active = false` blocks panel access immediately (`canAccessPanel`, checked on every request including Livewire requests per Filament 5 docs). |
 | Customers | No customer accounts at launch (D-20). Customer self-service (view/cancel booking) uses signed, expiring links. |
 
@@ -49,7 +50,8 @@
     * public contact details (OD-64, OD-69);
     * redirect changes (OD-66);
     * public-facing brand settings (OD-67, OD-70);
-    * tracking IDs, analytics identifiers and advertising pixels (OD-71).
+    * tracking IDs, analytics identifiers and advertising pixels (OD-71);
+    * tag configurations in an external tag manager, if one is used (OD-75).
   * The user who created or submitted a booking request or reschedule never approves it (OD-72).
   * Legal entity and GST details are verified by a **different person** from anyone who edited them (OD-55, OD-62).
   * There is no self-verification, and no Super Admin override, emergency publish or forced approval (§11.2). Permitted combinations and failure cases: §11.6.
@@ -58,20 +60,22 @@
   * **granted to them individually**, as an optional exception within their role's permitted scope.
 
   Role membership never grants a permission that has not been explicitly assigned to that role, and a role name such as "Property Manager" grants nothing by itself. Policies check the permission, never a role name. Precedence, revocation and audit: §11.2.
+* **Back-office access is a permission (OD-74):** entering the back office requires `backoffice.access`. It is assigned to roles in §3.1, or granted as an individual exception within a role's scope (OD-68). Holding a role is not enough without that assignment.
 * **Approval never overrides availability:** approving a booking request or a reschedule, and any staff override, runs the same lock-and-recheck as a booking (BR-BK-5, BR-BK-9, BR-BK-13, ADR-0004). **Every booking and every reschedule re-checks availability under lock**, whether or not it needs approval (OD-63, OD-72). No role, including the Super Admin, can force a booking that fails the availability rules or the separation-of-duties rules.
 
 ### 3.1 Role and permission matrix (owner-defined roles, 2026-10-24; rows marked ‡ added or changed 2026-10-25)
 
 **Roles (OD-33):** Super Admin · Operations Manager · Property Manager · Sales/CRM Executive · Marketing Manager · Finance. These replace the 13 draft roles. The owner's answers name a "Sales/CRM Manager" and a "Finance Manager". **For now these mean the existing Sales/CRM Executive and Finance roles** (owner, OD-58, OD-59). No role was added or changed.
 
-Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to the user's assigned properties (`property_user`) · — no access. Cells marked † cover **duties of draft roles that no longer exist**. They were proposed and then **confirmed by the owner on 2026-10-24** (OD-36, OD-37). Rows marked ‡ are **owner decisions of 2026-10-25 (OD-51 to OD-73). They are approved policy, not yet implemented** (§11.3). Wherever an **A** approves or verifies someone's work, it is "not own" for the Super Admin too. The Super Admin holds no bypass (§10).
+Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to the user's assigned properties (`property_user`) · — no access. Cells marked † cover **duties of draft roles that no longer exist**. They were proposed and then **confirmed by the owner on 2026-10-24** (OD-36, OD-37). Rows marked ‡ are **owner decisions of 2026-10-25 (OD-51 to OD-75). They are approved policy, not yet implemented** (§11.3). Wherever an **A** approves or verifies someone's work, it is "not own" for the Super Admin too. The Super Admin holds no bypass (§10). **The Super Admin column is reviewed row by row like every other column.** The Super Admin does not automatically receive a new permission because it exists (OD-74).
 
 **Approve and publish are separate rights.** For publishable changes, **A** means two permissions: approve (never one's own work) and publish (only a version **someone else** approved). This applies to every role, including the Super Admin (OD-65). It covers scheduled publishing and rollback, which run the same publish action (BR-CMS-3, BR-CMS-5). Publishable changes are:
 * content (BR-CMS-1);
 * public contact details (OD-64);
 * redirect changes (OD-66);
 * public-facing brand settings (OD-67, OD-70);
-* tracking IDs, analytics identifiers and advertising pixels (OD-71).
+* tracking IDs, analytics identifiers and advertising pixels (OD-71);
+* tag configurations in an external tag manager, if one is used (OD-75).
 
 One approval by someone other than the author is enough. The author may publish if they are not the approver (OD-73).
 
@@ -82,6 +86,7 @@ One approval by someone other than the author is enough. The author may publish 
 
 | Capability | Super Admin | Operations Manager | Property Manager | Sales/CRM Executive | Marketing Manager | Finance |
 |---|---|---|---|---|---|---|
+| Back-office access (`backoffice.access`) ‡ (OD-74; assigned to all six roles, because each has back-office duties in this matrix: derived, which keeps today's access) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Users, roles, MFA reset | M | — | — | — | — | — |
 | Integrations (connection status) | M | — | — | — | V | — |
 | Tracking IDs, analytics identifiers, advertising pixels ‡ (OD-71: independent approval before they become active; approvers as for other public settings) | M/A (not own) | — | — | — | M/A (not own) | — |
@@ -235,22 +240,22 @@ What exists in code now, and where it differs from the plan above. Each row is c
 |---|---|---|
 | Staff login | Filament panel login at `BACKOFFICE_PATH` (default `admin`); no registration; password reset by email | none |
 | MFA | required for every staff user; authenticator app (8 recovery codes, regenerable) or email code | none |
-| Panel access | only users who are active **and** hold at least one of the six roles; checked on every request | none |
+| Panel access | only users who are active **and** hold at least one of the six roles; checked on every request | **OD-74 requires the explicit `backoffice.access` permission instead of role membership. Not implemented** (§11.3); changing it was not authorised in this documentation round. |
 | Passwords | `Password::defaults()`: at least 12 characters, mixed case, numbers | the breached-password check (`uncompromised()`) runs **in production only**, because it calls an external service |
 | Throttling | Filament login limit: 5 attempts per minute per IP address | not per email + IP. Behind Cloudflare the app must trust Cloudflare's proxy ranges, otherwise every visitor shares one IP (`../operations/DEPLOYMENT_RUNBOOK.md` §7). A per-email limit is reviewed in Phase 14. |
 | Sessions | Laravel defaults; Filament regenerates the session at login | secure-cookie and idle-timeout values are set per environment at deployment. No session regeneration on privilege change: permissions are re-checked on every request, so a role change applies on the next request. |
-| Capabilities | `users.manage` and `audit_log.view`, both Super Admin only (matrix rows "Users, roles, MFA reset" and "Audit log"). Super Admin receives each capability explicitly; there is no blanket bypass, so "not own" rules will still apply to the Super Admin. | other capabilities are added by the module that needs them; property scoping arrives with properties in Phase 5 |
+| Capabilities | `users.manage` and `audit_log.view`, both Super Admin only (matrix rows "Users, roles, MFA reset" and "Audit log"). Super Admin receives each capability explicitly; there is no blanket bypass, so "not own" rules will still apply to the Super Admin. | other capabilities are added by the module that needs them; property scoping arrives with properties in Phase 5. The code gives the Super Admin **every** capability in the enum (`Capability::cases()`). OD-74 requires each Super Admin assignment to be reviewed against §3.1 instead (§11.3). |
 | User lifecycle | create, edit, change roles, deactivate, reset two-step login. Accounts are never deleted. Staff cannot deactivate themselves or remove their own Super Admin role. | none |
 | Headers | `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: SAMEORIGIN`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`; HSTS over HTTPS in production | Content Security Policy (including `frame-ancestors 'none'` for the back office) is added in Phase 14 |
 | Audit trail | sign-in, failed sign-in (email address only, never the password), sign-out, role changes (old and new roles), activation and name/email changes, two-step login changes (which methods are on, never secrets or codes), two-step login resets. Read-only viewer at Settings → Audit log. | the other §7 actions are audited by the modules that introduce them |
 
 ---
 
-## 11. Capabilities for back-office items 8 to 14 and public settings (proposed round 12, 2026-10-24; owner decisions rounds 13 to 15, 2026-10-25)
+## 11. Capabilities for back-office items 8 to 14 and public settings (proposed round 12, 2026-10-24; owner decisions rounds 13 to 16, 2026-10-25)
 
-A review of the role design for pricing, enquiries, booking requests, tours, contact and legal details, website content, redirects and brand settings. **Viewing, editing, approving, verifying and publishing are separate capabilities.** The owner answered the open rows on 2026-10-25: Q-OW-18 → OD-51 to OD-57 (round 13), Q-OW-19 → OD-58 to OD-67 (round 14), Q-OW-20 and D-17 → OD-68 to OD-73 (round 15). See §11.1.
+A review of the role design for pricing, enquiries, booking requests, tours, contact and legal details, website content, redirects and brand settings. **Viewing, editing, approving, verifying and publishing are separate capabilities.** The owner answered the open rows on 2026-10-25: Q-OW-18 → OD-51 to OD-57 (round 13), Q-OW-19 → OD-58 to OD-67 (round 14), Q-OW-20 and D-17 → OD-68 to OD-73 (round 15), Q-OW-21 → OD-74, OD-75 (round 16). See §11.1.
 
-**An approved decision is not an implemented permission.** Only `users.manage` and `audit_log.view` exist in code (§10). Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review, which **still shows the round-12 proposals** (§11.3).
+**An approved decision is not an implemented permission.** Only `users.manage` and `audit_log.view` exist in code (§10). Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review. It was updated on 2026-10-25, and a test checks that both list the same capabilities and role values (§11.3).
 
 **Each value is the role's permitted scope (OD-68).** A permission applies to every member of the role once it has been explicitly assigned to the role. Otherwise it may be granted to one member as an individual exception within that scope (§11.2).
 
@@ -271,6 +276,7 @@ Approved matrix, OD and Derived rows are **not implemented**.
 
 | Area | Capability | Purpose | Super Admin | Operations | Property | Sales/CRM | Marketing | Finance | Basis |
 |---|---|---|---|---|---|---|---|---|---|
+| Staff and audit | `backoffice.access` | Enter the back office: every protected page, route, Livewire action and API | Yes | Yes | Yes | Yes | Yes | Yes | OD-74 (roles: derived from §3.1) |
 | Staff and audit | `users.manage` | Manage staff, roles, permission grants and two-step login resets | Yes | — | — | — | — | — | Implemented (role assignments; individual exceptions, OD-68: not implemented) |
 | Staff and audit | `audit_log.view` | Read the audit log | Yes | — | — | — | — | — | Implemented |
 | Pricing | `pricing.view` | See prices | Yes | Yes | Own properties | Yes | Yes | Yes | Approved matrix |
@@ -326,9 +332,13 @@ Approved matrix, OD and Derived rows are **not implemented**.
 * `bookings.approve` is "not own": never the creator or submitter (OD-72).
 * One content approval is enough (OD-73).
 
-### 11.1 Owner decisions (Q-OW-18, Q-OW-19, Q-OW-20 and D-17, 2026-10-25)
+**Changes in round 16:**
+* New `backoffice.access` row (OD-74).
+* External tag-manager changes follow the tracking rows (OD-75).
 
-Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 (OD-58 to OD-67) and §0.19 (OD-68 to OD-73). Each decision approves the **intended policy only**. Rows are kept as first recorded. Where a later decision confirms or changes how one is applied, the row says so.
+### 11.1 Owner decisions (Q-OW-18 to Q-OW-21 and D-17, 2026-10-25)
+
+Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 (OD-58 to OD-67), §0.19 (OD-68 to OD-73) and §0.20 (OD-74, OD-75). Each decision approves the **intended policy only**. Rows are kept as first recorded. Where a later decision confirms or changes how one is applied, the row says so.
 
 | ID | Owner's answer | Applied as |
 |---|---|---|
@@ -355,6 +365,8 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
 | OD-71 | "Changes to tracking IDs, analytics identifiers and advertising pixels require independent approval before they become active on the public website." | Resolves Q-OW-20.4. Tracking is no longer exempt and follows author → approver → publisher (`settings.tracking.*`). **Interpretation:** the approvers are the Super Admin and the Marketing Manager, the roles that may edit tracking IDs (§3.1), "not own". This applies OD-71's instruction to use "the same principles used for other public-facing settings" (OD-69, OD-70). The CSP allow-list stays a separate configuration change (§5). |
 | OD-72 | "A user who creates or submits a booking request or reschedule must not approve that same request or reschedule. Approval must be performed by another authorised person with explicit approval permission. Every booking or reschedule must re-check availability under the required inventory lock. No Super Admin override or forced approval may bypass availability or separation-of-duties rules." | Resolves Q-OW-20.5, reversing the round-14 default that one person could do both. A request submitted by a customer is approved by any user granted `bookings.approve`. A request or reschedule entered by staff needs a different approver. An outside-hours override (BR-BK-9) never skips approval or the re-check. **Interpretation:** rejection follows the same rule (OD-61). |
 | OD-73 | "The author and approver must be different people, and the approver must not publish the version they approved. The author may publish an approved version if they are not the approver. A two-person workflow is therefore permitted." | **Resolves D-17:** one approval by a person other than the author is enough, and no second approval is required. Permitted combinations and failure cases: §11.6. |
+| OD-74 | "Back-office access requires an explicit backoffice.access permission. Role membership alone does not grant access." | Resolves Q-OW-21.1.<br>• `backoffice.access` is required for every protected back-office page, route, Livewire action and API.<br>• Assignment to a role covers all its members; individual grants are optional, within the role's scope (OD-68).<br>• §3.1 shows the permission for all six roles (**derived:** each has back-office duties there, and this keeps today's access).<br>• The Super Admin's assignments are reviewed against §3.1 permission by permission, with no automatic "every permission" rule.<br>• Sign-in and two-step login are unchanged. **Not implemented** (§11.3). |
+| OD-75 | "External tag managers are optional, not prohibited. They must never provide a bypass around OD-71." | Resolves Q-OW-21.2.<br>• Changes to tracking IDs, analytics identifiers, advertising pixels and tag configurations need independent approval before they become active, wherever the change is made (SmartGro or an external provider).<br>• No one approves their own change or publishes a version they approved.<br>• Requirements are in §11.2 rule 7.<br>• A provider that cannot enforce them is **not enabled for live website tracking**.<br>• No provider is chosen or integrated (D-18). |
 
 ### 11.2 Rules every capability follows
 
@@ -373,6 +385,8 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
      * Deactivating an account stops everything.
      * Permissions are checked on every request, so each change applies from the user's next request (§10).
    * **Audit (§7).** Every role assignment and removal, and every exception granted, revoked or stopped, is recorded with who acted, when, the user, the permission, its scope and the reason. A user's exceptions must be visible on their record so they can be reviewed.
+   * **Super Admin (OD-74).** The Super Admin receives only the permissions listed for it in §3.1, each reviewed when the permission is introduced. There is no rule that the Super Admin automatically holds every permission that exists.
+   * **Back-office access (OD-74).** `backoffice.access` is checked for every protected back-office page, route, Livewire action and API, in addition to being active and signed in with two-step login.
 2. **Least privilege.** Grants are only those in §3.1 and the table above. Holding one permission never implies another. Holding both an edit and an approve, verify or publish permission never allows approving, verifying or publishing past one's own involvement.
 3. **Separation of duties is checked against people, not roles**, at the moment of the action:
    * approver ≠ author, for content, contact details, redirects, brand settings, tracking IDs, prices and imports (OD-65, OD-69 to OD-71, OD-73);
@@ -388,10 +402,18 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
    * A failed re-check leaves the request unconfirmed ("Could not confirm"), or leaves the original booking unchanged, and the customer is offered other times.
 5. **Audit.** Every action in §7, including the entries for OD-51 to OD-73, records who acted. The following are each recorded separately: author, approver and publisher; editor and verifier; and the booking creator or submitter and the approver. Role changes are already audited (§10).
 6. **Headcount stays configurable** (OD-57). Code never assumes one person per role, and never lets one person satisfy a four-eyes rule alone (§11.5).
+7. **External tag managers (OD-75): optional, never a bypass of OD-71.** Changes to tracking IDs, analytics identifiers, advertising pixels and tag configurations become active on the public website only after independent approval, wherever they are made. Before any tag manager is enabled for live website tracking, it must be shown to enforce all of the following. If it cannot, it is **not enabled for live tracking**.
+   * **Access control:** only named, individual accounts (no shared logins), limited to people who hold the matching SmartGro tracking permission.
+   * **Authorisation:** separate rights to edit, approve and publish, matching `settings.tracking.manage`, `.approve` and `.publish`.
+   * **Approval:** every change to tags, triggers, variables or container settings is approved by a person other than its author before it can go live.
+   * **Publication:** only an approved version goes live, and never by the person who approved it.
+   * **Audit:** who changed, approved and published what, and when, is kept and available for review, in the provider or recorded in SmartGro.
+
+   The tag manager's own container ID is a tracking ID in SmartGro and follows OD-71. Approving a change never adds a script domain to the Content Security Policy, which stays a reviewed configuration change (§5). No provider is chosen, and no provider capability is assumed (D-18).
 
 ### 11.3 Implementation and test gaps (not resolved by this documentation update)
 
-**Implementation:** none of OD-51 to OD-73 is in code.
+**Implementation:** none of OD-51 to OD-75 is in code.
 
 * **Missing capabilities.** The following are not in `App\Enums\Access\Capability`:
   * `leads.assign`, `bookings.approve`;
@@ -400,13 +422,14 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
   * `content.approve`, `content.publish`, `testimonials.publish`;
   * `redirects.manage`, `redirects.approve`, `redirects.publish`;
   * `brand.manage`, `brand.approve`, `brand.publish`;
-  * `settings.tracking.manage`, `settings.tracking.approve`, `settings.tracking.publish`.
+  * `settings.tracking.manage`, `settings.tracking.approve`, `settings.tracking.publish`;
+  * `backoffice.access` (OD-74).
 
   No role is assigned them, and no policy checks them. Each is added by the module that builds the feature.
 * **Grants (OD-68).** The code already assigns permissions to roles (`StaffRole::capabilities()`), which is what OD-68 describes. Round 14 listed this as a mismatch with a per-user reading of OD-60; that reading is superseded, so it is no longer a gap.
   * **Individual exceptions** are not supported. If they are added, they need the scope limit, precedence, revocation and audit in §11.2 rule 1.
-  * **Super Admin assignment.** `StaffRole::capabilities()` assigns **every** capability in the enum to the Super Admin. This is explicit in code, and it matches the matrix today: the Super Admin column permits every row. Each new capability must still be checked against the Super Admin's permitted scope when it is added.
-  * **Back-office sign-in** is granted by holding any of the six roles (§10, "Panel access"), not by an assigned permission (Q-OW-21.1).
+  * **Super Admin assignment (OD-74).** `StaffRole::capabilities()` assigns **every** capability in the enum to the Super Admin (`Capability::cases()`). The result is right today, because the Super Admin is permitted both implemented capabilities. But it is the automatic "every future permission" rule that OD-74 rules out. It must become an explicit list reviewed against §3.1.
+  * **Back-office access (OD-74).** `User::canAccessPanel()` checks `is_active` and `hasAnyRole(StaffRole::cases())`: role membership, not `backoffice.access`. Changing it touches the sign-in path and was not authorised in this documentation round. Sign-in and two-step login must stay unchanged when it is changed.
 * **People-level checks.** None exist yet:
   * author ≠ approver for real content, contact details, redirects, brand settings, tracking IDs and prices;
   * approver ≠ publisher;
@@ -421,22 +444,26 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
   ADR-0005's revisions cover pages, posts, profiles, FAQs and scenes. Extending them to settings and redirects is one option, decided when built.
 * **Audit.** No audit events exist for the new §7 entries.
 
-**Design previews out of date** (code changes, not made because this round is documentation only):
+**Design previews** (updated 2026-10-25, round 16, as Phase 2 design work under OD-49; they show the decided policy but enforce nothing):
 
-* `PermissionsReview::catalogue()` still shows the round-12 "Yes?" proposals and the Q-OW-18 questions. It has no rows for contact approval, redirects, brand or tracking.
-* The Workspace products preview offers all six roles under "Approved by" (`approver_role`). OD-52 allows only the Super Admin, Operations Manager and Property Manager.
-* The Contact and legal details preview:
-  * says verification is "proposed: Finance or the Super Admin; needs owner confirmation";
-  * says contact details show "once verified", where OD-64 and OD-69 need independent approval and a separate publish.
-* The Website content preview disables Approve and Publish for the author, but has no approver ≠ publisher case.
-* The Booking requests preview approves sample requests without a creator ≠ approver check (OD-72), and has no reschedule.
-* No preview exists for tracking IDs.
+* **Updated:**
+  * the Permissions review lists the same capabilities and role values as the table above, and a test keeps the two in step;
+  * the Workspace products "Approved by" choice offers only the Super Admin, Operations Manager and Property Manager (OD-52), and a test refuses Finance;
+  * Contact and legal details: contact changes are described as needing independent approval and a separate publish (OD-64, OD-69), and verification as never by an editor (OD-55, OD-62);
+  * Website content and Booking requests state approver ≠ publisher (OD-65, OD-73) and creator ≠ approver (OD-72).
+* **Still not shown:**
+  * the Website content preview has no screen where a second person approves and someone else publishes; the rule is stated in text only;
+  * the Booking requests preview has no reschedule and no creator ≠ approver interaction; the samples are customer requests;
+  * no preview exists for tracking IDs.
+* **External tag manager (OD-75):** none is chosen or integrated, so none of the §11.2 rule 7 controls exist. None may be enabled for live tracking until they do.
 * Every preview is Super Admin only, so none of them shows per-role or per-user behaviour.
 
-**Tests:** no test proves any OD-51 to OD-73 rule. Each needs policy tests per role × capability (§9), including:
+**Tests:** no test proves any OD-51 to OD-75 rule. Each needs policy tests per role × capability (§9), including:
 
 * **grants:**
   * a user in a role without the permission assigned, and without an exception, is refused;
+  * a user without `backoffice.access` is refused on every back-office page, route, Livewire action and API, even with a role;
+  * the Super Admin holds exactly the permissions listed for it in §3.1;
   * an exception outside the role's scope cannot be granted;
   * a revoked exception, or one whose role was removed, is refused from the next request;
 * **bookings:**
@@ -458,7 +485,9 @@ Existing tests cover only the previews:
 
 * refusing approval of a booking request whose space is no longer free;
 * Approve and Publish disabled for the author;
-* the permissions review listing as implemented exactly the capabilities in code.
+* the permissions review listing as implemented exactly the capabilities in code;
+* the permissions review listing the same capabilities and role values as this section's table;
+* the category approver choice refusing roles that may not approve booking requests.
 
 They do not prove production enforcement.
 
@@ -484,10 +513,12 @@ They do not prove production enforcement.
 
 **D-17 (one approval or two): → OD-73.** One approval by a person other than the author is enough. The approver never publishes that version.
 
-**Q-OW-21 (open):**
+**Q-OW-21 (answered 2026-10-25, OD-74, OD-75):**
 
-1. **Back-office sign-in:** any active user holding one of the six roles can sign in (§10). This is the only access that comes from role membership itself rather than from an assigned permission. Inside the back office, every screen and action checks an assigned permission. Keep this, or require an assigned sign-in permission (OD-68)?
-2. **External tag manager:** if a tag manager is chosen (D-18), tags added inside that tool would bypass the back-office approval that OD-71 requires. The back office can enforce OD-71 only for identifiers entered in SmartGro, and the CSP allow-list limits which domains can load (§5). Should the tag manager's own access controls be part of D-18, or should SmartGro avoid a tag manager?
+1. **Back-office sign-in:** any active user holding one of the six roles can sign in (§10). This is the only access that comes from role membership itself rather than from an assigned permission. Inside the back office, every screen and action checks an assigned permission. Keep this, or require an assigned sign-in permission (OD-68)? **→ OD-74** (an explicit `backoffice.access` permission is required).
+2. **External tag manager:** if a tag manager is chosen (D-18), tags added inside that tool would bypass the back-office approval that OD-71 requires. The back office can enforce OD-71 only for identifiers entered in SmartGro, and the CSP allow-list limits which domains can load (§5). Should the tag manager's own access controls be part of D-18, or should SmartGro avoid a tag manager? **→ OD-75** (optional; enabled for live tracking only if it enforces §11.2 rule 7).
+
+**No owner question is open after round 16.**
 
 **Interpretations still standing** (recorded, not asked again; correct any that are wrong):
 
@@ -495,6 +526,7 @@ They do not prove production enforcement.
 * an automatic slug-change redirect is covered by its page's approval (OD-66);
 * social links are brand settings (OD-67);
 * the tracking-ID approvers are the Super Admin and the Marketing Manager (OD-71);
+* `backoffice.access` is assigned to all six roles, because each has back-office duties in §3.1 (OD-74);
 * the creator of a booking request cannot reject it either, but may withdraw it (OD-72);
 * any edit after approval or verification creates a new version that needs its own approval or verification (OD-55, OD-73).
 
@@ -509,6 +541,7 @@ The owner's response to the staffing risk (2026-10-25): **keep strict separation
 | Redirects changed by hand | **Yes** | same (OD-66) |
 | Public-facing brand settings | **Yes** | same (OD-67, OD-70) |
 | Tracking IDs, analytics identifiers, advertising pixels | **Yes** | same (OD-71) |
+| Tag-configuration changes in an external tag manager, if one is used | **Yes** | same (OD-75); a provider that cannot enforce it is not enabled for live tracking |
 | Legal entity and GST details | **Yes** | verifier ≠ every editor of the version (OD-55, OD-62) |
 | Price plan and offer activation; category rules affecting money | **Yes** | approver ≠ author (BR-PR-2, §3.1) |
 | Inventory import commit | **Yes** | approver ≠ uploader (OD-27, §3.1) |
@@ -516,7 +549,7 @@ The owner's response to the staffing risk (2026-10-25): **keep strict separation
 | Booking request or reschedule entered by staff (when approval is needed) | **Yes** | approver ≠ creator or submitter (OD-72); availability always re-checked under lock |
 | Booking request submitted by a customer | No: one staff approver | any user granted `bookings.approve` (Property Managers: own properties); availability always re-checked under lock |
 | Time-only reschedule (OD-63 interpretation) | No | no approval needed; availability always re-checked under lock |
-| Manual enquiry assignment, tours, overrides (which never skip approval), exports | No | one authorised user; audited |
+| Manual enquiry assignment, tours, overrides (which never skip approval), exports, role and permission assignments | No | one authorised user; audited |
 
 **Minimum staffing:** each "Yes" row needs **at least two different people** who have been explicitly granted the permissions for that area. Two are enough: one authors, the other approves, and the author publishes (OD-73). A person counts once, however many roles they hold.
 
@@ -527,7 +560,7 @@ Example: one Super Admin and one Marketing Manager.
 
 ### 11.6 Permitted combinations and failure cases (OD-72, OD-73)
 
-**Publishable changes** (content, contact details, redirects, brand settings, tracking IDs). A, B and C are different people. Each has been explicitly granted the permission they use, through a role assignment or an exception (OD-68).
+**Publishable changes** (content, contact details, redirects, brand settings, tracking IDs, and tag configurations in an external tag manager). A, B and C are different people. Each has been explicitly granted the permission they use, through a role assignment or an exception (OD-68).
 
 | Case | Author | Approver | Publisher | Result |
 |---|---|---|---|---|

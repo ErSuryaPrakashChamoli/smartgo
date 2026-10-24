@@ -266,7 +266,7 @@ No version downgrade or replacement of the requested stack is needed based on cu
 ### Changes required when the panel is installed in Phase 3 (verified in the smoke test)
 
 1. `php artisan filament:install --panels` creates and registers `App\Providers\Filament\AdminPanelProvider`. It adds `@php artisan filament:upgrade` to Composer `post-autoload-dump`, and adds `/public/css/filament`, `/public/fonts/filament` and `/public/js/filament` to `.gitignore`.
-2. **`App\Models\User` must implement `Filament\Models\Contracts\FilamentUser`** with a real `canAccessPanel()` based on active status and role (`../security/SECURITY_MODEL.md`). Without it, **every** user gets 403 outside `APP_ENV=local`. This was confirmed in the smoke test (a plain `User` received 403 in the testing environment).
+2. **`App\Models\User` must implement `Filament\Models\Contracts\FilamentUser`** with a real `canAccessPanel()` based on active status and role (`../security/SECURITY_MODEL.md`). *Superseded by OD-74 (2026-10-25):* access must depend on the explicit `backoffice.access` permission, not on role membership. That change is not implemented (SECURITY_MODEL §11.3). Without it, **every** user gets 403 outside `APP_ENV=local`. This was confirmed in the smoke test (a plain `User` received 403 in the testing environment).
 3. Required MFA, custom theme (`make:filament-theme`), clusters and dashboards per ADR-0003.
 4. Deployments must run `composer install` (which triggers `filament:upgrade` to republish the git-ignored assets) and `php artisan filament:optimize` (`../operations/DEPLOYMENT_RUNBOOK.md` §4).
 

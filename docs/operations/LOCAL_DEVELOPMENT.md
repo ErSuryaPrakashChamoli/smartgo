@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Active** (Phase 1 setup) |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 
 ---
 
@@ -93,7 +93,7 @@ The staff back office is a Filament panel at `/{BACKOFFICE_PATH}` (default `/adm
 3. `php artisan access:assign-role you@example.com super_admin`
 4. Open the back office and sign in. Two-step login is required: set up an authenticator app (save the recovery codes) or email codes. With `MAIL_MAILER=log`, email codes are written to `storage/logs/laravel.log`.
 
-Other staff accounts are then created in **Settings → Staff users**. Only active users with at least one of the six staff roles can enter. The audit log is at **Settings → Audit log**.
+Other staff accounts are then created in **Settings → Staff users**. Only active users with at least one of the six staff roles can enter (current behaviour; OD-74 will require the explicit `backoffice.access` permission instead, not implemented yet). The audit log is at **Settings → Audit log**.
 
 ### MySQL concurrency harness
 
