@@ -29,7 +29,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
 | C-2.1 | **Partly answered (OD-08):** four Noida properties (A-70, Sector 2 · A-71, Sector 2 · A-23, Sector 3 · H-105, Sector 62); 10 floors in total. **Still needed:** floor allocation per property and building levels (Q-OW-1); full addresses (PIN code, building names); status and opening dates per property | property pages and inventory are built around real properties; nothing is created by assumption | none (must be provided) | Phase 1 (ERD validation), Phase 5 |
-| C-2.2 | **First property's full inventory** in the SG-INV-1.2 template (`../templates/inventory-import/`) | validates the data model against reality before it is built | none | Phase 1 AC-1.4 |
+| C-2.2 | **First property's full inventory** in the SG-INV-1.2 template, including floors per property. **Deferred to the Phase 5 entry gate** (option P-1, OD-30). | validates the data model against reality before inventory code is merged | none | Phase 5 entry |
 | C-2.3 | ~~Seat tracking~~ **Answered (OD-10, OD-15):** individual, pooled, mixed within a property, and **hybrid zones** | — | — | resolved |
 | C-2.4 | ~~Property grouping~~ **Answered (OD-13):** each address is its own centre | — | — | resolved |
 | C-2.5 | ~~City names and visibility~~ **Answered (OD-16, OD-18):** official current names (Gurugram, Delhi …); cities hidden by default with an admin toggle. A visible city without a property shows a "coming soon / register interest" page (OD-22). | — | — | resolved |
@@ -41,7 +41,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
 | C-2.8 | ~~Operating model~~ **Answered (OD-14):** all four current properties are owned and operated. Lease tracking is deferred until a leased property exists. | — | — | resolved |
-| C-3.8 | **Pricing configuration:** section 9 onward of the owner's brief was not received (Q-OW-9) | pricing, payment and cancellation rules per category and property | — | Phase 5 |
+| C-3.8 | **Pricing configuration:** section 9 was not received. A proposal was drafted under option P-2 (`PRICING_CONFIGURATION_PROPOSAL.md`). **Owner to review and fill in decisions PR-1…PR-11.** | pricing, payment and cancellation rules per category and property | proposal values are not approved | Phase 5 |
 | C-3.9 | Marketing priority among the eight customer segments (optional) | homepage emphasis, segment landing pages | no priority until set | Phase 2/6 |
 
 ## 3. Products and pricing (D-03, D-04)
@@ -70,7 +70,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
-| C-5.1 | Team structure and who does what (marketing, content approval, operations, centre managers, finance, sales, front desk) | role and permission matrix (`../security/SECURITY_MODEL.md` §3.1) | matrix as drafted | Phase 1 (role sign-off), Phase 3 |
+| C-5.1 | ~~Team structure~~ **Approved as drafted (D-33, OD-28):** role matrix in `../security/SECURITY_MODEL.md` §3.1 | — | — | resolved (adjust in Phase 3) |
 | C-5.2 | Sales stages, lead assignment rules (by city, location, product, seat band), response-time target | CRM configuration, SLA alerts | stages in the ERD; 15-minute first response in business hours | Phase 9 |
 | C-5.3 | Who approves website content; one approver or two | publishing workflow | one approver; nobody approves their own work | Phase 4 |
 | C-5.4 | Lost-reason and disqualification lists | CRM reporting | draft lists provided in Phase 9 | Phase 9 |

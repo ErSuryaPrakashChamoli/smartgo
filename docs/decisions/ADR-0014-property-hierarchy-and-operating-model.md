@@ -1,6 +1,6 @@
 # ADR-0014 — Property → building → floor hierarchy with an explicit operating model
 
-* **Status:** PROPOSED
+* **Status:** ACCEPTED (project owner, 2026-10-24: "Approve all as recommended", D-34)
 * **Date:** 2026-10-24
 * **Drivers:** owner decisions OD-08 (four Noida properties, 10 floors in total, allocation unknown; administrators add and edit properties, buildings and floors) and OD-09 (owned-and-operated and leased-and-operated)
 

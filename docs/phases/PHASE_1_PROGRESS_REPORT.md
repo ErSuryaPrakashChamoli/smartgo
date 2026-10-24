@@ -9,6 +9,22 @@
 
 ---
 
+## 0C. Update — owner approval (2026-10-24, round 5): "Approve all as recommended"
+
+Recorded as OD-23…OD-31 (`../decisions/DECISION_REGISTER.md` §0.6):
+* packages (phase by phase), code layout, release slicing R1, **ADR-0003…0014 accepted**, import template SG-INV-1.2
+* by interpretation: team roles as drafted; the repository is owned by a GitHub organisation (name still needed); option **P-1** (floors and inventory are entered later, with AC-1.4 moved to the Phase 5 entry gate); option **P-2** (a pricing proposal was drafted: `../requirements/PRICING_CONFIGURATION_PROPOSAL.md`; no prices set)
+* nothing was installed, and no application code was changed
+
+### Two items remain before Phase 1 can be marked READY FOR REVIEW
+
+| # | Item | Recommendation |
+|---|---|---|
+| S-1 | **AC-1.7 remote push.** GitHub setup was deferred by the owner, and the organisation name is not yet known. | Move "push to the private remote" to **Phase 3, step 3.1**, together with naming the organisation. Local Git history and the MySQL test run already satisfy the rest of AC-1.7. |
+| S-2 | **Pricing proposal** (`PRICING_CONFIGURATION_PROPOSAL.md`) | Approve its **structure** now; decide the business values PR-1…PR-11 at the **Phase 5 entry gate** (consistent with D-36) |
+
+---
+
 ## 0B. Update — owner answers (2026-10-24, round 4)
 
 | Answer | Recorded as | Effect |
@@ -200,23 +216,20 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 | AC | Criterion (summary; full text in `PROJECT_MASTER_PLAN.md` §2) | Status |
 |---|---|---|
 | AC-1.1 | Documents complete, consistent, all links resolve | **Partly met.** All at v1.0-rc; link check 0 broken (2026-10-24); awaiting owner review. |
-| AC-1.2 | Blocking inputs answered or explicitly deferred | **Mostly met (round 4):** D-03, D-05, D-06, D-16, D-19, D-22 and Q-OW-2…8, 11, 12 answered. **Open:** floors per property (Q-OW-1, or deferral via option P-1) and D-33 team roles. D-01 legal details can defer to Phase 6. |
+| AC-1.2 | Blocking inputs answered or explicitly deferred | **Met (round 5):** floors deferred by option P-1 (OD-30); team roles approved (OD-28); all other blocking inputs answered. D-01 legal details defer to Phase 6. |
 | AC-1.3 | D-06 answered, or Scenario A deferral recorded with a Phase 5 gate | **Met (2026-10-24):** no existing software (OD-06) |
-| AC-1.4 | ERD validated against the first real property via SG-INV-1.2 | **Not met.** ERD v1.2-rc and template SG-INV-1.2 ready; waiting for floors per property and inventory. |
-| AC-1.5 | No silent defaults: each confirmed or deferred in the register | **Partly met.** All classified; confirmations pending. |
-| AC-1.6 | ADR-0003…0012, D-24, D-25, D-32, D-35 approved | **Partly met.** ADR-0001/0002 accepted. |
-| AC-1.7 | Git pushed to private remote; tests pass on local MySQL; Pint clean | **Partly met.** Local Git done. **Suite passes on the owner's local MySQL (9/9, 2026-10-24).** Pint clean. Remote push (A-2) pending. R-14: replace the `root` DB user. |
+| AC-1.4 | ERD validated against the first real property | **Deferred by owner decision (OD-30, option P-1)** to the **Phase 5 entry gate**. ERD v1.2-rc and template SG-INV-1.2 are ready. |
+| AC-1.5 | No silent defaults | **Met:** every [DEFAULT] business value is listed as deferred to its implementing phase gate (D-36). Pricing values are deferred to the Phase 5 gate (S-2). |
+| AC-1.6 | ADRs, dependencies, layout, release slicing, import process approved | **Met (2026-10-24):** ADR-0001…0014 accepted; D-24, D-25, D-32, D-35 approved |
+| AC-1.7 | Git pushed to private remote; tests pass on local MySQL; Pint clean | **Partly met.** Local Git history reviewed; suite 9/9 on the owner's local MySQL; Pint clean. **Remote push pending:** GitHub deferred by the owner; recommendation S-1 moves it to Phase 3 step 3.1. |
 | AC-1.8 | Owner sign-off recorded | **Pending** |
 
 ---
 
-## 9. Next recommended action (updated 2026-10-24, round 4)
+## 9. Next recommended action (updated 2026-10-24, round 5)
 
 1. **Owner, urgent and outside this project:** act on the compromise of the existing WordPress site (`../research/EXISTING_WEBSITE_AUDIT.md` §2).
-2. **Owner, one reply would unblock Phase 1:**
-   * **Floors:** either give the split (e.g. "A-70: G, 1, 2 · A-71: … · A-23: … · H-105: …"), or choose **option P-1** (defer floors and inventory to Phase 5 data entry)
-   * **Pricing:** resend section 9, or choose **option P-2** (the project team drafts a pricing proposal for you to edit and approve)
-   * **Approvals:** "approve all as recommended" (option P-3) or list exceptions. This covers D-24 packages, D-25 code layout, D-31 GitHub owner (name the account or organisation), D-32 launch scope, D-34 ADR-0003…0014, D-35 import template, and D-33 team roles.
-3. **Project team, after that reply:** finalise the Phase 1 documents to v1.0 and present Phase 1 for approval.
+2. **Owner, one reply:** accept S-1 and S-2 (or adjust them). Once accepted, Phase 1 meets its criteria except the owner's sign-off, and the project team will mark it **READY FOR REVIEW** with the documents finalised at v1.0.
+3. **Owner:** approve Phase 1 (AC-1.8). Only then does Phase 2 (brand system; needs the logo file) or Phase 3 (foundation, starting with the GitHub organisation and remote push) begin.
 
 **No Phase 2 or later implementation will start before Phase 1 is approved.**

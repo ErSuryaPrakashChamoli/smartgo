@@ -95,7 +95,7 @@ flowchart TB
 2. Content and marketing modules have **read-only** access to inventory and pricing. This is enforced by policies (runtime) and by Pest `arch()` tests (build time).
 3. Domain events are the integration seam: `SpaceAvailabilityChanged`, `PricePlanActivated`, `LeadCreated`, `LeadAssigned`, `TourScheduled`, `BookingConfirmed`, `BookingCancelled`, `ContentPublished`, `ConsentWithdrawn`.
 
-### 3.1 Proposed code layout (requires approval, D-25)
+### 3.1 Code layout (approved 2026-10-24, D-25)
 
 The layout stays inside Laravel's standard directories (CLAUDE.md asks that no new base folders be added without approval). Domains appear as **sub-namespaces**:
 
@@ -215,7 +215,7 @@ sequenceDiagram
 
 ---
 
-## 9. Proposed dependencies (not installed; approval required, D-24)
+## 9. Dependencies (approved 2026-10-24, D-24; installed phase by phase from Phase 3, none installed yet)
 
 Compatibility was checked against Packagist and npm metadata on 2026-10-24.
 

@@ -1,6 +1,6 @@
 # ADR-0011 — Business-capability permissions with property scoping
 
-* **Status:** PROPOSED (adds dependency `spatie/laravel-permission` 8.x)
+* **Status:** ACCEPTED (project owner, 2026-10-24: "Approve all as recommended", D-34)
 * **Date:** 2026-10-24
 
 ## Context

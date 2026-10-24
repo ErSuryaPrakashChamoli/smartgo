@@ -109,7 +109,7 @@ Booking-domain tests (T-BK-*, `../testing/TEST_STRATEGY.md` §8) reuse this harn
 
 The GitHub CLI is not installed on this machine and no SSH key exists yet. Local version control works without a remote. Choose **one** option.
 
-**First decide the repository owner (D-31):** your personal account, your company organisation, or the client's organisation. This affects who legally controls the code.
+**Repository owner (D-31):** approved to be a GitHub **organisation**, not a personal account (OD-29, 2026-10-24); the organisation name is still needed. Setup is deferred by the owner. Background: your personal account, your company organisation, or the client's organisation. This affects who legally controls the code.
 
 ### Option A: GitHub CLI (simplest)
 

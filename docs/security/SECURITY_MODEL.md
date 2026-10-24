@@ -83,7 +83,7 @@ Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** vi
 | Reports and dashboards | V | V | V (marketing) | — | V (SEO) | V (ops) | V (S) | V (finance) | V (sales) | V (own) | V (S) | — | V |
 | Audit log | V | V | — | — | — | — | — | — | — | — | — | — | — |
 
-The role list and scoping are a **recommended default, not approved**. They wait on the client's team structure (D-33, CLIENT_INPUTS C-5.1) and content-approval workflow (D-17).
+The role list and scoping were **approved as drafted** on 2026-10-24 (D-33, OD-28). They are adjusted when real staff accounts are created in Phase 3. This replaces the earlier note: They wait on the client's team structure (D-33, CLIENT_INPUTS C-5.1) and content-approval workflow (D-17).
 
 ---
 

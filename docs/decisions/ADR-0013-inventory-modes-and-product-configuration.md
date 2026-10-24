@@ -1,6 +1,6 @@
 # ADR-0013 — Inventory modes per space and configurable product categories
 
-* **Status:** PROPOSED
+* **Status:** ACCEPTED (project owner, 2026-10-24: "Approve all as recommended", D-34)
 * **Date:** 2026-10-24
 * **Drivers:** owner decisions OD-07 (seven product categories, admin-manageable), OD-10 (individual, pooled and hybrid inventory; product-specific rules) and OD-15 (hybrid zones required)
 

@@ -1,6 +1,6 @@
 # ADR-0005 — Content revisions and approval workflow
 
-* **Status:** PROPOSED
+* **Status:** ACCEPTED (project owner, 2026-10-24: "Approve all as recommended", D-34)
 * **Date:** 2026-10-24
 
 ## Context

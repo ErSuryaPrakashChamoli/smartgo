@@ -1,6 +1,6 @@
 # ADR-0006 — Central media library with licensing metadata
 
-* **Status:** PROPOSED (adds dependencies: `spatie/laravel-medialibrary` 11.x, `filament/spatie-laravel-media-library-plugin` 5.x)
+* **Status:** ACCEPTED (project owner, 2026-10-24: "Approve all as recommended", D-34)
 * **Date:** 2026-10-24
 
 ## Context

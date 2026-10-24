@@ -182,7 +182,7 @@ erDiagram
 
 **Rule:** at most one `active` price plan per (`offering_id`, `space_id`, `unit`) for any instant. This is enforced in a domain service inside a transaction, because MySQL has no exclusion constraints.
 
-**Pricing configuration is incomplete:** section 9 of the owner's brief ("Pricing configuration") was not received (Q-OW-9). The `price_plans` model above is retained unchanged until it arrives.
+**Pricing configuration:** section 9 of the owner's brief was not received. Under option P-2 a proposal was drafted (`../requirements/PRICING_CONFIGURATION_PROPOSAL.md`, pending owner review). It proposes additions to `price_plans` and new `offering_addons` and `pricing_controls` tables (proposal §12). The model above is unchanged until the proposal is approved.
 
 ### 4.1 Product category configuration (`products`)
 

@@ -10,7 +10,7 @@
 | # | Phase | Status | Blocked by / waiting on |
 |---|---|---|---|
 | 0 | Discovery, audit, requirements clarification | **APPROVED in principle** (project owner, 2026-10-24) | — (open items carried into Phase 1) |
-| 1 | PRD, IA, architecture, database design, acceptance criteria | **IN PROGRESS.** Owner decisions rounds 2–4 (OD-01…OD-22) incorporated; documents at v1.2-rc. | floors per property (Q-OW-1 or option P-1), pricing brief §9 (Q-OW-9 or option P-2), D-33 team roles, owner approvals D-24, D-25, D-31, D-32, D-34, D-35 (option P-3), logo file (later) |
+| 1 | PRD, IA, architecture, database design, acceptance criteria | **IN PROGRESS.** Owner approvals of round 5 recorded (ADR-0001…0014 accepted; packages, layout, R1, import template, team roles approved; floors deferred P-1; pricing proposal P-2 drafted). | owner to accept S-1 (remote push → Phase 3) and S-2 (pricing values → Phase 5 gate), then Phase 1 sign-off |
 | 2 | Brand system, UX/UI, design system | NOT STARTED | Phase 1 approval; **logo (D-11)** |
 | 3 | Foundation, auth, permissions, security | NOT STARTED | Phase 1 approval; D-23, D-24, D-25, D-26 |
 | 4 | CMS, page builder, media, publishing | NOT STARTED | Phases 2, 3 |
@@ -68,6 +68,7 @@ Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.
 | Date | Change |
 |---|---|
 | 2026-10-24 | Register created. Phase 0 → READY FOR REVIEW. Phase 1 → IN PROGRESS with drafts. |
+| 2026-10-24 | Round 5: "Approve all as recommended", recorded as OD-23…OD-31. ADR-0003…0014 accepted. Pricing-configuration proposal drafted (no prices). Remaining before READY FOR REVIEW: S-1, S-2. Phase 1 remains IN PROGRESS. |
 | 2026-10-24 | Round 4: OD-21 (old URLs redirect at launch) and OD-22 (coming-soon page for visible cities without a property) recorded. Floors, pricing and approvals still unanswered; unblocking options P-1…P-3 offered. Phase 1 remains IN PROGRESS. |
 | 2026-10-24 | Round 3: owner answers OD-12…OD-20 incorporated (each address its own property; all owned; official city names; hidden cities with admin toggle; nothing from the old site; hybrid zones; "Property" naming; logo later). ERD v1.2-rc, SG-INV-1.2. Floors per property still open. Phase 1 remains IN PROGRESS. |
 | 2026-10-24 | Round 2: owner decisions OD-01…OD-11 incorporated (brand, NCR geography, segments, seven categories, four Noida properties, owned/leased models, inventory modes, no existing software, existing website). ERD v1.1-rc, ADR-0013/0014, SG-INV-1.1, existing-site audit (compromise found). Phase 1 remains IN PROGRESS. |

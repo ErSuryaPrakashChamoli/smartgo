@@ -88,13 +88,28 @@ Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more 
 * **Q-OW-9 pricing (brief section 9 onward).** Not resent.
 * **Approvals** D-24, D-25, D-31, D-32, D-34, D-35 and team roles D-33. No answer given; nothing is treated as approved.
 
-### 0.5 Options to unblock Phase 1 (owner choice; none adopted)
+### 0.5 Options to unblock Phase 1 (P-1, P-2 and P-3 adopted 2026-10-24; see §0.6)
 
 | Option | Effect | Recommendation |
 |---|---|---|
 | P-1 | **Defer floors and real inventory to data entry.** The owner already said these "can be entered or completed later" (OD-08). AC-1.4 (ERD validated against real inventory) would move to the **Phase 5 entry gate**: the first property's real data is run through SG-INV-1.2 before any inventory code is merged. | **Recommended.** It removes the main Phase 1 blocker without guessing any floors. |
 | P-2 | **Pricing:** either resend section 9, or approve that the project team drafts a pricing-configuration proposal (units, display, GST treatment, deposits, cancellation per category) **as proposed defaults for the owner to edit and approve** | resend if available; otherwise P-2 |
 | P-3 | **Approve the pending items as recommended in one reply** ("approve all as recommended"), or list exceptions | saves a round-trip; see `../phases/PHASE_1_PROGRESS_REPORT.md` §5 |
+### 0.6 Owner approval — 2026-10-24 (round 5): "Approve all as recommended"
+
+Interpretation: this approves every item for which the project team gave a recommendation in its last request. Items that depend on interpretation are marked; the owner can correct any of them.
+
+| ID | Approved | Notes |
+|---|---|---|
+| OD-23 | **D-24 packages**, installed **phase by phase** (Phase 3: permissions, activity log, Redis client, Horizon; Phase 4: media library, Filament media plugin, S3 adapter; Phase 5: openspout as direct `^4`; Phase 6/11: schema-org, sitemap; Phase 7: three.js) | Nothing is installed until the relevant phase starts, after Phase 1 approval |
+| OD-24 | **D-25 code layout** (domain sub-namespaces inside standard Laravel folders) | |
+| OD-25 | **D-32 release slicing** (R1 as in `PROJECT_MASTER_PLAN.md` §4) | |
+| OD-26 | **D-34: ADR-0003…0014 accepted** | ADR statuses updated |
+| OD-27 | **D-35: import template SG-INV-1.2** and the four-eyes import process | |
+| OD-28 | **D-33: team roles and permission matrix as drafted** (interpretation) | adjusted when real staff accounts are created in Phase 3 |
+| OD-29 | **D-31: the repository will be owned by a GitHub organisation, not a personal account** (interpretation of the recommendation) | **The organisation's name is still needed.** GitHub setup stays deferred, as the owner instructed in round 2. |
+| OD-30 | **Option P-1: floors and real inventory are entered later** (interpretation; P-1 was marked "recommended") | AC-1.4 moves to the **Phase 5 entry gate**: the first property's real data is run through SG-INV-1.2 before inventory code is merged. Floors are never assumed. |
+| OD-31 | **Option P-2: a pricing-configuration proposal is drafted for the owner to edit and approve** (interpretation; section 9 was not resent) | `../requirements/PRICING_CONFIGURATION_PROPOSAL.md`, drafted 2026-10-24. **No prices, rates or terms are set.** |
 
 ---
 
@@ -126,26 +141,27 @@ Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more 
 | D-21 | AI concierge scope and provider | Owner + Client | **Deferred to Phase 13** | — | defer | Phase 13 |
 | D-22 | Brand name and primary domain | Owner | **Resolved** (2026-10-24, OD-01) | **SmartGro**; domain **smartgro.space**; tagline "WORK SMART. GROW TOGETHER." confirmed | — | — |
 | D-23 | Git version control | Owner | **Resolved** (2026-10-24) | Repository initialised on `main`. Files reviewed for secrets, credentials, customer data and generated artifacts before the first commit. Commit history in §3. | — | — |
-| D-24 | New dependencies (`SYSTEM_ARCHITECTURE.md` §9 + `openspout/openspout` as a direct dependency) | Owner | **Requires owner approval** | Compatibility re-verified 2026-10-24. Nothing installed. | approve the list as proposed | Phase 3 |
-| D-25 | Code layout (domain sub-namespaces inside standard Laravel folders) | Owner | **Requires owner approval** | `SYSTEM_ARCHITECTURE.md` §3.1 | approve as proposed | Phase 3 |
+| D-24 | Dependencies (`SYSTEM_ARCHITECTURE.md` §9 + `openspout/openspout ^4` as direct) | Owner | **Resolved** (2026-10-24, OD-23) | Installed phase by phase from Phase 3; nothing installed yet | — | — |
+| D-25 | Code layout | Owner | **Resolved** (2026-10-24, OD-24) | `SYSTEM_ARCHITECTURE.md` §3.1 | — | — |
 | D-26 | Local MySQL for dev/test; Redis locally | Owner | **Resolved** for MySQL (configuration in place and verified); Redis **deferred to Phase 3** | `phpunit.xml` forces MySQL + `smartgro_testing`; guard in `tests/TestCase.php`; setup script prepared. **Owner action A-1 pending:** run the script on this machine. | run A-1; install Redis in Phase 3 | now / Phase 3 |
 | D-27 | Partner (landlord/broker) and careers pages | Client | **Deferred to Phase 6** | — | omit until confirmed | Phase 6 |
 | D-28 | Tour rules | Client | **Deferred to Phase 8** | — | 30-min slots within operating hours | Phase 8 |
 | D-29 | Lead data retention | Client (counsel) | **Deferred to Phase 9** | — | counsel to confirm | Phase 9 |
 | D-30 | Back-office path and access restriction | Owner | **Deferred to Phase 3** | — | non-default path + Cloudflare Access in production | Phase 3 |
-| D-31 | **New:** GitHub repository owner (personal account, company org or client org) and creation | Owner | **Requires owner approval** | GitHub CLI not installed; no SSH key on the machine. Exact steps in `../operations/LOCAL_DEVELOPMENT.md` §5. | a private repo under the organisation that will own the IP under contract | now |
-| D-32 | **New:** Release slicing (R1 scope, `PROJECT_MASTER_PLAN.md` §4) | Owner + Client | **Requires owner approval** | — | approve R1 as drafted | Phase 1 |
-| D-33 | **New:** Team structure and role/permission matrix confirmation | Client | **Requires client input** | Matrix drafted (`../security/SECURITY_MODEL.md` §3.1) | confirm or adjust roles | Phase 1 |
-| D-34 | **New:** ADR-0003…0012 acceptance (ADR-0001/0002 accepted) | Owner | **Requires owner approval** | `ADR_INDEX.md` | accept all as proposed | Phase 1 |
-| D-35 | **New:** Inventory import template SG-INV-1.2 (supersedes 1.0 and 1.1) and the four-eyes import approval | Owner (+ client ops review) | **Requires owner approval** | `../requirements/INVENTORY_IMPORT_SPEC.md` | approve; client ops to trial the template | Phase 1 |
+| D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29): a GitHub **organisation**, not a personal account. **The name is needed**; setup is deferred by the owner. | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation when GitHub setup resumes | Phase 3 (or the AC-1.7 decision) |
+| D-32 | Release slicing (R1) | Owner | **Resolved** (2026-10-24, OD-25) | `PROJECT_MASTER_PLAN.md` §4 | — | — |
+| D-33 | Team structure and role/permission matrix | Owner | **Resolved as drafted** (2026-10-24, OD-28, interpretation) | `../security/SECURITY_MODEL.md` §3.1; adjusted when staff accounts are created | — | Phase 3 |
+| D-34 | ADR-0003…0014 acceptance | Owner | **Resolved** (2026-10-24, OD-26) | all ADRs accepted | — | — |
+| D-35 | Inventory import template SG-INV-1.2 and four-eyes import approval | Owner | **Resolved** (2026-10-24, OD-27) | `../requirements/INVENTORY_IMPORT_SPEC.md` | — | — |
+| D-36 | **New:** business values marked [DEFAULT] in the PRD and business rules (hold times, SLAs, windows, horizons) | Owner | **Deferred** to the gate of the phase that implements each rule. They are confirmed there, never silently adopted. | listed in `../requirements/BUSINESS_RULES.md` | confirm at each phase gate | Phases 5–9 |
 
 ### Summary
 
 | Classification | Decisions |
 |---|---|
-| Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-26 (MySQL part) |
-| Requires owner approval | D-24, D-25, D-31, D-32, D-34 (ADR-0003…0014), D-35 (SG-INV-1.2) |
-| Requires client input | D-01 (legal details), D-02 (floors per property, addresses, inventory; see option P-1), D-11b (logo file, owner will add), D-33 (team roles), Q-OW-1, Q-OW-9 |
+| Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-24, D-25, D-26 (MySQL part), D-32, D-33, D-34, D-35 |
+| Requires owner approval | the pricing-configuration proposal (P-2, decisions PR-1…PR-11); D-31 organisation name; AC-1.7 remote push (or move it to Phase 3) |
+| Requires client input | D-01 (legal details, may defer to Phase 6); D-11b (logo file, owner will add) |
 | Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
 
 ---
@@ -158,7 +174,7 @@ Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more 
 | R-2 | No version control | **Resolved** | Git initialised, with a reviewed baseline commit (§3). Residual: no off-machine copy yet (R-11). |
 | R-3 | No logo file or real photography | **Requires client input** (D-11b, D-12) | Logo not in the project, and not available to the working session. BR-MED rules prevent non-genuine imagery. |
 | R-4 | 3D capture cost and device performance | **Deferred to Phase 7** | Budgets (NFR-PERF-4) and the fallback (BR-3D-5) are defined |
-| R-5 | Scope breadth versus timeline | **Requires owner approval** (D-32) | Release slicing drafted |
+| R-5 | Scope breadth versus timeline | **Resolved** (OD-25: release slicing approved) | R1 scope as in the master plan |
 | R-6 | Regulatory: DPDP, SMS DLT, WhatsApp templates | **Deferred to Phase 6/8/10** | Legal review (D-15). Provider registration should start early. |
 | R-7 | Double booking / concurrency bugs | **Deferred to Phase 8** (implementation); design-level mitigation **in place** | MySQL harness proves lock-first serialisation and catches double booking (9/9 passing, 3 runs, MySQL 8.4.11). Booking-domain tests T-BK-01…10 must pass before booking code merges. |
 | R-8 | Dev/prod parity (SQLite hid locking bugs) | **Resolved** — owner action A-1 pending | Tests forced to MySQL. A `*_testing` guard is verified to refuse the dev DB. |
@@ -172,7 +188,7 @@ Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more 
 | R-16 | **New:** the existing WordPress site at smartgro.space shows signs of compromise: 1,038 injected `/pin/` spam URLs, cloaked to serve Japanese spam to Googlebot | **Requires owner action now** (outside this project) | Evidence and recommended actions in `../research/EXISTING_WEBSITE_AUDIT.md` §2. The new platform must not reuse any files from it, and must return 410 for `/pin/*`. |
 | R-17 | Loss of search visibility at cut-over from WordPress | **Deferred to Phase 11** (redirects approved, OD-21) | 57-URL inventory captured; final map from a fresh crawl and Search Console data; `/pin/*` → 410 |
 | R-18 | Selling long-term agreements beyond a leased property's lease end | **Resolved for now** (OD-14: all current properties owned) | Lease tracking (BR-PROP-5) is activated when the first leased property is added |
-| R-19 | **New:** configuration breadth (7 categories × per-property rules) increases build and test effort | **Requires owner approval** (D-32 release slicing) | Typed configuration (ADR-0013); categories can launch in stages |
+| R-19 | Configuration breadth (7 categories × per-property rules) increases build and test effort | **Resolved** (OD-25, OD-26) | Typed configuration (ADR-0013 accepted); staged release |
 
 ---
 
