@@ -197,6 +197,18 @@ Every form applies all of the following:
 
 Errors shown to the customer: `slot_unavailable` (offers alternatives), `hold_expired` (restart, keeping the details), `payment_failed` (retry while the hold is valid).
 
+### 3.4 Register interest (coming-soon city page, OD-22)
+
+| Field | Rule |
+|---|---|
+| `city` | required; a **visible** city without a published property (otherwise 404) |
+| `name`, `email`, `phone` | as in §3.1 |
+| `product` | optional product-category slug |
+| `customer_segment` | optional segment slug |
+| `marketing_consent` | optional boolean, default false |
+
+**Outcome:** a lead with source `city_waitlist` and the city set, plus a confirmation screen. When a property in that city is published, staff can notify these leads, but only those whose consent allows it (BR-PRV-2).
+
 ---
 
 ## 4. Webhooks

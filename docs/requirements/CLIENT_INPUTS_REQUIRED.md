@@ -32,7 +32,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 | C-2.2 | **First property's full inventory** in the SG-INV-1.2 template (`../templates/inventory-import/`) | validates the data model against reality before it is built | none | Phase 1 AC-1.4 |
 | C-2.3 | ~~Seat tracking~~ **Answered (OD-10, OD-15):** individual, pooled, mixed within a property, and **hybrid zones** | — | — | resolved |
 | C-2.4 | ~~Property grouping~~ **Answered (OD-13):** each address is its own centre | — | — | resolved |
-| C-2.5 | ~~City names and visibility~~ **Answered (OD-16, OD-18):** official current names (Gurugram, Delhi …); cities hidden by default with an admin toggle. **Still asked:** what a visible city without a property shows (Q-OW-12). | — | "coming soon / register interest" page | Phase 6 |
+| C-2.5 | ~~City names and visibility~~ **Answered (OD-16, OD-18):** official current names (Gurugram, Delhi …); cities hidden by default with an admin toggle. A visible city without a property shows a "coming soon / register interest" page (OD-22). | — | — | resolved |
 | C-2.6 | Operating hours per location, holidays, after-hours access rules | availability, tour slots, booking windows | none | Phase 5 |
 | C-2.7 | Amenities per location and space (only real ones) | listings and filters | none | Phase 5 |
 

@@ -5,7 +5,7 @@
 | Date | 2026-10-24 |
 | Source | Owner-supplied URL `https://www.smartgro.space/coworking-space/#` (D-19) |
 | Method | Read-only HTTP requests: `robots.txt`, `sitemap.xml`, `sitemap_index.xml`, `wp-sitemap.xml`, the supplied page, and two sample URLs fetched as a normal browser and as Googlebot. No login was used and nothing on the site was changed. |
-| Use | URL inventory for possible redirects at launch (Q-OW-11) and a security warning. **Owner decision (OD-19): nothing is taken from the old site. It is for information only.** |
+| Use | URL inventory for the launch redirects (approved, OD-21) and a security warning. **Owner decision (OD-19): nothing is taken from the old site. It is for information only.** |
 
 ---
 
@@ -57,7 +57,7 @@ Serving different content to search engines than to visitors ("cloaking"), toget
 
 ---
 
-## 4. Draft redirect plan (decided in Phase 11; listed now so the IA stays compatible)
+## 4. Draft redirect plan (redirects approved by the owner, OD-21; final map in Phase 11)
 
 | Existing | Proposed new destination | Code |
 |---|---|---|

@@ -9,6 +9,17 @@
 
 ---
 
+## 0B. Update — owner answers (2026-10-24, round 4)
+
+| Answer | Recorded as | Effect |
+|---|---|---|
+| Old URLs redirect: yes | OD-21 | 301 for legitimate old URLs, 410 for `/pin/*`; final map in Phase 11 (FR-SEO-6) |
+| Coming-soon page: yes | OD-22 (interpreted as the first option) | a visible city without a property shows "Coming soon — register interest", which creates `city_waitlist` leads and is `noindex` by default (proposed) |
+| Floors: "yes" | **not an answer to the split** | Q-OW-1 stays open. The format example is not recorded as fact. Option P-1 proposes deferring floors to Phase 5 data entry. |
+| Pricing, approvals | no answer | still open; options P-2 and P-3 in the decision register §0.5 |
+
+---
+
 ## 0A. Update — owner answers incorporated (2026-10-24, round 3)
 
 Documentation only. No packages, application code, migrations, GitHub or local setup were touched. **Phase 1 is not approved or complete.**
@@ -189,7 +200,7 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 | AC | Criterion (summary; full text in `PROJECT_MASTER_PLAN.md` §2) | Status |
 |---|---|---|
 | AC-1.1 | Documents complete, consistent, all links resolve | **Partly met.** All at v1.0-rc; link check 0 broken (2026-10-24); awaiting owner review. |
-| AC-1.2 | Blocking inputs answered or explicitly deferred | **Mostly met (round 3):** D-03, D-05, D-06, D-16, D-19, D-22, Q-OW-2…8 answered. **Open:** floors per property (Q-OW-1), D-33 team roles, Q-OW-11, Q-OW-12. D-01 legal details can defer to Phase 6. |
+| AC-1.2 | Blocking inputs answered or explicitly deferred | **Mostly met (round 4):** D-03, D-05, D-06, D-16, D-19, D-22 and Q-OW-2…8, 11, 12 answered. **Open:** floors per property (Q-OW-1, or deferral via option P-1) and D-33 team roles. D-01 legal details can defer to Phase 6. |
 | AC-1.3 | D-06 answered, or Scenario A deferral recorded with a Phase 5 gate | **Met (2026-10-24):** no existing software (OD-06) |
 | AC-1.4 | ERD validated against the first real property via SG-INV-1.2 | **Not met.** ERD v1.2-rc and template SG-INV-1.2 ready; waiting for floors per property and inventory. |
 | AC-1.5 | No silent defaults: each confirmed or deferred in the register | **Partly met.** All classified; confirmations pending. |
@@ -199,18 +210,13 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 
 ---
 
-## 9. Next recommended action (updated 2026-10-24, round 3)
+## 9. Next recommended action (updated 2026-10-24, round 4)
 
 1. **Owner, urgent and outside this project:** act on the compromise of the existing WordPress site (`../research/EXISTING_WEBSITE_AUDIT.md` §2).
-2. **Owner:**
-   * give the floors per property and their levels (Q-OW-1)
-   * resend section 9 onward of the brief (Q-OW-9)
-   * answer Q-OW-11 (old-URL redirects) and Q-OW-12 (what a visible city without a property shows)
-   * add the logo when ready (Q-OW-10)
-3. **Owner:** decide D-24, D-25, D-31, D-32, D-34 (ADR-0003…0014) and D-35 (SG-INV-1.2), and confirm the team roles (D-33).
-4. **Project team, after inputs arrive:**
-   * fold the pricing brief into the ERD and business rules
-   * run the first property's SG-INV-1.2 workbook through the validation rules
-   * present Phase 1 for approval
+2. **Owner, one reply would unblock Phase 1:**
+   * **Floors:** either give the split (e.g. "A-70: G, 1, 2 · A-71: … · A-23: … · H-105: …"), or choose **option P-1** (defer floors and inventory to Phase 5 data entry)
+   * **Pricing:** resend section 9, or choose **option P-2** (the project team drafts a pricing proposal for you to edit and approve)
+   * **Approvals:** "approve all as recommended" (option P-3) or list exceptions. This covers D-24 packages, D-25 code layout, D-31 GitHub owner (name the account or organisation), D-32 launch scope, D-34 ADR-0003…0014, D-35 import template, and D-33 team roles.
+3. **Project team, after that reply:** finalise the Phase 1 documents to v1.0 and present Phase 1 for approval.
 
 **No Phase 2 or later implementation will start before Phase 1 is approved.**

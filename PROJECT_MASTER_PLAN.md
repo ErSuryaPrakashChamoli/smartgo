@@ -6,7 +6,7 @@
 | | |
 |---|---|
 | Last updated | 2026-10-24 |
-| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: IN PROGRESS.** Owner decisions rounds 2–3 incorporated; documents at v1.2-rc; floors per property, pricing brief and a few approvals outstanding. |
+| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: IN PROGRESS.** Owner decisions rounds 2–4 incorporated; documents at v1.2-rc; floors per property, pricing brief and approvals outstanding (unblocking options P-1…P-3 in the decision register §0.5). |
 | Live status register | [`docs/phases/PHASE_STATUS.md`](docs/phases/PHASE_STATUS.md) |
 | Decisions and risks | [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) |
 
@@ -58,7 +58,7 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
   * ADRs
 * **AC (exact):**
   * **AC-1.1 Documents complete and consistent.** Every deliverable above is at v1.0 after owner review comments are resolved. All relative links resolve (link check reports 0 broken). No document contradicts another on routes, entities or rules.
-  * **AC-1.2 Blocking inputs answered.** Floors per property (Q-OW-1), D-33 (team roles), Q-OW-11 and Q-OW-12 are answered, **or** explicitly deferred by the owner in the decision register with the default and the risk recorded. (Answered on 2026-10-24: D-03, D-05, D-06, D-16, D-19, D-22 and Q-OW-2…8. D-01 legal details may defer to Phase 6.)
+  * **AC-1.2 Blocking inputs answered.** Floors per property (Q-OW-1) and D-33 (team roles) are answered, **or** explicitly deferred by the owner in the decision register with the default and the risk recorded (for floors: option P-1). (Answered on 2026-10-24: D-03, D-05, D-06, D-16, D-19, D-22, Q-OW-2…8, Q-OW-11, Q-OW-12. D-01 legal details may defer to Phase 6.)
   * **AC-1.3 Existing systems.** D-06 is answered by the client (questionnaire Q1–Q3 and Q7 at minimum), **or** the owner records an explicit deferral that accepts Scenario A as the working design and makes D-06 a Phase 5 entry gate.
   * **AC-1.4 ERD validated against reality.** The first real property is supplied in the SG-INV-1.2 template (or a later version) and walked through the validation rules. Every finding is either corrected in the data or turned into an ERD change. M-1…M-6 are closed or deferred with a recorded default.
   * **AC-1.5 No silent defaults.** Every [DEFAULT] value in the PRD and business rules is confirmed by its decider or listed as "Deferred to Phase N" in the register.

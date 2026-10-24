@@ -16,7 +16,7 @@ No page in this sitemap will publish invented content. A ◇ page is built only 
 1. **Three-level discovery, matching how Indian buyers search:** city → micro-market (business district) → centre. This mirrors observed WeWork India and Awfis hierarchies and the locality-led search behaviour in the research.
 2. **One canonical page per search intent.** The research found an Indian operator running two parallel city-page sets that compete with each other, and another with truncated or duplicated slugs. SmartGro has exactly one city page per city, one product × city page per pair, and stable, human-readable slugs managed by the CMS with automatic 301s on change (BR-CMS-6).
 3. **Official current city names (OD-16):** Noida, Gurugram, Delhi, Faridabad, Ghaziabad. Old names are aliases that redirect (`gurgaon` → `gurugram`), stored as redirects, not duplicate pages.
-6. **Only real places are presented as SmartGro locations.** At launch that is Noida (OD-03). **Cities are hidden by default.** An administrator can toggle a city visible (OD-18, BR-PROP-4). What a visible city without a property shows is Q-OW-12.
+6. **Only real places are presented as SmartGro locations.** At launch that is Noida (OD-03). **Cities are hidden by default.** An administrator can toggle a city visible (OD-18, BR-PROP-4). A visible city without a property shows a **"Coming soon — register interest"** page (OD-22).
 7. **No content is published for categories, properties or spaces that do not exist**, and no demo inventory is created (BR-PROP-1, BR-PRODCFG-4).
 4. **Every indexable page is server-rendered** with complete content in the HTML (ADR-0010).
 5. **Product × city pages exist only when there is real inventory** behind them. There are no thin doorway pages.
@@ -41,6 +41,7 @@ The seven category pages follow the owner's catalogue (OD-07). Each is published
 /solutions/{segment}                      ◇ landing pages for the eight customer segments (OD-04), built in the order the owner prioritises
 /locations                                Cities with published properties (Noida at launch) + map/list
   /locations/{city}                       City: sectors/micro-markets, properties, map/list, FAQs
+                                          (or "Coming soon — register interest" if visible without a property; noindex)
   /locations/{city}/area/{micro-market}   Sector / micro-market (when ≥ 1 property)
   /locations/{city}/{property}            Property page (the "sales kit")
     /locations/{city}/{property}/rooms/{room}   meeting / conference / training room booking
@@ -140,4 +141,4 @@ Requirement form with seat bands (e.g. 20–49, 50–99, 100–249, 250+), citie
 * **Tag and feed URLs:** 301 where they have value, otherwise 410.
 * **`/pin/*`** (1,038 injected spam URLs): **410 Gone**.
 
-Whether to redirect at all is **Q-OW-11**. Redirecting reuses no content; it only preserves rankings and old links. If approved, the final map is a Phase 11 deliverable (R-17), checked against a fresh crawl and Search Console data.
+**Redirects approved (OD-21).** Redirecting reuses no content; it only preserves rankings and old links. The final map is a Phase 11 deliverable (R-17), checked against a fresh crawl and Search Console data.

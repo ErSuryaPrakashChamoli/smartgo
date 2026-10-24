@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.2-rc — Phase 1, ready for owner review.** Not approved. Incorporates the owner decisions of 2026-10-24 (OD-01…OD-20). Pricing configuration is pending (brief §9 not received). |
+| Status | **v1.2-rc — Phase 1, ready for owner review.** Not approved. Incorporates the owner decisions of 2026-10-24 (OD-01…OD-22). Pricing configuration is pending (brief §9 not received). |
 | Version | 0.3 (2026-10-24) |
 | Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` · `../architecture/*` (incl. `API_CONTRACTS.md`, `EXISTING_SYSTEMS_ASSESSMENT.md`) · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
 | Decision references | D-xx items: `../decisions/DECISION_REGISTER.md` (living register) |
@@ -147,7 +147,8 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 | FR-PROP-3 | Each space declares its **inventory mode** (whole space / per seat / pooled / hybrid zone), and the categories it can be **sold as**. | Incompatible combinations are rejected (BR-PRODCFG-2). One availability per space across all categories (BR-AV-3c). |
 | FR-PROP-4 | Property-specific pricing through offerings and price plans | **Rules pending** brief §9 (Q-OW-9). The model supports per-property and per-space prices. |
 | FR-PROP-5 | Restricted lease facts for leased properties: **deferred** (all current properties owned, OD-14) | Built when the first leased property is added (BR-PROP-5) |
-| FR-CITY-1 | Administrators can add cities and **toggle each city's public visibility** (default hidden, OD-18) | A hidden city has no public page and no menu entry. A visible city without a property follows Q-OW-12 and never implies an operating centre. Toggles are audited. |
+| FR-CITY-1 | Administrators can add cities and **toggle each city's public visibility** (default hidden, OD-18) | A hidden city has no public page and no menu entry (404). A visible city without a property shows a **"Coming soon — register interest"** page (OD-22): no properties, prices or inventory; a register-interest form creates a lead (`city_waitlist`, city set); `noindex` by default (proposed). Toggles are audited. |
+| FR-SEO-6 | **Migration redirects from the old site (OD-21)** | Every legitimate old URL answers 301 to its mapped new page in one hop; `/pin/*` answers 410; no old content is reused. The map is approved before cut-over. |
 | FR-PROD-1 | Product categories are managed in the back office: name, visibility, compatible space types and modes, fulfilment, durations, workflow, approval, payment rule, cancellation policy, capacity limits, booking window, required customer fields, segment relevance (ERD §4.1). | No code change is needed to add a category or change its rules. Changes affecting money require pricing permissions. All changes are audited. |
 | FR-PROD-2 | Category rules can be overridden per property (offering). | The effective rule is shown in the admin UI and used by booking and enquiry flows. |
 | FR-PROD-3 | Enquiry, quote and booking flows adapt to the category's workflow and required fields. | E.g. a virtual-office enquiry collects business details; a meeting-room request collects time and attendees. |

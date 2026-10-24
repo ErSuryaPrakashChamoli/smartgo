@@ -74,8 +74,27 @@ Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more 
 |---|---|---|
 | Q-OW-1 (re-asked) | Please give the number of floors for each property, and which levels they are (they total 10). For example: *A-70: Ground, 1st, 2nd · A-71: … · A-23: … · H-105: …* | floors and inventory cannot be created without it; it is needed to validate the ERD (AC-1.4) |
 | Q-OW-9 | Please resend section 9 onward of the brief (pricing configuration and anything after it) | pricing, payment and cancellation rules per category and property |
-| Q-OW-11 (new) | At launch, should the old site's addresses (e.g. `/coworking-space/`, the 6 blog-post URLs) **redirect** to the matching new pages? This reuses **no content**; it only keeps Google rankings and old links working. The spam `/pin/…` URLs would return "Gone" either way. | search visibility at cut-over (R-17) |
-| Q-OW-12 (new) | When a city is switched **visible** before any property opens there, what should its page show: a "coming soon / register interest" page, or only a listing in the city menu? | what a visible city without a property displays (BR-PROP-4) |
+| Q-OW-11 (new) | **→ answered: OD-21 (yes)** At launch, should the old site's addresses (e.g. `/coworking-space/`, the 6 blog-post URLs) **redirect** to the matching new pages? This reuses **no content**; it only keeps Google rankings and old links working. The spam `/pin/…` URLs would return "Gone" either way. | search visibility at cut-over (R-17) |
+| Q-OW-12 (new) | **→ answered: OD-22 (coming-soon page)** When a city is switched **visible** before any property opens there, what should its page show: a "coming soon / register interest" page, or only a listing in the city menu? | what a visible city without a property displays (BR-PROP-4) |
+### 0.4 Owner answers — 2026-10-24 (round 4)
+
+| ID | Answer | Recorded as |
+|---|---|---|
+| OD-21 | **Old website URLs redirect at launch: yes.** Legitimate pages and the 6 blog posts get a 301 to their closest new page; the injected `/pin/*` URLs return 410. No content is copied (OD-19 still applies). | Q-OW-11 answered; R-17 → Phase 11 execution |
+| OD-22 | **A city switched visible before any property opens shows a "Coming soon — register interest" page.** Interpretation: the owner answered "yes" to an either/or question, and the first option (coming-soon page) is recorded. The owner should correct this if "menu only" was meant. | Q-OW-12 answered; BR-PROP-4; FR-CITY-1 |
+
+**Not answered in round 4 (still open):**
+* **Q-OW-1 floors per property.** The reply was "yes", which does not state how the 10 floors are split. The format example in the question ("A-70: Ground, 1st, 2nd") was **illustrative only** and is **not** recorded as fact.
+* **Q-OW-9 pricing (brief section 9 onward).** Not resent.
+* **Approvals** D-24, D-25, D-31, D-32, D-34, D-35 and team roles D-33. No answer given; nothing is treated as approved.
+
+### 0.5 Options to unblock Phase 1 (owner choice; none adopted)
+
+| Option | Effect | Recommendation |
+|---|---|---|
+| P-1 | **Defer floors and real inventory to data entry.** The owner already said these "can be entered or completed later" (OD-08). AC-1.4 (ERD validated against real inventory) would move to the **Phase 5 entry gate**: the first property's real data is run through SG-INV-1.2 before any inventory code is merged. | **Recommended.** It removes the main Phase 1 blocker without guessing any floors. |
+| P-2 | **Pricing:** either resend section 9, or approve that the project team drafts a pricing-configuration proposal (units, display, GST treatment, deposits, cancellation per category) **as proposed defaults for the owner to edit and approve** | resend if available; otherwise P-2 |
+| P-3 | **Approve the pending items as recommended in one reply** ("approve all as recommended"), or list exceptions | saves a round-trip; see `../phases/PHASE_1_PROGRESS_REPORT.md` §5 |
 
 ---
 
@@ -126,7 +145,7 @@ Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more 
 |---|---|
 | Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-26 (MySQL part) |
 | Requires owner approval | D-24, D-25, D-31, D-32, D-34 (ADR-0003…0014), D-35 (SG-INV-1.2) |
-| Requires client input | D-01 (legal details), D-02 (floors per property, addresses, inventory), D-11b (logo file, owner will add), D-33 (team/roles), Q-OW-1, Q-OW-9, Q-OW-11, Q-OW-12 |
+| Requires client input | D-01 (legal details), D-02 (floors per property, addresses, inventory; see option P-1), D-11b (logo file, owner will add), D-33 (team roles), Q-OW-1, Q-OW-9 |
 | Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
 
 ---
@@ -151,7 +170,7 @@ Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more 
 | R-14 | **New (2026-10-24):** the local `.env` connects as MySQL **`root`** on a server that also hosts other projects' databases, including personal-data tables such as candidates and employees. A misconfiguration or bug in SmartGro could read or damage another project's data. | **Requires owner approval** | Mitigations already in place: tests are forced to `smartgro_testing` and the `*_testing` guard blocks other databases. **Recommended:** switch to a least-privileged `smartgro` user limited to `smart_go` and `smartgro_testing` by running `SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh`. Never use `root` in staging or production. |
 | R-15 | Floors per property and full addresses of the four properties are unknown, so the ERD cannot be validated against real data | **Requires client input** (Q-OW-1 re-asked) | Grouping resolved (OD-13). Nothing is created by assumption (BR-PROP-1). Template SG-INV-1.2 is ready. |
 | R-16 | **New:** the existing WordPress site at smartgro.space shows signs of compromise: 1,038 injected `/pin/` spam URLs, cloaked to serve Japanese spam to Googlebot | **Requires owner action now** (outside this project) | Evidence and recommended actions in `../research/EXISTING_WEBSITE_AUDIT.md` §2. The new platform must not reuse any files from it, and must return 410 for `/pin/*`. |
-| R-17 | Loss of search visibility at cut-over from WordPress | **Requires owner input** (Q-OW-11) | No content will be reused (OD-19). Redirecting old URLs is recommended; it transfers rankings, not content. |
+| R-17 | Loss of search visibility at cut-over from WordPress | **Deferred to Phase 11** (redirects approved, OD-21) | 57-URL inventory captured; final map from a fresh crawl and Search Console data; `/pin/*` → 410 |
 | R-18 | Selling long-term agreements beyond a leased property's lease end | **Resolved for now** (OD-14: all current properties owned) | Lease tracking (BR-PROP-5) is activated when the first leased property is added |
 | R-19 | **New:** configuration breadth (7 categories × per-property rules) increases build and test effort | **Requires owner approval** (D-32 release slicing) | Typed configuration (ADR-0013); categories can launch in stages |
 
