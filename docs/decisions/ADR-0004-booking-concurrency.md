@@ -23,6 +23,22 @@ Therefore:
 2. Alternatively, perform the availability check itself with locking reads (`sharedLock()`/`lockForUpdate()`), which always read the latest committed data.
 3. Code review checklist: booking and allocation actions are reviewed specifically for reads before the lock.
 
+### Lock targets per inventory mode (added 2026-10-24 for OD-10; the invariant is unchanged)
+
+**Invariant (owner-confirmed): the booking process acquires the necessary lock before reading the inventory state used to make the booking decision.**
+
+| Situation | Rows locked first (ascending `id` when several) | Then validated under the lock |
+|---|---|---|
+| `exclusive` space (cabin, room, suite) | that space | no overlapping blocking booking or allocation, including turnaround; space status; closures |
+| `per_seat` zone (dedicated desks) | the **zone's** space row, never only the seat row | the chosen seat is active and free for the interval; zone status |
+| `pooled` zone (hot desks) | the zone's space row | Σ blocking quantities + allocations + requested ≤ `capacity_seats` at every instant of the interval |
+| Multi-space agreement or combined booking (e.g. managed office over several spaces) | every involved space, **ascending `id`** (prevents deadlocks; retried on deadlock) | each space per its own mode |
+| Cancellation, extension, reschedule | the same rows as creation | status transition rules; released inventory is immediately available, because availability is derived |
+| Admin inventory change that reduces supply (capacity reduction, seat deactivation, status → maintenance or decommissioned, closure) | the affected spaces, ascending `id` | future committed usage still fits; otherwise the change is refused with a list of conflicts (BR-INV-4) |
+| Virtual office (no physical inventory) | the offering row, **only** if a per-property cap is configured | cap not exceeded |
+
+Seat rows are never the only lock. A seat booking and a pool booking in the same zone must serialise on the same row, or two writers could each see "free".
+
 ### Evidence (MySQL 8.4.11, `tests/Feature/Infrastructure/MySqlConcurrencyHarnessTest.php`)
 | Strategy | Concurrent requests | Result |
 |---|---|---|

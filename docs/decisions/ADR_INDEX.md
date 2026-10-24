@@ -17,6 +17,8 @@ Only the project owner can move an ADR to ACCEPTED. Open approvals are tracked a
 | [0010](ADR-0010-ssr-with-live-availability.md) | Server-rendered cacheable pages with live availability fragments | PROPOSED | 2026-10-24 | no |
 | [0011](ADR-0011-capability-permissions.md) | Business-capability permissions with location scoping | PROPOSED | 2026-10-24 | yes: `spatie/laravel-permission` |
 | [0012](ADR-0012-inventory-import.md) | Inventory onboarding via a validated, approved XLSX import | PROPOSED | 2026-10-24 | declares `openspout/openspout` (already installed) as direct |
+| [0013](ADR-0013-inventory-modes-and-product-configuration.md) | Inventory modes per space and configurable product categories | PROPOSED | 2026-10-24 | no |
+| [0014](ADR-0014-property-hierarchy-and-operating-model.md) | Property → building → floor hierarchy with an explicit operating model | PROPOSED | 2026-10-24 | no |
 
 ## Template for new ADRs
 

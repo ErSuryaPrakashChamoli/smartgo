@@ -76,8 +76,8 @@ flowchart TB
 | Module | Owns (writes) | Reads from | Primary roles |
 |---|---|---|---|
 | **Identity & Access** | users, roles, permissions, location scopes, audit log | — | Platform Admin |
-| **Portfolio & Inventory** | cities, micro-markets, buildings, locations, floors, spaces, seats, amenities, allocations, closures | Identity | Operations, Centre Manager |
-| **Commerce** | products, offerings, price plans, offers | Inventory | Finance, Operations |
+| **Portfolio & Inventory** | cities, micro-markets, properties (`locations`), buildings, floors, space types, spaces, seats, amenities, allocations, closures, lease facts | Identity | Operations, Centre Manager |
+| **Commerce** | product categories and their configuration, offerings (incl. space eligibility), price plans, offers, cancellation policies | Inventory | Finance, Operations |
 | **Availability** (service, no own tables except the optional snapshot) | `space_availability_snapshots` (derived) | Inventory, Commerce, Booking | system |
 | **Booking** | bookings, holds, payments, tour requests, tour rules | Inventory, Availability, CRM | Front desk, Sales |
 | **CRM** | contacts, companies, leads, deals, activities, assignment rules, consents | Inventory (read-only), Booking | Sales |
@@ -269,3 +269,18 @@ No version downgrade or replacement of the requested stack is needed based on cu
 2. **`App\Models\User` must implement `Filament\Models\Contracts\FilamentUser`** with a real `canAccessPanel()` based on active status and role (`../security/SECURITY_MODEL.md`). Without it, **every** user gets 403 outside `APP_ENV=local`. This was confirmed in the smoke test (a plain `User` received 403 in the testing environment).
 3. Required MFA, custom theme (`make:filament-theme`), clusters and dashboards per ADR-0003.
 4. Deployments must run `composer install` (which triggers `filament:upgrade` to republish the git-ignored assets) and `php artisan filament:optimize` (`../operations/DEPLOYMENT_RUNBOOK.md` §4).
+
+---
+
+## 12. Impact of the owner decisions of 2026-10-24 (round 2)
+
+| Decision | Architectural impact | Where |
+|---|---|---|
+| OD-06: no existing software | no sync layer at launch; SmartGro is master; `external_*` columns kept for later | `EXISTING_SYSTEMS_ASSESSMENT.md` |
+| OD-07: seven admin-manageable categories | product categories become configuration records; one availability engine serves them all | ADR-0013; ERD §4.1 |
+| OD-08 / OD-09: properties, buildings, floors; owned/leased | property 1—n buildings 1—n floors; explicit `operating_model`; optional restricted lease facts | ADR-0014; ERD §3 |
+| OD-10: individual, pooled, hybrid | `inventory_mode` per space; lock targets per mode; ascending-id multi-space locking | ADR-0004 (invariant unchanged); ADR-0013; BR-BK-2a/2b |
+| OD-01: logo managed once | brand settings reference media assets; templates never embed copies | ERD §7; DESIGN_SYSTEM §1.1 |
+| OD-11: existing WordPress site (compromised) | redirect manager needs prefix matching (`/pin/*` → 410); never import files from the old site | ERD §7; `../research/EXISTING_WEBSITE_AUDIT.md` |
+
+Unchanged: modular monolith (ADR-0001), MySQL (ADR-0002), the lock-before-read invariant and its harness, server-rendered public pages (ADR-0010).

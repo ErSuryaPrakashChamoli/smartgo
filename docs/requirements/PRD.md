@@ -2,8 +2,8 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review.** Not approved. The business sections depend on client inputs. |
-| Version | 0.2 (2026-10-24) |
+| Status | **v1.1-rc — Phase 1, ready for owner review.** Not approved. Incorporates the owner decisions of 2026-10-24 (OD-01…OD-11). Pricing configuration is pending (brief §9 not received). |
+| Version | 0.3 (2026-10-24) |
 | Companion docs | `INFORMATION_ARCHITECTURE.md` (sitemap, journeys) · `BUSINESS_RULES.md` (BR-*) · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` · `../architecture/*` (incl. `API_CONTRACTS.md`, `EXISTING_SYSTEMS_ASSESSMENT.md`) · `../security/SECURITY_MODEL.md` (role matrix) · `../research/MARKET_BENCHMARK.md` |
 | Decision references | D-xx items: `../decisions/DECISION_REGISTER.md` (living register) |
 
@@ -15,8 +15,26 @@
 
 SmartGro is a premium coworking and managed-workspace brand ("WORK SMART. GROW TOGETHER."). The platform combines a premium public website with an operating back office. Customers discover and evaluate real workspaces (including interactive 3D twins) and book tours or spaces. SmartGro's team runs inventory, content, sales and marketing from **one source of truth**, without needing technical skills.
 
-**Confirmed facts:** brand name, tagline, provisional palette, and the target technology stack (from the brief).
-**Not yet known:** company profile, locations, products, prices, operating policies, team structure and existing systems (see §8). This PRD defines *how* the platform behaves. It does not invent *what* SmartGro sells.
+**Confirmed business decisions (owner, 2026-10-24; `../decisions/DECISION_REGISTER.md` §0):**
+* **Brand:** SmartGro; tagline "WORK SMART. GROW TOGETHER."; domain **smartgro.space**; official logo used as supplied (file still to be placed in the project).
+* **Market and language:** India; English only.
+* **Geography:** Delhi NCR target markets (Noida, Gurgaon, Delhi, Faridabad, Ghaziabad); currently operating in **Noida** only.
+* **Properties:** four identified Noida properties (A-70, Sector 2; A-71, Sector 2; A-23, Sector 3; H-105, Sector 62), with 10 floors in total. **The floor allocation is unknown.**
+* **Operating models:** both owned-and-operated and leased-and-operated.
+* **Existing software:** none.
+* **Customers:** eight customer segments.
+* **Products:** seven product categories.
+* **Inventory:** individual, pooled and hybrid inventory.
+* **Existing website:** a WordPress site to be replaced (`../research/EXISTING_WEBSITE_AUDIT.md`).
+
+**Not yet known:**
+* legal entity details
+* floor allocation, full addresses and room-level inventory
+* pricing, payment and cancellation rules
+* operating policies
+* team structure
+
+This PRD defines *how* the platform behaves. It does not invent property data, inventory or commercial policies.
 
 ## 2. Goals and success measures
 
@@ -32,7 +50,20 @@ SmartGro is a premium coworking and managed-workspace brand ("WORK SMART. GROW T
 
 ## 3. Personas
 
-**Customers:** startup founder or SME owner (2–25 seats), enterprise/GCC real-estate or facilities lead (50+ seats), freelancer or consultant (day pass, meeting room), SME needing a registered business/GST address (virtual office ◇), event organiser ◇.
+**Customer segments (all eight confirmed, OD-04; no marketing priority implied):**
+
+| # | Segment | Typical products (indicative, not exclusive) |
+|---|---|---|
+| S-1 | Startups and small businesses | private cabins, dedicated desks |
+| S-2 | Freelancers and independent professionals | hot desks, meeting rooms |
+| S-3 | SMEs and growing companies | private cabins, office suites |
+| S-4 | Large enterprises and corporates | managed offices, conference/training rooms |
+| S-5 | Remote and hybrid employees | hot desks, dedicated desks |
+| S-6 | Consultants and business travellers | hot desks (day), meeting rooms |
+| S-7 | Companies seeking managed offices | managed offices |
+| S-8 | Businesses requiring virtual offices / registered addresses | virtual office / business address |
+
+The segment-to-product mapping is admin-managed (`product_customer_segment`) and is used for discovery and reporting, not for prioritisation.
 
 **Staff:** Marketing Manager (approver), Content Editor, SEO Specialist, Operations Manager, Centre Manager, Finance, Sales Manager, Sales Executive, Front Desk, 3D Technician, Analyst, Platform Admin. Capabilities per `SECURITY_MODEL.md` §3.1.
 
@@ -56,7 +87,13 @@ SmartGro is a premium coworking and managed-workspace brand ("WORK SMART. GROW T
 * Marketing automation and campaigns (Phase 10), advanced analytics and attribution (Phase 12), AI concierge (Phase 13), customer/member portal (D-20).
 
 ### 4.4 Out of scope (unless re-scoped)
-Member billing and access control (doors, Wi-Fi), visitor management, facility helpdesk, native mobile apps, multi-country/multi-currency, and multiple languages (D-16).
+* Member billing and access control (doors, Wi-Fi), visitor management, facility helpdesk, native mobile apps.
+* **International markets** (OD-02), multi-currency, and **languages other than English** (OD-05).
+* Operating as a **third-party marketplace** for other operators' spaces (not confirmed; OD-09).
+
+### 4.5 Product and geographic coverage
+* The platform supports **all seven product categories** (OD-07), configured per category and per property (ADR-0013). Which categories are promoted at launch is part of release slicing (D-32).
+* Launch geography is **Noida**. Gurgaon, Delhi, Faridabad and Ghaziabad are target markets. They gain public pages only when a property is confirmed there (BR-PROP-4, Q-OW-5). New cities and properties are added through the back office, without code.
 
 ## 5. Functional requirements
 
@@ -91,12 +128,27 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-INV-1 | Guided setup: City → Building → Location → Floors → Spaces (wizard), plus bulk import with the SG-INV-1.0 template (`INVENTORY_IMPORT_SPEC.md`, ADR-0012). | A non-technical ops user can create a location with 3 floors and 40 spaces in one session. The import validates against rules V-001…V-180 and reports sheet/row/column issues. It is approved by a second person and committed all-or-nothing. Synthetic fixtures pass T-IMP-01…06. |
+| FR-INV-1 | Guided setup: City → Property → Buildings → Floors → Spaces (wizard), plus bulk import with the SG-INV-1.1 template (`INVENTORY_IMPORT_SPEC.md`, ADR-0012). | A non-technical ops user can create a location with 3 floors and 40 spaces in one session. The import validates against rules V-001…V-180 and reports sheet/row/column issues. It is approved by a second person and committed all-or-nothing. Synthetic fixtures pass T-IMP-01…06. |
 | FR-INV-2 | Space operational status changes with reason; history kept. | Every change is audit-logged and emits `SpaceAvailabilityChanged`. |
 | FR-INV-3 | Allocations (long-term occupancy) with start/end/notice; seat-level for desk zones if D-05. | Availability states follow BR-AV-1…6 exactly (unit tests per rule). |
 | FR-INV-4 | Products, offerings and price plans with approval (BR-PR-*). | Four-eyes enforced. Only one active plan per scope and unit at a time. |
 | FR-INV-5 | Offers with eligibility, dates and approval. | Expired offers disappear from the site automatically. |
 | FR-INV-6 | Availability service used by every surface (site, API, 3D, CRM, booking). | No surface computes availability independently (arch test). |
+
+### 5.3a Properties, product categories and brand assets (Phases 4–5; OD-01, OD-07…OD-10)
+
+| ID | Requirement | Acceptance |
+|---|---|---|
+| FR-PROP-1 | Authorised administrators can add and edit **properties**, their **buildings** and **floors**, address and location data, operational status and **operating model** (owned/leased). | A property can be created with partial details and completed later. Publishing is blocked until BR-PROP-3 is met. Every change is audited. |
+| FR-PROP-2 | Inventory (spaces, seats) can be added to any floor later, and updated at any time, subject to BR-INV-1…5. | Supply reductions that conflict with future commitments are refused with a list of the conflicts (lock-first, ADR-0004). |
+| FR-PROP-3 | Each space declares its **inventory mode** (whole space / per seat / pooled), and the categories it can be **sold as**. | Incompatible combinations are rejected (BR-PRODCFG-2). One availability per space across all categories (BR-AV-3c). |
+| FR-PROP-4 | Property-specific pricing through offerings and price plans | **Rules pending** brief §9 (Q-OW-9). The model supports per-property and per-space prices. |
+| FR-PROP-5 | Restricted lease facts for leased properties (if Q-OW-3 confirms) | Visible only to the permitted roles. Warnings on agreements extending beyond lease end (BR-PROP-5). |
+| FR-PROD-1 | Product categories are managed in the back office: name, visibility, compatible space types and modes, fulfilment, durations, workflow, approval, payment rule, cancellation policy, capacity limits, booking window, required customer fields, segment relevance (ERD §4.1). | No code change is needed to add a category or change its rules. Changes affecting money require pricing permissions. All changes are audited. |
+| FR-PROD-2 | Category rules can be overridden per property (offering). | The effective rule is shown in the admin UI and used by booking and enquiry flows. |
+| FR-PROD-3 | Enquiry, quote and booking flows adapt to the category's workflow and required fields. | E.g. a virtual-office enquiry collects business details; a meeting-room request collects time and attendees. |
+| FR-SEG-1 | The eight customer segments are admin-managed and optionally captured on forms. | Segment is visible on leads and in reports. No priority until the owner sets one. |
+| FR-BRAND-1 | The official logo (original source retained, SVG preferred, plus optimised web renditions; primary, reversed, mark and favicon) is managed once in brand settings and referenced by every template. | Replacing the logo updates every page. Only brand-permitted users can change it. Uploaded SVGs are sanitised. The logo is never recreated or replaced by text. |
 
 ### 5.4 3D digital twin (Phase 7)
 
@@ -182,10 +234,10 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | # | Assumption | Status |
 |---|---|---|
-| A-1 | SmartGro operates in India, prices in INR, content in English. Indian operators were listed for research, but the country is not confirmed. | requires client input (D-01, D-16) |
-| A-2 | ~~No existing system must remain authoritative.~~ **Withdrawn 2026-10-24** on owner instruction: no assumption is made. See `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md`. | requires client input (D-06) |
+| A-1 | SmartGro operates in India, prices in INR, content in English | **Confirmed 2026-10-24** (OD-02, OD-05). INR is implied by India; it is restated when the pricing brief arrives. |
+| A-2 | ~~No existing system must remain authoritative.~~ **Withdrawn 2026-10-24** on owner instruction: no assumption is made. See `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md`. **Later confirmed by the owner (OD-06): no existing operational software.** | resolved |
 | A-3 | No customer self-registration or member portal at launch | deferred to Phase 8 (D-20) |
-| A-4 | No existing website whose URLs must be preserved | requires client input (D-19) |
+| A-4 | ~~No existing website whose URLs must be preserved~~ **Superseded:** an existing WordPress site exists at smartgro.space (OD-11). Its URLs are inventoried and must be redirected at launch (Phase 11). | resolved |
 | A-5 | Tours are free and do not need payment | requires client input (CLIENT_INPUTS C-4.3) |
 
 ## 8. Open decisions

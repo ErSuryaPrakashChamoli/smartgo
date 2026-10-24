@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc foundation — Phase 1, ready for owner review.** The provisional palette was **approved as provisional** by the project owner on 2026-10-24 (D-11a). Full design system is a Phase 2 deliverable. |
+| Status | **v1.1-rc foundation — Phase 1, ready for owner review.** The provisional palette was **approved as provisional** (D-11a). Brand name, tagline and domain were **confirmed** on 2026-10-24 (OD-01). The full design system is a Phase 2 deliverable. |
 | Last updated | 2026-10-24 |
 | Blocking input | **D-11b: the original SmartGro logo files.** The owner directed that the logo already supplied is the authoritative reference. The original file was **not found** in the project environment: searched the repository, its parent folder, and the home directory by name and by recent image files on 2026-10-24. It is recorded as an **outstanding asset requirement** (CLIENT_INPUTS C-6.1). The logo will not be recreated or substituted. The palette below comes from the brief, not from sampling the logo; it will be re-verified once the original file is available. |
 
@@ -14,9 +14,22 @@ This document records what can be decided before Phase 2 (principles, accessibil
 
 | Input | Status |
 |---|---|
-| Brand name | "SmartGro" per brief. The repository folder is named `smartGrow`, so the canonical spelling for domain, schema `Organization.name` and legal name needs confirming (D-22). |
-| Tagline | "WORK SMART. GROW TOGETHER." per brief |
-| Logo (vector master + raster) | **Original file not available in the project environment** (D-11b). The owner states it has been supplied; it must be provided as a file. It must not be redrawn, approximated or replaced. |
+| Brand name | **Confirmed (OD-01, 2026-10-24): "SmartGro"**, the official public-facing name. The repository folder name `smartGrow` is not a brand reference. |
+| Domain | **Confirmed: smartgro.space** |
+| Tagline | **Confirmed: "WORK SMART. GROW TOGETHER."** Not to be replaced by another slogan. |
+| Logo (vector master + raster) | **Official logo confirmed as the authoritative reference (OD-01).** The owner states it was supplied as an image in conversation. That image is **not available to the working session**, and **no logo file exists in the project directory** (re-checked 2026-10-24). **Request:** place the original at `resources/brand/source/` (Q-OW-10). It must not be redrawn, reinterpreted or replaced by text, and no AI-generated substitute may be used. |
+
+### 1.1 Logo management (FR-BRAND-1)
+
+| Item | Requirement |
+|---|---|
+| Source of truth | the original file, kept unmodified: SVG preferred; otherwise AI/EPS/PDF; plus a high-resolution PNG |
+| Web delivery | an optimised SVG (metadata stripped, sanitised, geometry unchanged) plus PNG/WebP fallbacks generated from the original, never redrawn |
+| Variants | primary, reversed (for Deep Forest backgrounds) and mark-only. **Only** produced if the owner supplies them or approves a variant derived by recolouring; no reshaping. |
+| Favicon / app icons | scaled from the official mark only |
+| Usage in the site | referenced from brand settings (`site_settings` brand group; ERD §7). Templates never embed a copy, so replacing the file updates every page. |
+| Permissions | only brand-permitted roles can replace it, and every replacement is audited |
+| Clear space and minimum size | to be taken from the owner's guidelines if they exist. Otherwise proposed in Phase 2 for approval. |
 | Palette | **Approved as provisional** (D-11a, 2026-10-24): Smart Green `#2E8B18` (logo and decorative/large elements), Action Green `#287A15` (normal-size text and buttons), Deep Forest `#073B2C`, Warm White `#F7F7F2`, Charcoal `#252D29` |
 | Logo usage rules (clear space, minimum size, mono/reversed versions) | Not supplied |
 | Brand typefaces and licences | Not supplied. The current scaffold uses Instrument Sans via Bunny Fonts, which is a Laravel default and **not** a brand decision. |

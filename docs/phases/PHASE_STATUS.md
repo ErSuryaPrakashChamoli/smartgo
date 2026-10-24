@@ -10,7 +10,7 @@
 | # | Phase | Status | Blocked by / waiting on |
 |---|---|---|---|
 | 0 | Discovery, audit, requirements clarification | **APPROVED in principle** (project owner, 2026-10-24) | — (open items carried into Phase 1) |
-| 1 | PRD, IA, architecture, database design, acceptance criteria | **IN PROGRESS.** Documents at v1.0-rc, ready for owner review. | client inputs D-01, D-02, D-03, D-05, D-06, D-16, D-19, D-22, D-33 and the first-location inventory; owner approvals D-24, D-25, D-31, D-32, D-34, D-35; owner action A-1 |
+| 1 | PRD, IA, architecture, database design, acceptance criteria | **IN PROGRESS.** Owner decisions of 2026-10-24 (round 2) incorporated; documents at v1.1-rc. | owner inputs Q-OW-1…10 (floor allocation, property grouping, operating model per property, pricing brief §9, logo file …), D-02, D-33; owner approvals D-24, D-25, D-31, D-32, D-34, D-35 |
 | 2 | Brand system, UX/UI, design system | NOT STARTED | Phase 1 approval; **logo (D-11)** |
 | 3 | Foundation, auth, permissions, security | NOT STARTED | Phase 1 approval; D-23, D-24, D-25, D-26 |
 | 4 | CMS, page builder, media, publishing | NOT STARTED | Phases 2, 3 |
@@ -47,15 +47,15 @@
 
 | Field | Detail |
 |---|---|
-| Status | **IN PROGRESS.** All documents at v1.0-rc and ready for owner review. Cannot close until client inputs arrive (owner instruction: keep Phase 1 open until business decisions and architecture documents are reviewed and finalised). |
+| Status | **IN PROGRESS.** Owner decisions of 2026-10-24 (round 2, OD-01…OD-11) are incorporated, and documents are at v1.1-rc, ready for owner review. **Not approved and not complete.** Cannot close until the remaining owner inputs arrive (floor allocation, property grouping, pricing brief section 9, logo file) and the approvals below are given. |
 | Scope | PRD, sitemap and journeys, role matrix, business rules, ERD, system architecture, API contracts, integration inventory, existing-systems assessment, security model, test strategy, design system foundation, deployment plan, inventory import, decision register, phase acceptance criteria; safe local setup (Git, MySQL test configuration) |
 | Dependencies | Phase 0 (approved in principle); client inputs; owner approvals |
-| Deliverables (v1.0-rc, 2026-10-24) | **Requirements:** `PRD.md` · `INFORMATION_ARCHITECTURE.md` · `BUSINESS_RULES.md` · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` (+ template SG-INV-1.0 + synthetic fixtures). **Architecture:** `SYSTEM_ARCHITECTURE.md` · `DATABASE_ERD.md` · `API_CONTRACTS.md` · `INTEGRATION_CONTRACTS.md` · `EXISTING_SYSTEMS_ASSESSMENT.md`. **Other:** `SECURITY_MODEL.md` · `TEST_STRATEGY.md` · `DESIGN_SYSTEM.md` (foundation) · `DEPLOYMENT_RUNBOOK.md` (plan) · `LOCAL_DEVELOPMENT.md` · `DECISION_REGISTER.md` · ADR-0001…0012 (0001/0002 ACCEPTED) |
+| Deliverables (v1.1-rc, 2026-10-24) | **Requirements:** `PRD.md` · `INFORMATION_ARCHITECTURE.md` · `BUSINESS_RULES.md` · `CLIENT_INPUTS_REQUIRED.md` · `INVENTORY_IMPORT_SPEC.md` (+ template SG-INV-1.1 + synthetic fixtures). **Architecture:** `SYSTEM_ARCHITECTURE.md` · `DATABASE_ERD.md` · `API_CONTRACTS.md` · `INTEGRATION_CONTRACTS.md` · `EXISTING_SYSTEMS_ASSESSMENT.md`. **Other:** `SECURITY_MODEL.md` · `TEST_STRATEGY.md` · `DESIGN_SYSTEM.md` (foundation) · `DEPLOYMENT_RUNBOOK.md` (plan) · `LOCAL_DEVELOPMENT.md` · `DECISION_REGISTER.md` · ADR-0001…0014 (0001/0002 ACCEPTED) · `EXISTING_WEBSITE_AUDIT.md` |
 | Acceptance criteria | `PROJECT_MASTER_PLAN.md` §2, AC-1.1…AC-1.8. Status in `PHASE_1_PROGRESS_REPORT.md` §8. |
 | Tests and results | 2026-10-24: 9/9 passed ×4 runs on a throwaway MySQL 8.4.11, then **9/9 on the owner's local MySQL** (`smartgro_testing`, 17.0 s; harness left 0 tables; dev DB `smart_go` unchanged). `*_testing` guard verified; Pint clean. |
 | Evidence | Git history (`git log`); test outputs (TEST_STRATEGY §7); workbook structure read-back and LibreOffice render (INVENTORY_IMPORT_SPEC §7); contrast calculations (DESIGN_SYSTEM §3) |
-| Known issues | Logo file not found (D-11b). No remote repository yet (R-11). Local dev `.env` still on SQLite until A-1. M-1…M-6 open. |
-| Decisions requiring approval | Owner: D-24, D-25, D-31, D-32, D-34, D-35. Client: D-01, D-02, D-03, D-05, D-06, D-11b, D-16, D-19, D-22, D-33. |
+| Known issues | Logo file not in the project (D-11b, Q-OW-10). Pricing brief §9 not received (Q-OW-9). Floor allocation unknown (Q-OW-1). Existing website compromised (R-16, owner action). No remote repository yet (R-11). Local dev `.env` still on SQLite until A-1. M-1…M-6 open. |
+| Decisions requiring approval | Owner approvals: D-24, D-25, D-31, D-32, D-34 (ADR-0003…0014), D-35 (SG-INV-1.1), Q-OW-8. Owner inputs: Q-OW-1…7, Q-OW-9, Q-OW-10, D-02 (remaining), D-33; D-01 legal details (may defer to Phase 6). |
 | Next phase | Phase 2 (needs the logo) and Phase 3 (needs D-24, D-25), in parallel, **only after Phase 1 approval** |
 
 ## Phases 2–15
@@ -68,4 +68,5 @@ Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.
 | Date | Change |
 |---|---|
 | 2026-10-24 | Register created. Phase 0 → READY FOR REVIEW. Phase 1 → IN PROGRESS with drafts. |
+| 2026-10-24 | Round 2: owner decisions OD-01…OD-11 incorporated (brand, NCR geography, segments, seven categories, four Noida properties, owned/leased models, inventory modes, no existing software, existing website). ERD v1.1-rc, ADR-0013/0014, SG-INV-1.1, existing-site audit (compromise found). Phase 1 remains IN PROGRESS. |
 | 2026-10-24 | Phase 0 → APPROVED in principle (owner). Git initialised (D-23). ADR-0001/0002 accepted. Provisional palette approved (D-11a). MySQL test configuration and concurrency harness added and verified. Phase 1 documents → v1.0-rc. Decision register created. |

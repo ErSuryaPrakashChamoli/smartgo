@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **PENDING CLIENT CONFIRMATION.** No assumption is made about whether SmartGro already uses coworking-management, CRM, accounting or access-control software. |
+| Status | **RESOLVED 2026-10-24 (OD-06): the owner confirmed SmartGro has no existing operational software.** Scenario A applies: the SmartGro platform is the master for properties, inventory, availability, pricing, bookings and CRM. This assessment is retained as the playbook for any **future** integration (e.g. accounting, access control). |
 | Last updated | 2026-10-24 |
 | Decision owner | Client (SmartGro), with a recommendation from the project team |
 | Needed by | **Phase 5 design freeze** (inventory, pricing, availability). It also shapes Phase 8 (bookings) and Phase 9 (CRM). |
@@ -41,7 +41,7 @@ Please answer for **every** system in use today, including spreadsheets that act
 
 | Scenario | Description | Effect on SmartGro design |
 |---|---|---|
-| **A. No operational system** (spreadsheets only) | Inventory and occupancy live in spreadsheets. Bookings by phone or email. | SmartGro is master for everything in §4. The first load uses the SG-INV-1.0 import (`../requirements/INVENTORY_IMPORT_SPEC.md`). **This is the current ERD default.** |
+| **A. No operational system** (spreadsheets only) | Inventory and occupancy live in spreadsheets. Bookings by phone or email. | SmartGro is master for everything in §4. The first load uses the SG-INV-1.1 import (`../requirements/INVENTORY_IMPORT_SPEC.md`). **This is the current ERD default.** |
 | **B. Coworking-management platform in use** (members, agreements, billing, room bookings, possibly door access) | A specialised platform already runs operations. | Choose **B1** (platform stays master for agreements and bookings; SmartGro mirrors inventory and availability) or **B2** (SmartGro becomes master for inventory, availability, pricing and bookings; the platform consumes them for billing and access). In both cases **one system only** accepts bookings for a given room. |
 | **C. Separate CRM in use** | Leads and pipeline in an external CRM | Choose between keeping that CRM as master (SmartGro pushes leads with attribution; Phase 9 shrinks to an integration) and migrating to the built-in CRM (Phase 9 as planned plus data migration). |
 | **D. Accounting/ERP in use** | Invoices, GST and ledgers | It stays master for invoices and payments accounting. SmartGro sends booking and payment records (D-08). SmartGro does not replicate accounting. |
@@ -101,7 +101,7 @@ The output is a short recommendation per system: **keep as master / keep and mir
 
 | Item | Status |
 |---|---|
-| D-06 answer from client | **Requires client input** (Q1–Q10) |
-| Recommended default if no system exists | Scenario A: SmartGro is master per §4 (current ERD default) |
-| Design impact if a system exists | the ERD already reserves `external_ref` and `source` fields; the sync design in §5 |
-| Gate | Phase 5 cannot start its data-model build until D-06 is answered or explicitly deferred by the owner with Scenario A accepted |
+| D-06 answer | **Resolved (OD-06, 2026-10-24):** no existing operational software |
+| Applied design | Scenario A: SmartGro is master per §4. Accounting/invoicing has no current system; how GST invoices are produced remains D-08 (Phase 8). |
+| Future integrations | the ERD keeps `external_system`/`external_ref`; §5 sync design applies if a system is added later |
+| Gate | the Phase 5 gate on D-06 is **cleared** |

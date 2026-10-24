@@ -72,7 +72,7 @@ India-specific constraint to confirm with the chosen SMS provider: commercial SM
 
 ### 3.3 Existing operational systems (D-06), the highest-risk unknown
 
-**Full assessment, client questionnaire (Q1–Q10), scenarios, recommended source of truth and sync design: [`EXISTING_SYSTEMS_ASSESSMENT.md`](EXISTING_SYSTEMS_ASSESSMENT.md).** The decision stays pending until the client confirms its current systems.
+**Resolved 2026-10-24 (OD-06): no existing operational software.** The SmartGro platform is authoritative for every row below except invoices (no system yet; D-08). [`EXISTING_SYSTEMS_ASSESSMENT.md`](EXISTING_SYSTEMS_ASSESSMENT.md) is kept for future integrations. The table below applies only if a system is introduced later.
 
 If SmartGro already runs a coworking-management, CRM or accounting system, the client must state, **per field group**, which system is authoritative:
 

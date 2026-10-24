@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review** |
+| Status | **v1.1-rc — Phase 1, ready for owner review.** Updated 2026-10-24 for product categories (OD-07), inventory modes (OD-10) and customer segments (OD-04). |
 | Last updated | 2026-10-24 |
 | Related | `SYSTEM_ARCHITECTURE.md` §4 · `INTEGRATION_CONTRACTS.md` · `../requirements/BUSINESS_RULES.md` · ADR-0010 |
 
@@ -46,17 +46,18 @@ Live availability states for the location's listable spaces (BR-AV-1). Used by t
     "date": "2026-10-24",
     "as_of": "2026-10-24T10:15:03+05:30",
     "spaces": [
-      { "code": "SYN-ALPHA-03-PO-01", "type": "private_office", "capacity_seats": 4,
+      { "code": "SYN-ALPHA-03-PC-01", "type": "private_cabin", "inventory_mode": "exclusive", "capacity_seats": 4,
         "state": "available_from", "available_from": "2027-02-01", "cta": "book_tour" },
-      { "code": "SYN-ALPHA-04-MR-01", "type": "meeting_room", "capacity_seats": 6,
+      { "code": "SYN-ALPHA-04-MR-01", "type": "meeting_room", "inventory_mode": "exclusive", "capacity_seats": 6,
         "state": "available_now", "available_from": null, "cta": "book" },
-      { "code": "SYN-ALPHA-03-HD-01", "type": "hot_desk_zone", "capacity_seats": 30,
+      { "code": "SYN-ALPHA-03-FS-01", "type": "desk_zone_flexible", "inventory_mode": "pooled", "capacity_seats": 30,
         "state": "limited", "available_from": null, "cta": "enquire" }
     ]
   }
 }
 ```
 
+* `inventory_mode` ∈ `exclusive`, `per_seat`, `pooled` (ADR-0013). For `per_seat` zones the state summarises the zone ("available" while any active seat is free). Seat-level detail is staff-only.
 * `state` ∈ `available_now`, `available_from`, `limited`, `waitlist`. Remaining-seat **counts are never exposed** (BR-AV-3).
 * `cta` ∈ `book` (only if online booking is enabled, D-07), `book_tour`, `enquire`, `waitlist`.
 * Headers: `Cache-Control: public, max-age=30, stale-while-revalidate=30`.
@@ -122,7 +123,7 @@ The published 3D scene manifest (ADR-0009). Returns 404 if no scene is published
         "model": { "url": "https://cdn.example.com/scenes/alpha/l3-9c1e.glb", "bytes": 8123456, "sha256": "…" } }
     ],
     "hotspots": [
-      { "anchor": "SG_SPACE_SYN-ALPHA-03-PO-01", "space": "SYN-ALPHA-03-PO-01", "label": "Office 3.01" }
+      { "anchor": "SG_SPACE_SYN-ALPHA-03-PC-01", "space": "SYN-ALPHA-03-PC-01", "label": "Cabin 3.01" }
     ],
     "tour_stops": [
       { "anchor": "SG_CAM_1", "title": "Arrival lounge", "narration": "…" }
@@ -155,7 +156,8 @@ Every form applies all of the following:
 | `email` | required, RFC email, ≤ 190 |
 | `phone` | required, normalised to E.164 (default region IN, assumption A-1) |
 | `company` | optional ≤ 120 (required on the enterprise form) |
-| `product` | optional enum (provisional, D-03), **pre-filled from page context** |
+| `product` | optional; one of the active product-category slugs (`private-cabins`, `dedicated-desks`, `hot-desks`, `meeting-rooms`, `conference-training-rooms`, `virtual-office`, `managed-offices`; admin-managed, OD-07), **pre-filled from page context**. The category's required fields are added to the form (FR-PROD-3). |
+| `customer_segment` | optional; one of the active customer-segment slugs (OD-04), asked as "Which best describes you?" (BR-CRM-1a) |
 | `locations[]` | optional list of location slugs, pre-filled from context |
 | `seats_band` | optional enum: `1-4`, `5-19`, `20-49`, `50-99`, `100-249`, `250+` (enterprise: required) |
 | `move_in_by` | optional month (`YYYY-MM`), not in the past |

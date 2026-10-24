@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review.** Structure is final pending review. Items marked ◇ depend on client inputs. |
+| Status | **v1.1-rc — Phase 1, ready for owner review.** Updated for the owner decisions of 2026-10-24 (seven categories, Noida-first geography, eight segments, existing-site migration). Items marked ◇ depend on further owner decisions. |
 | Last updated | 2026-10-24 |
 | Evidence | `../research/MARKET_BENCHMARK.md` (research of 2026-10-24) |
 | Decisions | D-02 locations, D-03 products, D-16 languages, D-19 existing site/URLs, D-27 partner pages (`../decisions/DECISION_REGISTER.md`). City slugs: CLIENT_INPUTS C-2.5. |
@@ -15,7 +15,9 @@ No page in this sitemap will publish invented content. A ◇ page is built only 
 
 1. **Three-level discovery, matching how Indian buyers search:** city → micro-market (business district) → centre. This mirrors observed WeWork India and Awfis hierarchies and the locality-led search behaviour in the research.
 2. **One canonical page per search intent.** The research found an Indian operator running two parallel city-page sets that compete with each other, and another with truncated or duplicated slugs. SmartGro has exactly one city page per city, one product × city page per pair, and stable, human-readable slugs managed by the CMS with automatic 301s on change (BR-CMS-6).
-3. **City-name aliases redirect.** For example `bangalore` → `bengaluru`, if the owner picks `bengaluru` as canonical (D-02). Aliases are stored as redirects, not duplicate pages.
+3. **City-name aliases redirect.** For example `gurugram` → `gurgaon` (or the reverse), once the owner chooses the public name (Q-OW-4). Aliases are stored as redirects, not duplicate pages.
+6. **Only real places are presented as SmartGro locations.** At launch that is Noida (OD-03). Target-market cities get pages only when a property is confirmed (BR-PROP-4; "coming soon" pages only if Q-OW-5 approves them).
+7. **No content is published for categories, properties or spaces that do not exist**, and no demo inventory is created (BR-PROP-1, BR-PRODCFG-4).
 4. **Every indexable page is server-rendered** with complete content in the HTML (ADR-0010).
 5. **Product × city pages exist only when there is real inventory** behind them. There are no thin doorway pages.
 
@@ -23,24 +25,25 @@ No page in this sitemap will publish invented content. A ◇ page is built only 
 
 ## 2. Public sitemap (proposed)
 
-Items marked ◇ depend on the owner's product scope (D-03) or business model (D-27).
+The seven category pages follow the owner's catalogue (OD-07). Each is published only when the category has an active offering (BR-PRODCFG-4). Items marked ◇ depend on further owner decisions (D-27, Q-OW-5, Q-OW-6, segment priorities).
 
 ```
 /                                         Home
-/workspaces                               All workspace solutions (hub)
-  /workspaces/private-offices
-  /workspaces/managed-offices             ◇ enterprise / custom-built
-  /workspaces/coworking                   hot desk + dedicated desk ◇
-  /workspaces/meeting-rooms               ◇
-  /workspaces/day-pass                    ◇
-  /workspaces/virtual-office              ◇ (GST / business address product)
-  /workspaces/event-spaces                ◇
-  /workspaces/{product}/{city}            product × city landing (only when inventory exists)
-/locations                                All cities + map/list
-  /locations/{city}                       City: micro-markets, centres, map/list, FAQs
-  /locations/{city}/area/{micro-market}   Micro-market (when ≥ 1 centre)
-  /locations/{city}/{location}            Centre page (the "sales kit")
-    /locations/{city}/{location}/meeting-rooms/{room}   bookable room ◇
+/workspaces                               All workspace solutions (hub; "coworking" hub, Q-OW-6)
+  /workspaces/private-cabins              Private cabins / private offices
+  /workspaces/dedicated-desks             Dedicated desks
+  /workspaces/hot-desks                   Hot desks / flexible seating (day and monthly)
+  /workspaces/meeting-rooms               Meeting rooms
+  /workspaces/conference-training-rooms   Conference and training rooms
+  /workspaces/virtual-office              Virtual office / business address
+  /workspaces/managed-offices             Managed offices for enterprises
+  /workspaces/{category}/{city}           category × city landing (only when inventory exists)
+/solutions/{segment}                      ◇ landing pages for the eight customer segments (OD-04), built in the order the owner prioritises
+/locations                                Cities with published properties (Noida at launch) + map/list
+  /locations/{city}                       City: sectors/micro-markets, properties, map/list, FAQs
+  /locations/{city}/area/{micro-market}   Sector / micro-market (when ≥ 1 property)
+  /locations/{city}/{property}            Property page (the "sales kit")
+    /locations/{city}/{property}/rooms/{room}   meeting / conference / training room booking
 /enterprise                               Enterprise and GCC track ◇
 /book-a-tour                              Tour scheduler (also inline on centre pages)
 /enquire                                  General enquiry (context-aware)
@@ -127,3 +130,14 @@ Requirement form with seat bands (e.g. 20–49, 50–99, 100–249, 250+), citie
 | UJ-10 | Sales executive | Gets notified of a new lead → WhatsApp/call from the lead screen → logs outcome → schedules tour → moves stage | first response logged; SLA visible |
 | UJ-11 | 3D technician + marketing user | Technician uploads GLB → validation passes → marketing links anchors to spaces from dropdowns → preview → submit | scene published without entering any coordinate |
 | UJ-12 | Finance | Creates price plan → a second approver activates → website "from" price updates | four-eyes enforced; audit entry |
+
+---
+
+## 6. Existing website migration (OD-11)
+
+The current WordPress site at smartgro.space has 14 pages, 6 blog posts, 13 tag archives and 24 feeds (`../research/EXISTING_WEBSITE_AUDIT.md` §3). The new IA must give each legitimate URL a destination at cut-over:
+* **Pages and posts:** 301 to the closest new page (draft map in the audit §4). The posts keep their slugs under `/insights/`.
+* **Tag and feed URLs:** 301 where they have value, otherwise 410.
+* **`/pin/*`** (1,038 injected spam URLs): **410 Gone**.
+
+The final map is a Phase 11 deliverable (R-17), checked against a fresh crawl and Search Console data.

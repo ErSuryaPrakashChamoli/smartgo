@@ -56,7 +56,12 @@ Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** vi
 | Blog, FAQs, testimonials, case studies | M/A | — | M/A | M | V | — | — | — | — | — | — | — | — |
 | SEO metadata, redirects | M/A | — | M/A | V | M | — | — | — | — | — | — | — | — |
 | Media library | M | — | M | M | V | V | M (S) | — | — | — | — | M (3D) | — |
-| Cities, buildings, locations, floors | M | — | V | V | V | M | V (S) | V | V | V | V (S) | V | V |
+| Properties, buildings, floors: create, edit, address, status (OD-08) | M | — | V | V | V | M | M (S; edit only, no create/delete) | V | V | V | V (S) | V | V |
+| Property operating model: owned / leased (OD-09) | M | — | V | — | — | M | V (S) | V | V | V | — | — | V |
+| Lease facts, if tracked (Q-OW-3; restricted, never public) | M | — | — | — | — | M | — | M | — | — | — | — | — |
+| Product categories and non-financial rules (ADR-0013) | M | — | V | V | V | M | V | V | V | V | V | — | V |
+| Category rules affecting money (payment rule, cancellation policy) | M/A | — | — | — | — | V | — | M/A (not own) | V | — | — | — | V |
+| Customer segments list (OD-04) | M | — | M | V | V | V | — | — | V | V | — | — | V |
 | Spaces: capacity, status, dimensions | M | — | V | V | — | M | M (S) | V | V | V | V (S) | V | V |
 | Space visibility on website | M | — | M | — | — | M | M (S) | — | — | — | — | — | — |
 | Allocations (occupancy) | M | — | — | — | — | M | M (S) | V | V | V (S) | V (S) | — | V |

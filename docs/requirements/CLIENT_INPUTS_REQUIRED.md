@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **OPEN.** Nothing below has been confirmed by the client. |
+| Status | **OPEN, partly answered.** The owner answered C-1.2, C-1.5, C-2.3, C-3.1, C-7.1, C-7.6 and D-06 on 2026-10-24 (`../decisions/DECISION_REGISTER.md` §0); C-2.1 and C-6.1 are partly answered. Everything else is unconfirmed. |
 | Last updated | 2026-10-24 |
 | Audience | SmartGro (client) leadership, operations, sales, marketing, finance, legal |
 | How to use | Answer each item, or reply "use the recommended default". A default is **not** a fact until the client confirms it. |
@@ -18,29 +18,37 @@ Legend: **Blocks** = the phase that cannot finish without it.
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
 | C-1.1 | Legal entity name, registered address, CIN/registration number, GSTIN | footer, legal pages, invoices, `Organization` structured data | none (must be provided) | Phase 6 |
-| C-1.2 | Countries and cities SmartGro operates in or plans to within 24 months | currency, time zone, language, data residency, URL structure | India, INR, Asia/Kolkata (assumption A-1) | Phase 1 (ERD/IA) |
+| C-1.2 | ~~Countries and cities~~ **Answered 2026-10-24 (OD-02, OD-03):** India; target markets Noida, Gurgaon, Delhi, Faridabad, Ghaziabad; operating in Noida | — | — | resolved |
 | C-1.3 | Positioning statement, brand story, founding year, leadership bios (if public) | About page, tone of voice, trust | none | Phase 6 |
 | C-1.4 | Target customers by priority (startups, SMEs, enterprises/GCCs, freelancers) | IA emphasis, journeys, sales routing | premium SMEs + enterprise, with flexible products as entry points | Phase 2 |
-| C-1.5 | Canonical brand spelling ("SmartGro"), primary domain, any secondary domains | brand consistency, SEO, email sender domains | "SmartGro" per brief | Phase 2 |
+| C-1.5 | ~~Brand spelling and domain~~ **Answered (OD-01):** SmartGro · smartgro.space · tagline "WORK SMART. GROW TOGETHER." | — | — | resolved |
 | C-1.6 | Verifiable claims SmartGro may make (member counts, client logos with permission, awards, certifications) | trust signals must be true | publish no claims until documented | Phase 6 |
 
 ## 2. Locations and inventory (D-02, D-05)
 
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
-| C-2.1 | List of locations: name, building, full address, floors operated, status (open / pre-opening / planned), opening dates | the whole public site and inventory model are built around real locations | none (must be provided) | Phase 1 (ERD validation), Phase 5 |
-| C-2.2 | **First location's full inventory** in the SG-INV-1.0 template (`../templates/inventory-import/`) | validates the data model against reality before it is built | none | Phase 1 AC-1.3 |
-| C-2.3 | Are dedicated desks sold and tracked per individual seat? Are hot desks pooled capacity? | data model for seats (`space_seats`) and availability maths | per-seat dedicated desks; pooled hot desks | Phase 1 (ERD) |
-| C-2.4 | Can one location span more than one building? | ERD M-1 | no | Phase 1 (ERD) |
-| C-2.5 | Canonical city names for URLs (e.g. Bengaluru vs Bangalore; Gurugram vs Gurgaon) | permanent URLs; aliases become redirects | official current names; common aliases redirect | Phase 6 |
+| C-2.1 | **Partly answered (OD-08):** four Noida properties (A-70, Sector 2 · A-71, Sector 2 · A-23, Sector 3 · H-105, Sector 62); 10 floors in total. **Still needed:** floor allocation per property and building levels (Q-OW-1); full addresses (PIN code, building names); status and opening dates per property | property pages and inventory are built around real properties; nothing is created by assumption | none (must be provided) | Phase 1 (ERD validation), Phase 5 |
+| C-2.2 | **First property's full inventory** in the SG-INV-1.1 template (`../templates/inventory-import/`) | validates the data model against reality before it is built | none | Phase 1 AC-1.4 |
+| C-2.3 | ~~Seat tracking~~ **Answered (OD-10):** individual, pooled and hybrid-within-property are all supported. **Still asked:** hybrid inside one zone? (Q-OW-7) | — | not needed unless confirmed | Phase 5 |
+| C-2.4 | Is each address a separate property, or do any form one centre spanning buildings (e.g. A-70 and A-71, Sector 2)? (Q-OW-2) | property pages, tours and inventory grouping | the model supports both | Phase 1 (ERD) |
+| C-2.5 | Public city names for URLs: Gurgaon or Gurugram; Delhi or New Delhi (Q-OW-4). Show target cities without a property? (Q-OW-5) | permanent URLs; avoid implying non-existent centres | owner's preferred names; hide cities without a property | Phase 6 |
 | C-2.6 | Operating hours per location, holidays, after-hours access rules | availability, tour slots, booking windows | none | Phase 5 |
 | C-2.7 | Amenities per location and space (only real ones) | listings and filters | none | Phase 5 |
+
+## 2A. New items from the owner decisions of 2026-10-24
+
+| Ref | Input needed | Why it matters | Recommended default | Blocks |
+|---|---|---|---|---|
+| C-2.8 | Operating model per property: owned and operated, or leased and operated. Can it differ within a property? Track lease end and lock-in dates internally? (Q-OW-3) | BR-PROP-2/5; avoids selling beyond a lease | record per property; track lease end dates (restricted access) | Phase 5 |
+| C-3.8 | **Pricing configuration:** section 9 onward of the owner's brief was not received (Q-OW-9) | pricing, payment and cancellation rules per category and property | — | Phase 5 |
+| C-3.9 | Marketing priority among the eight customer segments (optional) | homepage emphasis, segment landing pages | no priority until set | Phase 2/6 |
 
 ## 3. Products and pricing (D-03, D-04)
 
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
-| C-3.1 | Products actually sold: private office, managed office, dedicated desk, hot desk, meeting room, board room, day pass, virtual office (address / GST registration), event space, others | sitemap, filters, space types, templates | sell only what is confirmed; the space-type list is provisional | Phase 1 (IA) |
+| C-3.1 | ~~Products actually sold~~ **Answered (OD-07):** seven categories. **Still needed:** each category's rules (durations, workflow, approval, payment, cancellation, required details) | category configuration (ERD §4.1) | proposed defaults in ERD §4.1, not approved | Phase 5/8 |
 | C-3.2 | Pricing units per product (per seat/month, per office/month, per hour, per day) | price-plan model | as listed in `../architecture/DATABASE_ERD.md` §4 | Phase 5 |
 | C-3.3 | Minimum terms, lock-in, security deposit, notice periods | business rules, proposal content, FAQs | none | Phase 5 |
 | C-3.4 | **Public price display policy:** show "from" prices, exact prices or none, per product | conversion, and differentiation (no Indian competitor showed centre prices) | "from" prices for flexible products; private offices "from ₹ per seat" if approved, otherwise "request a quote" | Phase 5/6 |
@@ -71,7 +79,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
-| C-6.1 | **Original SmartGro logo files:** vector master (SVG, AI, EPS or PDF) plus PNG; colour, mono and reversed versions; any brand guidelines | the logo must be used as supplied, never recreated. **Not found in the project environment (searched 2026-10-24).** | none; required | **Phase 2** |
+| C-6.1 | **Original SmartGro logo files.** The owner states the logo was supplied as an image in conversation, but the file is **not in the project and not available to the working session** (checked 2026-10-24). Please place the original (SVG preferred; otherwise AI/EPS/PDF) plus a high-resolution PNG at `resources/brand/source/`. Include reversed/mono versions and guidelines if they exist. | the logo must be used as supplied, never recreated | none; required | **Phase 2** |
 | C-6.2 | Brand typefaces and licences (if any) | typography system | a licensed web font chosen in Phase 2 if none exists | Phase 2 |
 | C-6.3 | Existing professional photography per location, with ownership/licence; plans for new shoots | real imagery only (BR-MED) | professional shoot per open location before launch | Phase 6 |
 | C-6.4 | Floor plans (CAD, PDF or image) per floor | interactive floor plans, 3D fallback | none | Phase 7 |
@@ -82,19 +90,19 @@ Legend: **Blocks** = the phase that cannot finish without it.
 
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
-| C-7.1 | Existing website(s) and URLs that must be preserved or redirected | SEO equity at launch | crawl and map 301s if a site exists | Phase 1 (IA) / 11 |
+| C-7.1 | ~~Existing website~~ **Answered (OD-11):** smartgro.space (WordPress); 57 URLs inventoried. **Owner action:** the site shows signs of compromise (`../research/EXISTING_WEBSITE_AUDIT.md` §2). **Still asked:** may existing content be reused? (Q-OW-6) | SEO equity; security | 301 legitimate URLs, 410 spam | Phase 11 |
 | C-7.2 | Hosting, domain registrar, DNS (Cloudflare) and account ownership | deployment and legal control | client-owned accounts; managed Laravel hosting + Cloudflare | Phase 3 (staging) |
 | C-7.3 | Email sending domain and provider; WhatsApp Business number and provider; SMS provider with DLT registration | confirmations and follow-up | transactional email at launch; WhatsApp when the number is verified | Phase 8/10 |
 | C-7.4 | Privacy notice, terms, cookie policy, grievance officer contact, data retention periods | legal compliance (DPDP Act 2023 and Rules to be confirmed by counsel) | counsel to provide | Phase 6 |
 | C-7.5 | Analytics and advertising accounts (GA4, Google Ads, Meta, LinkedIn); consent approach | measurement and attribution | GA4 + GTM with consent mode | Phase 6/12 |
-| C-7.6 | Languages for the website | content model | English only | Phase 4 |
+| C-7.6 | ~~Languages~~ **Answered (OD-05):** English only | — | — | resolved |
 
 ## 8. Existing systems (D-06)
 
-See `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md` §2 (questions Q1–Q10). **This is the most consequential open input.**
+**Answered 2026-10-24 (OD-06): no existing operational software.** The SmartGro platform will be the master. The questionnaire in `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md` §2 is only needed if a system is introduced later.
 
 ---
 
 ## Summary: items blocking Phase 1 completion
 
-C-1.2 · C-2.1 · C-2.2 · C-2.3 · C-2.4 · C-3.1 · C-5.1 · C-7.1 · D-06 (Q1–Q3, Q7), or an explicit owner-approved deferral with the recommended default.
+C-2.1 (floor allocation, addresses) · C-2.2 (first property's inventory) · C-2.4 (property grouping) · C-5.1 (team structure) · C-6.1 (logo file, also blocks Phase 2), or an explicit owner-approved deferral with the recommended default. C-1.2, C-1.5, C-2.3, C-3.1, C-7.1, C-7.6 and D-06 were answered on 2026-10-24.

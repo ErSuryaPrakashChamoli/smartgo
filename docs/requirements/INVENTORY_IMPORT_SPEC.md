@@ -2,23 +2,31 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review** (approval tracked as D-35). The importer itself is built in Phase 5. |
+| Status | **v1.1-rc — Phase 1, ready for owner review** (approval tracked as D-35). Updated for the owner decisions of 2026-10-24 (OD-07…OD-10). The importer itself is built in Phase 5. |
 | Last updated | 2026-10-24 |
-| Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.0.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.0.xlsx) (template ID `SG-INV-1.0`) |
-| Synthetic fixtures | [`tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx) · [`tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx) |
-| Depends on | D-02 locations, D-03 product catalogue (space types), D-05 seat tracking, D-06 existing systems (which may replace spreadsheet import with a sync) |
+| Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.1.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.1.xlsx) (template ID `SG-INV-1.1`). SG-INV-1.0 is superseded; it was removed from the working tree and remains in Git history. |
+| Synthetic fixtures | [`tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx) · [`tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx) (regenerated for 1.1) |
+| Depends on | Q-OW-1 floor allocation, Q-OW-2 property grouping, Q-OW-7 hybrid zones (not in 1.1). D-03, D-05 and D-06 are resolved (OD-07, OD-10, OD-06). |
 
 ---
 
 ## 1. Purpose
 
-The client will send the first real location's inventory as a spreadsheet. This template gives operations staff:
+The owner will supply the first real property's inventory when available. This template gives operations staff:
 * a structured, validated way to record the **physical truth** (BR-SOT-1)
 * no need for database, JSON or technical knowledge
 
-The same template is later downloadable from the back office for every new location and every bulk update.
+The same template is later downloadable from the back office for every new property and every bulk update. **Only confirmed facts are entered: never estimated floors, rooms or capacities (BR-PROP-1).**
 
-**Out of scope for SG-INV-1.0:** prices (D-04), marketing copy, photos and 3D models. Each has its own workflow.
+**Out of scope for SG-INV-1.1:** prices (brief §9 pending), marketing copy, photos and 3D models. Each has its own workflow.
+
+**What changed in 1.1:**
+* a **Property** sheet with `operating_model`
+* a new **Buildings** sheet (address with `locality`; postal code may follow later; exactly one primary building)
+* floors and spaces reference a building
+* `inventory_mode` (Whole space / Per seat / Pooled) replaces `seat_tracking`
+* new `sellable_as` column (the seven product categories)
+* space types aligned to the owner's catalogue
 
 ---
 
@@ -26,12 +34,13 @@ The same template is later downloadable from the back office for every new locat
 
 | Sheet | One row per | Key (must be unique) | Notes |
 |---|---|---|---|
-| Read me | — | — | instructions, colour legend, process |
-| Location | SmartGro centre | `location_code` | address, coordinates, status, opening date, time zone, centre manager (staff email) |
-| Hours | location × weekday | (`location_code`, `day_of_week`) | 7 rows per location |
-| Floors | operated floor | (`location_code`, `building_level`) | optional floor-plan file name |
-| Spaces | physical workspace | `space_code` (globally unique, permanent) | type, capacity, area, status, listability, seat tracking, amenities, booking limits |
-| Seats | seat in a per-seat desk zone | (`space_code`, `seat_label`) | only if D-05 = per-seat |
+| Read me | — | — | instructions, compatibility rules, colour legend, process |
+| Property | SmartGro property | `property_code` | city, micro-market, **operating model**, status, opening date, time zone, centre manager (staff email) |
+| Buildings | building of a property | `building_code` | address (`address_line_1` e.g. "A-70", `locality` e.g. "Sector 2"), postal code (may follow), coordinates, `is_primary` |
+| Hours | property × weekday | (`property_code`, `day_of_week`) | 7 rows per property |
+| Floors | operated floor | (`building_code`, `building_level`) | optional floor-plan file name |
+| Spaces | physical workspace | `space_code` (globally unique, permanent) | type, **inventory mode**, capacity, area, status, listability, **sellable as**, amenities, time-booking limits |
+| Seats | seat in a `Per seat` space | (`space_code`, `seat_label`) | individual tracking (OD-10 A) |
 | Occupancy | long-term agreement on a space or seat | (`contract_reference`, `space_code`, `seat_label`, `starts_on`) | **no personal data**: an internal agreement number only |
 | Amenities | amenity name | `amenity_name` | controlled vocabulary referenced from Spaces |
 | Lists (hidden) | — | — | dropdown values (named ranges) |
@@ -46,17 +55,34 @@ The same template is later downloadable from the back office for every new locat
 | 3 | grey **EXAMPLE** row (synthetic `SYN-EXAMPLE` values) | always ignored |
 | 4+ | data (yellow input cells) | imported |
 
-Dropdown values are human labels (e.g. "Private office"). The importer maps labels to stored keys case-insensitively and also accepts the keys themselves (e.g. `private_office`).
+Dropdown values are human labels. The importer maps labels to stored keys case-insensitively and also accepts the keys themselves.
 
-| Label | Stored key | Booking mode (derived; ERD §3) |
+| Space type label | Stored key (`space_types`, ERD §3.1) | Allowed inventory modes (proposed defaults) |
 |---|---|---|
-| Private office | `private_office` | contract |
-| Managed suite | `managed_suite` | contract |
-| Dedicated desk zone | `dedicated_desk_zone` | contract (per seat or pooled, D-05) |
-| Hot desk zone | `hot_desk_zone` | shared_capacity |
-| Meeting room · Board room · Event space · Phone booth · Training room | `meeting_room` · `board_room` · `event_space` · `phone_booth` · `training_room` | exclusive_slot |
+| Private cabin | `private_cabin` | Whole space |
+| Dedicated desk zone | `desk_zone_dedicated` | Per seat |
+| Flexible seating zone | `desk_zone_flexible` | Pooled, Per seat |
+| Meeting room | `meeting_room` | Whole space |
+| Conference / training room | `conference_training_room` | Whole space |
+| Office suite | `office_suite` | Whole space |
 
-The space-type list is **provisional** until the client confirms its product catalogue (D-03).
+| Inventory mode label | Stored key |
+|---|---|
+| Whole space | `exclusive` |
+| Per seat | `per_seat` |
+| Pooled | `pooled` |
+
+| Product category (`sellable_as`, OD-07) | Required inventory mode (BR-PRODCFG-2) |
+|---|---|
+| Private cabins / private offices | Whole space |
+| Dedicated desks | Per seat |
+| Hot desks / flexible seating | Pooled or Per seat |
+| Meeting rooms | Whole space |
+| Conference and training rooms | Whole space |
+| Managed offices for enterprises | Whole space (one or many spaces) |
+| Virtual office / business address | **never on a space** (no physical inventory) |
+
+Space types and the compatibility table are admin-managed reference data (ADR-0013). The values above are the proposed seed.
 
 ---
 
@@ -118,38 +144,41 @@ Severity: **E** = error (blocks commit) · **W** = warning (must be acknowledged
 | V-105 | E | list values are one of the allowed labels or keys |
 | V-106 | E | Yes/No fields contain Yes or No |
 | V-107 | E | times are 24-hour `HH:MM` (text or Excel time) |
-| V-108 | E | `country_code` is ISO 3166-1 alpha-2. `timezone` is a valid IANA zone (blank → `Asia/Kolkata`, assumption A-1). |
+| V-108 | E | `country_code` is ISO 3166-1 alpha-2. `timezone` is a valid IANA zone (blank → `Asia/Kolkata`; India confirmed, OD-02). |
 | V-109 | E | latitude −90…90 and longitude −180…180. Both or neither. |
 | V-110 | E | numeric ranges: capacity 1–2,000 (whole); area 1–1,000,000; building level −5…200; minutes 0–1,440 |
-| V-111 | W | `centre_manager_email` is a valid email that matches an active staff user. If not, the location is created without a manager. |
+| V-111 | W | `centre_manager_email` is a valid email that matches an active staff user. If not, the property is created without a manager. |
 | V-112 | E | Hours: `closes_at` is after `opens_at` when open; times are blank when `is_closed = Yes` |
-| V-113 | W | postal code format per country (IN: six digits, first digit 1–9) |
-| V-114 | W | each location has exactly 7 Hours rows. Missing days are treated as closed. |
-| V-115 | E | bookable room types need `min_booking_minutes` ≤ `max_booking_minutes`. A blank turnaround becomes 0. |
-| V-116 | E | `seat_tracking` is required for desk zones and must be blank for every other type |
+| V-113 | W | postal code: if present, valid for the country (IN: six digits, first digit 1–9). If missing, a warning that the property cannot be published until it is added (BR-PROP-3). |
+| V-114 | W | each property has exactly 7 Hours rows. Missing days are treated as closed. |
+| V-115 | E | spaces sellable under a time-booked category (meeting rooms, conference and training rooms) need `min_booking_minutes` ≤ `max_booking_minutes`. A blank turnaround becomes 0. |
+| V-116 | E | `inventory_mode` is allowed for the `space_type` (table in §2) |
+| V-117 | E | every `sellable_as` value is a known product category, and is compatible with the space's inventory mode (BR-PRODCFG-2). "Virtual office / business address" is never allowed on a space. **Evaluated only after V-116 passes.** |
 
 ### 4.3 Uniqueness and references
 
 | Rule | Sev | Check |
 |---|---|---|
 | V-120 | E | keys in §2 are unique within the file |
-| V-121 | E | a `space_code` or `location_code` already in the database belongs to the same location (codes are permanent and are never moved) |
-| V-122 | W | an update changes an identity field of an existing location (city, building, address). This needs explicit confirmation in the preview. |
-| V-130 | E | each space's (`location_code`, `building_level`) exists on the Floors sheet or in the database |
-| V-131 | E | every `location_code` on Hours, Floors and Spaces exists on the Location sheet or in the database |
-| V-135 | E | Seats rows only for desk zones with `seat_tracking = Per seat`. The number of active seats equals `capacity_seats`. |
+| V-121 | E | a `space_code`, `building_code` or `property_code` already in the database belongs to the same parent (codes are permanent and are never moved) |
+| V-122 | W | an update changes an identity field of an existing property or building (city, address, operating model). This needs explicit confirmation in the preview. |
+| V-130 | E | each space's (`building_code`, `building_level`) exists on the Floors sheet or in the database |
+| V-131 | E | every `property_code` on Buildings, Hours, Floors and Spaces exists on the Property sheet or in the database |
+| V-132 | E | every property has at least one building and **exactly one** primary building (a second primary is reported on the later row) |
+| V-133 | E | every `building_code` on Floors and Spaces exists and belongs to the same property |
+| V-135 | E | Seats rows only for `Per seat` spaces. The number of active seats equals `capacity_seats`. |
 
 ### 4.4 Occupancy and business rules
 
 | Rule | Sev | Check |
 |---|---|---|
 | V-140 | E | `ends_on` ≥ `starts_on`; `notice_given_on` ≤ `ends_on`. Status agrees with the dates: Notice period needs both `notice_given_on` and `ends_on`; Ended needs an `ends_on` in the past; Active needs `starts_on` ≤ today. |
-| V-145 | E | `seat_label` only for per-seat zones, and it must exist on Seats or in the database |
-| V-150 | E | **No over-allocation:** for every date, the seats in blocking agreements (Reserved, Active, Notice period) on a space must not exceed `capacity_seats`. A per-seat seat holds one agreement at a time (BR-AV-3). |
-| V-151 | E | Occupancy rows only for contract spaces (offices, suites, desk zones). Rooms are booked, not allocated. |
+| V-145 | E | `seat_label` only for `Per seat` spaces, and it must exist on Seats or in the database |
+| V-150 | E | **No over-allocation:** for every date, the seats in blocking agreements (Reserved, Active, Notice period) on a space must not exceed `capacity_seats`. A seat holds one agreement at a time (BR-AV-3/3a). |
+| V-151 | E | Occupancy rows only for spaces sellable under a term-agreement category (cabins, dedicated desks, hot desks on monthly terms, managed offices). Rooms used only by time are booked, not allocated. |
 | V-152 | W | an agreement on a space in Maintenance, Out of service or Decommissioned |
 | W-160 | W | an amenity on Spaces that is not on the Amenities sheet or in the database vocabulary (with a "did you mean" suggestion) |
-| W-161 | W | a Planned or Pre-opening location with Active, publicly listable spaces. They will not be bookable (BR-AV-6). |
+| W-161 | W | a Planned or Pre-opening property with Active, publicly listable spaces. They will not be bookable (BR-AV-6). |
 | W-162 | W | area per seat below 20 sq ft or above 500 sq ft (a likely typing error) |
 
 ### 4.5 Privacy and environment
@@ -184,8 +213,8 @@ Both are added to `../architecture/DATABASE_ERD.md` §3.
 
 | File | Content | Purpose |
 |---|---|---|
-| `SYNTHETIC_inventory_valid.xlsx` | 2 fictional locations ("SYNTHETIC Centre Alpha/Beta", city "Synthville", codes `SYN-*`), 14 hour rows, 4 floors, 15 spaces covering every type and status, 12 seats, 7 agreements (active, reserved, notice period, per seat), 6 amenities | must validate with **zero errors and zero warnings** |
-| `SYNTHETIC_inventory_with_errors.xlsx` | the valid data plus deliberately broken rows; a hidden `_expected_issues` sheet lists 15 expected issues (sheet, row, column, rule, severity) covering V-101, V-102, V-105, V-110, V-112, V-115, V-120, V-130, V-135, V-140, V-145, V-150, W-160, W-170 | the validator must report **exactly** these issues |
+| `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.1) | 2 fictional properties ("SYNTHETIC Property Alpha/Beta", city "Synthville", codes `SYN-*`): one **owned and operated** with **two buildings**, one **leased and operated** in pre-opening. 3 buildings, 14 hour rows, 4 floors, 14 spaces covering all three inventory modes (a hybrid mix within Alpha), every space type and status, and one room sellable as two categories. 12 seats, 7 agreements (active, reserved, notice period, per seat), 5 amenities. | must validate with **zero errors and zero warnings** |
+| `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.1) | the valid data plus deliberately broken rows; a hidden `_expected_issues` sheet lists **19** expected issues (sheet, row, column, rule, severity) covering V-101, V-102, V-105, V-110, V-112, V-115, **V-116, V-117**, V-120, V-130, **V-132, V-133**, V-135, V-140, V-145, V-150, W-160, W-170 | the validator must report **exactly** these issues |
 
 Fixture test conditions:
 * time frozen at **2026-10-24**, because status and date rules depend on "today"
@@ -198,4 +227,4 @@ Rules for synthetic data:
 3. V-180 prevents synthetic codes from ever being imported outside local or testing environments.
 4. Real client spreadsheets are **never** committed to Git or used as test fixtures. They are uploaded only through the back office.
 
-Generated 2026-10-24 with openpyxl 3.1.5. Structure verified on read-back: sheets, headers, validations and named ranges present; no formulas; the valid file was also rendered through LibreOffice for a visual check.
+SG-INV-1.1 was generated on 2026-10-24 with openpyxl 3.1.5. Structure was verified on read-back: 8 data sheets, headers, data validations and 11 named lists present; no formulas. (SG-INV-1.0 was additionally rendered through LibreOffice; 1.1 uses the same layout code.)

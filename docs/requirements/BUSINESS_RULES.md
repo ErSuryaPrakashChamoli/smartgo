@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **v1.0-rc — Phase 1, ready for owner review.** Values marked [DEFAULT] are not approved. |
+| Status | **v1.1-rc — Phase 1, ready for owner review.** Incorporates the owner decisions of 2026-10-24 (OD-01…OD-10). Values marked [DEFAULT] are still not approved. |
 | Last updated | 2026-10-24 |
 | Sign-off required | Project owner (structure); client operations, sales, marketing and finance leads (values) |
 
@@ -24,17 +24,52 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 | BR-SOT-4 | When operational status or availability changes, the system emits `SpaceAvailabilityChanged`. Website listings, 3D hotspots, booking widgets and CRM proposals read live state or have their caches invalidated within **60 seconds** [DEFAULT]. |
 | BR-SOT-5 | If an existing system is confirmed as the source of truth for any field group (D-06), SmartGro becomes a read mirror for those fields. They are shown read-only ("Managed in <system>"). Direction-of-sync rules replace BR-SOT-2 for those fields. **[UNRESOLVED → D-06]**; options and recommendation in `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md`. |
 | BR-SOT-6 | Exactly **one** booking engine accepts bookings for a given space. SmartGro never takes a parallel booking for a space whose bookings are mastered elsewhere. |
+| BR-SOT-7 | **Confirmed 2026-10-24 (OD-06):** SmartGro has no existing operational software. The SmartGro platform is the master for properties, inventory, availability, pricing, bookings and CRM. BR-SOT-5 applies only if a system is integrated in future. |
+
+## 1A. Properties and portfolio (OD-03, OD-08, OD-09)
+
+| ID | Rule |
+|---|---|
+| BR-PROP-1 | Properties, buildings and floors are created and edited only by authorised administrators (`portfolio.manage`). The four Noida properties are entered from owner-supplied facts only. **No floor, room, capacity or inventory is created by assumption or to make a demo look complete.** |
+| BR-PROP-2 | Every property has an explicit `operating_model`: **owned and operated**, or **leased and operated**. It is never inferred from the address. |
+| BR-PROP-3 | A property can be saved with incomplete details (address, floors, inventory to follow). It can be **published** on the website only when its primary building's address is complete, it has at least one floor, and it has at least one publicly listable space or an offering marked enquiry-only. |
+| BR-PROP-4 | A city appears on the public site only when it has at least one published property. Target-market cities without a property (currently Gurgaon, Delhi, Faridabad, Ghaziabad) are not presented as places where SmartGro operates. Whether to show "coming soon" or waitlist pages is Q-OW-5. |
+| BR-PROP-5 | If lease facts are recorded (Q-OW-3), a long-term allocation, proposal or offer that extends beyond the lease end date raises a warning for Sales and Operations. The data is never shown publicly. |
+| BR-PROP-6 | Each floor belongs to exactly one building of the property. Building levels are unique within a building. Floors are only those SmartGro operates. |
+
+## 1B. Product categories (OD-07)
+
+| ID | Rule |
+|---|---|
+| BR-PRODCFG-1 | Product categories and their rules are managed in the back office (`catalogue.manage`). Changes are audited. Rules that affect money (payment, cancellation, pricing) need the pricing permissions in §3. |
+| BR-PRODCFG-2 | A space can be sold only under categories compatible with its space type and inventory mode, e.g. Dedicated desks need `per_seat` and Hot desks need `pooled`. |
+| BR-PRODCFG-3 | Categories with no physical inventory (virtual office / business address) never consume space availability. A per-property cap is optional. |
+| BR-PRODCFG-4 | The website shows only active, publicly listed categories that have at least one active offering at a published property. No page is built for a category with nothing to sell. |
+| BR-PRODCFG-5 | `instant_booking` can be enabled for a category only after the online-booking and payment decisions (D-07, D-08) are confirmed. Until then the strongest workflow is request then staff approval. |
 
 ## 2. Availability
 
 | ID | Rule |
 |---|---|
 | BR-AV-1 | Customer-facing availability states are: **Available now**, **Available from {date}**, **Limited availability** (shared-capacity zones below a threshold), **Join waitlist**, and **Hidden**. |
-| BR-AV-2 | A `contract` space (private office, managed suite) is *available now* when it is `active`, publicly listable, and has no `reserved`/`active`/`notice_period` allocation covering today. It is *available from {date}* when the latest covering allocation has an `ends_on` within the publish horizon (90 days [DEFAULT]). |
-| BR-AV-3 | A `shared_capacity` zone (hot desk, dedicated desk zone) shows remaining seats on a date as `capacity_seats − Σ allocated seats − Σ confirmed or unexpired-held booking quantity`. The exact count is shown only to staff; customers see the state from BR-AV-1. |
+| BR-AV-2 | **`exclusive` spaces sold on term agreements** (private cabins, office suites, managed offices) are *available now* when `active`, publicly listable, and with no `reserved`/`active`/`notice_period` allocation covering today. They are *available from {date}* when the latest covering allocation has an `ends_on` within the publish horizon (90 days [DEFAULT]). |
+| BR-AV-3 | **`pooled` zones** (hot desks / flexible seating): free capacity on a date = `capacity_seats − Σ allocated seats − Σ blocking booking quantity`. Staff see the exact count; customers see the state from BR-AV-1. |
+| BR-AV-3a | **`per_seat` zones** (dedicated desks): each active seat is free or committed for a date (allocation or blocking booking on that seat). The zone shows "available" while at least one active seat is free. Staff see seat-level status. |
+| BR-AV-3b | **Hybrid within a property (OD-10 C):** a property may contain `exclusive`, `per_seat` and `pooled` spaces at the same time. Each space applies its own rule; property-level summaries combine them. A hybrid *zone* is not adopted (Q-OW-7). |
+| BR-AV-3c | A space sellable under several categories (e.g. meeting room and training room) has **one** availability. Any booking or allocation under any category blocks the space for all categories. |
 | BR-AV-4 | `maintenance`, `out_of_service` and `decommissioned` spaces are never bookable. They are hidden from customers unless Marketing chooses to show "Coming back soon" (maintenance only). |
 | BR-AV-5 | A `location_closures` period blocks all bookings and tours at that location for the period. |
-| BR-AV-6 | Locations with `operational_status = planned` or `pre_opening` can be shown as "Opening {month year}" with a waitlist/enquiry CTA. They never show bookable inventory. |
+| BR-AV-6 | Properties with `operational_status = planned` or `pre_opening` can be shown as "Opening {month year}" with a waitlist/enquiry CTA. They never show bookable inventory. |
+
+## 2A. Inventory administration (OD-08, OD-10)
+
+| ID | Rule |
+|---|---|
+| BR-INV-1 | Authorised administrators (`inventory.manage`, scoped to their properties) can add or edit spaces and seats, update status and capacity, and add inventory later. All changes are audited with a reason. |
+| BR-INV-2 | Space `code`s are permanent and unique. A space is never deleted once it has had an allocation or booking. It is decommissioned instead. |
+| BR-INV-3 | A change of `inventory_mode` is allowed only when the space has no current or future allocations or blocking bookings. |
+| BR-INV-4 | **Reducing supply** (lower capacity, deactivating a seat, status → maintenance/out_of_service/decommissioned, adding a closure) takes the inventory locks first (ADR-0004). It then checks future committed usage. If anything no longer fits, the change is **refused** with a list of the affected bookings and allocations, which must be moved or cancelled first. A permitted override (`bookings.override`) can force it, but only together with explicit resolution of each conflict, never silently. |
+| BR-INV-5 | Bulk inventory loads use the approved import process (`INVENTORY_IMPORT_SPEC.md`), including four-eyes approval and an all-or-nothing commit. |
 
 ## 3. Pricing and offers
 
@@ -51,16 +86,20 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 
 | ID | Rule |
 |---|---|
-| BR-BK-1 | **Exclusive spaces** (meeting rooms, board rooms, event spaces): no two blocking bookings may overlap. Overlap uses half-open intervals, `[starts_at, ends_at + turnaround)`, so back-to-back bookings are allowed only when the turnaround time is respected. |
-| BR-BK-2 | **Shared-capacity spaces** (day passes): for every instant, the sum of blocking booking quantities plus active allocations must not exceed `capacity_seats`. |
+| BR-BK-1 | **`exclusive` spaces** (meeting rooms, conference/training rooms, cabins and suites when booked by time): no two blocking bookings or allocations may overlap. Overlap uses half-open intervals, `[starts_at, ends_at + turnaround)`, so back-to-back bookings are allowed only when the turnaround time is respected. |
+| BR-BK-2 | **`pooled` spaces** (hot desks / day passes): for every instant, the sum of blocking booking quantities plus allocated seats must not exceed `capacity_seats`. |
+| BR-BK-2a | **`per_seat` spaces** (dedicated desks): a seat can hold at most one blocking booking or allocation for any instant. The lock is taken on the **zone** row, not the seat row (ADR-0004). |
+| BR-BK-2b | An operation involving several spaces (a managed-office agreement over several suites, or combined rooms) locks all of them in ascending `id` order before reading. It succeeds only if **every** space passes its own rule. Otherwise nothing is written. |
 | BR-BK-3 | Blocking statuses are `confirmed`, `pending_payment`, and `held` while `hold_expires_at > now()`. |
 | BR-BK-4 | Holds last **10 minutes** [DEFAULT] while the customer completes details or payment. A scheduled job releases expired holds every minute, but correctness never depends on that job, because BR-BK-3 ignores expired holds anyway. |
-| BR-BK-5 | **Concurrency control:** every operation that creates, extends, reschedules or confirms a booking runs in a single DB transaction with deadlock retry (`DB::transaction(fn, attempts: 3)`). Its **first statement** is `SELECT … FOR UPDATE` on the parent `spaces` row; nothing is read before the lock. It then re-validates BR-BK-1/2/3, BR-AV-4/5 and booking-window rules before writing. Validation outside the lock is advisory only. (ADR-0004; the "read before lock" failure is reproduced by a negative-control test on MySQL 8.4.) |
+| BR-BK-5 | **Concurrency control:** every operation that creates, extends, reschedules or confirms a booking runs in a single DB transaction with deadlock retry (`DB::transaction(fn, attempts: 3)`). Its **first statements** are `SELECT … FOR UPDATE` on the inventory lock rows defined in ADR-0004: the space row for `exclusive`; the **zone's** space row for `per_seat` and `pooled`; all involved spaces in ascending `id` order for multi-space operations. **Nothing is read before the lock** (owner-confirmed invariant, 2026-10-24). It then re-validates BR-BK-1/2/3, BR-AV-4/5 and booking-window rules before writing. Validation outside the lock is advisory only. (ADR-0004; the "read before lock" failure is reproduced by a negative-control test on MySQL 8.4.) |
 | BR-BK-6 | Booking requests carry an idempotency key. A retried submission with the same key returns the original booking instead of creating a second one. |
 | BR-BK-7 | Booking windows [DEFAULT]: earliest start is 30 minutes from now; latest start is 60 days ahead; minimum and maximum duration come from the space; bookings must fall within location operating hours. |
 | BR-BK-8 | Cancellation and refund policy: **[UNRESOLVED → D-07, D-08, D-15]** |
 | BR-BK-9 | Staff overrides (e.g. booking outside hours) require `bookings.override` and are always audit-logged with a reason. Overrides can never bypass BR-BK-1/2. |
 | BR-BK-10 | Online payment is in scope only if D-07/D-08 approve it. Until then, bookable products produce a **booking request** that staff confirm, and confirmation still runs BR-BK-5. |
+| BR-BK-11 | **Cancellation and release:** cancelling a booking or ending an allocation runs under the same locks as creation. Inventory is released immediately, because availability is derived. No job is needed to "free" a seat or room. Expired holds stop blocking automatically (BR-BK-3). |
+| BR-BK-12 | Booking rules per product category (durations, notice, approval, payment, cancellation) come from the category configuration (`DATABASE_ERD.md` §4.1). Their **values** are unconfirmed until the owner's pricing and policy decisions arrive (brief §9 not received). |
 
 ## 5. Tours (site visits)
 
@@ -76,6 +115,7 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 | ID | Rule |
 |---|---|
 | BR-CRM-1 | Every enquiry, tour request, booking request, call-back request and WhatsApp click-to-chat (where trackable) creates or updates a lead with source and attribution data. |
+| BR-CRM-1a | Forms may ask "Which best describes you?" with the eight customer segments (OD-04) as optional answers. The segment is used for routing and reporting. Segments carry **no** priority until the owner sets one. |
 | BR-CRM-2 | Contact de-duplication: match on normalised email **or** E.164 phone. A match attaches the new lead to the existing contact; it never overwrites contact fields without staff confirmation. |
 | BR-CRM-3 | New leads are assigned by the first matching active `assignment_rule` (by priority). If none match, the lead goes to the Sales Manager queue. |
 | BR-CRM-4 | First-response SLA target: **15 minutes during business hours** [DEFAULT]. A breach notifies the Sales Manager. **[UNRESOLVED → D-09]** |

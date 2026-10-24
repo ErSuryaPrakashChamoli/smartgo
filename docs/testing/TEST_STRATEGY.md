@@ -107,7 +107,7 @@ No SmartGro features exist yet, so there is no feature coverage yet.
 
 ## 8. Booking-domain test catalogue (must pass **before** booking code is merged)
 
-These are written in Phase 5/8 against the real schema, reusing the harness pattern. Each one runs on MySQL.
+These are written in Phase 5/8 against the real schema, reusing the harness pattern. Each one runs on MySQL. T-BK-11…16 were added on 2026-10-24 for the owner-confirmed inventory modes (OD-10) and product categories (OD-07). The existing harness and its negative controls stay unchanged. **The lock-before-read invariant is the acceptance gate for every test here.**
 
 | ID | Scenario | Expected |
 |---|---|---|
@@ -121,6 +121,12 @@ These are written in Phase 5/8 against the real schema, reusing the harness patt
 | T-BK-08 | Same idempotency key submitted twice in parallel | one booking; the second returns the first |
 | T-BK-09 | Space set to `maintenance` while a booking is being created | either the booking commits first and status change follows, or the booking is refused; never a booking on a non-bookable space |
 | T-BK-10 | Inventory consistency: allocations + bookings vs capacity after a randomised parallel workload | invariant holds: no overlapping exclusive bookings; capacity never exceeded |
+| T-BK-11 | **Per-seat zone:** N parallel requests for the same seat, plus parallel requests for different seats in the same zone | exactly one per seat; different seats all succeed; serialised on the **zone** row (BR-BK-2a) |
+| T-BK-12 | **Hybrid within a property:** concurrent bookings on a per-seat zone, a pooled zone and an exclusive room in the same property | each space enforces its own rule; no cross-space interference (BR-AV-3b) |
+| T-BK-13 | **Multi-space agreement** over 3 spaces racing a single-space booking on one of them; two multi-space requests locking overlapping sets in different orders | all-or-nothing; ascending-id lock order prevents deadlock (or the retry succeeds); no partial writes (BR-BK-2b) |
+| T-BK-14 | **One room sold as two categories:** parallel meeting-room and training-room bookings for overlapping times on the same space | exactly one succeeds (BR-AV-3c) |
+| T-BK-15 | **Admin supply reduction** (capacity cut, seat deactivation, maintenance) racing a booking | either the booking commits and the change is refused with the conflict listed, or the change commits and the booking is refused. Never both (BR-INV-4). |
+| T-BK-16 | **Cancellation release:** cancel, then immediately rebook the same slot or seat in parallel with another request | released inventory is available at once; exactly one rebooking succeeds (BR-BK-11) |
 | T-TR-01 | N parallel `ClaimTourSlot` calls beyond `max_concurrent_tours` | confirmed tours = capacity (BR-TR-2) |
 | T-ARCH-01 | Arch test: booking/allocation actions perform `lockForUpdate()` before any read | enforced by test + code-review checklist (ADR-0004 constraint) |
 
@@ -128,8 +134,8 @@ These are written in Phase 5/8 against the real schema, reusing the harness patt
 
 | ID | Scenario | Expected |
 |---|---|---|
-| T-IMP-01 | `SYNTHETIC_inventory_valid.xlsx` with time frozen at 2026-10-24 | 0 errors, 0 warnings; preview counts match the fixture |
-| T-IMP-02 | `SYNTHETIC_inventory_with_errors.xlsx` | issues equal **exactly** the hidden `_expected_issues` sheet (15 issues) |
+| T-IMP-01 | `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.1) with time frozen at 2026-10-24 | 0 errors, 0 warnings; preview counts match the fixture (2 properties, 3 buildings, 4 floors, 14 spaces) |
+| T-IMP-02 | `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.1) | issues equal **exactly** the hidden `_expected_issues` sheet (19 issues, 18 rules) |
 | T-IMP-03 | Commit of the valid file, then re-import of the same file | second run: "no changes" |
 | T-IMP-04 | Import committing while a booking holds the space lock | serialised; no lost update |
 | T-IMP-05 | Synthetic file in a `production` environment | rejected by V-180 |

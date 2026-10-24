@@ -7,16 +7,16 @@
 The client will supply the first real location's inventory as a spreadsheet. Operations staff are not technical. Inventory is the operational source of truth (BR-SOT-1), so a bad import would corrupt availability everywhere.
 
 ## Decision
-* A versioned XLSX template (`SG-INV-1.0`) with dropdowns, help text and an ignored example row (`../requirements/INVENTORY_IMPORT_SPEC.md`).
-* Upload → queued validation (37 numbered rules) → plain-language report → preview with availability impact → approval by a second person → **all-or-nothing commit** in one transaction, with affected spaces locked (ADR-0004) and all checks re-run against current data.
-* Upserts by permanent natural keys (`location_code`, `space_code`, …). **Never deletes:** missing records are reported, and decommissioning is an explicit action.
+* A versioned XLSX template (`SG-INV-1.x`; current `SG-INV-1.1`, which adds buildings, operating model, inventory mode and product categories) with dropdowns, help text and an ignored example row (`../requirements/INVENTORY_IMPORT_SPEC.md`).
+* Upload → queued validation (40 numbered rules in 1.1) → plain-language report → preview with availability impact → approval by a second person → **all-or-nothing commit** in one transaction, with affected spaces locked (ADR-0004) and all checks re-run against current data.
+* Upserts by permanent natural keys (`property_code`, `building_code`, `space_code`, …). **Never deletes:** missing records are reported, and decommissioning is an explicit action.
 * Reading uses `openspout/openspout` (already installed via Filament; to be declared as a direct dependency, D-24). Filament provides the upload, report and approval UI. A domain action performs the import.
 * Synthetic fixtures (`SYN-*`) are used for tests. A guard (V-180) rejects synthetic data outside local and testing environments. Real client files are never committed.
 
 ## Alternatives considered
 * **Filament's built-in CSV importer:** one entity per CSV, row-by-row, no cross-sheet validation or approval. Unsuitable for relational, all-or-nothing inventory.
 * **Manual entry through wizards only:** fine for small changes (kept as FR-INV-1), but too slow and error-prone for initial onboarding of dozens of spaces.
-* **API sync from an existing system:** replaces this import if D-06 identifies an authoritative external system (`../architecture/EXISTING_SYSTEMS_ASSESSMENT.md`).
+* **API sync from an existing system:** not needed. The owner confirmed there is no existing operational software (OD-06). It remains an option for future integrations (`../architecture/EXISTING_SYSTEMS_ASSESSMENT.md`).
 
 ## Consequences
 * (+) Business users onboard locations without technical help. Errors are caught before they reach customers. Every change is audited and approved.
