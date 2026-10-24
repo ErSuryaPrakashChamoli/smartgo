@@ -170,7 +170,7 @@ Sampled from the supplied logo (§3.1) where a logo colour exists; the rest keep
 | P2-B | Sora for headings, Inter for text | **approved (OD-43)** |
 | P2-C | **Visual direction** shown in `review/2026-10-24/` and at `/design/home` (AC-2.5) | **under owner review**; not signed off |
 | P2-D | Favicon and app icons made by **cropping the "SG" monogram** from the supplied logo, without reshaping or recolouring | **approved (OD-44)**; built (§7.6) |
-| P2-E | A **reversed logo** for dark backgrounds made by recolouring only the dark wordmark and buildings to Warm White; geometry unchanged | **approved (OD-45)**; built (§7.6); tagline question Q-OW-16 open |
+| P2-E | A **reversed logo** for dark backgrounds made by recolouring only the dark wordmark and buildings to Warm White; geometry unchanged | **approved (OD-45)**; tagline lettering added by OD-46; built (§7.6) |
 
 ### 7.5 Engineering decisions made in Phase 2
 
@@ -186,12 +186,14 @@ Generated from the unmodified original by `php artisan brand:renditions` (`App\A
 | File | What it is |
 |---|---|
 | `public/brand/smartgro-logo.webp` | byte-identical copy of the original |
-| `public/brand/smartgro-logo-reversed.webp` | dark ink ("SMART", upper arc of the G, buildings, base arc) changed to Warm White `#F7F7F2`; greens, building faces, tagline and transparency unchanged (lossless WebP). Each pixel is treated as a blend of the ink and its nearest other logo colour, so only the ink share changes and soft edges are kept: 11,228 of 11,235 clear-green pixels are byte-identical, and the other 7 are anti-aliased edge pixels. |
+| `public/brand/smartgro-logo-reversed.webp` | dark ink ("SMART", upper arc of the G, buildings, base arc) **and the tagline lettering** (OD-46) changed to Warm White `#F7F7F2`; greens, building faces, the tagline's thin side lines and the transparency of every pixel unchanged (lossless WebP). In the symbol and wordmark each pixel is treated as a blend of the ink and its nearest other logo colour, so only the ink share changes and soft edges are kept (11,228 of 11,235 clear-green pixels byte-identical; the other 7 are anti-aliased edge pixels). In the tagline row, long runs no taller than 3 px are the side lines and are left alone; every other visible pixel is lettering. |
 | `public/brand/smartgro-mark.png` | the "SG" symbol cropped from the logo (222 px square, transparent), unchanged |
 | `public/favicon.ico` | the symbol at 16, 32 and 48 px |
 | `public/brand/apple-touch-icon.png` | the symbol at 144 px centred on a 180 px Warm White square, because iOS rounds icon corners; the symbol itself is unchanged |
 
-The site layout and the back office both link the tab icon. The back office keeps dark mode off until Q-OW-16 is decided, so the logo never appears with an unreadable tagline.
+The site layout and the back office both link the tab icon. The back office still has dark mode off; with the complete reversed logo it can now be switched on (not done yet).
+
+**Tagline change verified (2026-10-24, OD-46):** compared with the previous reversed logo, 0 pixels changed outside the tagline row and 0 side-line pixels changed; all 1,445 visible lettering pixels are Warm White; the transparency of every pixel is identical to the original, so the letters, "WORK SMART. GROW TOGETHER.", proportions and alignment are exactly as supplied. Tagline lettering on forest: 14.06 : 1 (was 1.55 : 1). The original file is unchanged (SHA-256 `2957453080…964b`, as recorded in OD-39), and the web copy, symbol, tab icon and home-screen icon are byte-identical to before.
 
 ---
 

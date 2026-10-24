@@ -182,7 +182,14 @@ Source: the owner's instruction "Proceed with the approved design-system decisio
 | OD-44 | **P2-D approved:** the browser-tab icon is the original "SG" symbol, cropped, unchanged in shape and colour. |
 | OD-45 | **P2-E approved:** a dark-background logo that keeps the original green elements and changes only the dark lettering and buildings to white. Interpretation: "dark lettering and buildings" covers every element drawn in the logo's dark ink: the word "SMART", the upper arc of the G (same ink as the buildings), the buildings and the arc beneath them. The tagline is a different, grey colour and was not specified, so it is left unchanged (see Q-OW-16). |
 | P2-C | **Not approved.** The owner will review the desktop and mobile screenshots first. Phase 2 visual sign-off (AC-2.5) stays open; work that depends on the home-page direction (step 2.6) waits. |
-| Q-OW-16 | **Open.** On dark backgrounds the tagline keeps its grey (`#444444`), which reaches only **1.55 : 1** on forest and is not readable. Options: (a) also change the tagline lettering to Warm White (its thin lines stay as supplied, 3.82 : 1); (b) leave it as supplied and accept it is unreadable on dark backgrounds. **Recommended: (a).** |
+| Q-OW-16 | **→ answered: OD-46.** On dark backgrounds the tagline keeps its grey (`#444444`), which reaches only **1.55 : 1** on forest and is not readable. Options: (a) also change the tagline lettering to Warm White (its thin lines stay as supplied, 3.82 : 1); (b) leave it as supplied and accept it is unreadable on dark backgrounds. **Recommended: (a).** |
+
+### 0.14 Owner decision — 2026-10-24 (round 10)
+
+| ID | Decision |
+|---|---|
+| OD-46 | **Owner-approved: the tagline lettering is white in the dark-background logo** (Q-OW-16, option a). Conditions set by the owner: only the dark-grey tagline lettering changes to white; the tagline stays exactly "WORK SMART. GROW TOGETHER."; the thin side lines are unchanged; the original green elements, proportions, shapes and alignment are preserved; the original logo is unchanged, and this applies only to the dark-background variant. Implemented 2026-10-24 (`App\Actions\Brand\GenerateBrandRenditions`); evidence in `../design/DESIGN_SYSTEM.md` §7.6. |
+| P2-C | **Still not signed off** (round 10). The remaining page layouts (step 2.6) are not started until the owner approves the home page. |
 
 ---
 
