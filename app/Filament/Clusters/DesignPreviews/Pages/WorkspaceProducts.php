@@ -50,6 +50,14 @@ class WorkspaceProducts extends Page implements HasTable
     protected static ?string $title = 'Workspace products';
 
     /**
+     * Roles whose permitted scope includes approving booking requests (OD-52). A category's approver
+     * role can only narrow approval to one of them (DATABASE_ERD §4.1).
+     *
+     * @var list<StaffRole>
+     */
+    private const APPROVER_ROLES = [StaffRole::SuperAdmin, StaffRole::OperationsManager, StaffRole::PropertyManager];
+
+    /**
      * @var array<string, mixed>|null
      */
     public ?array $data = [];
@@ -148,7 +156,9 @@ class WorkspaceProducts extends Page implements HasTable
                         'instant_booking' => 'Available only after the online-booking and payment decisions D-07 and D-08 (BR-PRODCFG-5).',
                     ])->disableOptionWhen(fn (string $value): bool => $value === 'instant_booking'),
                     Toggle::make('requires_staff_approval')->label('Staff approval required'),
-                    Select::make('approver_role')->label('Approved by')->options(StaffRole::options()),
+                    Select::make('approver_role')->label('Approved by')
+                        ->options(collect(self::APPROVER_ROLES)->mapWithKeys(fn (StaffRole $role): array => [$role->value => $role->label()])->all())
+                        ->helperText('Only roles that may approve booking requests (OD-52). This narrows who approves for the category and never grants approval; nobody approves a request they created or submitted (OD-72).'),
                 ]),
                 Section::make('Money and policies')->columns(2)
                     ->description('Values are decided at the Phase 5 gate (pricing values PR-1 to PR-11, D-08).')

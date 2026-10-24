@@ -70,7 +70,7 @@ class EnquiryManagement extends Page implements HasTable
                 ->warning(),
             EmbeddedTable::make(),
             Callout::make('Who can do what (approved matrix)')
-                ->description('Sales/CRM Executives and the Super Admin manage all enquiries (OD-36). Property Managers see enquiries for their properties; Operations and Marketing see totals only; Finance sees deal values. Exports need the Super Admin and are audited.')
+                ->description('Sales/CRM Executives and the Super Admin manage all enquiries and assign owners by hand (OD-36, OD-51). Property Managers see enquiries for their properties; Operations and Marketing see totals only; Finance sees deal values. Exports need the Super Admin and are audited.')
                 ->icon(Heroicon::OutlinedShieldCheck)
                 ->color('gray'),
         ]);

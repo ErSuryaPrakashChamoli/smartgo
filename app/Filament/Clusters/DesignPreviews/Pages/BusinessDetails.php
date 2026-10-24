@@ -63,9 +63,10 @@ class BusinessDetails extends Page
 
     public function form(Schema $schema): Schema
     {
-        $missing = fn (string $supplier = 'SmartGro'): \Closure => fn (?string $state): string => blank($state)
-            ? "Missing: to be supplied by {$supplier}."
-            : 'Entered, not yet verified.';
+        $missing = fn (string $pending = 'Entered, not yet verified.'): \Closure => fn (?string $state): string => blank($state)
+            ? 'Missing: to be supplied by SmartGro.'
+            : $pending;
+        $awaitingApproval = 'Entered, waiting for approval by another person.';
 
         return $schema
             ->components([
@@ -79,18 +80,18 @@ class BusinessDetails extends Page
                         TextInput::make('domain')->disabled(),
                     ]),
                 Section::make('Public contact details')
-                    ->description('Shown on the website, in emails and on the contact page once verified.')
+                    ->description('Shown on the website, in emails and on the contact page only after another person approves the change and someone other than the approver publishes it (OD-64, OD-69).')
                     ->icon(Heroicon::OutlinedPhone)
                     ->columns(2)
                     ->schema([
-                        TextInput::make('business_email')->label('Business email')->email()->helperText($missing()),
-                        TextInput::make('phone')->label('Phone number')->tel()->helperText($missing()),
-                        Textarea::make('business_address')->label('Business address')->rows(3)->helperText($missing()),
+                        TextInput::make('business_email')->label('Business email')->email()->helperText($missing($awaitingApproval)),
+                        TextInput::make('phone')->label('Phone number')->tel()->helperText($missing($awaitingApproval)),
+                        Textarea::make('business_address')->label('Business address')->rows(3)->helperText($missing($awaitingApproval)),
                         TextInput::make('whatsapp')->label('WhatsApp number')->disabled()->helperText('Not decided: WhatsApp use depends on D-10.'),
                         Toggle::make('show_contact_on_website')
                             ->label('Show these details on the website')
                             ->disabled()
-                            ->helperText('Available once every field above is entered and verified.')
+                            ->helperText('Available once every field above is entered and the change is approved by another person (OD-69).')
                             ->columnSpanFull(),
                     ]),
                 Section::make('Registered legal entity')
@@ -115,7 +116,7 @@ class BusinessDetails extends Page
                         Toggle::make('legal_verified')
                             ->label('Verified against the registration documents')
                             ->disabled()
-                            ->helperText('Verification by a second person (proposed: Finance or the Super Admin; needs owner confirmation).')
+                            ->helperText('Verified by the Super Admin or Finance, never by someone who edited these details. Any later edit clears the verification (OD-55, OD-62).')
                             ->columnSpanFull(),
                     ]),
             ])

@@ -73,7 +73,7 @@ class BookingRequests extends Page implements HasTable
                     ]),
                 ]),
             Callout::make('Approval cannot override availability')
-                ->description('In production, approving locks the space, re-reads its bookings and allocations, and confirms only if the time is still free (BR-BK-5, ADR-0004). If not, the request becomes "Could not confirm" and the customer is offered other times. There is no "force approve".')
+                ->description('In production, approving locks the space, re-reads its bookings and allocations, and confirms only if the time is still free (BR-BK-5, ADR-0004). If not, the request becomes "Could not confirm" and the customer is offered other times. There is no "force approve". Nobody approves a request or reschedule they created or submitted, the Super Admin included (OD-72).')
                 ->icon(Heroicon::OutlinedShieldCheck)
                 ->color('gray'),
         ]);

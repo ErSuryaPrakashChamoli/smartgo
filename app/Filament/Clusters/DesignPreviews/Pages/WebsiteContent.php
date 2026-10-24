@@ -143,7 +143,7 @@ class WebsiteContent extends Page implements HasTable
         return $schema->components([
             $this->previewNotice('No page is published yet and no real copy exists: the text is a draft placeholder. Saving, submitting and publishing do nothing here.'),
             Callout::make('Content rules')
-                ->description('Nothing is copied from the old smartgro.space website: no text, images, files or data (OD-19, BR-CMS-8). Testimonials and case studies need a real, consented source (BR-CMS-7); client logos and business claims need SmartGro\'s written confirmation. Authors cannot approve their own changes (BR-CMS-2).')
+                ->description('Nothing is copied from the old smartgro.space website: no text, images, files or data (OD-19, BR-CMS-8). Testimonials and case studies need a real, consented source (BR-CMS-7); client logos and business claims need SmartGro\'s written confirmation. Authors cannot approve their own changes (BR-CMS-2). One approval by someone other than the author is enough; the approver never publishes that version, and the author may (OD-73).')
                 ->icon(Heroicon::OutlinedShieldCheck)
                 ->color('gray'),
             EmbeddedTable::make(),
@@ -161,7 +161,7 @@ class WebsiteContent extends Page implements HasTable
             Action::make('saveDraft')->label('Save draft')->color('gray')->action(fn () => $this->save()),
             Action::make('submitForReview')->label('Submit for review')->requiresConfirmation()->action(fn () => $this->save()),
             Action::make('approve')->label('Approve')->color('success')->disabled()->tooltip('You cannot approve your own changes (BR-CMS-2).'),
-            Action::make('publish')->label('Publish')->disabled()->tooltip('Only an approved version can be published.'),
+            Action::make('publish')->label('Publish')->disabled()->tooltip('Only an approved version can be published, and never by the person who approved it (OD-65, OD-73).'),
         ];
     }
 

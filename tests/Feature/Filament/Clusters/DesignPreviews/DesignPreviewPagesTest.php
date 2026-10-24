@@ -24,6 +24,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
@@ -88,6 +89,22 @@ it('refuses instant online booking for a category until the payment decisions ar
         ->call('save')
         ->assertHasFormErrors(['acquisition_workflow'])
         ->assertNotNotified();
+});
+
+it('offers only the roles that may approve booking requests as a category approver', function () {
+    actingAs(User::factory()->withRole(StaffRole::SuperAdmin)->create());
+
+    Livewire::test(WorkspaceProducts::class)
+        ->fillForm(['approver_role' => StaffRole::Finance->value])
+        ->call('save')
+        ->assertHasFormErrors(['approver_role' => 'in'])
+        ->assertNotNotified();
+
+    Livewire::test(WorkspaceProducts::class)
+        ->fillForm(['approver_role' => StaffRole::PropertyManager->value])
+        ->call('save')
+        ->assertHasNoFormErrors()
+        ->assertNotified('Design preview: nothing was saved');
 });
 
 it('validates a preview form before reporting that nothing was saved', function () {
@@ -211,6 +228,24 @@ it('lists as implemented exactly the capabilities that exist in code', function 
     $implemented = collect(PermissionsReview::catalogue())->where('basis', 'implemented')->pluck('capability')->sort()->values()->all();
 
     expect($implemented)->toBe(collect(Capability::cases())->map(fn (Capability $capability): string => $capability->value)->sort()->values()->all());
+});
+
+it('lists the same capabilities and role grants as the security model', function () {
+    $documented = Str::of(file_get_contents(base_path('docs/security/SECURITY_MODEL.md')))
+        ->after("\n## 11.")
+        ->before("\n### 11.1")
+        ->explode("\n")
+        ->filter(fn (string $line): bool => str_starts_with($line, '| ') && str_contains($line, '| `'))
+        ->mapWithKeys(function (string $line): array {
+            $cells = array_map('trim', explode('|', trim($line, '| ')));
+
+            return [trim($cells[1], '`') => array_slice($cells, 3, 6)];
+        });
+
+    $previewed = collect(PermissionsReview::catalogue())->mapWithKeys(fn (array $row): array => [$row['capability'] => $row['grants']]);
+
+    expect($documented)->not->toBeEmpty()
+        ->and($previewed->all())->toEqual($documented->all());
 });
 
 it('never writes to the database from a preview screen', function () {
