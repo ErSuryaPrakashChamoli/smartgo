@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Access\StaffRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -41,5 +42,33 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Indicate that the user has been deactivated.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the user has already set up email two-factor authentication.
+     */
+    public function withEmailAuthentication(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'has_email_authentication' => true,
+        ]);
+    }
+
+    /**
+     * Give the user a staff role. The roles must already exist (see SyncAccessControl).
+     */
+    public function withRole(StaffRole $role): static
+    {
+        return $this->afterCreating(fn (User $user) => $user->assignRole($role));
     }
 }
