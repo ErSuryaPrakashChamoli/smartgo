@@ -1,11 +1,18 @@
-@props(['status' => 'on-request'])
+@props([
+    'status' => 'on-request',
+    'from' => null,
+])
 
-{{-- Availability never relies on colour alone: every state pairs an icon with a text label (DESIGN_SYSTEM §3). --}}
+{{--
+    Customer-facing availability states (BR-AV-1). Availability never relies on colour alone: every
+    state pairs an icon with a text label (DESIGN_SYSTEM §3). "On request" is used until inventory exists.
+--}}
 @php
     $states = [
-        'available' => ['label' => 'Available', 'icon' => 'check-circle', 'classes' => 'bg-available-soft text-available'],
+        'available' => ['label' => 'Available now', 'icon' => 'check-circle', 'classes' => 'bg-available-soft text-available'],
+        'available-from' => ['label' => 'Available from '.($from ?? 'a later date'), 'icon' => 'calendar-days', 'classes' => 'bg-info-soft text-info'],
         'limited' => ['label' => 'Limited availability', 'icon' => 'exclamation-triangle', 'classes' => 'bg-limited-soft text-limited'],
-        'unavailable' => ['label' => 'Fully occupied', 'icon' => 'x-circle', 'classes' => 'bg-unavailable-soft text-unavailable'],
+        'waitlist' => ['label' => 'Join waitlist', 'icon' => 'clock', 'classes' => 'bg-unavailable-soft text-unavailable'],
         'on-request' => ['label' => 'Availability on request', 'icon' => 'chat-bubble-left-ellipsis', 'classes' => 'bg-mist text-forest'],
     ];
 

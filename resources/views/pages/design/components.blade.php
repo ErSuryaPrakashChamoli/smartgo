@@ -81,9 +81,11 @@
         <section class="flex flex-col gap-6" aria-labelledby="status">
             <h2 id="status" class="font-display text-heading font-semibold text-forest">Availability and prices</h2>
             <div class="flex flex-wrap gap-3">
-                @foreach (['available', 'limited', 'unavailable', 'on-request'] as $status)
-                    <x-ui.availability :status="$status" />
-                @endforeach
+                <x-ui.availability status="available" />
+                <x-ui.availability status="available-from" from="1 Dec" />
+                <x-ui.availability status="limited" />
+                <x-ui.availability status="waitlist" />
+                <x-ui.availability status="on-request" />
             </div>
             <div class="grid gap-4 rounded-2xl bg-surface p-6 ring-1 ring-line sm:grid-cols-2">
                 <div class="flex flex-col gap-1">
@@ -138,6 +140,65 @@
                     Answers sit here. Native disclosure keeps them usable without JavaScript.
                 </x-ui.faq-item>
                 <x-ui.faq-item question="A closed question">Hidden until opened.</x-ui.faq-item>
+            </div>
+        </section>
+
+        {{-- Journey statuses --}}
+        <section class="flex flex-col gap-6" aria-labelledby="statuses">
+            <div class="flex flex-col gap-2">
+                <h2 id="statuses" class="font-display text-heading font-semibold text-forest">Journey statuses</h2>
+                <p class="max-w-3xl text-muted">Wording keeps a request apart from a confirmation: only "Tour confirmed" and "Booking confirmed" say confirmed. Payment status is shown separately from the booking.</p>
+            </div>
+            <div class="overflow-x-auto rounded-2xl bg-surface ring-1 ring-line">
+                <table class="w-full min-w-[40rem] text-left text-sm">
+                    <thead class="border-b border-line text-muted">
+                        <tr>
+                            <th scope="col" class="px-5 py-3 font-semibold">Status</th>
+                            <th scope="col" class="px-5 py-3 font-semibold">Is anything reserved?</th>
+                            <th scope="col" class="px-5 py-3 font-semibold">Used when</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-line">
+                        @foreach ([
+                            ['enquiry-received', 'No', 'An enquiry or interest registration is sent'],
+                            ['tour-requested', 'No', 'A tour request waits for a team member'],
+                            ['tour-confirmed', 'Yes: the tour time', 'SmartGro confirms the visit'],
+                            ['booking-requested', 'No', 'A booking request waits for SmartGro (request to book)'],
+                            ['held', 'Yes, for 10 minutes', 'Online booking: while the customer finishes'],
+                            ['pending-payment', 'Yes, until the hold ends', 'Online booking: the payment provider has not answered yet'],
+                            ['confirmed', 'Yes', 'The booking is confirmed'],
+                            ['payment-received', 'Not applicable', 'Shown next to a confirmed booking'],
+                            ['payment-failed', 'No (released when the hold ends)', 'The payment did not go through'],
+                            ['slot-taken', 'No', 'Another customer took the time or the last place first'],
+                            ['cancelled', 'No', 'The customer or SmartGro cancelled'],
+                        ] as [$status, $reserved, $when])
+                            <tr>
+                                <td class="px-5 py-3"><x-ui.status :status="$status" /></td>
+                                <td class="px-5 py-3 text-ink">{{ $reserved }}</td>
+                                <td class="px-5 py-3 text-muted">{{ $when }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        {{-- Journey building blocks --}}
+        <section class="flex flex-col gap-6" aria-labelledby="journeys">
+            <h2 id="journeys" class="font-display text-heading font-semibold text-forest">Journey building blocks</h2>
+            <div class="grid gap-6 rounded-2xl bg-surface p-6 ring-1 ring-line lg:grid-cols-2">
+                <div class="flex flex-col gap-6">
+                    <x-ui.stepper :steps="['Room and time', 'Your details', 'Review', 'Request sent']" :current="2" />
+                    <x-form.radio-cards name="demo-choice" legend="Choice cards" checked="a" :options="['a' => ['title' => 'Selected option', 'description' => 'With a short description'], 'b' => ['title' => 'Another option', 'description' => 'Keyboard and screen-reader friendly']]" />
+                    <x-ui.timeline :items="[['label' => 'Done step', 'detail' => 'Completed', 'state' => 'done'], ['label' => 'Current step', 'detail' => 'In progress', 'state' => 'current'], ['label' => 'Next step', 'state' => 'upcoming']]" />
+                </div>
+                <div class="flex flex-col gap-6">
+                    <x-ui.slot-picker name="demo-slots" legend="Time picker" caption="Sample times for layout only." :slots="[['value' => '1', 'label' => '10:00'], ['value' => '2', 'label' => '10:30', 'disabled' => true], ['value' => '3', 'label' => '11:00', 'checked' => true], ['value' => '4', 'label' => '11:30']]" />
+                    <x-ui.slot-picker name="demo-slots-loading" legend="Time picker: loading" state="loading" />
+                    <x-ui.slot-picker name="demo-slots-empty" legend="Time picker: no times left" state="empty" />
+                    <x-ui.slot-picker name="demo-slots-unconfigured" legend="Time picker: hours not set yet" state="unconfigured" />
+                    <x-ui.placeholder icon="map" label="Placeholder for content not supplied yet" class="min-h-32" />
+                </div>
             </div>
         </section>
 

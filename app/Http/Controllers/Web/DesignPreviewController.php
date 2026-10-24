@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Services\Design\DesignPreviewContent;
 use App\Services\Design\DesignTokens;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 /**
  * Serves the Phase 2 design previews: foundations, the component library and page designs.
@@ -12,15 +14,17 @@ use Illuminate\Contracts\View\View;
  */
 class DesignPreviewController extends Controller
 {
+    public function __construct(private DesignPreviewContent $content) {}
+
     public function index(): View
     {
-        return view('pages.design.index', $this->content());
+        return view('pages.design.index', $this->shared());
     }
 
     public function foundations(DesignTokens $designTokens): View
     {
         return view('pages.design.foundations', [
-            ...$this->content(),
+            ...$this->shared(),
             'colors' => $designTokens->colors(),
             'pairings' => $designTokens->pairings(),
         ]);
@@ -28,53 +32,102 @@ class DesignPreviewController extends Controller
 
     public function components(): View
     {
-        return view('pages.design.components', $this->content());
+        return view('pages.design.components', $this->shared());
     }
 
     public function home(): View
     {
-        return view('pages.design.home', $this->content());
+        return view('pages.design.home', $this->shared());
+    }
+
+    public function locations(): View
+    {
+        return view('pages.design.locations.index', [...$this->shared(), 'cities' => $this->content->cities()]);
     }
 
     /**
-     * Confirmed facts only: categories (OD-07), Noida properties (OD-08, OD-13) and customer
-     * segments (OD-04). Summaries are draft copy for layout; final copy is written in Phase 6.
-     * Database records replace this list once properties and categories exist (Phases 4–5).
-     *
-     * @return array{
-     *     categories: list<array{name: string, icon: string, summary: string}>,
-     *     properties: list<array{name: string, area: string, city: string}>,
-     *     segments: list<string>
-     * }
+     * Old city names redirect permanently to the canonical page (OD-16); hidden cities do not exist publicly (OD-18).
      */
-    private function content(): array
+    public function city(string $city): View|RedirectResponse
+    {
+        if ($canonical = $this->content->canonicalCitySlug($city)) {
+            return redirect()->route('design.city', $canonical, 301);
+        }
+
+        $record = $this->content->city($city);
+
+        abort_if($record === null || $record['preview'] === 'hidden', 404);
+
+        $cityProperties = collect($this->content->properties())->where('citySlug', $city);
+        $requestedArea = request()->query('area');
+        $selectedArea = is_string($requestedArea) && $cityProperties->contains('area', $requestedArea) ? $requestedArea : null;
+
+        return view($record['preview'] === 'operating' ? 'pages.design.locations.city' : 'pages.design.locations.coming-soon', [
+            ...$this->shared(),
+            'city' => $record,
+            'areas' => $cityProperties->countBy('area')->all(),
+            'selectedArea' => $selectedArea,
+            'cityProperties' => ($selectedArea === null ? $cityProperties : $cityProperties->where('area', $selectedArea))->values()->all(),
+        ]);
+    }
+
+    public function property(string $city, string $property): View
+    {
+        $record = $this->content->property($city, $property);
+
+        abort_if($record === null, 404);
+
+        return view('pages.design.locations.property', [
+            ...$this->shared(),
+            'property' => $record,
+            'nearby' => collect($this->content->properties())->where('citySlug', $city)->reject(fn (array $other): bool => $other['slug'] === $property)->values()->all(),
+        ]);
+    }
+
+    /**
+     * A fictional property that shows the property template fully populated. Every value on it is
+     * illustrative, so no real property is ever shown with invented data.
+     */
+    public function sampleProperty(): View
+    {
+        return view('pages.design.locations.sample-property', $this->shared());
+    }
+
+    public function workspaces(): View
+    {
+        return view('pages.design.workspaces.index', $this->shared());
+    }
+
+    public function workspace(string $category): View
+    {
+        $record = $this->content->category($category);
+
+        abort_if($record === null, 404);
+
+        return view('pages.design.workspaces.category', [...$this->shared(), 'category' => $record]);
+    }
+
+    public function enterprise(): View
+    {
+        return view('pages.design.enterprise', [...$this->shared(), 'cities' => $this->content->cities()]);
+    }
+
+    public function flow(string $flow): View
+    {
+        abort_unless(in_array($flow, ['enquiry', 'tour', 'request-to-book', 'online-booking'], true), 404);
+
+        return view("pages.design.flows.{$flow}", $this->shared());
+    }
+
+    /**
+     * @return array{categories: list<array<string, mixed>>, properties: list<array<string, string>>, segments: list<string>}
+     */
+    private function shared(): array
     {
         return [
-            'categories' => [
-                ['name' => 'Private cabins', 'icon' => 'building-office', 'summary' => 'Lockable offices for teams that want their own room.'],
-                ['name' => 'Dedicated desks', 'icon' => 'computer-desktop', 'summary' => 'Your own desk in a shared floor, kept for you.'],
-                ['name' => 'Hot desks', 'icon' => 'squares-2x2', 'summary' => 'Flexible seating: any open desk, when you need it.'],
-                ['name' => 'Meeting rooms', 'icon' => 'user-group', 'summary' => 'Rooms for client meetings and team discussions.'],
-                ['name' => 'Conference and training rooms', 'icon' => 'presentation-chart-bar', 'summary' => 'Larger rooms for workshops, training and events.'],
-                ['name' => 'Virtual office', 'icon' => 'envelope', 'summary' => 'A business address for your company, without a desk.'],
-                ['name' => 'Managed offices', 'icon' => 'building-office-2', 'summary' => 'Dedicated office suites set up and run for enterprises.'],
-            ],
-            'properties' => [
-                ['name' => 'A-70', 'area' => 'Sector 2', 'city' => 'Noida'],
-                ['name' => 'A-71', 'area' => 'Sector 2', 'city' => 'Noida'],
-                ['name' => 'A-23', 'area' => 'Sector 3', 'city' => 'Noida'],
-                ['name' => 'H-105', 'area' => 'Sector 62', 'city' => 'Noida'],
-            ],
-            'segments' => [
-                'Startups and small businesses',
-                'Freelancers and independent professionals',
-                'SMEs and growing companies',
-                'Large enterprises and corporates',
-                'Remote and hybrid employees',
-                'Consultants and business travellers',
-                'Companies seeking managed offices',
-                'Businesses needing a virtual office or registered address',
-            ],
+            'categories' => $this->content->categories(),
+            'properties' => $this->content->properties(),
+            'segments' => $this->content->segments(),
         ];
     }
 }

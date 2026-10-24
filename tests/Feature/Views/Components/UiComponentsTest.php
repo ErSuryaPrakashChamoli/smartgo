@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\View\ViewException;
+
 it('formats an approved price in rupees with Indian digit grouping', function () {
     $this->blade('<x-ui.price :amount="125000" unit="month" />')
         ->assertSeeInOrder(['from', '₹1,25,000', '/ month', '+ GST']);
@@ -11,14 +13,41 @@ it('shows "Price on request" when no price is approved', function () {
         ->assertDontSee('₹');
 });
 
-it('gives every availability state a text label, not colour alone', function (string $status, string $label) {
-    $this->blade('<x-ui.availability :status="$status" />', ['status' => $status])->assertSee($label);
+it('gives every customer-facing availability state its BR-AV-1 text label, not colour alone', function (string $status, string $label) {
+    $this->blade('<x-ui.availability :status="$status" from="1 Dec" />', ['status' => $status])->assertSee($label);
 })->with([
-    'available' => ['available', 'Available'],
+    'available now' => ['available', 'Available now'],
+    'available from a date' => ['available-from', 'Available from 1 Dec'],
     'limited' => ['limited', 'Limited availability'],
-    'unavailable' => ['unavailable', 'Fully occupied'],
+    'waitlist' => ['waitlist', 'Join waitlist'],
     'on request' => ['on-request', 'Availability on request'],
 ]);
+
+it('says "not yet confirmed" for every status where nothing is confirmed', function (string $status) {
+    $this->blade('<x-ui.status :status="$status" />', ['status' => $status])->assertSee('not yet confirmed');
+})->with(['tour-requested', 'booking-requested', 'held', 'pending-payment']);
+
+it('only uses the word "confirmed" on its own for confirmed tours and bookings', function (string $status, string $label) {
+    $this->blade('<x-ui.status :status="$status" />', ['status' => $status])->assertSee($label);
+})->with([
+    'tour confirmed' => ['tour-confirmed', 'Tour confirmed'],
+    'booking confirmed' => ['confirmed', 'Booking confirmed'],
+]);
+
+it('rejects an unknown journey status instead of guessing a label', function () {
+    $this->blade('<x-ui.status status="maybe-booked" />');
+})->throws(ViewException::class, 'Unknown status [maybe-booked].');
+
+it('marks the current step of a journey for screen readers', function () {
+    $this->blade('<x-ui.stepper :steps="[\'Choose\', \'Details\', \'Pay\']" :current="2" />')
+        ->assertSeeInOrder(['Step 2 of 3: Details', 'aria-current="step"'], escape: false);
+});
+
+it('explains when no times are published instead of inventing slots', function () {
+    $this->blade('<x-ui.slot-picker name="time" legend="Time" state="unconfigured" />')
+        ->assertSee('Times are not published yet')
+        ->assertDontSee('type="radio"', escape: false);
+});
 
 it('falls back to "on request" for an unknown availability state', function () {
     $this->blade('<x-ui.availability status="something-else" />')->assertSee('Availability on request');

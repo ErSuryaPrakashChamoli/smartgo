@@ -98,9 +98,9 @@
                                 <td class="px-5 py-3 text-muted">{{ $pairing['usage'] }}</td>
                                 <td class="px-5 py-3 font-semibold text-forest tabular-nums">{{ number_format($pairing['ratio'], 2) }} : 1</td>
                                 <td class="px-5 py-3">
-                                    <x-ui.availability :status="$pairing['passes'] ? 'available' : 'unavailable'">
+                                    <x-ui.badge :tone="$pairing['passes'] ? 'success' : 'danger'" :icon="$pairing['passes'] ? 'check-circle' : 'x-circle'">
                                         {{ $pairing['passes'] ? 'Pass' : 'Fail' }} (≥ {{ $pairing['minimum'] }})
-                                    </x-ui.availability>
+                                    </x-ui.badge>
                                 </td>
                             </tr>
                         @endforeach
