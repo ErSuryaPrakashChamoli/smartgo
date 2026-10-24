@@ -80,6 +80,7 @@ Optional hardening: `chmod 600 .env .env.backup`. Skip this if a separate web-se
 | Format PHP before committing | `vendor/bin/pint --dirty --format agent` |
 | Build frontend assets | `npm run build` |
 | Bring staff roles and capabilities in line with the code | `php artisan access:sync` |
+| View the Phase 2 design previews (never served in production) | open `/design` on the local server |
 | Give an existing user a staff role | `php artisan access:assign-role <email> <role>` |
 
 ### Back office (Phase 3)

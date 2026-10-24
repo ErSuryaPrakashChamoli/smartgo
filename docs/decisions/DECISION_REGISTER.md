@@ -147,7 +147,28 @@ With these, all Phase 1 acceptance criteria except the owner's sign-off (AC-1.8)
 | ID | Decision or question |
 |---|---|
 | OD-39 | **Logo supplied.** The owner attached the logo in conversation with the instruction "add this logo". It is stored unmodified at `resources/brand/source/smartgro-logo.webp`: WebP, 388 × 218 px, transparent background, SHA-256 `295745308066c2f2187cb82bdec5b5b03c26a8dd210092a7e3dcd3bee203964b`. An identical copy is served at `public/brand/smartgro-logo.webp` and shown in the back office. Interpretation: this is the authoritative logo for screen use. No vector master or reversed version was supplied (D-11b stays partly open). |
-| Q-OW-15 | **Open.** The logo's wordmark reads "SMART GRO" (two words), while OD-01 records the name as "SmartGro". **Recommended:** keep "SmartGro" as the written name in text, page titles, emails and the back office; the logo keeps its own lettering. |
+| Q-OW-15 | **→ answered: OD-40.** The logo's wordmark reads "SMART GRO" (two words), while OD-01 records the name as "SmartGro". **Recommended:** keep "SmartGro" as the written name in text, page titles, emails and the back office; the logo keeps its own lettering. |
+
+### 0.11 Owner answers — 2026-10-24 (round 8): "ok smart gro ok phase 2"
+
+Interpretation: the reply has the same shape as the two questions asked ("ok" + topic, twice), so each "ok" is read as accepting that question's recommendation. The owner should correct OD-40 if "Smart Gro" (two words) was meant as the written name.
+
+| ID | Decision |
+|---|---|
+| OD-40 | **Q-OW-15:** the written brand name stays **"SmartGro"** (one word) in text, page titles, emails and the back office. The logo keeps its own "SMART GRO" lettering and is never retyped. |
+| OD-41 | **Phase 2 starts now**, in parallel with the Phase 3 steps that wait on owner inputs (3.1, 3.11). |
+
+### 0.12 Phase 2 proposals awaiting the owner (2026-10-24)
+
+Details and evidence: `../design/DESIGN_SYSTEM.md` §7.4; screenshots in `../design/review/2026-10-24/`. Nothing below is treated as approved until the owner says so.
+
+| ID | Proposal | Recommended |
+|---|---|---|
+| P2-A | Colour tokens: forest `#0B2C1B` sampled from the logo replaces Deep Forest `#073B2C`; new logo-sampled tints (`#84BD53`, `#3F9B24`, `#195625`), neutrals and status colours; Smart Green, Action Green, Charcoal and Warm White unchanged | approve |
+| P2-B | Typefaces: Sora (headings) and Inter (text, forms, prices), open-licensed and self-hosted | approve |
+| P2-C | Visual direction (AC-2.5) as shown in the home-page sample | approve, or name changes |
+| P2-D | Favicon and app icons cropped from the logo's "SG" monogram, unchanged in shape and colour | approve |
+| P2-E | Reversed logo for dark backgrounds: only the dark wordmark and buildings recoloured to Warm White, geometry unchanged | approve, or supply one |
 
 ---
 

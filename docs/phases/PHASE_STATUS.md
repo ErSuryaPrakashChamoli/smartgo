@@ -11,7 +11,7 @@
 |---|---|---|---|
 | 0 | Discovery, audit, requirements clarification | **APPROVED in principle** (project owner, 2026-10-24) | — (open items carried into Phase 1) |
 | 1 | PRD, IA, architecture, database design, acceptance criteria | **APPROVED** (owner, 2026-10-24: "continue next phase") | — (deferred items carried to the Phase 3 and Phase 5 gates) |
-| 2 | Brand system, UX/UI, design system | NOT STARTED (**unblocked 2026-10-24**: raster logo received, OD-39) | owner go-ahead to start; vector master still requested for large and print use (D-11b); wordmark naming (Q-OW-15) |
+| 2 | Brand system, UX/UI, design system | **IN PROGRESS** (started 2026-10-24, OD-41) | **owner sign-off on the visual direction (AC-2.5) and proposals P2-A…P2-E**; vector master still requested for large and print use (D-11b) |
 | 3 | Foundation, auth, permissions, security | **IN PROGRESS** (started 2026-10-24) | step 3.1 needs the GitHub organisation name (D-31) and a dedicated MySQL user (R-14); staging needs the hosting decision (D-14) |
 | 4 | CMS, page builder, media, publishing | NOT STARTED | Phases 2, 3 |
 | 5 | Inventory, pricing, availability | NOT STARTED | Phase 3; entry gate: floors and real inventory, pricing values PR-1…PR-11 |
@@ -72,7 +72,22 @@
 | Tests and results | 2026-10-24, local MySQL 8.4.11 (`smartgro_testing`): the Phase 3 test files (`tests/Feature/{Actions,Console,Filament,Http,Listeners,Models,Policies,Providers}`, `tests/Arch`) **100 passed, 0 failed**. Pint clean across the repository. Full suite (`php artisan test --compact`, including the concurrency harness) to be run by the owner. |
 | Known issues | Phase 2 blocked on the logo file. Redis not installed locally (Horizon and the Redis client wait, ADR-0007). No hosting decision yet (D-14). Login throttling is Filament's 5 attempts per minute per IP address, which depends on correct trusted-proxy settings behind Cloudflare (open item in `../operations/DEPLOYMENT_RUNBOOK.md` §7). Content Security Policy is deferred to Phase 14. Back-office dark mode is off until a reversed logo exists. |
 
-## Phases 2 and 4–15
+## Phase 2: Brand system, UX/UI design, responsive design system
+
+| Field | Detail |
+|---|---|
+| Status | **IN PROGRESS** (started 2026-10-24, OD-41) |
+| Scope | `PROJECT_MASTER_PLAN.md` §2, Phase 2: tokens sampled from the real logo, type scale, component library, high-fidelity designs (home, city, property, workspace category, enterprise, tour and booking flows, back-office dashboard and key wizards), mobile-first responsive specification |
+| Dependencies | Phase 1 approved (OD-38). Logo supplied (OD-39). Photography plan D-12 is deferred, so designs use clearly labelled photo placeholders, never stock or AI images presented as real. |
+| Steps | **2.1** colour tokens from the logo, contrast-verified · **2.2** typefaces and fluid type scale · **2.3** logo renditions (favicon, mark, reversed: *need owner approval*) · **2.4** component library with all states · **2.5** visual-direction sample (home page, 360 px and 1440 px) → **owner sign-off (AC-2.5)** · **2.6** remaining high-fidelity templates and flows · **2.7** responsive specification · **2.8** accessibility and state-coverage verification |
+| Content rule | Design previews use only confirmed facts (OD-01, OD-03, OD-04, OD-07, OD-08). Anything else (prices, hours, amenities, photography, copy) is a visibly labelled placeholder. Previews are never served in production and carry `noindex`. |
+| Acceptance criteria | `PROJECT_MASTER_PLAN.md` §2, Phase 2, AC-2.1 to AC-2.5 |
+| Progress (2026-10-24) | **Built for review:** 2.1 colour tokens sampled from the logo, all 24 pairings in use pass WCAG 2.2 AA · 2.2 Sora + Inter, self-hosted, fluid type scale · 2.4 component library (buttons, form controls, availability badges, prices, photo placeholders, alerts, empty and loading states, cards, breadcrumb, FAQ, header with menus, footer, mobile action bar, call-to-action band) · 2.5 home-page direction sample. Previews at `/design` (local and staging only). Screenshots at 360 px and 1440 px in `../design/review/2026-10-24/`. **Waiting on the owner:** visual-direction sign-off (AC-2.5) and P2-A…P2-E (`../design/DESIGN_SYSTEM.md` §7.4). Steps 2.3 and 2.6–2.8 continue after sign-off. |
+| Acceptance criteria status | AC-2.1: met for everything built so far (automated test over every pairing in use). AC-2.2: home, components and foundations captured at 360 px and 1440 px; the other templates follow in 2.6. AC-2.3: buttons, form controls and cards have default, hover, focus, disabled, error, empty and loading states; templates in 2.6 reuse them. AC-2.4: nothing taken from competitors or the old site; all graphics are original (photo placeholders, isometric floor illustration). AC-2.5: **awaiting the owner**. |
+| Tests and results | 2026-10-24, local MySQL: Phase 2 tests (`tests/Feature/{Services/Design,Http/Middleware/EnsureDesignPreviewIsAvailableTest.php,Http/Controllers,Views}`) **56 passed**; together with the Phase 3 tests and architecture rules **157 passed, 0 failed**. Pint clean. Build: CSS 10.7 KB gzip, first-party JS 0 KB on marketing pages. |
+| Known issues | Raster logo only (D-11b): large and print uses wait for a vector master. No reversed logo, so the logo appears only on light backgrounds (P2-E). Design previews use labelled placeholders for photos, prices, availability and FAQ answers. |
+
+## Phases 4–15
 Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.md` §2. Each phase gets a full entry here when it starts.
 
 ---
@@ -81,6 +96,8 @@ Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.
 
 | Date | Change |
 |---|---|
+| 2026-10-24 | Phase 2 steps 2.1, 2.2, 2.4 and 2.5 built: logo-sampled tokens (all pairings AA), Sora + Inter, component library with states, home-page direction sample, previews and screenshots at 360/1440 px. 157 tests pass. Waiting on the owner for AC-2.5 and P2-A…P2-E. |
+| 2026-10-24 | Round 8 ("ok smart gro ok phase 2"): written name stays "SmartGro" (OD-40); **Phase 2 started** (OD-41). |
 | 2026-10-24 | Logo supplied by the owner (OD-39) and stored unmodified; shown in the back office. Phase 2 unblocked (not started). Open: Q-OW-15 (written name vs "SMART GRO" wordmark); vector master still requested (D-11b). |
 | 2026-10-24 | Phase 3 steps 3.2–3.10 implemented locally: back-office panel, required two-step login, six roles and capabilities, staff user management, audit log and viewer, security headers, password policy, architecture tests, CI workflow. 100 Phase 3 tests pass on MySQL. Phase 3 remains IN PROGRESS (3.1 and 3.11 wait on owner inputs). |
 | 2026-10-24 | Register created. Phase 0 → READY FOR REVIEW. Phase 1 → IN PROGRESS with drafts. |

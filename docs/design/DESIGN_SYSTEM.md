@@ -1,8 +1,8 @@
-# SmartGro — Design System (Foundation Draft)
+# SmartGro — Design System
 
 | | |
 |---|---|
-| Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval. Foundation only.** Provisional palette approved (D-11a); brand name, tagline and domain confirmed (OD-01). The full design system is a Phase 2 deliverable. The raster logo was supplied on 2026-10-24 (OD-39). |
+| Status | **Phase 2 in progress (started 2026-10-24, OD-41).** Steps 2.1, 2.2, 2.4 and 2.5 are built and waiting for the owner's visual-direction sign-off (AC-2.5); the proposals that need a decision are in §7.4. Phase 1 baseline v1.0 approved (OD-38); provisional palette D-11a. |
 | Last updated | 2026-10-24 |
 | Logo input | **Raster logo supplied 2026-10-24 (OD-39)** and stored unmodified at `resources/brand/source/smartgro-logo.webp` (WebP, 388 × 218 px, transparent background). Still requested (D-11b, CLIENT_INPUTS C-6.1): a vector master or a PNG at least 2000 px wide, and a reversed version for dark backgrounds. The logo will not be recreated or substituted. The palette below comes from the brief; the colours observed in the logo are listed in §3.1 for the Phase 2 decision. |
 
@@ -96,7 +96,7 @@ Sampled from the opaque pixels of `resources/brand/source/smartgro-logo.webp` by
 
 ---
 
-## 4. System structure (to be built in Phase 2)
+## 4. System structure (planned in Phase 1; built as described in §7)
 
 * **Tokens:** defined once in Tailwind v4 `@theme` (CSS variables) and shared by the public site and the Filament custom theme. Filament 5 requires a custom theme (`php artisan make:filament-theme`) for Tailwind classes in custom views, per the Filament 5 docs.
 * **CMS-editable brand settings** are limited to validated tokens (e.g. accent colour must pass an automatic contrast check) so editors cannot break accessibility.
@@ -122,3 +122,60 @@ Sampled from the opaque pixels of `resources/brand/source/smartgro-logo.webp` by
 * Real SmartGro locations are shown only with real photography or real scans of that location.
 * Concept visuals and renders carry a visible "Concept visual" label and never appear in a location's photo gallery.
 * Every asset records origin, licence and expiry. Alt text is required unless the image is decorative.
+
+---
+
+## 7. Phase 2 implementation (2026-10-24)
+
+### 7.1 Where things live
+
+| Item | Location |
+|---|---|
+| Colour and type tokens | `resources/css/app.css` (`@theme`), the single source of truth |
+| Contrast pairings in use | `App\Services\Design\DesignTokens::PAIRINGS`, enforced by `tests/Feature/Services/Design/DesignTokensTest.php` |
+| Fonts | `vite.config.js` (`laravel-vite-plugin` font provider): downloaded at build time and served from this site |
+| Components | `resources/views/components/{ui,form,card,site}`; site layout `resources/views/layouts/site.blade.php` (`<x-layouts::site>`) |
+| Design previews | `/design`, `/design/foundations`, `/design/components`, `/design/home`; never served in production, `noindex` |
+| Review screenshots | `review/2026-10-24/` (home, components and foundations at 360 px and 1440 px) |
+
+### 7.2 Colour tokens (proposed: P2-A)
+
+Sampled from the supplied logo (§3.1) where a logo colour exists; the rest keep the provisional palette (D-11a). All 24 pairings in use pass WCAG 2.2 AA (see `/design/foundations`).
+
+| Token | Value | Source | Change from provisional |
+|---|---|---|---|
+| `forest` | `#0B2C1B` | logo wordmark | replaces Deep Forest `#073B2C` |
+| `leaf-300` | `#84BD53` | logo highlight | new: accents on dark (6.75 : 1 on forest) |
+| `leaf-500` | `#3F9B24` | logo main green | new: graphics and large text only |
+| `leaf-600` | `#2E8B18` | brief's Smart Green (within the logo gradient) | unchanged |
+| `leaf-700` | `#287A15` | Action Green | unchanged; buttons and links |
+| `leaf-800` / `leaf-900` | `#1F6410` / `#195625` | hover; logo shadow | new |
+| `ink` | `#252D29` | Charcoal | unchanged |
+| `paper` / `surface` | `#F7F7F2` / `#FFFFFF` | Warm White / white | unchanged |
+| `mist`, `line`, `muted`, `control` | `#EAF2E4`, `#E3E6DF`, `#56615A`, `#7A847D` | derived | new neutrals; `control` gives form borders 3.6 : 1 or more |
+| status colours | available, limited, unavailable, info, danger, each with a soft background | derived | new; always paired with an icon and a text label |
+
+### 7.3 Typography (proposed: P2-B)
+
+* **Sora** (headings, weights 500 and 600): geometric, slightly wide letterforms that echo the logo's wordmark.
+* **Inter** (text, forms, prices; weights 400, 500 and 600): highly legible at small sizes, with tabular figures. **Prices always use Inter, because Sora has no ₹ glyph** (verified 2026-10-24).
+* Both are SIL Open Font License fonts, downloaded at build time and served from the SmartGro domain: no third-party font requests. Only Sora 600 is preloaded.
+* Fluid scale: `display-2xl` 40→72 px, `display-xl` 34→56 px, `display-lg` 28→40 px, `heading` 22→28 px, `subheading` 20 px, `lead` 17→20 px, body 16 px, small 14 px, eyebrow 13 px uppercase.
+
+### 7.4 Proposals for the owner
+
+| ID | Proposal | Recommendation |
+|---|---|---|
+| P2-A | Colour tokens in §7.2 (forest from the logo, new tints and status colours) | approve |
+| P2-B | Sora for headings, Inter for text | approve |
+| P2-C | **Visual direction** shown in `review/2026-10-24/` and at `/design/home` (AC-2.5) | approve, or name what to change |
+| P2-D | Favicon and app icons made by **cropping the "SG" monogram** from the supplied logo, without reshaping or recolouring | approve (FR-BRAND-1 needs a favicon; the rules require approval for a mark-only variant) |
+| P2-E | A **reversed logo** for dark backgrounds made by recolouring only the dark wordmark and buildings to Warm White; geometry unchanged | approve, or supply a reversed version |
+
+### 7.5 Engineering decisions made in Phase 2
+
+* **No framework JavaScript on marketing pages.** Menus use the native Popover API and FAQs use `<details>`, so the public pages ship 0 KB of first-party JavaScript and 10.7 KB (gzip) of CSS. Livewire (which bundles Alpine, about 86 KB gzip) loads only on pages that render a Livewire component (booking, tour scheduler). Those pages sit close to the 90 KB budget in NFR-PERF-2, which is reviewed in Phase 6.
+* **Images:** components show real photographs when they exist, otherwise a placeholder labelled "Photography to be supplied by SmartGro". No stock or AI image is ever presented as a SmartGro space.
+* **Previews contain only confirmed facts** (OD-01, OD-03, OD-04, OD-07, OD-08). Prices and availability read "on request", and FAQ answers read "Answer to be supplied by SmartGro". A test fails if the home preview ever shows a rupee amount.
+* **Logo:** placed only on light backgrounds (the footer is light for this reason) until P2-E is decided.
+
