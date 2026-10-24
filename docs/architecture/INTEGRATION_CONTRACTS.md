@@ -15,7 +15,7 @@ This document defines **what SmartGro needs from each integration**, independent
 | ID | Rule |
 |---|---|
 | IC-1 | **Secrets** (API keys, tokens, webhook secrets) live only in environment variables or the host's secret manager. They are never stored in the database, CMS, Git, logs, frontend bundles or documentation. The CMS shows only connection *status* and non-secret identifiers. |
-| IC-2 | **Non-secret tracking IDs** (GA4 measurement ID, GTM container ID, Meta Pixel ID) may be managed in the CMS, are validated by format, and are changed only by Platform Admin or Marketing Manager. |
+| IC-2 | **Non-secret tracking IDs** (GA4 measurement ID, GTM container ID, Meta Pixel ID) may be managed in the CMS, are validated by format, and are changed only by the Super Admin or Marketing Manager. |
 | IC-3 | **Outbound calls** run in queued jobs with timeouts, bounded retries with back-off, and an idempotency key. A failed provider never blocks a customer request; the customer sees a success state and staff see the failed dispatch. |
 | IC-4 | **Inbound webhooks** verify the provider's signature, persist the receipt with a unique (`provider`, `external_event_id`) **before** processing, process on the queue, and return 2xx quickly. Duplicates are acknowledged and ignored. |
 | IC-5 | Every provider is accessed through **one adapter class per capability** (e.g. `WhatsAppSender`), so swapping vendors touches one class. Interfaces are introduced only where two implementations really exist (no speculative abstraction). |

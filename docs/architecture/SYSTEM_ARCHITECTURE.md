@@ -75,18 +75,18 @@ flowchart TB
 
 | Module | Owns (writes) | Reads from | Primary roles |
 |---|---|---|---|
-| **Identity & Access** | users, roles, permissions, location scopes, audit log | — | Platform Admin |
-| **Portfolio & Inventory** | cities, micro-markets, properties (`properties`), buildings, floors, space types, spaces, seats, amenities, allocations, closures, lease facts | Identity | Operations, Centre Manager |
-| **Commerce** | product categories and their configuration, offerings (incl. space eligibility), price plans, offers, cancellation policies | Inventory | Finance, Operations |
+| **Identity & Access** | users, roles, permissions, property scopes, audit log | — | Super Admin |
+| **Portfolio & Inventory** | cities, micro-markets, properties (`properties`), buildings, floors, space types, spaces, seats, amenities, allocations, closures, lease facts | Identity | Operations Manager, Property Manager |
+| **Commerce** | product categories and their configuration, offerings (incl. space eligibility), price plans, offers, cancellation policies | Inventory | Finance, Operations Manager |
 | **Availability** (service, no own tables except the optional snapshot) | `space_availability_snapshots` (derived) | Inventory, Commerce, Booking | system |
-| **Booking** | bookings, holds, payments, tour requests, tour rules | Inventory, Availability, CRM | Front desk, Sales |
-| **CRM** | contacts, companies, leads, deals, activities, assignment rules, consents | Inventory (read-only), Booking | Sales |
-| **Content & Media** | pages, revisions, sections, navigation, profiles, posts, FAQs, testimonials, case studies, media assets, site settings | Inventory and Commerce (read-only) | Marketing, Editors |
-| **SEO** | seo metadata, redirects, sitemap generation | Content, Inventory | SEO Specialist |
-| **Digital Twin** | twin models, anchors, scenes, hotspots, tour stops, 360 tours | Inventory, Availability (read-only), Media | 3D Technician, Marketing |
-| **Marketing Automation** | campaigns, templates, automation rules and runs, dispatches, suppressions | CRM, Booking (events) | Marketing |
-| **Analytics** | attribution, conversion events, report definitions | all (read-only) | Analyst, Management |
-| **Integrations** | provider adapters, webhook receipts | — | Platform Admin |
+| **Booking** | bookings, holds, payments, tour requests, tour rules | Inventory, Availability, CRM | Property Manager, Sales/CRM Executive, Operations Manager |
+| **CRM** | contacts, companies, leads, deals, activities, assignment rules, consents | Inventory (read-only), Booking | Sales/CRM Executive |
+| **Content & Media** | pages, revisions, sections, navigation, profiles, posts, FAQs, testimonials, case studies, media assets, site settings | Inventory and Commerce (read-only) | Marketing Manager |
+| **SEO** | seo metadata, redirects, sitemap generation | Content, Inventory | Marketing Manager |
+| **Digital Twin** | twin models, anchors, scenes, hotspots, tour stops, 360 tours | Inventory, Availability (read-only), Media | Marketing Manager (models from a 3D-modelling supplier) |
+| **Marketing Automation** | campaigns, templates, automation rules and runs, dispatches, suppressions | CRM, Booking (events) | Marketing Manager |
+| **Analytics** | attribution, conversion events, report definitions | all (read-only) | every role for its own area; Super Admin for all |
+| **Integrations** | provider adapters, webhook receipts | — | Super Admin |
 | **Concierge (Phase 13)** | conversation logs | Inventory, Availability, Content (read-only) | — |
 
 **Boundary rules**
@@ -180,7 +180,7 @@ Target: customer-visible state reflects an operational change within **60 second
 
 ```mermaid
 sequenceDiagram
-  participant T as 3D Technician
+  participant T as 3D-modelling supplier
   participant BO as Back office
   participant Q as Queue
   participant M as Marketing user

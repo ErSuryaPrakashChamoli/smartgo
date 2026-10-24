@@ -4,7 +4,7 @@
 * **Date:** 2026-10-24
 
 ## Context
-Marketing must not override inventory or booking truth. Centre staff and sales executives must see only their properties or leads.
+Marketing must not override inventory or booking truth. Property Managers must see only their assigned properties; Sales/CRM Executives can be restricted per user (roles defined by the owner, OD-33).
 
 ## Decision
 * Permissions are named after business capabilities (e.g. `inventory.update_status`, `pricing.approve`, `content.publish`), assigned to roles per `../security/SECURITY_MODEL.md` §3.1.

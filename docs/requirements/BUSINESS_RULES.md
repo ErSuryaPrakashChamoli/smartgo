@@ -19,7 +19,7 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 | ID | Rule |
 |---|---|
 | BR-SOT-1 | Every physical workspace has exactly one `spaces` record. No other table may describe capacity, operational status, availability or price for a space. |
-| BR-SOT-2 | Operational data (capacity, dimensions, floor, operational status, allocations, bookings, price plans) can only be changed by roles with the matching **operational** permission: Operations Manager, Centre Manager (own properties) or Finance for pricing. |
+| BR-SOT-2 | Operational data (capacity, dimensions, floor, operational status, allocations, bookings, price plans) can only be changed by roles with the matching **operational** permission: Operations Manager, Property Manager (own properties) or Finance for pricing. |
 | BR-SOT-3 | Marketing roles can change presentation (copy, imagery, SEO, page visibility). They can **hide** an offering or space from the website but can never mark it available, change its capacity or change its price. |
 | BR-SOT-4 | When operational status or availability changes, the system emits `SpaceAvailabilityChanged`. Website listings, 3D hotspots, booking widgets and CRM proposals read live state or have their caches invalidated within **60 seconds** [DEFAULT]. |
 | BR-SOT-5 | If an existing system is confirmed as the source of truth for any field group (D-06), SmartGro becomes a read mirror for those fields. They are shown read-only ("Managed in <system>"). Direction-of-sync rules replace BR-SOT-2 for those fields. **[UNRESOLVED → D-06]**; options and recommendation in `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md`. |
@@ -119,10 +119,10 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 | BR-CRM-1 | Every enquiry, tour request, booking request, call-back request and WhatsApp click-to-chat (where trackable) creates or updates a lead with source and attribution data. |
 | BR-CRM-1a | Forms may ask "Which best describes you?" with the eight customer segments (OD-04) as optional answers. The segment is used for routing and reporting. Segments carry **no** priority until the owner sets one. |
 | BR-CRM-2 | Contact de-duplication: match on normalised email **or** E.164 phone. A match attaches the new lead to the existing contact; it never overwrites contact fields without staff confirmation. |
-| BR-CRM-3 | New leads are assigned by the first matching active `assignment_rule` (by priority). If none match, the lead goes to the Sales Manager queue. |
-| BR-CRM-4 | First-response SLA target: **15 minutes during business hours** [DEFAULT]. A breach notifies the Sales Manager. **[UNRESOLVED → D-09]** |
+| BR-CRM-3 | New leads are assigned by the first matching active `assignment_rule` (by priority). If none match, the lead goes to a shared **unassigned** queue visible to all Sales/CRM Executives, and the Super Admin and Operations Manager are notified (proposal, Q-OW-13). |
+| BR-CRM-4 | First-response SLA target: **15 minutes during business hours** [DEFAULT]. A breach notifies the Operations Manager and the Super Admin (proposal, Q-OW-13). **[UNRESOLVED → D-09]** |
 | BR-CRM-5 | A lead can only be marked `lost` or `disqualified` with a reason from a managed list. |
-| BR-CRM-6 | Sales Executives see only leads they own or leads for their scoped properties. Sales Managers see all. |
+| BR-CRM-6 | Sales/CRM Executives see **all** leads by default, because there is no separate sales-manager role (proposal, Q-OW-13). Access can be restricted per user to assigned properties. Property Managers see leads for their properties (read-only). |
 | BR-CRM-7 | A won deal with allocated spaces creates `space_allocations` through the inventory service, so the availability rules apply. Sales cannot edit inventory directly. |
 
 ## 7. Content and publishing

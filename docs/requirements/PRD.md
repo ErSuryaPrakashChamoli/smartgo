@@ -68,7 +68,7 @@ This PRD defines *how* the platform behaves. It does not invent property data, i
 
 The segment-to-product mapping is admin-managed (`product_customer_segment`) and is used for discovery and reporting, not for prioritisation.
 
-**Staff:** Marketing Manager (approver), Content Editor, SEO Specialist, Operations Manager, Centre Manager, Finance, Sales Manager, Sales Executive, Front Desk, 3D Technician, Analyst, Platform Admin. Capabilities per `SECURITY_MODEL.md` §3.1.
+**Staff roles (owner-defined, OD-33):** Super Admin, Operations Manager, Property Manager, Sales/CRM Executive, Marketing Manager, Finance. Capabilities per `SECURITY_MODEL.md` §3.1. 3D models are prepared by an external 3D-modelling supplier.
 
 ## 4. Scope
 
@@ -131,7 +131,7 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-INV-1 | Guided setup: City → Property → Buildings → Floors → Spaces (wizard), plus bulk import with the SG-INV-1.2 template (`INVENTORY_IMPORT_SPEC.md`, ADR-0012). | A non-technical ops user can create a location with 3 floors and 40 spaces in one session. The import validates against rules V-001…V-180 and reports sheet/row/column issues. It is approved by a second person and committed all-or-nothing. Synthetic fixtures pass T-IMP-01…06. |
+| FR-INV-1 | Guided setup: City → Property → Buildings → Floors → Spaces (wizard), plus bulk import with the SG-INV-1.3 template (`INVENTORY_IMPORT_SPEC.md`, ADR-0012). | A non-technical ops user can create a location with 3 floors and 40 spaces in one session. The import validates against rules V-001…V-180 and reports sheet/row/column issues. It is approved by a second person and committed all-or-nothing. Synthetic fixtures pass T-IMP-01…06. |
 | FR-INV-2 | Space operational status changes with reason; history kept. | Every change is audit-logged and emits `SpaceAvailabilityChanged`. |
 | FR-INV-3 | Allocations (long-term occupancy) with start/end/notice; seat-level for desk zones if D-05. | Availability states follow BR-AV-1…6 exactly (unit tests per rule). |
 | FR-INV-4 | Products, offerings and price plans with approval (BR-PR-*). | Four-eyes enforced. Only one active plan per scope and unit at a time. |
@@ -179,12 +179,12 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-CRM-1 | Lead inbox with filters, ownership, status, SLA timers, duplicate detection (BR-CRM-2). | Sales Exec sees only own or scoped leads (policy test). |
+| FR-CRM-1 | Lead inbox with filters, ownership, status, SLA timers, duplicate detection (BR-CRM-2). | Sales/CRM Executives see all leads unless restricted per user (Q-OW-13); Property Managers see their properties' leads read-only (policy tests). |
 | FR-CRM-2 | Assignment rules (round-robin, fixed, least-loaded) by city, location, product or seat band. | Deterministic assignment with tests per strategy. Unmatched leads go to the manager queue. |
 | FR-CRM-3 | Activities (call, WhatsApp, email, meeting, note, task) with reminders. | One-tap call/WhatsApp from the lead screen logs an activity. |
 | FR-CRM-4 | Pipeline (configurable stages), deals with proposed spaces from canonical inventory. | Proposed spaces show live availability. Won deals create allocations through the inventory service (BR-CRM-7). |
 | FR-CRM-5 | Lost reasons and disqualification reasons (managed lists). | Required on status change. |
-| FR-CRM-6 | Export with permission and audit. | Only Sales Manager+. Export events logged. |
+| FR-CRM-6 | Export with permission and audit. | Super Admin only (proposal, Q-OW-13). Export events logged. |
 
 ### 5.7 Marketing automation (Phase 10)
 

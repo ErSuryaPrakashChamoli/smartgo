@@ -41,7 +41,7 @@ If section 9 of the brief still exists, it replaces anything here that it contra
 |---|---|---|
 | Offering price (category × property) | the standard price at a property | Finance (four-eyes) |
 | Space override | a specific cabin or room priced differently (size, view, equipment) | Finance (four-eyes) |
-| Quotation | managed offices and large custom deals; created in the CRM deal, not public | Sales Manager + Finance approval above a threshold (Owner to set) |
+| Quotation | managed offices and large custom deals; created in the CRM deal, not public | Sales/CRM Executive drafts; Finance (or Super Admin) approves above a threshold (Owner to set) |
 
 ## 4. Additional charges (owner decides which exist)
 
@@ -80,7 +80,7 @@ Changing the display setting requires pricing permission (Finance or Super Admin
 | Promotional offer | percent, fixed amount, or free period; valid dates; eligible offerings; optional code; maximum redemptions | approval before activation; expires automatically |
 | Term-commitment discount | discount by agreement length (e.g. longer term → lower monthly price) | values Owner to set; Finance approval |
 | Price floor | minimum price per offering below which no offer or discount can go | Owner to set (optional) |
-| Sales discretion | maximum discount a sales executive may give without approval | Owner to set |
+| Sales discretion | maximum discount a Sales/CRM Executive may give without approval | Owner to set |
 
 ## 8. Payment rules per category (depends on D-07/D-08)
 
@@ -104,7 +104,7 @@ Named policies, each with a customer-facing summary, a free-cancellation window 
 | Create or edit price plans, charges, add-ons | Finance (Super Admin) |
 | Activate a price plan or offer | a second authorised person: Finance or Super Admin, not the author |
 | Change public price display | Finance, Super Admin |
-| Create quotations | Sales Manager, Sales Executive (scoped). Approval above the discretion threshold. |
+| Create quotations | Sales/CRM Executive; approval by Finance or Super Admin above the discretion threshold |
 | View prices | all back-office roles that see offerings |
 
 ## 11. Decisions the owner needs to make

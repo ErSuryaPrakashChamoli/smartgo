@@ -29,7 +29,7 @@ Legend: **Blocks** = the phase that cannot finish without it.
 | Ref | Input needed | Why it matters | Recommended default | Blocks |
 |---|---|---|---|---|
 | C-2.1 | **Partly answered (OD-08):** four Noida properties (A-70, Sector 2 · A-71, Sector 2 · A-23, Sector 3 · H-105, Sector 62); 10 floors in total. **Still needed:** floor allocation per property and building levels (Q-OW-1); full addresses (PIN code, building names); status and opening dates per property | property pages and inventory are built around real properties; nothing is created by assumption | none (must be provided) | Phase 1 (ERD validation), Phase 5 |
-| C-2.2 | **First property's full inventory** in the SG-INV-1.2 template, including floors per property. **Deferred to the Phase 5 entry gate** (option P-1, OD-30). | validates the data model against reality before inventory code is merged | none | Phase 5 entry |
+| C-2.2 | **First property's full inventory** in the SG-INV-1.3 template, including floors per property. **Deferred to the Phase 5 entry gate** (option P-1, OD-30). | validates the data model against reality before inventory code is merged | none | Phase 5 entry |
 | C-2.3 | ~~Seat tracking~~ **Answered (OD-10, OD-15):** individual, pooled, mixed within a property, and **hybrid zones** | — | — | resolved |
 | C-2.4 | ~~Property grouping~~ **Answered (OD-13):** each address is its own centre | — | — | resolved |
 | C-2.5 | ~~City names and visibility~~ **Answered (OD-16, OD-18):** official current names (Gurugram, Delhi …); cities hidden by default with an admin toggle. A visible city without a property shows a "coming soon / register interest" page (OD-22). | — | — | resolved |

@@ -92,7 +92,7 @@ Source: the owner's replies to Q-OW-1…10. Where a reply could be read in more 
 
 | Option | Effect | Recommendation |
 |---|---|---|
-| P-1 | **Defer floors and real inventory to data entry.** The owner already said these "can be entered or completed later" (OD-08). AC-1.4 (ERD validated against real inventory) would move to the **Phase 5 entry gate**: the first property's real data is run through SG-INV-1.2 before any inventory code is merged. | **Recommended.** It removes the main Phase 1 blocker without guessing any floors. |
+| P-1 | **Defer floors and real inventory to data entry.** The owner already said these "can be entered or completed later" (OD-08). AC-1.4 (ERD validated against real inventory) would move to the **Phase 5 entry gate**: the first property's real data is run through SG-INV-1.3 before any inventory code is merged. | **Recommended.** It removes the main Phase 1 blocker without guessing any floors. |
 | P-2 | **Pricing:** either resend section 9, or approve that the project team drafts a pricing-configuration proposal (units, display, GST treatment, deposits, cancellation per category) **as proposed defaults for the owner to edit and approve** | resend if available; otherwise P-2 |
 | P-3 | **Approve the pending items as recommended in one reply** ("approve all as recommended"), or list exceptions | saves a round-trip; see `../phases/PHASE_1_PROGRESS_REPORT.md` §5 |
 ### 0.6 Owner approval — 2026-10-24 (round 5): "Approve all as recommended"
@@ -106,10 +106,23 @@ Interpretation: this approves every item for which the project team gave a recom
 | OD-25 | **D-32 release slicing** (R1 as in `PROJECT_MASTER_PLAN.md` §4) | |
 | OD-26 | **D-34: ADR-0003…0014 accepted** | ADR statuses updated |
 | OD-27 | **D-35: import template SG-INV-1.2** and the four-eyes import process | |
-| OD-28 | **D-33: team roles and permission matrix as drafted** (interpretation) | adjusted when real staff accounts are created in Phase 3 |
+| OD-28 | ~~D-33: team roles and permission matrix as drafted~~ (interpretation) **superseded by OD-33** (six owner-defined roles) | — |
 | OD-29 | **D-31: the repository will be owned by a GitHub organisation, not a personal account** (interpretation of the recommendation) | **The organisation's name is still needed.** GitHub setup stays deferred, as the owner instructed in round 2. |
-| OD-30 | **Option P-1: floors and real inventory are entered later** (interpretation; P-1 was marked "recommended") | AC-1.4 moves to the **Phase 5 entry gate**: the first property's real data is run through SG-INV-1.2 before inventory code is merged. Floors are never assumed. |
+| OD-30 | **Option P-1: floors and real inventory are entered later** (interpretation; P-1 was marked "recommended") | AC-1.4 moves to the **Phase 5 entry gate**: the first property's real data is run through SG-INV-1.3 before inventory code is merged. Floors are never assumed. |
 | OD-31 | **Option P-2: a pricing-configuration proposal is drafted for the owner to edit and approve** (interpretation; section 9 was not resent) | `../requirements/PRICING_CONFIGURATION_PROPOSAL.md`, drafted 2026-10-24. **No prices, rates or terms are set.** |
+### 0.7 Owner answers — 2026-10-24 (round 6)
+
+| ID | Answer | Recorded as / effect |
+|---|---|---|
+| OD-32 | **Floor allocation stays pending.** The owner wrote "If you know the exact floors, leave the allocation pending". The exact floors are **not** known, so under either reading (the owner may have meant "don't know") the allocation stays pending. Floors are entered later (consistent with OD-30). | Q-OW-1 closed as "pending by owner decision"; no floors recorded |
+| OD-33 | **Team roles: Super Admin, Operations Manager, Property Manager, Sales/CRM Executive, Marketing Manager, Finance.** These **supersede** the 13 draft roles approved in OD-28. | `../security/SECURITY_MODEL.md` §3.1 rewritten for six roles, with a mapping of the former roles; ERD `property_manager_id`; template **SG-INV-1.3** (column `centre_manager_email` → `property_manager_email`; the D-35 approval carries over); BR-CRM-3/4/6, PRD, IA journeys and architecture roles updated |
+
+**Duties of draft roles that no longer exist (proposals marked † in the matrix; confirm or adjust):**
+
+| ID | Question | Proposal |
+|---|---|---|
+| Q-OW-13 | Without a separate sales-manager role, who configures lead assignment rules and pipeline stages, approves lead exports, receives SLA-breach alerts, and which leads can Sales/CRM Executives see? | **Super Admin** configures assignment rules and pipeline stages and approves exports. SLA breaches alert the **Operations Manager and Super Admin**. **Sales/CRM Executives see all leads**, with optional per-user restriction to properties. |
+| Q-OW-14 | Who uploads 3D models and maps hotspots (formerly "3D Technician")? | An **external 3D-modelling supplier** prepares the model files. The **Marketing Manager** uploads them and maps hotspots; Super Admin can too. |
 
 ---
 
@@ -118,7 +131,7 @@ Interpretation: this approves every item for which the project team gave a recom
 | ID | Decision | Who | Classification | Current state / evidence | Recommended answer | Needed by |
 |---|---|---|---|---|---|---|
 | D-01 | Company profile, market, legal entity | Owner + Client | **Requires client input** (partly answered) | **Market confirmed:** India; Delhi NCR target markets; operating in Noida (OD-02, OD-03). Still missing: legal entity name, CIN, GSTIN, registered address, positioning statement. | supply legal details before public launch | Phase 6 (legal details); market resolved |
-| D-02 | Properties, floors and canonical city slugs | Owner | **Requires owner input** (mostly answered) | Four Noida properties, **each its own centre** (OD-13), all **owned** (OD-14); official city names (OD-16). **Open: floors per property and levels (Q-OW-1)**, full addresses (PIN, building names) and inventory. | supply via template SG-INV-1.2 | Phase 1 (AC-1.4) |
+| D-02 | Properties, floors and canonical city slugs | Owner | **Requires owner input** (mostly answered) | Four Noida properties, **each its own centre** (OD-13), all **owned** (OD-14); official city names (OD-16). **Open: floors per property and levels (Q-OW-1)**, full addresses (PIN, building names) and inventory. | supply via template SG-INV-1.3 | Phase 1 (AC-1.4) |
 | D-03 | Product catalogue | Owner | **Resolved** (2026-10-24, OD-07) | Seven admin-manageable categories. Rule **values** (pricing, payment, cancellation, durations) are not yet confirmed (brief §9 not received). | — | — |
 | D-04 | Pricing rules and public price display | Client | **Deferred to Phase 5** | The ERD price model is generic and does not depend on the answer | "from" prices for flexible products, "+ GST" display (CLIENT_INPUTS C-3.4/3.5) | Phase 5 |
 | D-05 | Inventory granularity | Owner | **Resolved** (2026-10-24, OD-10) | Individual (per-seat), pooled and hybrid-within-property are all supported, with product-specific rules. A hybrid *zone* is a separate question (Q-OW-7). | — | — |
@@ -150,9 +163,9 @@ Interpretation: this approves every item for which the project team gave a recom
 | D-30 | Back-office path and access restriction | Owner | **Deferred to Phase 3** | — | non-default path + Cloudflare Access in production | Phase 3 |
 | D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29): a GitHub **organisation**, not a personal account. **The name is needed**; setup is deferred by the owner. | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation when GitHub setup resumes | Phase 3 (or the AC-1.7 decision) |
 | D-32 | Release slicing (R1) | Owner | **Resolved** (2026-10-24, OD-25) | `PROJECT_MASTER_PLAN.md` §4 | — | — |
-| D-33 | Team structure and role/permission matrix | Owner | **Resolved as drafted** (2026-10-24, OD-28, interpretation) | `../security/SECURITY_MODEL.md` §3.1; adjusted when staff accounts are created | — | Phase 3 |
+| D-33 | Team structure and role/permission matrix | Owner | **Resolved** (2026-10-24, **OD-33**: six owner-defined roles; supersedes OD-28) | `../security/SECURITY_MODEL.md` §3.1. Duties of removed draft roles: Q-OW-13, Q-OW-14 (proposals). | confirm the † proposals | Phase 3 |
 | D-34 | ADR-0003…0014 acceptance | Owner | **Resolved** (2026-10-24, OD-26) | all ADRs accepted | — | — |
-| D-35 | Inventory import template SG-INV-1.2 and four-eyes import approval | Owner | **Resolved** (2026-10-24, OD-27) | `../requirements/INVENTORY_IMPORT_SPEC.md` | — | — |
+| D-35 | Inventory import template SG-INV-1.3 and four-eyes import approval | Owner | **Resolved** (2026-10-24, OD-27) | `../requirements/INVENTORY_IMPORT_SPEC.md` | — | — |
 | D-36 | **New:** business values marked [DEFAULT] in the PRD and business rules (hold times, SLAs, windows, horizons) | Owner | **Deferred** to the gate of the phase that implements each rule. They are confirmed there, never silently adopted. | listed in `../requirements/BUSINESS_RULES.md` | confirm at each phase gate | Phases 5–9 |
 
 ### Summary
@@ -160,7 +173,7 @@ Interpretation: this approves every item for which the project team gave a recom
 | Classification | Decisions |
 |---|---|
 | Resolved | D-03, D-05, D-06, D-11a, D-16, D-19, D-22, D-23, D-24, D-25, D-26 (MySQL part), D-32, D-33, D-34, D-35 |
-| Requires owner approval | the pricing-configuration proposal (P-2, decisions PR-1…PR-11); D-31 organisation name; AC-1.7 remote push (or move it to Phase 3) |
+| Requires owner approval | S-1 (remote push → Phase 3); S-2 (pricing structure now, values PR-1…PR-11 at the Phase 5 gate); Q-OW-13 and Q-OW-14 (role duties); D-31 organisation name |
 | Requires client input | D-01 (legal details, may defer to Phase 6); D-11b (logo file, owner will add) |
 | Deferred to a later phase | D-04 (5), D-07 (8), D-08 (8), D-09 (9), D-10 (8/10), D-12 (6), D-13 (7), D-14 (3), D-15 (6), D-17 (4), D-18 (6), D-20 (8), D-21 (13), D-26 Redis (3), D-27 (6), D-28 (8), D-29 (9), D-30 (3) |
 
@@ -184,7 +197,7 @@ Interpretation: this approves every item for which the project team gave a recom
 | R-12 | **New:** slow client inputs keep Phase 1 open and delay Phase 2 | **Requires client input** | `../requirements/CLIENT_INPUTS_REQUIRED.md` is ready to send. Owner-approved deferrals are possible for non-structural items. |
 | R-13 | **New:** "snapshot before lock" pitfall: a plain read before taking the lock causes double booking even with a lock | **Resolved at design level** | Reproduced by a negative-control test. ADR-0004 now requires the lock to be the first statement in the transaction. |
 | R-14 | **New (2026-10-24):** the local `.env` connects as MySQL **`root`** on a server that also hosts other projects' databases, including personal-data tables such as candidates and employees. A misconfiguration or bug in SmartGro could read or damage another project's data. | **Requires owner approval** | Mitigations already in place: tests are forced to `smartgro_testing` and the `*_testing` guard blocks other databases. **Recommended:** switch to a least-privileged `smartgro` user limited to `smart_go` and `smartgro_testing` by running `SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh`. Never use `root` in staging or production. |
-| R-15 | Floors per property and full addresses of the four properties are unknown, so the ERD cannot be validated against real data | **Requires client input** (Q-OW-1 re-asked) | Grouping resolved (OD-13). Nothing is created by assumption (BR-PROP-1). Template SG-INV-1.2 is ready. |
+| R-15 | Floors per property and full addresses of the four properties are unknown, so the ERD cannot be validated against real data | **Requires client input** (Q-OW-1 re-asked) | Grouping resolved (OD-13). Nothing is created by assumption (BR-PROP-1). Template SG-INV-1.3 is ready. |
 | R-16 | **New:** the existing WordPress site at smartgro.space shows signs of compromise: 1,038 injected `/pin/` spam URLs, cloaked to serve Japanese spam to Googlebot | **Requires owner action now** (outside this project) | Evidence and recommended actions in `../research/EXISTING_WEBSITE_AUDIT.md` §2. The new platform must not reuse any files from it, and must return 410 for `/pin/*`. |
 | R-17 | Loss of search visibility at cut-over from WordPress | **Deferred to Phase 11** (redirects approved, OD-21) | 57-URL inventory captured; final map from a fresh crawl and Search Console data; `/pin/*` → 410 |
 | R-18 | Selling long-term agreements beyond a leased property's lease end | **Resolved for now** (OD-14: all current properties owned) | Lease tracking (BR-PROP-5) is activated when the first leased property is added |

@@ -7,7 +7,7 @@
 The client will supply the first real location's inventory as a spreadsheet. Operations staff are not technical. Inventory is the operational source of truth (BR-SOT-1), so a bad import would corrupt availability everywhere.
 
 ## Decision
-* A versioned XLSX template (`SG-INV-1.x`; current `SG-INV-1.2`, which has buildings, operating model, inventory mode including hybrid zones, and product categories) with dropdowns, help text and an ignored example row (`../requirements/INVENTORY_IMPORT_SPEC.md`).
+* A versioned XLSX template (`SG-INV-1.x`; current `SG-INV-1.3`, which has buildings, operating model, inventory mode including hybrid zones, and product categories) with dropdowns, help text and an ignored example row (`../requirements/INVENTORY_IMPORT_SPEC.md`).
 * Upload → queued validation (40 numbered rules) → plain-language report → preview with availability impact → approval by a second person → **all-or-nothing commit** in one transaction, with affected spaces locked (ADR-0004) and all checks re-run against current data.
 * Upserts by permanent natural keys (`property_code`, `building_code`, `space_code`, …). **Never deletes:** missing records are reported, and decommissioning is an explicit action.
 * Reading uses `openspout/openspout` (already installed via Filament; to be declared as a direct dependency, D-24). Filament provides the upload, report and approval UI. A domain action performs the import.

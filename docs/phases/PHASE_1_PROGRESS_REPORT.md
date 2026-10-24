@@ -9,6 +9,18 @@
 
 ---
 
+## 0D. Update — owner answers (2026-10-24, round 6)
+
+* **Floors:** the allocation stays pending (OD-32). No floors are recorded; they are entered later.
+* **Team roles:** Super Admin, Operations Manager, Property Manager, Sales/CRM Executive, Marketing Manager, Finance (OD-33; supersedes the drafted roles).
+  * The permission matrix is rebuilt for six roles, with a mapping table for the former roles.
+  * Separation of duties now means "a different person": the Super Admin is the second approver when only one person holds a role.
+  * Import template **SG-INV-1.3** renames the manager column; the D-35 approval carries over.
+* **Proposals to confirm:** Q-OW-13 (sales oversight duties) and Q-OW-14 (3D model upload).
+* **Still to accept:** S-1 (remote push → Phase 3) and S-2 (pricing values → Phase 5 gate).
+
+---
+
 ## 0C. Update — owner approval (2026-10-24, round 5): "Approve all as recommended"
 
 Recorded as OD-23…OD-31 (`../decisions/DECISION_REGISTER.md` §0.6):
@@ -179,7 +191,7 @@ Full register: [`../decisions/DECISION_REGISTER.md`](../decisions/DECISION_REGIS
 | D-31 Repository owner | **Create the private repository under a GitHub organisation** (yours or the client's, per the contract on IP ownership), not a personal account | access control, transfer at handover, branch protection |
 | D-32 Release slicing | **Approve R1** as drafted (`PROJECT_MASTER_PLAN.md` §4) | delivers a credible launch without waiting for 3D assets or automation |
 | D-34 ADRs | **Accept ADR-0003…0012** | each records alternatives and consequences; ADR-0004 is now backed by MySQL evidence |
-| D-35 Import process | **Approve** SG-INV-1.2, and ask operations to trial the template on the first property | validates both the template and the ERD |
+| D-35 Import process | **Approve** SG-INV-1.3, and ask operations to trial the template on the first property | validates both the template and the ERD |
 | D-30 (Phase 3) | non-default back-office path + Cloudflare Access in production | defence in depth for staff accounts |
 | D-14 (Phase 3) | client-owned accounts on managed Laravel hosting behind Cloudflare, India region; decide using `DEPLOYMENT_RUNBOOK.md` §6 | operational simplicity; residency pending legal advice |
 
@@ -189,7 +201,7 @@ Full register: [`../decisions/DECISION_REGISTER.md`](../decisions/DECISION_REGIS
 
 The full checklist, ready to send, is in `../requirements/CLIENT_INPUTS_REQUIRED.md`. Priority order:
 1. **Original SmartGro logo files** (vector master + variants). Not found anywhere on the project machine. Blocks Phase 2.
-2. **Floors per property** for the four Noida properties (Q-OW-1; grouping answered by OD-13), then the **first property's inventory** in the SG-INV-1.2 template. Validates the ERD (AC-1.4).
+2. **Floors per property** for the four Noida properties (Q-OW-1; grouping answered by OD-13), then the **first property's inventory** in the SG-INV-1.3 template. Validates the ERD (AC-1.4).
 3. **Existing systems questionnaire** (Q1–Q10). Decides the source of truth (D-06).
 4. **Products actually sold** (D-03), and **seat tracking** (D-05).
 5. Company profile and market (D-01), brand spelling and domain (D-22), languages (D-16), existing website URLs (D-19), team structure (D-33).
@@ -218,7 +230,7 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 | AC-1.1 | Documents complete, consistent, all links resolve | **Partly met.** All at v1.0-rc; link check 0 broken (2026-10-24); awaiting owner review. |
 | AC-1.2 | Blocking inputs answered or explicitly deferred | **Met (round 5):** floors deferred by option P-1 (OD-30); team roles approved (OD-28); all other blocking inputs answered. D-01 legal details defer to Phase 6. |
 | AC-1.3 | D-06 answered, or Scenario A deferral recorded with a Phase 5 gate | **Met (2026-10-24):** no existing software (OD-06) |
-| AC-1.4 | ERD validated against the first real property | **Deferred by owner decision (OD-30, option P-1)** to the **Phase 5 entry gate**. ERD v1.2-rc and template SG-INV-1.2 are ready. |
+| AC-1.4 | ERD validated against the first real property | **Deferred by owner decision (OD-30, option P-1)** to the **Phase 5 entry gate**. ERD v1.2-rc and template SG-INV-1.3 are ready. |
 | AC-1.5 | No silent defaults | **Met:** every [DEFAULT] business value is listed as deferred to its implementing phase gate (D-36). Pricing values are deferred to the Phase 5 gate (S-2). |
 | AC-1.6 | ADRs, dependencies, layout, release slicing, import process approved | **Met (2026-10-24):** ADR-0001…0014 accepted; D-24, D-25, D-32, D-35 approved |
 | AC-1.7 | Git pushed to private remote; tests pass on local MySQL; Pint clean | **Partly met.** Local Git history reviewed; suite 9/9 on the owner's local MySQL; Pint clean. **Remote push pending:** GitHub deferred by the owner; recommendation S-1 moves it to Phase 3 step 3.1. |
@@ -226,10 +238,10 @@ Later phases will need: pricing policy (Ph 5), booking scope, cancellation and t
 
 ---
 
-## 9. Next recommended action (updated 2026-10-24, round 5)
+## 9. Next recommended action (updated 2026-10-24, round 6)
 
 1. **Owner, urgent and outside this project:** act on the compromise of the existing WordPress site (`../research/EXISTING_WEBSITE_AUDIT.md` §2).
-2. **Owner, one reply:** accept S-1 and S-2 (or adjust them). Once accepted, Phase 1 meets its criteria except the owner's sign-off, and the project team will mark it **READY FOR REVIEW** with the documents finalised at v1.0.
-3. **Owner:** approve Phase 1 (AC-1.8). Only then does Phase 2 (brand system; needs the logo file) or Phase 3 (foundation, starting with the GitHub organisation and remote push) begin.
+2. **Owner, one reply:** "accept S-1, S-2, Q-OW-13, Q-OW-14", or adjust any of them. After that, every Phase 1 criterion except the owner's sign-off is met. The project team will then finalise the documents at v1.0 and mark Phase 1 **READY FOR REVIEW**.
+3. **Owner:** approve Phase 1 (AC-1.8). Only then does Phase 2 or Phase 3 begin.
 
 **No Phase 2 or later implementation will start before Phase 1 is approved.**

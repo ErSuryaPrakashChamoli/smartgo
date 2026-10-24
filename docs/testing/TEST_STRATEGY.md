@@ -64,7 +64,7 @@
 | J-1 | Visitor finds a private office in a city on a 360 px mobile viewport and books a tour | slot chosen, confirmation shown, lead + tour created, owner notified, confirmation message dispatched |
 | J-2 | Visitor books a meeting room (if D-07 enables it) | hold → details → (payment) → confirmed; slot disappears for other visitors immediately |
 | J-3 | Enterprise enquiry for a multi-city requirement | lead created with seat band and cities, routed per assignment rules |
-| J-4 | Content editor updates a location gallery and submits; approver publishes | change is invisible before approval and visible after; revision retained; alt text enforced |
+| J-4 | Marketing Manager updates a property gallery and submits; a different approver (Marketing Manager or Super Admin) publishes | change is invisible before approval and visible after; revision retained; alt text enforced |
 | J-5 | Ops marks a space `maintenance` | within 60 s: removed from listings, booking blocked, 3D hotspot shows unavailable, CRM proposal flagged |
 | J-6 | Marketing user links 3D anchors to spaces and publishes a scene | no coordinate input anywhere; live availability colours shown; disclaimer shown for non-scan models |
 | J-7 | Keyboard-only and screen-reader user completes J-1 | all steps operable; the 3D alternative list conveys the same information |
@@ -135,8 +135,8 @@ These are written in Phase 5/8 against the real schema, reusing the harness patt
 
 | ID | Scenario | Expected |
 |---|---|---|
-| T-IMP-01 | `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.2) with time frozen at 2026-10-24 | 0 errors, 0 warnings; preview counts match the fixture (2 properties, 3 buildings, 4 floors, 15 spaces including a hybrid zone) |
-| T-IMP-02 | `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.2) | issues equal **exactly** the hidden `_expected_issues` sheet (20 issues, 18 rules) |
+| T-IMP-01 | `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.3) with time frozen at 2026-10-24 | 0 errors, 0 warnings; preview counts match the fixture (2 properties, 3 buildings, 4 floors, 15 spaces including a hybrid zone) |
+| T-IMP-02 | `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.3) | issues equal **exactly** the hidden `_expected_issues` sheet (20 issues, 18 rules) |
 | T-IMP-03 | Commit of the valid file, then re-import of the same file | second run: "no changes" |
 | T-IMP-04 | Import committing while a booking holds the space lock | serialised; no lost update |
 | T-IMP-05 | Synthetic file in a `production` environment | rejected by V-180 |

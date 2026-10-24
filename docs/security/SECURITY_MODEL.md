@@ -25,7 +25,7 @@
 
 | Control | Decision |
 |---|---|
-| Staff login | Filament panel login only; no public self-registration. Accounts are created by Platform Admin. |
+| Staff login | Filament panel login only; no public self-registration. Accounts are created by the Super Admin. |
 | MFA | **Required for every staff user** via Filament 5 `multiFactorAuthentication([...], isRequired: true)`, using a TOTP app with email code as fallback (supported per Filament 5 docs). |
 | Passwords | Laravel `Password::defaults()`: min 12 chars, mixed case, numbers, `uncompromised()` check, bcrypt (existing `BCRYPT_ROUNDS`). |
 | Throttling | login rate limit per email + IP; lockout notice to user; audit-log failed attempts. |
@@ -39,51 +39,66 @@
 
 * `spatie/laravel-permission` (proposed) holds roles and permissions. **Permissions are business capabilities** (e.g. `inventory.update_status`, `pricing.approve`), not one per CRUD screen.
 * Every Filament resource and page, Livewire action and controller checks a **Policy**. Hiding a UI element is never the control.
-* **Property scoping:** Centre Managers, Front Desk and Sales Executives act only on properties in their `property_user` scope. This is enforced in policies **and** in query scopes so lists, exports, global search and relation managers cannot leak other locations' records.
+* **Property scoping:** Property Managers act only on properties in their `property_user` scope (Sales/CRM Executives can optionally be restricted the same way per user). This is enforced in policies **and** in query scopes so lists, exports, global search and relation managers cannot leak other locations' records.
 * **Separation of duties:** authors cannot approve their own content (BR-CMS-2) or their own price plans (BR-PR-2).
 
-### 3.1 Role and permission matrix (proposed)
+### 3.1 Role and permission matrix (owner-defined roles, 2026-10-24)
 
-Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to assigned properties or own records · — no access
+**Roles (OD-33):** Super Admin · Operations Manager · Property Manager · Sales/CRM Executive · Marketing Manager · Finance. These replace the 13 draft roles.
 
-| Capability | Super Admin | Platform Admin | Marketing Mgr | Content Editor | SEO Specialist | Ops Mgr | Centre Mgr | Finance | Sales Mgr | Sales Exec | Front Desk | 3D Tech | Analyst |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Users, roles, MFA reset | M | M | — | — | — | — | — | — | — | — | — | — | — |
-| Integrations, tracking IDs | M | M | V (IDs: M) | — | V | — | — | — | — | — | — | — | — |
-| Brand settings and design tokens | M | V | M/A | V | — | — | — | — | — | — | — | — | — |
-| Pages, sections, navigation | M/A | — | M/A | M | V | — | — | — | — | — | — | — | — |
-| Location and offering profiles (copy, media) | M/A | — | M/A | M | V | V | M (S) | — | V | V | — | — | — |
-| Blog, FAQs, testimonials, case studies | M/A | — | M/A | M | V | — | — | — | — | — | — | — | — |
-| SEO metadata, redirects | M/A | — | M/A | V | M | — | — | — | — | — | — | — | — |
-| Media library | M | — | M | M | V | V | M (S) | — | — | — | — | M (3D) | — |
-| Properties, buildings, floors: create, edit, address, status (OD-08) | M | — | V | V | V | M | M (S; edit only, no create/delete) | V | V | V | V (S) | V | V |
-| Property operating model: owned / leased (OD-09) | M | — | V | — | — | M | V (S) | V | V | V | — | — | V |
-| Lease facts (deferred until a leased property exists, OD-14; restricted, never public) | M | — | — | — | — | M | — | M | — | — | — | — | — |
-| Product categories and non-financial rules (ADR-0013) | M | — | V | V | V | M | V | V | V | V | V | — | V |
-| Category rules affecting money (payment rule, cancellation policy) | M/A | — | — | — | — | V | — | M/A (not own) | V | — | — | — | V |
-| Cities: add, edit, **public visibility toggle** (OD-18) | M | — | M | — | V | V | — | — | — | — | — | — | V |
-| Customer segments list (OD-04) | M | — | M | V | V | V | — | — | V | V | — | — | V |
-| Spaces: capacity, status, dimensions | M | — | V | V | — | M | M (S) | V | V | V | V (S) | V | V |
-| Space visibility on website | M | — | M | — | — | M | M (S) | — | — | — | — | — | — |
-| Allocations (occupancy) | M | — | — | — | — | M | M (S) | V | V | V (S) | V (S) | — | V |
-| Inventory import: upload, validate, preview (ADR-0012) | M | — | — | — | — | M | M (S) | — | — | — | — | — | — |
-| Inventory import: approve and commit | A | — | — | — | — | A (not own) | — | — | — | — | — | — | — |
-| Price plans | M | — | V | — | — | V | V (S) | M | V | V | V (S) | — | V |
-| Price plan activation | A | — | — | — | — | — | — | A (not own) | — | — | — | — | — |
-| Offers | M/A | — | M | — | — | — | — | A | V | V | — | — | V |
-| Bookings (create/modify/cancel) | M | — | — | — | — | M | M (S) | V | M | M (S) | M (S) | — | V |
-| Booking override (outside hours) | M | — | — | — | — | M | M (S) | — | — | — | — | — | — |
-| Tours | M | — | — | — | — | V | M (S) | — | M | M (S) | M (S) | — | V |
-| Leads, contacts, deals | M | — | V (aggregates) | — | — | — | V (S) | — | M | M (S, own) | V (S) | — | V (aggregates) |
-| Lead export | M | — | — | — | — | — | — | — | A (logged) | — | — | — | — |
-| Assignment rules, pipeline stages | M | — | — | — | — | — | — | — | M | — | — | — | — |
-| Message templates, campaigns, automations | M/A | — | M/A | M | — | — | — | — | V | — | — | — | V |
-| 3D models, anchors | M | — | V | — | — | V | — | — | — | — | — | M | — |
-| 3D scenes, hotspot ↔ space mapping | M/A | — | M/A | M | — | V | M (S) | — | — | — | — | M | — |
-| Reports and dashboards | V | V | V (marketing) | — | V (SEO) | V (ops) | V (S) | V (finance) | V (sales) | V (own) | V (S) | — | V |
-| Audit log | V | V | — | — | — | — | — | — | — | — | — | — | — |
+Legend: **M** manage (create/update/delete) · **A** approve/publish · **V** view · **S** scoped to the user's assigned properties (`property_user`) · — no access. Cells marked † are **proposals for duties of draft roles that no longer exist** (Q-OW-13, Q-OW-14).
 
-The role list and scoping were **approved as drafted** on 2026-10-24 (D-33, OD-28). They are adjusted when real staff accounts are created in Phase 3. This replaces the earlier note: They wait on the client's team structure (D-33, CLIENT_INPUTS C-5.1) and content-approval workflow (D-17).
+| Capability | Super Admin | Operations Manager | Property Manager | Sales/CRM Executive | Marketing Manager | Finance |
+|---|---|---|---|---|---|---|
+| Users, roles, MFA reset | M | — | — | — | — | — |
+| Integrations (connection status), tracking IDs | M | — | — | — | V (tracking IDs: M) | — |
+| Brand settings, design tokens, **logo** | M | — | — | — | M/A | — |
+| Pages, sections, navigation | M/A | — | — | — | M/A (not own) | — |
+| Property and offering profiles (copy, media) | M/A | V | M (S) | V | M/A (not own) | — |
+| Blog, FAQs, testimonials, case studies | M/A | — | — | — | M/A (not own) | — |
+| SEO metadata, redirects | M/A | — | — | — | M/A | — |
+| Media library | M | V | M (S) | — | M | — |
+| Properties, buildings, floors: create, edit, address, status | M | M | M (S; edit only, no create/delete) | V | V | V |
+| Property operating model (owned / leased) | M | M | V (S) | V | V | V |
+| Lease facts (deferred, OD-14; restricted, never public) | M | M | — | — | — | M |
+| Product categories and non-financial rules (ADR-0013) | M | M | V | V | V | V |
+| Category rules affecting money (payment rule, cancellation policy) | M/A | V | — | V | — | M/A (not own) |
+| Cities: add, edit, public visibility toggle | M | V | — | — | M | — |
+| Customer segments list | M | V | — | V | M | — |
+| Spaces and seats: capacity, status, dimensions | M | M | M (S) | V | V | V |
+| Space visibility on website | M | M | M (S) | — | M | — |
+| Allocations (occupancy) | M | M | M (S) | V | — | V |
+| Inventory import: upload, validate, preview | M | M | M (S) | — | — | — |
+| Inventory import: approve and commit | A | A (not own) | — | — | — | — |
+| Price plans, charges, add-ons | M | V | V (S) | V | V | M |
+| Price plan / offer activation | A | — | — | — | — | A (not own) |
+| Offers (create) | M | — | — | V | M | M |
+| Quotations (managed offices, custom deals) | M/A | — | — | M (approval above the discretion limit) | — | A |
+| Bookings (create/modify/cancel) | M | M | M (S) | M | — | V |
+| Booking override (outside hours) | M | M | M (S) | — | — | — |
+| Tours | M | V | M (S) | M | — | — |
+| Leads, contacts, deals | M | V (aggregates) | V (S) | M (all leads †) | V (aggregates) | V (deal values) |
+| Lead export (audited) | A † | — | — | — | — | — |
+| Assignment rules, pipeline stages | M † | — | — | — | — | — |
+| SLA-breach alerts received | ✓ † | ✓ † | — | owner of the lead | — | — |
+| Message templates, campaigns, automations | M/A | — | — | V | M/A (not own) | — |
+| 3D model upload and anchors (models prepared by a 3D-modelling supplier) | M | V | — | — | M † | — |
+| 3D scenes, hotspot ↔ space mapping | M/A | V | M (S) | — | M/A (not own) | — |
+| Reports and dashboards | V (all) | V (operations) | V (S) | V (sales) | V (marketing) | V (finance) |
+| Audit log | V | — | — | — | — | — |
+
+**Separation of duties with fewer roles:** "not own" means a **different person** holding the approving permission. If only one person holds a role (e.g. one Marketing Manager), the Super Admin acts as the second approver for content, prices and imports. A person may hold more than one role, but can never approve their own submission.
+
+**Mapping from the earlier draft roles:**
+
+| Draft role | Now handled by |
+|---|---|
+| Platform Admin, Analyst | Super Admin (reports per role) |
+| Content Editor, SEO Specialist | Marketing Manager |
+| Centre Manager, Front Desk | Property Manager (scoped) |
+| Sales Manager | Super Admin for configuration, exports and oversight; Sales/CRM Executives for day-to-day (proposal †, Q-OW-13) |
+| Sales Executive | Sales/CRM Executive |
+| 3D Technician | an external 3D-modelling supplier prepares models; the Marketing Manager uploads and maps them (proposal †, Q-OW-14) |
 
 ---
 
@@ -116,7 +131,7 @@ The role list and scoping were **approved as drafted** on 2026-10-24 (D-33, OD-2
 * Secrets live only in environment variables or the host secret manager (IC-1).
 * `.env`, `.env.backup`, `.env.production`, `.env.testing` and `.env.*.local` are git-ignored. `.env.example` contains placeholders only. Before the first commit (2026-10-24), the files were scanned for key patterns, secret-like assignments and personal emails: none found.
 * Local database credentials are generated by `docs/operations/scripts/setup-local-mysql.sh`, sent to MySQL over stdin and written only to the local `.env`. They are never printed or shared in chat, documents or logs.
-* Logs: request bodies are not logged by default; phone and email are masked in application logs; provider payloads stored in `webhook_receipts` are restricted to Platform Admin and purged after 90 days [DEFAULT].
+* Logs: request bodies are not logged by default; phone and email are masked in application logs; provider payloads stored in `webhook_receipts` are restricted to the Super Admin and purged after 90 days [DEFAULT].
 * Rotation: documented in `../operations/DEPLOYMENT_RUNBOOK.md` once a host is chosen.
 
 ---

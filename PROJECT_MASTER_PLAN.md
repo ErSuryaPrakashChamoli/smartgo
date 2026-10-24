@@ -6,7 +6,7 @@
 | | |
 |---|---|
 | Last updated | 2026-10-24 |
-| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: IN PROGRESS.** All architecture decisions accepted; documents at v1.2-rc. Two sign-off items (S-1 remote push, S-2 pricing values) remain before READY FOR REVIEW. |
+| Current phase | **Phase 0: APPROVED in principle (2026-10-24)** · **Phase 1: IN PROGRESS.** All architecture decisions accepted; six owner-defined roles; documents at v1.2-rc. Remaining before READY FOR REVIEW: accept S-1, S-2 and the role-duty proposals Q-OW-13/14. |
 | Live status register | [`docs/phases/PHASE_STATUS.md`](docs/phases/PHASE_STATUS.md) |
 | Decisions and risks | [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) |
 
@@ -60,7 +60,7 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
   * **AC-1.1 Documents complete and consistent.** Every deliverable above is at v1.0 after owner review comments are resolved. All relative links resolve (link check reports 0 broken). No document contradicts another on routes, entities or rules.
   * **AC-1.2 Blocking inputs answered.** Floors per property (Q-OW-1) and D-33 (team roles) are answered, **or** explicitly deferred by the owner in the decision register with the default and the risk recorded (for floors: option P-1). (Answered on 2026-10-24: D-03, D-05, D-06, D-16, D-19, D-22, Q-OW-2…8, Q-OW-11, Q-OW-12. D-01 legal details may defer to Phase 6.)
   * **AC-1.3 Existing systems.** D-06 is answered by the client (questionnaire Q1–Q3 and Q7 at minimum), **or** the owner records an explicit deferral that accepts Scenario A as the working design and makes D-06 a Phase 5 entry gate.
-  * **AC-1.4 ERD validated against reality** (*deferred to the Phase 5 entry gate by owner decision OD-30*). The first real property is supplied in the SG-INV-1.2 template (or a later version) and walked through the validation rules. Every finding is either corrected in the data or turned into an ERD change. M-1…M-6 are closed or deferred with a recorded default.
+  * **AC-1.4 ERD validated against reality** (*deferred to the Phase 5 entry gate by owner decision OD-30*). The first real property is supplied in the SG-INV-1.3 template (or a later version) and walked through the validation rules. Every finding is either corrected in the data or turned into an ERD change. M-1…M-6 are closed or deferred with a recorded default.
   * **AC-1.5 No silent defaults.** Every [DEFAULT] value in the PRD and business rules is confirmed by its decider or listed as "Deferred to Phase N" in the register.
   * **AC-1.6 Architecture approvals.** ADR-0003…0012 are ACCEPTED or REJECTED (D-34). The dependency list (D-24), code layout (D-25), release slicing (D-32) and import process (D-35) are approved.
   * **AC-1.7 Engineering baseline verified.** Git history is reviewed and pushed to the private remote (D-31). `php artisan test --compact` passes on the local MySQL `smartgro_testing` database created by the setup script, including the concurrency harness. Pint is clean.
@@ -104,7 +104,7 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
 * **Deliverables:** block library, pages and sections, navigation, profiles, media library with licensing and renditions, revisions and approvals, previews, scheduling, redirects-on-slug-change.
 * **AC:**
   1. FR-CMS-1…8 pass.
-  2. A content editor completes UJ-7 and UJ-8 unaided in a moderated test.
+  2. A Marketing Manager completes UJ-7, and a second approver completes UJ-8, unaided in a moderated test.
   3. No routine CMS task requires code, JSON or SQL.
 
 ### Phase 5: Locations, buildings, floors, spaces, inventory, pricing, availability engine
@@ -147,7 +147,7 @@ Each phase lists scope, key deliverables and **phase-level acceptance criteria (
 * **Deliverables:** lead inbox, de-duplication, assignment rules, SLA alerts, activities, pipeline and deals, won deal → allocation, exports.
 * **AC:**
   1. FR-CRM-1…6 pass.
-  2. UJ-10 is completed by a sales executive.
+  2. UJ-10 is completed by a Sales/CRM Executive.
   3. Scoping is proven by tests.
 
 ### Phase 10: Marketing automation, communication integrations, offers
@@ -279,7 +279,7 @@ flowchart LR
 | [`docs/phases/PHASE_1_PROGRESS_REPORT.md`](docs/phases/PHASE_1_PROGRESS_REPORT.md) | Phase 1 progress report (2026-10-24) |
 | [`docs/requirements/CLIENT_INPUTS_REQUIRED.md`](docs/requirements/CLIENT_INPUTS_REQUIRED.md) | checklist of business facts and assets needed from the client |
 | [`docs/requirements/PRICING_CONFIGURATION_PROPOSAL.md`](docs/requirements/PRICING_CONFIGURATION_PROPOSAL.md) | pricing configuration proposal (option P-2; no prices set) |
-| [`docs/requirements/INVENTORY_IMPORT_SPEC.md`](docs/requirements/INVENTORY_IMPORT_SPEC.md) | inventory import template SG-INV-1.2 and validation rules |
+| [`docs/requirements/INVENTORY_IMPORT_SPEC.md`](docs/requirements/INVENTORY_IMPORT_SPEC.md) | inventory import template SG-INV-1.3 and validation rules |
 | [`docs/architecture/API_CONTRACTS.md`](docs/architecture/API_CONTRACTS.md) | public API, form, webhook and domain-action contracts |
 | [`docs/architecture/EXISTING_SYSTEMS_ASSESSMENT.md`](docs/architecture/EXISTING_SYSTEMS_ASSESSMENT.md) | D-06 questionnaire, scenarios, source-of-truth recommendation |
 | [`docs/operations/LOCAL_DEVELOPMENT.md`](docs/operations/LOCAL_DEVELOPMENT.md) | local MySQL setup, tests, Git and GitHub remote steps |

@@ -4,7 +4,7 @@
 |---|---|
 | Status | **v1.2-rc — Phase 1, ready for owner review** (template and process **approved** 2026-10-24, D-35). Updated for the owner decisions of 2026-10-24 (OD-07…OD-10, OD-13…OD-16). The importer itself is built in Phase 5. |
 | Last updated | 2026-10-24 |
-| Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.2.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.2.xlsx) (template ID `SG-INV-1.2`). SG-INV-1.0 and 1.1 are superseded; they were removed from the working tree and remain in Git history. |
+| Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.3.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.3.xlsx) (template ID `SG-INV-1.3`). SG-INV-1.0, 1.1 and 1.2 are superseded; they were removed from the working tree and remain in Git history. |
 | Synthetic fixtures | [`tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx) · [`tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx) (regenerated for 1.2) |
 | Depends on | Q-OW-1 (floors per property and their levels; still open). Resolved: each address is its own property (OD-13), all current properties owned (OD-14), hybrid zones required (OD-15), official city names (OD-16), D-03, D-05 and D-06. |
 
@@ -18,7 +18,9 @@ The owner will supply the first real property's inventory when available. This t
 
 The same template is later downloadable from the back office for every new property and every bulk update. **Only confirmed facts are entered: never estimated floors, rooms or capacities (BR-PROP-1).**
 
-**Out of scope for SG-INV-1.2:** prices (brief §9 pending), marketing copy, photos and 3D models. Each has its own workflow.
+**Out of scope for SG-INV-1.3:** prices (brief §9 pending), marketing copy, photos and 3D models. Each has its own workflow.
+
+**What changed in 1.3:** the column `centre_manager_email` is renamed `property_manager_email` to match the owner-defined roles (OD-33). Nothing else changed; the D-35 approval of 1.2 carries over.
 
 **What changed in 1.2:**
 * inventory mode **Hybrid (seats + pool)** (OD-15)
@@ -40,7 +42,7 @@ The same template is later downloadable from the back office for every new prope
 | Sheet | One row per | Key (must be unique) | Notes |
 |---|---|---|---|
 | Read me | — | — | instructions, compatibility rules, colour legend, process |
-| Property | SmartGro property | `property_code` | city, micro-market, **operating model**, status, opening date, time zone, centre manager (staff email) |
+| Property | SmartGro property | `property_code` | city, micro-market, **operating model**, status, opening date, time zone, Property Manager (staff email) |
 | Buildings | building of a property | `building_code` | address (`address_line_1` e.g. "A-70", `locality` e.g. "Sector 2"), postal code (may follow), coordinates, `is_primary` |
 | Hours | property × weekday | (`property_code`, `day_of_week`) | 7 rows per property |
 | Floors | operated floor | (`building_code`, `building_level`) | optional floor-plan file name |
@@ -153,7 +155,7 @@ Severity: **E** = error (blocks commit) · **W** = warning (must be acknowledged
 | V-108 | E | `country_code` is ISO 3166-1 alpha-2. `timezone` is a valid IANA zone (blank → `Asia/Kolkata`; India confirmed, OD-02). |
 | V-109 | E | latitude −90…90 and longitude −180…180. Both or neither. |
 | V-110 | E | numeric ranges: capacity 1–2,000 (whole); area 1–1,000,000; building level −5…200; minutes 0–1,440 |
-| V-111 | W | `centre_manager_email` is a valid email that matches an active staff user. If not, the property is created without a manager. |
+| V-111 | W | `property_manager_email` is a valid email that matches an active staff user with the Property Manager role. If not, the property is created without a manager. |
 | V-112 | E | Hours: `closes_at` is after `opens_at` when open; times are blank when `is_closed = Yes` |
 | V-113 | W | postal code: if present, valid for the country (IN: six digits, first digit 1–9). If missing, a warning that the property cannot be published until it is added (BR-PROP-3). |
 | V-114 | W | each property has exactly 7 Hours rows. Missing days are treated as closed. |
@@ -219,12 +221,12 @@ Both are added to `../architecture/DATABASE_ERD.md` §3.
 
 | File | Content | Purpose |
 |---|---|---|
-| `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.2) | 2 fictional properties ("SYNTHETIC Property Alpha/Beta", city "Synthville", codes `SYN-*`): one **owned and operated** with **two buildings**, one **leased and operated** in pre-opening. 3 buildings, 14 hour rows, 4 floors, 15 spaces covering **all four inventory modes**, including a **hybrid zone** (10 seats: 2 assigned + a 5-seat pooled agreement) and a mixed property. Every space type and status, and one room sellable as two categories. 22 seats, 10 agreements, 5 amenities. | must validate with **zero errors and zero warnings** |
-| `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.2) | the valid data plus deliberately broken rows; a hidden `_expected_issues` sheet lists **20** expected issues (including a hybrid-zone over-allocation) (sheet, row, column, rule, severity) covering V-101, V-102, V-105, V-110, V-112, V-115, **V-116, V-117**, V-120, V-130, **V-132, V-133**, V-135, V-140, V-145, V-150, W-160, W-170 | the validator must report **exactly** these issues |
+| `SYNTHETIC_inventory_valid.xlsx` (SG-INV-1.3) | 2 fictional properties ("SYNTHETIC Property Alpha/Beta", city "Synthville", codes `SYN-*`): one **owned and operated** with **two buildings**, one **leased and operated** in pre-opening. 3 buildings, 14 hour rows, 4 floors, 15 spaces covering **all four inventory modes**, including a **hybrid zone** (10 seats: 2 assigned + a 5-seat pooled agreement) and a mixed property. Every space type and status, and one room sellable as two categories. 22 seats, 10 agreements, 5 amenities. | must validate with **zero errors and zero warnings** |
+| `SYNTHETIC_inventory_with_errors.xlsx` (SG-INV-1.3) | the valid data plus deliberately broken rows; a hidden `_expected_issues` sheet lists **20** expected issues (including a hybrid-zone over-allocation) (sheet, row, column, rule, severity) covering V-101, V-102, V-105, V-110, V-112, V-115, **V-116, V-117**, V-120, V-130, **V-132, V-133**, V-135, V-140, V-145, V-150, W-160, W-170 | the validator must report **exactly** these issues |
 
 Fixture test conditions:
 * time frozen at **2026-10-24**, because status and date rules depend on "today"
-* a staff user `synthetic.manager@example.com` seeded by factory, so V-111 does not warn
+* a staff user `synthetic.manager@example.com` with the Property Manager role seeded by factory, so V-111 does not warn
 * V-150 is reported on the agreement row, in file order, at which the running total first exceeds capacity. Duplicates (V-120) are reported on the later occurrence.
 
 Rules for synthetic data:
@@ -233,4 +235,4 @@ Rules for synthetic data:
 3. V-180 prevents synthetic codes from ever being imported outside local or testing environments.
 4. Real client spreadsheets are **never** committed to Git or used as test fixtures. They are uploaded only through the back office.
 
-SG-INV-1.2 was generated on 2026-10-24 with openpyxl 3.1.5. Structure was verified on read-back: 8 data sheets, headers, data validations and 11 named lists present; no formulas. (SG-INV-1.0 was additionally rendered through LibreOffice; 1.1 uses the same layout code.)
+SG-INV-1.3 was generated on 2026-10-24 with openpyxl 3.1.5. Structure was verified on read-back: 8 data sheets, headers, data validations and 11 named lists present; no formulas. (SG-INV-1.0 was additionally rendered through LibreOffice; 1.1 uses the same layout code.)

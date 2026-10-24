@@ -116,7 +116,7 @@ erDiagram
 |---|---|---|---|
 | `cities` | Market city. Seeded with the official current names (OD-16): **Noida** (operating), **Gurugram**, **Delhi**, **Faridabad**, **Ghaziabad** (target markets). "Gurgaon" is stored as an alias that redirects to Gurugram. | `name`, `slug`, `aliases`, `state`, `country_code`, `is_target_market`, **`is_publicly_visible`** (admin toggle, default **off**; OD-18). "Operating" is **derived** (≥ 1 open property), never typed. | unique `slug` |
 | `micro_markets` | Business district or sector within a city (e.g. "Sector 62"; Indian search behaviour) | `city_id`, `name`, `slug` | unique (`city_id`, `slug`) |
-| `properties` | A SmartGro-operated property: the operational and marketed unit | `city_id`, `micro_market_id`, `code`, `name`, `slug`, `timezone`, **`operating_model`** (`owned_operated`, `leased_operated`; required, OD-09), `operational_status` (`planned`, `pre_opening`, `open`, `temporarily_closed`, `closed`), `opens_on`, `operating_hours` (structured), `centre_manager_id`, `primary_building_id`, `external_system`, `external_ref` | unique `code`; unique (`city_id`, `slug`); unique (`external_system`, `external_ref`) |
+| `properties` | A SmartGro-operated property: the operational and marketed unit | `city_id`, `micro_market_id`, `code`, `name`, `slug`, `timezone`, **`operating_model`** (`owned_operated`, `leased_operated`; required, OD-09), `operational_status` (`planned`, `pre_opening`, `open`, `temporarily_closed`, `closed`), `opens_on`, `operating_hours` (structured), `property_manager_id`, `primary_building_id`, `external_system`, `external_ref` | unique `code`; unique (`city_id`, `slug`); unique (`external_system`, `external_ref`) |
 | `property_leases` | **Deferred:** internal lease facts for `leased_operated` properties. All four current properties are owned (OD-14), so this is built only when the first leased property is added. Restricted to Super Admin, Ops Manager and Finance. | `property_id`, `building_id` (nullable), `lease_starts_on`, `lease_ends_on`, `lock_in_ends_on`, `notice_period_months`, `landlord_reference` (no personal data) | index (`property_id`, `lease_ends_on`) |
 | `buildings` | A physical building belonging to **one** property. Each property has ≥ 1 building. The address lives here because a property can span buildings (Q-OW-2). | `property_id`, `code`, `name` (nullable), `address_line_1` (e.g. "A-70"), `address_line_2`, `locality` (e.g. "Sector 2"), `postal_code` (nullable until supplied), `city_id`, `state`, `country_code`, `latitude`, `longitude`, `is_primary`, `certifications` (only if documented) | unique `code`; exactly one `is_primary` per property (enforced in the domain action) |
 | `floors` | A floor SmartGro operates inside a building | `building_id`, `property_id` (denormalised, kept consistent by the action), `building_level` (int), `label`, `sort_order`, `floor_plan_asset_id` | unique (`building_id`, `building_level`) |
@@ -273,7 +273,7 @@ erDiagram
 | `lead_property` | pivot of properties of interest | |
 | `customer_segments` | **Admin-managed** list seeded with the owner's eight segments (OD-04): startups and small businesses; freelancers and independent professionals; SMEs and growing companies; large enterprises and corporates; remote and hybrid employees; consultants and business travellers; companies seeking managed offices; businesses requiring virtual offices / registered addresses. `marketing_priority` stays empty until the owner sets priorities. | `name`, `slug`, `sort_order`, `marketing_priority` (nullable), `is_active` |
 | `leads.customer_segment_id`, `companies.customer_segment_id` | Optional self-identified segment ("Which best describes you?"), used for routing and reporting | nullable FK |
-| `pipeline_stages` | `name`, `sort_order`, `probability_pct`, `is_won`, `is_lost` | configurable by Sales Manager |
+| `pipeline_stages` | `name`, `sort_order`, `probability_pct`, `is_won`, `is_lost` | configurable by the Super Admin (proposal, Q-OW-13) |
 | `deals` | `lead_id`, `company_id`, `pipeline_stage_id`, `owner_user_id`, `seats`, `monthly_value_minor`, `expected_close_on`, `lost_reason` | |
 | `deal_space` | proposed spaces (references canonical `spaces`) | |
 | `activities` | `subject_type`, `subject_id`, `type` (`call`, `email`, `whatsapp`, `meeting`, `note`, `task`), `user_id`, `due_at`, `completed_at`, `body`, `outcome` | index (`subject_type`, `subject_id`) |
@@ -306,7 +306,7 @@ erDiagram
 
 ## 8. 3D digital twin
 
-The design goal is that **business users never handle coordinates.** A trained 3D technician names nodes in the GLB using a convention: `SG_SPACE_<space code>`, `SG_AMENITY_<slug>` and `SG_CAM_<n>`. On upload, a queued validation job extracts those nodes into `twin_anchors`. Marketing users then link anchors to canonical spaces from a dropdown, with automatic suggestions when the node name matches a `spaces.code`.
+The design goal is that **business users never handle coordinates.** The 3D-modelling supplier names nodes in the GLB using a convention: `SG_SPACE_<space code>`, `SG_AMENITY_<slug>` and `SG_CAM_<n>`. On upload, a queued validation job extracts those nodes into `twin_anchors`. Marketing users then link anchors to canonical spaces from a dropdown, with automatic suggestions when the node name matches a `spaces.code`.
 
 ```mermaid
 erDiagram
@@ -359,7 +359,7 @@ Hotspot state (available, occupied, maintenance) is **never stored** on hotspots
 |---|---|
 | `users` | existing Laravel table, extended with `is_active`, `last_login_at`, plus MFA columns per Filament 5 MFA |
 | `roles`, `permissions`, `model_has_roles`, … | `spatie/laravel-permission` 8.x (proposed; Packagist shows Laravel 13 support, verified 2026-10-24) |
-| `property_user` | scopes centre managers, sales executives and front-desk staff to their properties |
+| `property_user` | scopes Property Managers (and, optionally, individual Sales/CRM Executives) to their properties |
 | `activity_log` | `spatie/laravel-activitylog` 5.x (proposed) for the audit trail: who, what, before/after, IP, user agent |
 
 ---

@@ -125,11 +125,11 @@ Requirement form with seat bands (e.g. 20–49, 50–99, 100–249, 250+), citie
 
 | ID | Persona | Journey | Success signal |
 |---|---|---|---|
-| UJ-7 | Content editor | Opens centre profile → uploads photos (alt text, focal point, origin, licence) → reorders gallery → previews → submits | no code or JSON; can't publish without alt text or licence data |
+| UJ-7 | Marketing Manager (author) | Opens centre profile → uploads photos (alt text, focal point, origin, licence) → reorders gallery → previews → submits | no code or JSON; can't publish without alt text or licence data |
 | UJ-8 | Marketing manager (approver) | "Awaiting approval" dashboard → diff/preview → approve/publish or reject with note | change live within 60 s of publish; revision kept |
-| UJ-9 | Operations / Centre manager | Marks office "maintenance" or records an allocation with end date | website, 3D and CRM reflect it within 60 s; no marketing role can override |
-| UJ-10 | Sales executive | Gets notified of a new lead → WhatsApp/call from the lead screen → logs outcome → schedules tour → moves stage | first response logged; SLA visible |
-| UJ-11 | 3D technician + marketing user | Technician uploads GLB → validation passes → marketing links anchors to spaces from dropdowns → preview → submit | scene published without entering any coordinate |
+| UJ-9 | Operations Manager / Property Manager | Marks office "maintenance" or records an allocation with end date | website, 3D and CRM reflect it within 60 s; no marketing role can override |
+| UJ-10 | Sales/CRM Executive | Gets notified of a new lead → WhatsApp/call from the lead screen → logs outcome → schedules tour → moves stage | first response logged; SLA visible |
+| UJ-11 | 3D-modelling supplier + Marketing Manager | Supplier delivers a named-node GLB; Marketing Manager uploads it → validation passes → marketing links anchors to spaces from dropdowns → preview → submit | scene published without entering any coordinate |
 | UJ-12 | Finance | Creates price plan → a second approver activates → website "from" price updates | four-eyes enforced; audit entry |
 
 ---
