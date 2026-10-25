@@ -79,7 +79,7 @@ Optional hardening: `chmod 600 .env .env.backup`. Skip this if a separate web-se
 | Only the MySQL concurrency harness | `php artisan test --compact --group=concurrency` |
 | Format PHP before committing | `vendor/bin/pint --dirty --format agent` |
 | Build frontend assets | `npm run build` |
-| Bring staff roles and capabilities in line with the code | `php artisan access:sync` |
+| Bring staff roles and capabilities in line with the code (changes are audited) | `php artisan access:sync` |
 | View the Phase 2 design previews (never served in production) | open `/design` on the local server |
 | View the back-office design previews (Super Admin only, never in production) | open `/admin/design-previews` |
 | Give an existing user a staff role | `php artisan access:assign-role <email> <role>` |

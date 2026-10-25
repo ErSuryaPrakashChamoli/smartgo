@@ -4,6 +4,7 @@ use App\Actions\Access\SyncAccessControl;
 use App\Enums\Access\Capability;
 use App\Enums\Access\StaffRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -53,4 +54,37 @@ it('removes a capability from a role when the code no longer grants it', functio
     app(SyncAccessControl::class)->handle();
 
     expect(Role::findByName(StaffRole::Finance->value)->permissions)->toBeEmpty();
+});
+
+it('audits the capabilities it grants to a role', function () {
+    app(SyncAccessControl::class)->handle();
+
+    $entry = Activity::query()->where('event', 'role_capabilities_changed')->sole();
+
+    expect($entry->subject->is(Role::findByName(StaffRole::SuperAdmin->value)))->toBeTrue()
+        ->and($entry->causer)->toBeNull()
+        ->and($entry->properties->all())->toEqual([
+            'role' => 'super_admin',
+            'old' => [],
+            'new' => ['audit_log.view', 'users.manage'],
+        ]);
+});
+
+it('audits a capability it removes from a role', function () {
+    app(SyncAccessControl::class)->handle();
+    Role::findByName(StaffRole::Finance->value)->givePermissionTo(Capability::ManageUsers);
+
+    app(SyncAccessControl::class)->handle();
+
+    $entry = Activity::query()->where('event', 'role_capabilities_changed')->latest('id')->first();
+
+    expect($entry->properties->all())->toEqual(['role' => 'finance', 'old' => ['users.manage'], 'new' => []]);
+});
+
+it('writes no audit entry when the roles already match the code', function () {
+    app(SyncAccessControl::class)->handle();
+
+    app(SyncAccessControl::class)->handle();
+
+    expect(Activity::query()->where('event', 'role_capabilities_changed')->count())->toBe(1);
 });

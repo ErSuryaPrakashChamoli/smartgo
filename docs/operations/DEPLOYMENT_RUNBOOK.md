@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval. Deployment plan.** Hosting provider to be chosen in Phase 3 (D-14). The provider-specific runbook is completed in Phase 15. |
-| Last updated | 2026-10-24 |
+| Last updated | 2026-10-25 |
 | Local development | [`LOCAL_DEVELOPMENT.md`](LOCAL_DEVELOPMENT.md) |
 
 ---
@@ -61,7 +61,7 @@ To be added as integrations are chosen: payment gateway keys and webhook secret,
 3. `npm ci && npm run build`
 4. `php artisan down --render="errors::503" --retry=60` (only for migrations that need it; prefer zero-downtime)
 5. `php artisan migrate --force` (backups taken first; destructive migrations need a separately approved plan)
-6. `php artisan access:sync` (brings staff roles and capabilities in line with the code; safe on every release)
+6. `php artisan access:sync` (brings staff roles and capabilities in line with the code; safe on every release; any change to a role's capabilities is written to the audit log)
 7. `php artisan optimize` and `php artisan filament:optimize`
 8. `php artisan horizon:terminate` (or `queue:restart`) so workers load the new code
 9. `php artisan up`
