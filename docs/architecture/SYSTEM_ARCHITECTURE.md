@@ -25,7 +25,7 @@ Facts observed in the repository and on the development machine. See the Phase 0
 | Redis | **Not installed**; `phpredis` extension **not loaded**; `predis` not installed | Redis | Install server + `php8.5-redis`, or use `predis` (ADR-0007) |
 | Object storage | `league/flysystem-aws-s3-v3` **not installed**; AWS keys empty | S3-compatible | Add adapter at Phase 4 (dependency approval) |
 | Three.js | not installed (npm latest `three@0.186.1`, checked 2026-10-24) | yes | Add at Phase 7 |
-| Version control | **Git initialised 2026-10-24** on `main` (reviewed baseline + small commits). No remote yet. | Git + private GitHub | Remote: D-31 / action A-2 |
+| Version control | **Git initialised 2026-10-24** on `main` (reviewed baseline + small commits). No remote yet. | Git + private GitHub, organisation `Smartgro` (OD-78) | Remote: D-31 / action A-2. Destination conflict R-21; push not authorised. |
 | Spreadsheet reading | `openspout/openspout` 4.32.0 and `league/csv` 9.28.0 present as Filament dependencies | XLSX import (ADR-0012) | Declare openspout as a direct dependency (D-24) |
 | Image processing | `gd` and `imagick` extensions loaded | yes | — |
 

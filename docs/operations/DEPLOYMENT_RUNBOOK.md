@@ -12,7 +12,7 @@
 
 | Item | State / plan |
 |---|---|
-| Repository | Git, branch `main`, initialised 2026-10-24 with a reviewed baseline. **Private GitHub remote pending** owner choice of repository owner (D-31; steps in `LOCAL_DEVELOPMENT.md` §5). |
+| Repository | Git, branch `main`, initialised 2026-10-24 with a reviewed baseline. **No remote yet.** D-31 decided the organisation `Smartgro`, owned by Smart Gro Services Private Limited (OD-78). The owner creates the organisation, repository and push credential, and the first push needs separate authorisation. The pre-push check found the GitHub name `smartgro` held by a personal user account (R-21). Steps: `LOCAL_DEVELOPMENT.md` §5. |
 | Branching | short-lived feature branches → pull request → `main`. `main` is protected once the remote exists. |
 | CI (Phase 3, `.github/workflows/ci.yml`) | on every push to `main` and every PR: PHP 8.5 + MySQL 8.4 service container → `composer install` → `npm ci && npm run build` → `vendor/bin/pint --test` → `php artisan test` (full suite, including the `concurrency` group) → `composer audit` and `npm audit --audit-level=high`. A green CI is required to merge. The workflow is committed and starts running once the remote exists (D-31). |
 | Secrets in CI | the CI MySQL uses throwaway credentials defined in the workflow (test-only). Deployment secrets live only in the host's secret store or encrypted CI secrets. |
@@ -101,6 +101,6 @@ Candidates (to be assessed against the criteria, none selected): managed Laravel
 
 * D-14: host, accounts and ownership, region, domain/DNS access (deferred to Phase 3)
 * D-19: existing website and URLs to redirect at cut-over
-* D-31: GitHub repository owner; the CI workflow is ready and runs once the remote exists
+* D-31: organisation `Smartgro` decided (OD-78); the destination conflict (R-21), repository and credential setup, and push authorisation are open. The CI workflow is ready and runs once the remote exists.
 * Trusted proxies: behind Cloudflare, configure Laravel to trust Cloudflare's proxy IP ranges so that `request()->ip()` is the visitor's address. Login throttling and the IP addresses in the audit log depend on it.
 * Production session settings: `SESSION_SECURE_COOKIE=true`; confirm the staff idle timeout (`SESSION_LIFETIME`, 120 minutes proposed)

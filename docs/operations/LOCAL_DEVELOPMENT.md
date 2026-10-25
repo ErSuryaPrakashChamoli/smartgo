@@ -130,6 +130,8 @@ The GitHub CLI is not installed on this machine and no SSH key exists yet. Local
 
 **Decided:** organisation `Smartgro`; legal owner `Smart Gro Services Private Limited` (OD-78); this checklist's wording (OD-77).
 
+Pre-push check (2026-10-25, read-only): GitHub has **no organisation `Smartgro`**. The name `smartgro` (GitHub names ignore capitalisation) belongs to a **personal user account created 2017-11-03**, so an organisation cannot use it. `Smartgro/smartgro` is not publicly visible, but whether it exists cannot be confirmed without signing in. No push credential is visible to this machine's terminal. See R-21.
+
 **D-31 stays open until:**
 * the owner creates the organisation and the private repository (Claude is not authorised to);
 * the owner sets up the push credential (Claude is not authorised to);
