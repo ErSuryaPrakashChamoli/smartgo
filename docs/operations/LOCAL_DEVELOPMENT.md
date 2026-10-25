@@ -126,7 +126,13 @@ The GitHub CLI is not installed on this machine and no SSH key exists yet. Local
 
 **Repository owner (D-31):** approved to be a GitHub **organisation**, not a personal account (OD-29, 2026-10-24); the organisation name is still needed. Setup is deferred by the owner. Background: your personal account, your company organisation, or the client's organisation. This affects who legally controls the code.
 
-### Setup checklist for owner approval (OD-76, prepared 2026-10-25)
+### Setup checklist (OD-76; wording approved by the owner on 2026-10-25, OD-77)
+
+**The approval covers this checklist's wording only. D-31 is not resolved:**
+* the organisation name is still needed (`SmartGro` is recommended, but not selected);
+* the legal or business owner is still needed;
+* the owner creates the repository and the push credential; Claude is not authorised to;
+* the first push needs separate authorisation from the owner.
 
 Steps 1 to 5 need the owner's own GitHub account. **Never paste passwords, tokens or private keys into chat.**
 
@@ -151,11 +157,14 @@ Steps 1 to 5 need the owner's own GitHub account. **Never paste passwords, token
      ```
      The remote is then `git@github-smartgro:<ORGANISATION>/smartgro.git`.
    * **Option A or Option B below:** these give access to everything your own account can reach. Option A also installs a package (`gh`), which needs approval.
-6. **First push** (step 3.1, after the owner supplies the name and owner and approves this checklist):
-   ```
-   git remote add origin <remote URL>
-   git push -u origin main
-   ```
+6. **First push** (step 3.1). Only after the owner has supplied the name and owner **and separately authorised the push**:
+   * **Immediately before pushing**, re-check the full Git history and the current repository contents for secrets (the checks recorded in `../decisions/DECISION_REGISTER.md` §0.21). Push nothing if anything is found.
+   * Keep `CLAUDE.md` out of commits unless the owner explicitly authorises its inclusion.
+   * Then:
+     ```
+     git remote add origin <remote URL>
+     git push -u origin main
+     ```
    A push sends commits only. Staged or uncommitted changes, such as an owner edit to `CLAUDE.md`, are not sent. The commits carry the local Git name and email. If the GitHub account blocks command-line pushes that expose a private email, the push is refused. Decide this before pushing.
 7. **After the first push:**
    * protect `main`: require a pull request and a passing "Lint, test and audit" check; no force pushes or deletion;

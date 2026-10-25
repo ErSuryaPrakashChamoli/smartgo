@@ -356,6 +356,13 @@ Source: the owner's decisions OD-74 and OD-75, with IDs given by the owner, answ
 | D-31 | **Awaiting owner input:** the organisation name and its legal or business owner were not supplied. Nothing was created: no organisation, no authentication, no remote, no push. |
 | Note | Pre-push readiness, checked read-only on 2026-10-25:<br>• 37 commits; no `.env` file was ever committed;<br>• no matches for private keys, application keys, database passwords or common access tokens anywhere in the history;<br>• largest file 0.4 MB;<br>• the CI workflow is valid YAML;<br>• the owner's staged `CLAUDE.md` edit is in no commit, so pushing `main` cannot send it. |
 
+### 0.22 Owner decision — 2026-10-25 (round 21): "D-31 resolution and Phase 3 continuation"
+
+| ID | Decision |
+|---|---|
+| OD-77 | **The D-31 setup checklist is approved** (`../operations/LOCAL_DEVELOPMENT.md` §5), with two additions:<br>1. re-check the full Git history and repository contents for secrets immediately before pushing;<br>2. keep `CLAUDE.md` out of commits unless its inclusion is explicitly authorised.<br>The approval covers the checklist wording only. |
+| D-31 | **Still unresolved.**<br>• Organisation name: `SmartGro` is recommended but has not been selected as the final name.<br>• Legal or business owner: not provided.<br>• Repository creation: not authorised; the owner will create it.<br>• Push credential: set up by the owner.<br>• Push: not authorised. |
+
 ---
 
 ## 1. Decisions
@@ -393,7 +400,7 @@ Source: the owner's decisions OD-74 and OD-75, with IDs given by the owner, answ
 | D-28 | Tour rules | Client | **Deferred to Phase 8** | — | 30-min slots within operating hours | Phase 8 |
 | D-29 | Lead data retention | Client (counsel) | **Deferred to Phase 9** | — | counsel to confirm | Phase 9 |
 | D-30 | Back-office path and access restriction | Owner | **Deferred to Phase 3** | The path is configurable (`BACKOFFICE_PATH`). Inside the application, access requires the explicit `backoffice.access` permission (OD-74, not implemented). The network-level restriction is still open. | non-default path + Cloudflare Access in production | Phase 3 |
-| D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29, OD-34, OD-76): a GitHub **organisation** under the security model of OD-76; creation and push at **Phase 3 step 3.1**. **Awaiting owner input (2026-10-25): the organisation name and its legal or business owner.** | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation at Phase 3 start | Phase 3 step 3.1 |
+| D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29, OD-34, OD-76): a GitHub **organisation** under the security model of OD-76; creation and push at **Phase 3 step 3.1**. **Awaiting owner input (2026-10-25): the organisation name and its legal or business owner.** Setup checklist approved (OD-77). The owner creates the repository and the credential; the push needs separate authorisation. | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation at Phase 3 start | Phase 3 step 3.1 |
 | D-32 | Release slicing (R1) | Owner | **Resolved** (2026-10-24, OD-25) | `PROJECT_MASTER_PLAN.md` §4 | — | — |
 | D-33 | Team structure and role/permission matrix | Owner | **Resolved** (2026-10-24, **OD-33**: six owner-defined roles; supersedes OD-28) | `../security/SECURITY_MODEL.md` §3.1. Duties of removed draft roles: Q-OW-13, Q-OW-14 (proposals). Permissions for back-office items 8 to 14 decided (OD-51 to OD-57, approved policy, not implemented); the number of people per role is undecided and stays configurable (OD-57). Role names confirmed for now (OD-58, OD-59). A permission assigned to a role applies to all its members; individual exceptions are optional, within the role's scope (OD-60, OD-68; not implemented). No role added. Back-office access is the explicit `backoffice.access` permission, assigned to all six roles (OD-74, derived; not implemented). | confirm the † proposals | Phase 3 |
 | D-34 | ADR-0003…0014 acceptance | Owner | **Resolved** (2026-10-24, OD-26) | all ADRs accepted | — | — |
@@ -457,7 +464,7 @@ Later commits are listed by `git log`.
 | ID | Action | Instructions |
 |---|---|---|
 | A-1 | ~~Create the local MySQL databases and user, then run the tests~~ **Done 2026-10-24.** The owner configured `.env` for MySQL (`smart_go`); `smartgro_testing` was created; **9/9 tests pass**. Follow-up for R-14: switch from `root` to a dedicated user. | `SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh` |
-| A-2 | Choose the repository owner (D-31), create the private GitHub repository, push | `../operations/LOCAL_DEVELOPMENT.md` §5 |
+| A-2 | Supply the D-31 organisation name and legal or business owner. Create the organisation, the private repository and the push credential yourself (checklist approved, OD-77). Authorise the first push separately. | `../operations/LOCAL_DEVELOPMENT.md` §5 |
 | A-3 | Send the client the inputs checklist and the systems questionnaire | `../requirements/CLIENT_INPUTS_REQUIRED.md`; `../architecture/EXISTING_SYSTEMS_ASSESSMENT.md` §2 |
 | A-4 | Approve or amend D-24, D-25, D-32, D-34, D-35 | this register |
 | A-5 | **New (2026-10-24):** enable Filament's AI guidance skill. Filament 5.10.3 ships `filament-development`, but `boost.json` does not enable it, so AI-assisted work lacks Filament-specific rules. Per Filament's docs, `boost:update` alone does not add it. | run `php artisan boost:install` (interactive), choose **Agent Skills** → **filament/filament (skills)**, then review the changes to `CLAUDE.md` and `.claude/skills` before committing |
