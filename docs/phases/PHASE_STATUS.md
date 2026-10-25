@@ -85,6 +85,80 @@
 | AC-3.5 | Staging deployed, reachable only by the team (master plan) | none | — | **BLOCKED** | **Owner:** hosting decision (D-14). |
 | 3.1 | Push to a private remote; dedicated MySQL user (master plan step 3.1) | none | — | **BLOCKED** | **Owner:** D-31; run the R-14 setup script. |
 
+### Phase 3 owner decision checklist (prepared 2026-10-25)
+
+Nothing below has been done on the owner's behalf. No organisation is named, no script has been run, no host is chosen, and the access matrix is unchanged.
+
+**1. D-31: GitHub organisation (unblocks step 3.1, AC-3.1 and R-11)**
+* **Decided:** the repository belongs to a GitHub organisation, not a personal account (OD-29), and the first push is step 3.1 (OD-34).
+* **Needed from the owner:**
+  * the organisation name;
+  * who owns it: your company, the client, or a new organisation (this decides who legally controls the code);
+  * at least one other organisation owner, with two-step login required for members (recommended).
+* **Current state:** no remote is configured; the GitHub CLI is not installed; there is no SSH key. CI (`.github/workflows/ci.yml`) runs once the remote exists.
+* **Steps after the answer:** `docs/operations/LOCAL_DEVELOPMENT.md` §5 (create a private `smartgro` repository, push `main`, protect `main`, enable secret scanning).
+
+**2. R-14: dedicated MySQL user (part of step 3.1)**
+* **Today:** SmartGro's local `.env` connects as MySQL `root` to `smart_go`, on a server that also holds other projects' databases.
+* **Script:** `docs/operations/scripts/setup-local-mysql.sh`, run by the owner as `SMARTGRO_DB_NAME=smart_go bash docs/operations/scripts/setup-local-mysql.sh` from the project root.
+* **Target:** this machine's local MySQL only. It never touches staging or production.
+* **Privilege needed:** `sudo` on this machine, which gives MySQL `root` through `auth_socket`.
+* **What it changes:**
+  1. Creates `smart_go` and `smartgro_testing` if they are missing (both exist today). Nothing is dropped.
+  2. Creates or updates the MySQL user `smartgro`@`localhost` and @`127.0.0.1` with a **new random password**, and grants it `ALL PRIVILEGES` on those **two databases only**: no other database, no global privileges, no `GRANT OPTION`. Full rights inside them are needed for migrations and for the test suite rebuilding `smartgro_testing`.
+  3. Copies `.env` to `.env.backup`, then replaces the `DB_*` lines in `.env` with the new user. The password is written only to `.env` and never printed.
+  4. Runs `php artisan config:clear` and `php artisan migrate` on `smart_go`. On 2026-10-25 all 6 migrations had already run (0 pending), so no schema change is expected.
+* **What it does not change:** the `root` account, other projects' databases, and any staging or production setting.
+* **After running:**
+  * `php artisan test --compact` should pass;
+  * your `php artisan serve` will use the new settings, and may restart by itself when `.env` changes;
+  * to undo, restore `.env.backup`;
+  * re-running the script rotates the password.
+
+**3. D-14: hosting and staging (unblocks step 3.11 and AC-3.5)**
+* **Decide:**
+  * the hosting approach (candidates in `docs/operations/DEPLOYMENT_RUNBOOK.md` §6: managed Laravel hosting, a managed VPS with a deployment tool, or a cloud provider's managed services; **none selected**);
+  * the region (India preferred, pending legal advice on data residency, D-15);
+  * account ownership (the client or the contracting entity; no personal accounts for production);
+  * who controls the domain and DNS for smartgro.space (Cloudflare is recommended);
+  * how staging is restricted to the team (password or Cloudflare Access, D-30);
+  * the monthly budget for staging and production.
+* **Runtime needs:** PHP 8.5, MySQL 8.4, Redis, queue workers and a scheduler (runbook §2).
+* **Order:** staging deploys from `main`, so D-31 comes first.
+
+**4. OD-74: `backoffice.access` by role (needed before AC-3.2 can be completed)**
+
+Proposed (derived, not yet confirmed by the owner): **all six roles** receive `backoffice.access` as a role assignment, because each has back-office duties in SECURITY_MODEL §3.1. This keeps today's access. Today, access comes from holding any of the six roles. Not implemented.
+
+| Role | Proposed | If access is removed from the role, its members cannot use the back office to: | Effect on separation of duties |
+|---|---|---|---|
+| Super Admin | ✓ | manage staff, roles and two-step login resets; read the audit log; act as second approver | Staff could only be managed from the command line (`access:assign-role`). Many four-eyes rules would lose their fallback approver. **Not recommended.** |
+| Operations Manager | ✓ | manage properties, floors, spaces, allocations and imports; approve booking requests and imports (not own); make booking overrides | Booking and import approvals fall to the Super Admin and Property Managers. |
+| Property Manager | ✓ | work on their assigned properties (spaces, allocations, bookings, tours, profile drafts); approve booking requests for them (not own) | On-site work moves to the Operations Manager and the Super Admin. |
+| Sales/CRM Executive | ✓ | handle enquiries, assign owners, manage tours, enter booking requests, prepare quotations | Sales work falls to the Super Admin alone. |
+| Marketing Manager | ✓ | draft, approve (not own) and publish website content, contact details, redirects, brand settings and tracking IDs | With only Super Admins left, publishing needs at least two of them (author and approver). |
+| Finance | ✓ | manage and activate prices (not own); edit and verify legal and GST details; approve quotations | Price activation and legal verification need two Super Admins; invoices stay blocked otherwise. |
+
+Removing access from a role does not delete the role's other permissions, but they cannot be used without back-office access. Named members can still be given access as individual exceptions within the role's scope (OD-68).
+
+**Tests required before OD-74 is implemented** (implementation is not authorised yet):
+1. Each role assigned `backoffice.access` can enter. Sign-in, the password policy, throttling and required two-step login are unchanged: the existing tests stay green.
+2. A user holding a role without the assignment, and without an exception, is refused on every back-office page, route, Livewire action and back-office API.
+3. An individual exception within the role's scope grants access. Revoking it, or removing the role, blocks access from the next request.
+4. Inactive users stay refused even with the permission.
+5. The Super Admin holds exactly the permissions listed for it. Adding a new capability does not grant it to the Super Admin automatically.
+6. Policy tests for every role × `backoffice.access`, allowed and denied (AC-3.2).
+7. Granting and removing access is audited.
+8. Rollout: after `php artisan access:sync`, every current staff user keeps access, so the change cannot lock everyone out. The first Super Admin created with `access:assign-role` can enter.
+9. The design-preview access tests (Super Admin only, refused in production) still pass.
+
+**Owner replies needed:**
+* the D-31 organisation name and owner;
+* run the R-14 script yourself, or decline;
+* the D-14 hosting decision;
+* confirm or change the OD-74 role list above;
+* separately, authorise implementing OD-74 when you want it built.
+
 ## Phase 2: Brand system, UX/UI design, responsive design system
 
 | Field | Detail |
@@ -121,6 +195,31 @@ Criteria from `PROJECT_MASTER_PLAN.md` §2 (Phase 2) and the checks the owner as
 | D-8 | Step 2.8 accessibility verification (phase steps; not an acceptance criterion) | automated contrast, page-structure, alt-text and overflow checks | automated | **PARTIAL**: no manual assistive-technology review yet; full accessibility testing is Phase 14 | — |
 | D-9 | Next phase understood (owner check 10) | master plan §3 dependency map | review | **PASS**. Phase 4 needs Phases 2 **and** 3; Phase 5 needs Phase 3 done. Neither can start. | — |
 
+### AC-2.5 visual review pack (prepared 2026-10-25)
+
+The screenshots are committed and unchanged. On 2026-10-25 each page below was captured again from the current code and compared pixel by pixel with its screenshot: **0 differing pixels for all seven**, so they show the current implementation. The 2026-10-24 folder is still current for the public pages and the property editor. The 2026-10-25 folder holds only the back-office captures updated in round 16.
+
+| Screen | Width | File | What it shows |
+|---|---|---|---|
+| Home page: the direction sample to sign off (P2-C) | 1440 px | `docs/design/review/2026-10-24/home-1440.webp` | The overall visual direction: approved palette (OD-42), Sora and Inter (OD-43), logo, workspace finder, the seven workspace types, the four Noida properties with "Price on request" and labelled photo placeholders, 3D teaser, the eight customer groups, tour steps, managed-office band, FAQs and footer. |
+| Home page | 360 px | `docs/design/review/2026-10-24/home-360.webp` | The same page on a phone: stacked layout, menu button, and the sticky Enquire / Book a tour bar. |
+| Property A-70 | 1440 px | `docs/design/review/2026-10-24/property-a-70-1440.webp` | The property template using confirmed facts only. Address A-70, Sector 2, Noida; hours, floors and amenities read "to be confirmed"; photos are placeholders; workspaces are "not listed yet". Also the tour-request form and nearby properties. |
+| Request-to-book journey | 360 px | `docs/design/review/2026-10-24/journey-request-to-book-360.webp` | The four steps on a phone (room and time, details, review, request sent) and both outcomes: confirmed, and "could not be confirmed". It uses the fictional Sample property, and a request is never shown as confirmed. |
+| Property editor (back office) | 1440 px | `docs/design/review/2026-10-24/admin-property-editor-1440.webp` | Step 1 of the five-step property wizard, pre-filled with A-70's confirmed facts, in the light back-office theme. |
+| Permissions review (back office) | 1440 px | `docs/design/review/2026-10-25/admin-permissions-review-1440.webp` | The decided permission matrix (OD-51 to OD-75) by role, including `backoffice.access`, with each row's basis (implemented / approved matrix / owner decision, not built). |
+| Permissions review (back office) | 360 px | `docs/design/review/2026-10-25/admin-permissions-review-360.webp` | The same table at phone width. |
+
+**How to view:**
+* **Files:** open the paths above in VS Code, or run `xdg-open <path>` from the project root.
+* **Live, on your own running server (port 8000):**
+  * `http://localhost:8000/design/home`
+  * `/design/locations/noida/a-70`
+  * `/design/flows/request-to-book`
+  * the back-office previews at `/admin/design-previews/property-editor` and `/admin/design-previews/permissions-review`. These need a Super Admin sign-in with two-step login, and are never available in production.
+* **Full sets:** `docs/design/review/2026-10-24/` (51 files) and `docs/design/review/2026-10-25/` (21 files).
+
+**Owner reply needed for AC-2.5:** approve the visual direction, or name the changes wanted. Until then Phase 2 stays READY FOR REVIEW: not approved, not complete.
+
 ## Phases 4–15
 Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.md` §2. Each phase gets a full entry here when it starts.
 
@@ -130,6 +229,7 @@ Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.
 
 | Date | Change |
 |---|---|
+| 2026-10-25 | Round 17:<br>• AC-2.5 visual review pack added. The seven requested screenshots were re-captured from the current code: 0 differing pixels. No screenshot regenerated or changed.<br>• Phase 3 owner decision checklist added (D-31, R-14, D-14, OD-74 by role, required tests).<br>• No code, permission, schema or setting changed; no script run; nothing pushed.<br>• Phase 2 stays READY FOR REVIEW; Phase 3 stays IN PROGRESS. |
 | 2026-10-25 | Round 16:<br>• Q-OW-21 answered by owner decisions OD-74 (explicit `backoffice.access` permission) and OD-75 (external tag managers optional, never a bypass of OD-71), recorded as documentation.<br>• Documents reconciled, including the test-strategy journey J-4.<br>• Back-office previews updated to the decided policy (Phase 2, OD-49), with two new tests.<br>• Full suite 307 passed; back office 60 of 60 overflow checks.<br>• Acceptance records added. **Phase 2 → READY FOR REVIEW** (AC-2.5 owner sign-off outstanding; not approved). **Phase 3 stays IN PROGRESS** (D-31, R-14, D-14; OD-74 implementation needs authorisation).<br>• No next phase started: Phase 4 needs Phases 2 and 3, and Phase 5 needs Phase 3. |
 | 2026-10-25 | Round 15: Q-OW-20 and D-17 resolved by owner decisions OD-68…OD-73:<br>• permissions assigned to a role apply to all members, with optional individual exceptions within the role's scope (precedence, revocation and audit documented);<br>• contact-detail approvers confirmed;<br>• the Super Admin may approve brand changes but never publishes what they approved;<br>• tracking IDs need independent approval;<br>• the creator or submitter of a booking request or reschedule never approves it;<br>• one content approval by a non-author is enough.<br>Reconciled SECURITY_MODEL (§3, §3.1, §5, §7, §11; new §11.6 permitted combinations and failure cases), BUSINESS_RULES, PRD, INFORMATION_ARCHITECTURE, INTEGRATION_CONTRACTS, DATABASE_ERD (gap notes only), DESIGN_SYSTEM, CLIENT_INPUTS and the decision register. **Documentation only:** not implemented; no code, permission, role, schema, test, preview or setting changed. Remaining points: Q-OW-21. No implementation phase started. Phase 2 stays IN PROGRESS, waiting for owner review. |
 | 2026-10-25 | Round 14: the owner's answers to Q-OW-19 recorded as OD-58…OD-67. They cover role names for now, per-user explicit grants, rejection, legal verification, reschedule approval with an availability re-check every time, and independent approval of contact details, redirects and brand settings. Approver ≠ publisher and author ≠ approver now apply to every role, including the Super Admin. Owner response to R-20 recorded: strict separation of duties is kept, and SECURITY_MODEL §11.5 explains when a second person is needed. Reconciled SECURITY_MODEL §3, §3.1, §7 and §11, BUSINESS_RULES (BR-BK-13, BR-CMS-9), PRD, INFORMATION_ARCHITECTURE, SYSTEM_ARCHITECTURE, API_CONTRACTS, DATABASE_ERD (gap notes only), DESIGN_SYSTEM and CLIENT_INPUTS. **Documentation only:** no permission, role, code, schema or setting changed. Remaining points: Q-OW-20. No Phase 3 work started. Phase 2 stays IN PROGRESS, waiting for owner review. |
