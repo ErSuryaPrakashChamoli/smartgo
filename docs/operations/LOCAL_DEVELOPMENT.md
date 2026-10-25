@@ -124,19 +124,20 @@ Booking-domain tests (T-BK-*, `../testing/TEST_STRATEGY.md` §8) reuse this harn
 
 The GitHub CLI is not installed on this machine and no SSH key exists yet. Local version control works without a remote. Choose **one** option.
 
-**Repository owner (D-31):** approved to be a GitHub **organisation**, not a personal account (OD-29, 2026-10-24); the organisation name is still needed. Setup is deferred by the owner. Background: your personal account, your company organisation, or the client's organisation. This affects who legally controls the code.
+**Repository owner (D-31):** a GitHub **organisation**, not a personal account (OD-29): organisation `Smartgro`, owned by **Smart Gro Services Private Limited** (OD-78, 2026-10-25).
 
 ### Setup checklist (OD-76; wording approved by the owner on 2026-10-25, OD-77)
 
-**The approval covers this checklist's wording only. D-31 is not resolved:**
-* the organisation name is still needed (`SmartGro` is recommended, but not selected);
-* the legal or business owner is still needed;
-* the owner creates the repository and the push credential; Claude is not authorised to;
-* the first push needs separate authorisation from the owner.
+**Decided:** organisation `Smartgro`; legal owner `Smart Gro Services Private Limited` (OD-78); this checklist's wording (OD-77).
+
+**D-31 stays open until:**
+* the owner creates the organisation and the private repository (Claude is not authorised to);
+* the owner sets up the push credential (Claude is not authorised to);
+* the owner separately authorises the first push (not granted).
 
 Steps 1 to 5 need the owner's own GitHub account. **Never paste passwords, tokens or private keys into chat.**
 
-1. **Create the organisation** on github.com in the company's name, with a company-controlled contact email. The organisation, not a person, owns the code.
+1. **Create the organisation `Smartgro`** on github.com, owned by Smart Gro Services Private Limited, with a company-controlled contact email. The organisation, not a person, owns the code.
 2. **Owners:** add a second trusted owner if one is available. No personal account may be the sole owner of production-critical code. If only one owner exists at first, record who it is as an open risk.
 3. **Organisation security settings:**
    * **Authentication security:** require two-factor authentication for everyone in the organisation. Members without it are removed until they enable it.
@@ -155,9 +156,9 @@ Steps 1 to 5 need the owner's own GitHub account. **Never paste passwords, token
        IdentityFile ~/.ssh/smartgro_deploy
        IdentitiesOnly yes
      ```
-     The remote is then `git@github-smartgro:<ORGANISATION>/smartgro.git`.
+     The remote is then `git@github-smartgro:Smartgro/smartgro.git`.
    * **Option A or Option B below:** these give access to everything your own account can reach. Option A also installs a package (`gh`), which needs approval.
-6. **First push** (step 3.1). Only after the owner has supplied the name and owner **and separately authorised the push**:
+6. **First push** (step 3.1). The name and owner are confirmed (OD-78). Only after the owner has created the repository and the credential **and separately authorised the push**:
    * **Immediately before pushing**, re-check the full Git history and the current repository contents for secrets (the checks recorded in `../decisions/DECISION_REGISTER.md` §0.21). Push nothing if anything is found.
    * Keep `CLAUDE.md` out of commits unless the owner explicitly authorises its inclusion.
    * Then:
@@ -178,7 +179,7 @@ The options below are kept for reference.
 ```bash
 sudo apt install gh
 gh auth login                      # choose GitHub.com, SSH, and generate a new key when asked
-gh repo create <OWNER>/smartgro --private --source=. --remote=origin --push
+gh repo create Smartgro/smartgro --private --source=. --remote=origin --push
 ```
 
 ### Option B: web UI + SSH key
@@ -189,12 +190,12 @@ cat ~/.ssh/id_ed25519.pub                    # copy this PUBLIC key
 ```
 
 1. On github.com, go to **Settings → SSH and GPG keys → New SSH key** and paste the public key.
-2. Go to **New repository**: Owner `<OWNER>`, Name `smartgro`, **Private**. Do **not** add a README, .gitignore or licence.
+2. Go to **New repository**: Owner `Smartgro`, Name `smartgro`, **Private**. Do **not** add a README, .gitignore or licence.
 3. Then run:
 
 ```bash
 ssh -T git@github.com                         # confirm authentication
-git remote add origin git@github.com:<OWNER>/smartgro.git
+git remote add origin git@github.com:Smartgro/smartgro.git
 git push -u origin main
 ```
 
