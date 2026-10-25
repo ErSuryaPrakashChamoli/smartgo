@@ -348,6 +348,14 @@ Source: the owner's decisions OD-74 and OD-75, with IDs given by the owner, answ
 |---|---|
 | Note | No owner question is open after this round. Phase 2 still needs the owner's sign-off of the visual direction (AC-2.5). Phase 3 still needs D-31, R-14 and D-14 (`../phases/PHASE_STATUS.md`, acceptance records). |
 
+### 0.21 Owner instruction — 2026-10-25 (round 20): "Resolve D-31"
+
+| ID | Decision |
+|---|---|
+| OD-76 | **The intended security model for the GitHub organisation** (owner's words): "A private repository. Company-controlled organisation ownership. Two trusted organisation owners, if available. Mandatory two-factor authentication for members. Least-privilege repository access. No personal account as the sole owner of production-critical code." These are recorded as requirements for Phase 3 step 3.1. The setup checklist for the owner's approval is in `../operations/LOCAL_DEVELOPMENT.md` §5. |
+| D-31 | **Awaiting owner input:** the organisation name and its legal or business owner were not supplied. Nothing was created: no organisation, no authentication, no remote, no push. |
+| Note | Pre-push readiness, checked read-only on 2026-10-25:<br>• 37 commits; no `.env` file was ever committed;<br>• no matches for private keys, application keys, database passwords or common access tokens anywhere in the history;<br>• largest file 0.4 MB;<br>• the CI workflow is valid YAML;<br>• the owner's staged `CLAUDE.md` edit is in no commit, so pushing `main` cannot send it. |
+
 ---
 
 ## 1. Decisions
@@ -385,7 +393,7 @@ Source: the owner's decisions OD-74 and OD-75, with IDs given by the owner, answ
 | D-28 | Tour rules | Client | **Deferred to Phase 8** | — | 30-min slots within operating hours | Phase 8 |
 | D-29 | Lead data retention | Client (counsel) | **Deferred to Phase 9** | — | counsel to confirm | Phase 9 |
 | D-30 | Back-office path and access restriction | Owner | **Deferred to Phase 3** | The path is configurable (`BACKOFFICE_PATH`). Inside the application, access requires the explicit `backoffice.access` permission (OD-74, not implemented). The network-level restriction is still open. | non-default path + Cloudflare Access in production | Phase 3 |
-| D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29, OD-34): a GitHub **organisation**; creation and push at **Phase 3 step 3.1**. **Name needed then.** | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation at Phase 3 start | Phase 3 step 3.1 |
+| D-31 | GitHub repository owner | Owner | **Partly resolved** (OD-29, OD-34, OD-76): a GitHub **organisation** under the security model of OD-76; creation and push at **Phase 3 step 3.1**. **Awaiting owner input (2026-10-25): the organisation name and its legal or business owner.** | `../operations/LOCAL_DEVELOPMENT.md` §5 | name the organisation at Phase 3 start | Phase 3 step 3.1 |
 | D-32 | Release slicing (R1) | Owner | **Resolved** (2026-10-24, OD-25) | `PROJECT_MASTER_PLAN.md` §4 | — | — |
 | D-33 | Team structure and role/permission matrix | Owner | **Resolved** (2026-10-24, **OD-33**: six owner-defined roles; supersedes OD-28) | `../security/SECURITY_MODEL.md` §3.1. Duties of removed draft roles: Q-OW-13, Q-OW-14 (proposals). Permissions for back-office items 8 to 14 decided (OD-51 to OD-57, approved policy, not implemented); the number of people per role is undecided and stays configurable (OD-57). Role names confirmed for now (OD-58, OD-59). A permission assigned to a role applies to all its members; individual exceptions are optional, within the role's scope (OD-60, OD-68; not implemented). No role added. Back-office access is the explicit `backoffice.access` permission, assigned to all six roles (OD-74, derived; not implemented). | confirm the † proposals | Phase 3 |
 | D-34 | ADR-0003…0014 acceptance | Owner | **Resolved** (2026-10-24, OD-26) | all ADRs accepted | — | — |

@@ -126,6 +126,44 @@ The GitHub CLI is not installed on this machine and no SSH key exists yet. Local
 
 **Repository owner (D-31):** approved to be a GitHub **organisation**, not a personal account (OD-29, 2026-10-24); the organisation name is still needed. Setup is deferred by the owner. Background: your personal account, your company organisation, or the client's organisation. This affects who legally controls the code.
 
+### Setup checklist for owner approval (OD-76, prepared 2026-10-25)
+
+Steps 1 to 5 need the owner's own GitHub account. **Never paste passwords, tokens or private keys into chat.**
+
+1. **Create the organisation** on github.com in the company's name, with a company-controlled contact email. The organisation, not a person, owns the code.
+2. **Owners:** add a second trusted owner if one is available. No personal account may be the sole owner of production-critical code. If only one owner exists at first, record who it is as an open risk.
+3. **Organisation security settings:**
+   * **Authentication security:** require two-factor authentication for everyone in the organisation. Members without it are removed until they enable it.
+   * **Member privileges:**
+     * base permission "No permission";
+     * members cannot create public repositories or change a repository's visibility;
+     * only owners may delete or transfer repositories.
+   * **Actions:** allow only the actions the CI workflow uses (`actions/checkout`, `actions/setup-node`, `shivammathur/setup-php`). Keep the default workflow token read-only; the workflow already sets `contents: read`.
+4. **Repository:** create `smartgro` as **Private** and empty (no README, licence or `.gitignore`). Give access through a team: **Write** for developers, **Admin** for owners only.
+5. **Credential for pushing from this machine.** Choose one and set it up yourself:
+   * **Least privilege: a deploy key with write access to this repository only.** Run `ssh-keygen -t ed25519 -f ~/.ssh/smartgro_deploy -C "smartgro deploy key"`, then add the **public** key (`~/.ssh/smartgro_deploy.pub`) under the repository's Settings → Deploy keys, with write access allowed. Point Git at it with this `~/.ssh/config` entry:
+     ```
+     Host github-smartgro
+       HostName github.com
+       User git
+       IdentityFile ~/.ssh/smartgro_deploy
+       IdentitiesOnly yes
+     ```
+     The remote is then `git@github-smartgro:<ORGANISATION>/smartgro.git`.
+   * **Option A or Option B below:** these give access to everything your own account can reach. Option A also installs a package (`gh`), which needs approval.
+6. **First push** (step 3.1, after the owner supplies the name and owner and approves this checklist):
+   ```
+   git remote add origin <remote URL>
+   git push -u origin main
+   ```
+   A push sends commits only. Staged or uncommitted changes, such as an owner edit to `CLAUDE.md`, are not sent. The commits carry the local Git name and email. If the GitHub account blocks command-line pushes that expose a private email, the push is refused. Decide this before pushing.
+7. **After the first push:**
+   * protect `main`: require a pull request and a passing "Lint, test and audit" check; no force pushes or deletion;
+   * enable secret scanning and push protection if the plan includes them;
+   * record the first CI run's result (AC-3.1).
+
+The options below are kept for reference.
+
 ### Option A: GitHub CLI (simplest)
 
 ```bash
@@ -153,5 +191,5 @@ git push -u origin main
 
 ### After the first push (recommended)
 
-* Under **Settings → Branches**, add a protection rule for `main`: require a pull request and (once CI exists in Phase 3) passing status checks.
+* Under **Settings → Branches**, add a protection rule for `main`: require a pull request and the passing "Lint, test and audit" check (the CI workflow exists since Phase 3 step 3.10).
 * Under **Settings → Code security**, enable secret scanning and push protection, if available for the account's plan.
