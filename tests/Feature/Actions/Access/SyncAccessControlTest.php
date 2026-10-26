@@ -23,6 +23,9 @@ it('creates the six staff roles and the capability catalogue', function () {
     ])->and(Permission::query()->orderBy('name')->pluck('name')->all())->toBe([
         'audit_log.view',
         'backoffice.access',
+        'content.approve',
+        'content.edit',
+        'content.publish',
         'users.manage',
     ]);
 });
@@ -31,14 +34,21 @@ it('grants the Super Admin exactly the capabilities listed for it', function () 
     app(SyncAccessControl::class)->handle();
 
     expect(Role::findByName(StaffRole::SuperAdmin->value)->permissions->pluck('name')->sort()->values()->all())
-        ->toBe(['audit_log.view', 'backoffice.access', 'users.manage']);
+        ->toBe(['audit_log.view', 'backoffice.access', 'content.approve', 'content.edit', 'content.publish', 'users.manage']);
+});
+
+it('lets the Marketing Manager edit, approve and publish website content', function () {
+    app(SyncAccessControl::class)->handle();
+
+    expect(Role::findByName(StaffRole::MarketingManager->value)->permissions->pluck('name')->sort()->values()->all())
+        ->toBe(['backoffice.access', 'content.approve', 'content.edit', 'content.publish']);
 });
 
 it('gives the other roles back-office access and nothing else yet', function (StaffRole $role) {
     app(SyncAccessControl::class)->handle();
 
     expect(Role::findByName($role->value)->permissions->pluck('name')->all())->toBe(['backoffice.access']);
-})->with(collect(StaffRole::cases())->reject(fn (StaffRole $role): bool => $role === StaffRole::SuperAdmin)->all());
+})->with([StaffRole::OperationsManager, StaffRole::PropertyManager, StaffRole::SalesCrmExecutive, StaffRole::Finance]);
 
 it('can run repeatedly without duplicating roles or capabilities', function () {
     app(SyncAccessControl::class)->handle();
@@ -68,7 +78,7 @@ it('audits the capabilities it grants to each role', function () {
         ->and($entry->properties->all())->toEqual([
             'role' => 'super_admin',
             'old' => [],
-            'new' => ['audit_log.view', 'backoffice.access', 'users.manage'],
+            'new' => ['audit_log.view', 'backoffice.access', 'content.approve', 'content.edit', 'content.publish', 'users.manage'],
         ]);
 });
 

@@ -244,10 +244,11 @@ What exists in code now, and where it differs from the plan above. Each row is c
 | Passwords | `Password::defaults()`: at least 12 characters, mixed case, numbers | the breached-password check (`uncompromised()`) runs **in production only**, because it calls an external service |
 | Throttling | Filament login limit: 5 attempts per minute per IP address (covered by a test since 2026-10-25); two-step codes are rate-limited per user (Filament) | not per email + IP. Behind Cloudflare the app must trust Cloudflare's proxy ranges, otherwise every visitor shares one IP (`../operations/DEPLOYMENT_RUNBOOK.md` §7). A per-email limit is reviewed in Phase 14. |
 | Sessions | Laravel defaults; Filament regenerates the session at login | secure-cookie and idle-timeout values are set per environment at deployment. No session regeneration on privilege change: permissions are re-checked on every request, so a role change applies on the next request. |
-| Capabilities | `backoffice.access` (all six roles), `users.manage` and `audit_log.view` (Super Admin only; matrix rows "Users, roles, MFA reset" and "Audit log"). Every role's capabilities are an explicit list in `StaffRole::capabilities()`, the Super Admin's included, so a new capability reaches no role until it is reviewed against §3.1 (OD-74, since 2026-10-26). There is no blanket bypass, so "not own" rules will still apply to the Super Admin. | other capabilities are added by the module that needs them; property scoping arrives with properties in Phase 5 |
+| Capabilities | `backoffice.access` (all six roles), `users.manage` and `audit_log.view` (Super Admin only; matrix rows "Users, roles, MFA reset" and "Audit log"), and `content.edit`, `content.approve` and `content.publish` (Super Admin and Marketing Manager; since 2026-10-26, see "Content workflow"). Every role's capabilities are an explicit list in `StaffRole::capabilities()`, the Super Admin's included, so a new capability reaches no role until it is reviewed against §3.1 (OD-74, since 2026-10-26). There is no blanket bypass, so "not own" rules will still apply to the Super Admin. | other capabilities are added by the module that needs them; property scoping arrives with properties in Phase 5 |
+| Content workflow | Since 2026-10-26 (Phase 4 step 4.1, OD-85). Pages change only through revisions: draft → submitted → approved → published (BR-CMS-1, ADR-0005); one version in progress at a time. `RevisionPolicy` refuses approval by anyone who edited the version (author or later editor) and publication, scheduling or rollback by its approver (§11.6 cases 1–5). A version is frozen once submitted; a rejection needs a note. The Super Admin follows the same rules, and a deactivated account can do nothing. Publishing locks the page and the version and re-checks the permission under the lock. `content:publish-scheduled` runs every minute and publishes due versions as the person who scheduled them, re-checked at that moment; a refused one stays unpublished, its schedule is cleared and the failure is audited. | No back-office screen yet (step 4.2). The Property Manager's "Own properties" edit scope arrives with property profiles (step 4.7); until then no Property Manager holds `content.edit`. Posts, FAQs, settings and redirects join in steps 4.5 and 4.6. |
 | User lifecycle | create, edit, change roles, deactivate, reset two-step login. Accounts are never deleted. Staff cannot deactivate themselves or remove their own Super Admin role. | none |
 | Headers | `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: SAMEORIGIN`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`; HSTS over HTTPS in production | Content Security Policy (including `frame-ancestors 'none'` for the back office) is added in Phase 14 |
-| Audit trail | sign-in, failed sign-in (email address only, never the password), sign-out, role changes (old and new roles), changes to a role's capabilities made by `access:sync` (role, old and new capabilities; recorded without a causer because the change comes from code, added 2026-10-25), wrong two-step login codes (user, IP, browser; never the code; added 2026-10-25), activation and name/email changes, two-step login changes (which methods are on, never secrets or codes), two-step login resets. Read-only viewer at Settings → Audit log. | the other §7 actions are audited by the modules that introduce them |
+| Audit trail | sign-in, failed sign-in (email address only, never the password), sign-out, role changes (old and new roles), changes to a role's capabilities made by `access:sync` (role, old and new capabilities; recorded without a causer because the change comes from code, added 2026-10-25), wrong two-step login codes (user, IP, browser; never the code; added 2026-10-25), activation and name/email changes, two-step login changes (which methods are on, never secrets or codes), two-step login resets, and each content workflow step (submitted, approved, rejected with its note, published, scheduled, rolled back, failed scheduled publication) with the author, editors, approver and publisher recorded separately (since 2026-10-26). Read-only viewer at Settings → Audit log. | the other §7 actions are audited by the modules that introduce them |
 
 ---
 
@@ -255,7 +256,7 @@ What exists in code now, and where it differs from the plan above. Each row is c
 
 A review of the role design for pricing, enquiries, booking requests, tours, contact and legal details, website content, redirects and brand settings. **Viewing, editing, approving, verifying and publishing are separate capabilities.** The owner answered the open rows on 2026-10-25: Q-OW-18 → OD-51 to OD-57 (round 13), Q-OW-19 → OD-58 to OD-67 (round 14), Q-OW-20 and D-17 → OD-68 to OD-73 (round 15), Q-OW-21 → OD-74, OD-75 (round 16). See §11.1.
 
-**An approved decision is not an implemented permission.** Only `backoffice.access`, `users.manage` and `audit_log.view` exist in code (§10). Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review. It was updated on 2026-10-25, and a test checks that both list the same capabilities and role values (§11.3).
+**An approved decision is not an implemented permission.** Only `backoffice.access`, `users.manage`, `audit_log.view` and, since 2026-10-26, `content.edit`, `content.approve` and `content.publish` exist in code (§10). Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review. It was updated on 2026-10-25, and a test checks that both list the same capabilities and role values (§11.3).
 
 **Each value is the role's permitted scope (OD-68).** A permission applies to every member of the role once it has been explicitly assigned to the role. Otherwise it may be granted to one member as an individual exception within that scope (§11.2).
 
@@ -299,9 +300,9 @@ Approved matrix, OD and Derived rows are **not implemented**.
 | Contact and legal | `settings.legal.manage` | Edit legal entity and GST details | Yes | — | — | — | — | Yes | OD-54, OD-59 |
 | Contact and legal | `settings.legal.verify` | Verify legal details against the registration documents | Not own | — | — | — | — | Not own | OD-55, OD-62 |
 | Website content | `content.view` | Read drafts and previews | Yes | Profiles | Own properties | Profiles | Yes | — | Approved matrix |
-| Website content | `content.edit` | Edit drafts | Yes | — | Own properties | — | Yes | — | Approved matrix |
-| Website content | `content.approve` | Approve submitted content (one approval is enough) | Not own | — | — | — | Not own | — | Approved matrix; OD-65, OD-73 |
-| Website content | `content.publish` | Publish, schedule or roll back an approved version | After another's approval | — | — | — | After another's approval | — | OD-56, OD-65, OD-73 |
+| Website content | `content.edit` | Edit drafts | Yes | — | Own properties | — | Yes | — | Implemented for pages (2026-10-26); the Property Manager's scope comes with property profiles (step 4.7) |
+| Website content | `content.approve` | Approve submitted content (one approval is enough) | Not own | — | — | — | Not own | — | Implemented for pages (2026-10-26); OD-65, OD-73 |
+| Website content | `content.publish` | Publish, schedule or roll back an approved version | After another's approval | — | — | — | After another's approval | — | Implemented for pages (2026-10-26); OD-56, OD-65, OD-73 |
 | Website content | `testimonials.publish` | Publish testimonials and case studies (consent on file) | After another's approval | — | — | — | After another's approval | — | Approved matrix; OD-56, OD-65 |
 | Website content | `media.manage` | Upload media with origin and licence | Yes | — | Own properties | — | Yes | — | Approved matrix |
 | Redirects | `redirects.manage` | Draft redirect changes | Yes | — | — | — | Yes | — | Approved matrix |
@@ -413,13 +414,13 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
 
 ### 11.3 Implementation and test gaps (not resolved by this documentation update)
 
-**Implementation:** none of OD-51 to OD-75 is in code.
+**Implementation:** OD-74 (back-office access) and, for pages, OD-56, OD-65 and OD-73 (step 4.1, 2026-10-26) are in code. The rest of OD-51 to OD-75 is not.
 
 * **Missing capabilities.** The following are not in `App\Enums\Access\Capability`:
   * `leads.assign`, `bookings.approve`;
   * `settings.contact.manage`, `settings.contact.approve`, `settings.contact.publish`;
   * `settings.legal.view`, `settings.legal.manage`, `settings.legal.verify`;
-  * `content.approve`, `content.publish`, `testimonials.publish`;
+  * `testimonials.publish`;
   * `redirects.manage`, `redirects.approve`, `redirects.publish`;
   * `brand.manage`, `brand.approve`, `brand.publish`;
   * `settings.tracking.manage`, `settings.tracking.approve`, `settings.tracking.publish`.
@@ -428,19 +429,18 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
 * **Grants (OD-68).** The code already assigns permissions to roles (`StaffRole::capabilities()`), which is what OD-68 describes. Round 14 listed this as a mismatch with a per-user reading of OD-60; that reading is superseded, so it is no longer a gap.
   * **Individual exceptions** are not supported. If they are added, they need the scope limit, precedence, revocation and audit in §11.2 rule 1.
   * **Super Admin assignment and back-office access (OD-74):** implemented on 2026-10-26 (OD-81). They are no longer gaps. A test cannot yet tell an explicit Super Admin list from "every capability", because today the Super Admin is permitted every built capability; the difference shows once a capability is added that the Super Admin should not hold.
-* **People-level checks.** None exist yet:
-  * author ≠ approver for real content, contact details, redirects, brand settings, tracking IDs and prices;
-  * approver ≠ publisher;
+* **People-level checks.** Implemented for pages on 2026-10-26: author ≠ approver (every editor counts as an author) and approver ≠ publisher, including scheduling and rollback. Still missing:
+  * author ≠ approver and approver ≠ publisher for posts, FAQs, testimonials, case studies, contact details, redirects, brand settings, tracking IDs and prices;
   * booking approver ≠ creator or submitter;
   * verifier ≠ editor, and verification cleared on edit.
 * **Booking approval and rescheduling (OD-63, OD-72).** The real code does not exist (Phase 8). The lock-first rule is proven only by the MySQL concurrency harness (R-7; booking tests T-BK-01 to T-BK-10 must pass before booking code merges). `../architecture/API_CONTRACTS.md` §5 defines no staff approval or reschedule action yet.
-* **Data model** (ERD notes added, model not changed):
-  * `revisions` records the author and reviewer but not the publisher;
-  * `redirects` and `site_settings` (contact details, brand, tracking IDs) have no draft, approval or publish state;
+* **Data model:**
+  * `revisions` now records the author, every editor, the approver, the publisher and the scheduler (OD-85, built 2026-10-26);
+  * `redirects` and `site_settings` (contact details, brand, tracking IDs) will use revisions (OD-85); the tables are not built yet (steps 4.2 and 4.6);
   * `bookings` cannot hold a reschedule waiting for approval, and does not record which staff user created or submitted a request (needed for OD-72).
 
-  ADR-0005's revisions cover pages, posts, profiles, FAQs and scenes. Extending them to settings and redirects is one option, decided when built.
-* **Audit.** No audit events exist for the new §7 entries.
+  ADR-0005's revisions cover pages, posts, profiles, FAQs and scenes; the owner extended them to settings and redirects (OD-85).
+* **Audit.** Content workflow steps are audited (since 2026-10-26). No audit events exist yet for the other new §7 entries.
 
 **Design previews** (updated 2026-10-25, round 16, as Phase 2 design work under OD-49; they show the decided policy but enforce nothing):
 
@@ -456,7 +456,7 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
 * **External tag manager (OD-75):** none is chosen or integrated, so none of the §11.2 rule 7 controls exist. None may be enabled for live tracking until they do.
 * Every preview is Super Admin only, so none of them shows per-role or per-user behaviour.
 
-**Tests:** apart from OD-74 (back-office access, tested since 2026-10-26), no test proves any OD-51 to OD-75 rule. Each needs policy tests per role × capability (§9), including:
+**Tests:** apart from OD-74 (back-office access) and the page workflow (both tested since 2026-10-26, listed below), no test proves any OD-51 to OD-75 rule. Each needs policy tests per role × capability (§9), including:
 
 * **grants:**
   * a user in a role without the permission assigned, and without an exception, is refused;
@@ -485,6 +485,18 @@ Production tests for OD-74 (since 2026-10-26):
 * after `access:sync`, every staff role is back in;
 * a first Super Admin created from the console can enter;
 * each role holds exactly its listed capabilities.
+
+Production tests for the page workflow (since 2026-10-26; `tests/Feature/Actions/Content/RevisionWorkflowTest.php`, `tests/Feature/Console/Commands/Content/PublishScheduledRevisionsCommandTest.php`):
+
+* §11.6 cases 1 and 2 publish; cases 3, 4 and 5 are refused;
+* the approver cannot schedule or roll back the version they approved;
+* a submitted or rejected version cannot be published, and an approved version cannot be changed;
+* the Super Admin follows the same rules; Operations, Property, Sales/CRM and Finance are refused; a deactivated account is refused;
+* a scheduled version is published at its time as the person who scheduled it, and not at all if that person may no longer publish;
+* one version in progress at a time; a rejection needs a note; a clashing page address is refused with nothing changed;
+* the audit log records the author, approver and publisher of each step.
+
+A mutation check (2026-10-26) removed each of 19 rules in turn; the tests failed every time.
 
 Existing preview tests:
 

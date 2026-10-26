@@ -37,7 +37,14 @@ enum StaffRole: string
     public function capabilities(): array
     {
         return match ($this) {
-            self::SuperAdmin => [Capability::AccessBackoffice, Capability::ManageUsers, Capability::ViewAuditLog],
+            self::SuperAdmin => [
+                Capability::AccessBackoffice, Capability::ManageUsers, Capability::ViewAuditLog,
+                Capability::EditContent, Capability::ApproveContent, Capability::PublishContent,
+            ],
+            self::MarketingManager => [
+                Capability::AccessBackoffice,
+                Capability::EditContent, Capability::ApproveContent, Capability::PublishContent,
+            ],
             default => [Capability::AccessBackoffice],
         };
     }

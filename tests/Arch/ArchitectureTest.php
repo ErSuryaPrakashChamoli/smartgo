@@ -16,6 +16,7 @@ arch('enums live in App\Enums')
 
 arch('models extend Eloquent')
     ->expect('App\Models')
+    ->classes()
     ->toExtend(Model::class);
 
 arch('actions expose a single handle method')

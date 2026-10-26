@@ -92,9 +92,9 @@ class PermissionsReview extends Page implements HasTable
             $row('Contact and legal', 'settings.legal.manage', 'Edit legal entity and GST details', ['Yes', '—', '—', '—', '—', 'Yes'], 'decided'),
             $row('Contact and legal', 'settings.legal.verify', 'Verify legal details against the registration documents', [$notOwn, '—', '—', '—', '—', $notOwn], 'decided'),
             $row('Website content', 'content.view', 'Read drafts and previews', ['Yes', 'Profiles', 'Own properties', 'Profiles', 'Yes', '—'], 'matrix'),
-            $row('Website content', 'content.edit', 'Edit drafts', ['Yes', '—', 'Own properties', '—', 'Yes', '—'], 'matrix'),
-            $row('Website content', 'content.approve', 'Approve submitted content (one approval is enough)', [$notOwn, '—', '—', '—', $notOwn, '—'], 'matrix'),
-            $row('Website content', 'content.publish', 'Publish, schedule or roll back an approved version', [$afterApproval, '—', '—', '—', $afterApproval, '—'], 'decided'),
+            $row('Website content', 'content.edit', 'Edit drafts', ['Yes', '—', 'Own properties', '—', 'Yes', '—'], 'implemented'),
+            $row('Website content', 'content.approve', 'Approve submitted content (one approval is enough)', [$notOwn, '—', '—', '—', $notOwn, '—'], 'implemented'),
+            $row('Website content', 'content.publish', 'Publish, schedule or roll back an approved version', [$afterApproval, '—', '—', '—', $afterApproval, '—'], 'implemented'),
             $row('Website content', 'testimonials.publish', 'Publish testimonials and case studies (consent on file)', [$afterApproval, '—', '—', '—', $afterApproval, '—'], 'decided'),
             $row('Website content', 'media.manage', 'Upload media with origin and licence', ['Yes', '—', 'Own properties', '—', 'Yes', '—'], 'matrix'),
             $row('Redirects', 'redirects.manage', 'Draft redirect changes', ['Yes', '—', '—', '—', 'Yes', '—'], 'matrix'),
@@ -112,7 +112,7 @@ class PermissionsReview extends Page implements HasTable
     public function content(Schema $schema): Schema
     {
         return $schema->components([
-            $this->previewNotice('A review of the role design. It changes no permission: only backoffice.access, users.manage and audit_log.view exist in code today. The owner\'s other decisions (OD-51 to OD-75) are added by the modules that need them.'),
+            $this->previewNotice('A review of the role design. It changes no permission: the rows marked Implemented exist in code today. The owner\'s other decisions (OD-51 to OD-75) are added by the modules that need them.'),
             EmbeddedTable::make(),
             Callout::make('Safeguards kept in every module')
                 ->description('Viewing, editing, approving, verifying and publishing are separate. The author never approves; the approver never publishes that version; the author may publish (OD-65, OD-73). Nobody approves a booking request or reschedule they created or submitted (OD-72), and legal details are verified by someone who did not edit them (OD-62). Every change is audited. There is no Super Admin override: the Super Admin holds only the permissions listed for it.')
@@ -126,7 +126,6 @@ class PermissionsReview extends Page implements HasTable
                         Text::make('A permission assigned to a role applies to all its members; individual grants are optional and stay within the role\'s scope. Role membership alone grants nothing (OD-68).'),
                         Text::make('Contact details, redirects, brand settings and tracking IDs go live only after another person approves them (OD-69 to OD-71).'),
                         Text::make('A tag manager is used only if it enforces the same approval, publication and audit (OD-75).'),
-                        Text::make('One content approval by someone other than the author is enough (OD-73).'),
                     ]),
                 ]),
         ]);
