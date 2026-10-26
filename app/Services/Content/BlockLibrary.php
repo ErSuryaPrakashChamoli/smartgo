@@ -7,6 +7,7 @@ use App\Services\Content\Blocks\ContentBlock;
 use App\Services\Content\Blocks\FaqBlock;
 use App\Services\Content\Blocks\FeatureGridBlock;
 use App\Services\Content\Blocks\HeroBlock;
+use App\Services\Content\Blocks\ImageBlock;
 use App\Services\Content\Blocks\TextBlock;
 use Closure;
 use Filament\Forms\Components\Builder\Block;
@@ -16,9 +17,8 @@ use Illuminate\Validation\Rule;
  * The fixed set of page sections editors can use (FR-CMS-1). A new kind of section is added by
  * writing a ContentBlock and listing it here; nothing else is accepted in a payload.
  *
- * Not offered yet: images (step 4.4, media library with origin and licence, BR-MED-1 to BR-MED-4),
- * testimonials (step 4.5, consent on file, BR-CMS-7), workspace and property cards (Phase 5 data),
- * and enquiry forms (Phase 6). Nothing in a block may invent prices, availability or claims.
+ * Not offered yet: testimonials (step 4.5, consent on file, BR-CMS-7), workspace and property cards
+ * (Phase 5 data), and enquiry forms (Phase 6). Nothing in a block may invent prices, availability or claims.
  */
 class BlockLibrary
 {
@@ -30,6 +30,7 @@ class BlockLibrary
     private const BLOCKS = [
         HeroBlock::class,
         TextBlock::class,
+        ImageBlock::class,
         FeatureGridBlock::class,
         FaqBlock::class,
         CallToActionBlock::class,

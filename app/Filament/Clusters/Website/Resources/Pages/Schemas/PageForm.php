@@ -2,9 +2,11 @@
 
 namespace App\Filament\Clusters\Website\Resources\Pages\Schemas;
 
+use App\Models\MediaAsset;
 use App\Services\Content\BlockLibrary;
 use App\Services\Content\PagePayload;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -68,6 +70,11 @@ class PageForm
                             ->rows(2)
                             ->helperText('Up to 160 characters. Plain text.')
                             ->columnSpanFull(),
+                        Select::make('image_asset_id')
+                            ->label('Image when the page is shared')
+                            ->options(fn (): array => MediaAsset::query()->latest()->limit(500)->pluck('title', 'id')->all())
+                            ->searchable()
+                            ->helperText('From the media library. Shown by social networks and messaging apps.'),
                     ]),
             ]);
     }

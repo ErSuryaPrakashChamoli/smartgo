@@ -27,6 +27,7 @@ it('creates the six staff roles and the capability catalogue', function () {
         'content.edit',
         'content.publish',
         'content.view',
+        'media.manage',
         'users.manage',
     ]);
 });
@@ -35,14 +36,14 @@ it('grants the Super Admin exactly the capabilities listed for it', function () 
     app(SyncAccessControl::class)->handle();
 
     expect(Role::findByName(StaffRole::SuperAdmin->value)->permissions->pluck('name')->sort()->values()->all())
-        ->toBe(['audit_log.view', 'backoffice.access', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'users.manage']);
+        ->toBe(['audit_log.view', 'backoffice.access', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'media.manage', 'users.manage']);
 });
 
 it('lets the Marketing Manager view, edit, approve and publish website content', function () {
     app(SyncAccessControl::class)->handle();
 
     expect(Role::findByName(StaffRole::MarketingManager->value)->permissions->pluck('name')->sort()->values()->all())
-        ->toBe(['backoffice.access', 'content.approve', 'content.edit', 'content.publish', 'content.view']);
+        ->toBe(['backoffice.access', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'media.manage']);
 });
 
 it('gives the other roles back-office access and nothing else yet', function (StaffRole $role) {
@@ -79,7 +80,7 @@ it('audits the capabilities it grants to each role', function () {
         ->and($entry->properties->all())->toEqual([
             'role' => 'super_admin',
             'old' => [],
-            'new' => ['audit_log.view', 'backoffice.access', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'users.manage'],
+            'new' => ['audit_log.view', 'backoffice.access', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'media.manage', 'users.manage'],
         ]);
 });
 

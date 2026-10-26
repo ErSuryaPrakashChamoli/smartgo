@@ -41,7 +41,7 @@ function pagePayload(string $title, string $slug = 'about'): array
 {
     return ['title' => $title, 'slug' => $slug, 'template' => 'standard', 'blocks' => [
         ['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Coworking and managed offices in Noida.</p>']],
-    ], 'seo' => ['title' => null, 'description' => null, 'indexable' => true]];
+    ], 'seo' => ['title' => null, 'description' => null, 'indexable' => true, 'image_asset_id' => null]];
 }
 
 function submittedPageRevision(Page $page, User $author, string $title = 'About SmartGro', string $slug = 'about'): Revision

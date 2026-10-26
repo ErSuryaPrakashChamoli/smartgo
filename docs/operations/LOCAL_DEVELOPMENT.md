@@ -84,7 +84,8 @@ Optional hardening: `chmod 600 .env .env.backup`. Skip this if a separate web-se
 | View the back-office design previews (Super Admin only, never in production) | open `/admin/design-previews` |
 | Give an existing user a staff role | `php artisan access:assign-role <email> <role>` |
 | Website pages and menus (Phase 4) | open `/admin/website/pages` and `/admin/website/navigation-menus` (need `content.view`) |
-| Publish scheduled pages while developing | `php artisan schedule:work` (runs `content:publish-scheduled` every minute), or once with `php artisan content:publish-scheduled` |
+| Publish scheduled pages while developing | `php artisan schedule:work` (runs `content:publish-scheduled` every minute and `media:licence-reminders` daily), or once with `php artisan content:publish-scheduled` |
+| Media library | `/admin/website/media-assets`; files go to `storage/app/private` (never served directly); renditions need the PHP GD extension |
 
 ### Back office (Phase 3)
 

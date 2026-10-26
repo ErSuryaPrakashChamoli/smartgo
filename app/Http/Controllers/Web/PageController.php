@@ -34,6 +34,7 @@ class PageController extends Controller
                 'preview' => null,
                 'robots' => $content['indexable'] ? null : SeoMetadata::NOINDEX,
                 'canonical' => rtrim((string) config('app.url'), '/').$page->path(),
+                'shareImage' => $content['shareImagePath'] === null ? null : rtrim((string) config('app.url'), '/').$content['shareImagePath'],
                 'navigation' => $siteNavigation->present(),
             ]);
         }

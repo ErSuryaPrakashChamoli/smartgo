@@ -10,6 +10,7 @@
     'canonical' => null,
     'robots' => null,
     'navigation' => null,
+    'shareImage' => null,
 ])
 
 @php
@@ -35,6 +36,16 @@
         @endif
         @if ($canonical && ! $noindex)
             <link rel="canonical" href="{{ $canonical }}">
+            <meta property="og:type" content="website">
+            <meta property="og:url" content="{{ $canonical }}">
+            <meta property="og:title" content="{{ $metaTitle ?? ($title ? $title.' · SmartGro' : 'SmartGro') }}">
+            @if ($description)
+                <meta property="og:description" content="{{ $description }}">
+            @endif
+            @if ($shareImage)
+                <meta property="og:image" content="{{ $shareImage }}">
+                <meta name="twitter:card" content="summary_large_image">
+            @endif
         @endif
 
         @fonts

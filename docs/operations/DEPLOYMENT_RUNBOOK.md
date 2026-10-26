@@ -50,6 +50,8 @@
 
 Present in the current `.env.example`: `APP_*`, `BACKOFFICE_PATH` (use a non-default value in production, D-30), `DB_*`, `SESSION_*`, `CACHE_STORE`, `QUEUE_CONNECTION`, `REDIS_*`, `MAIL_*`, `AWS_*`, `FILESYSTEM_DISK`, `VITE_APP_NAME`.
 
+**Media files** live on the private `local` disk (`storage/app/private`) until hosting is chosen (D-14; S3 per ADR-0006); include that folder in backups. The scheduler must run (`content:publish-scheduled` every minute, `media:licence-reminders` daily), and mail must be configured for licence reminders.
+
 **`APP_URL` must be the production address over HTTPS** (for example `https://www.example.com`, no trailing slash) in every public environment. Canonical URLs (`<link rel="canonical">`), menu and media links are built from it, never from the request's host header (FR-SEO-1, OD-93). A wrong or `http://` value publishes wrong canonical URLs; check it before every first release to a new environment. `BACKOFFICE_TIMEZONE` defaults to `Asia/Kolkata`.
 
 To be added as integrations are chosen: payment gateway keys and webhook secret, WhatsApp/SMS provider credentials, Turnstile site/secret keys, error-monitoring DSN, CDN purge token. **Never commit real values.**

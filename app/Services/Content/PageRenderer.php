@@ -2,6 +2,7 @@
 
 namespace App\Services\Content;
 
+use App\Models\MediaAsset;
 use Illuminate\Support\Str;
 
 /**
@@ -14,7 +15,7 @@ class PageRenderer
 
     /**
      * @param  array<string, mixed>  $payload
-     * @return array{title: string, blocks: list<array{component: string, type: string, data: array<string, mixed>}>, startsWithIntroduction: bool, metaTitle: string|null, metaDescription: string|null, indexable: bool}
+     * @return array{title: string, blocks: list<array{component: string, type: string, data: array<string, mixed>}>, startsWithIntroduction: bool, metaTitle: string|null, metaDescription: string|null, indexable: bool, shareImagePath: string|null}
      */
     public function present(array $payload): array
     {
@@ -28,7 +29,18 @@ class PageRenderer
             'metaTitle' => filled($seo['title'] ?? null) ? (string) $seo['title'] : null,
             'metaDescription' => filled($seo['description'] ?? null) ? (string) $seo['description'] : $this->defaultDescription($blocks),
             'indexable' => (bool) ($seo['indexable'] ?? true),
+            'shareImagePath' => $this->shareImagePath($seo['image_asset_id'] ?? null),
         ];
+    }
+
+    /**
+     * The share image's rendition, or null when there is none or its licence has expired (BR-MED-3).
+     */
+    private function shareImagePath(mixed $assetId): ?string
+    {
+        $asset = is_numeric($assetId) ? MediaAsset::query()->with('media')->find((int) $assetId) : null;
+
+        return $asset === null || $asset->isLicenceExpired() || $asset->file() === null ? null : $asset->renditionPath('w1600');
     }
 
     /**

@@ -96,7 +96,7 @@ class PermissionsReview extends Page implements HasTable
             $row('Website content', 'content.approve', 'Approve submitted content (one approval is enough)', [$notOwn, '—', '—', '—', $notOwn, '—'], 'implemented'),
             $row('Website content', 'content.publish', 'Publish or schedule an approved version', [$afterApproval, '—', '—', '—', $afterApproval, '—'], 'implemented'),
             $row('Website content', 'testimonials.publish', 'Publish testimonials and case studies (consent on file)', [$afterApproval, '—', '—', '—', $afterApproval, '—'], 'decided'),
-            $row('Website content', 'media.manage', 'Upload media with origin and licence', ['Yes', '—', 'Own properties', '—', 'Yes', '—'], 'matrix'),
+            $row('Website content', 'media.manage', 'Upload media with origin and licence', ['Yes', '—', 'Own properties', '—', 'Yes', '—'], 'implemented'),
             $row('Redirects', 'redirects.manage', 'Draft redirect changes', ['Yes', '—', '—', '—', 'Yes', '—'], 'matrix'),
             $row('Redirects', 'redirects.approve', 'Approve redirect changes', [$notOwn, '—', '—', '—', $notOwn, '—'], 'decided'),
             $row('Redirects', 'redirects.publish', 'Put approved redirects live', [$afterApproval, '—', '—', '—', $afterApproval, '—'], 'decided'),

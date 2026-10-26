@@ -42,7 +42,7 @@ class PagePayload
      * Returns the payload as it is stored: only page fields, blocks as a list, rich text sanitised.
      *
      * @param  array<string, mixed>  $payload
-     * @return array{title: ?string, slug: ?string, template: string, blocks: list<array{type: string, data: array<string, mixed>}>, seo: array{title: ?string, description: ?string, indexable: bool}}
+     * @return array{title: ?string, slug: ?string, template: string, blocks: list<array{type: string, data: array<string, mixed>}>, seo: array{title: ?string, description: ?string, indexable: bool, image_asset_id: ?int}}
      *
      * @throws ValidationException
      */
@@ -58,10 +58,11 @@ class PagePayload
             'title' => [$required, 'string', 'max:120'],
             'slug' => [$required, 'string', 'max:150', 'regex:'.self::SLUG_PATTERN, $this->notReservedRule(), Rule::unique('pages', 'slug')->ignore($page->getKey())],
             'template' => ['required', Rule::in(self::TEMPLATES)],
-            'seo' => ['nullable', 'array:title,description,indexable'],
+            'seo' => ['nullable', 'array:title,description,indexable,image_asset_id'],
             'seo.title' => ['nullable', 'string', 'max:60', 'not_regex:/[<>]/'],
             'seo.description' => ['nullable', 'string', 'max:160', 'not_regex:/[<>]/'],
             'seo.indexable' => ['nullable', 'boolean'],
+            'seo.image_asset_id' => ['nullable', 'integer', Rule::exists('media_assets', 'id')],
             ...$blockRules,
             ...($forSubmission ? ['blocks' => [...$blockRules['blocks'], 'min:1']] : []),
         ], [
@@ -90,6 +91,7 @@ class PagePayload
                 'title' => $validated['seo']['title'] ?? null,
                 'description' => $validated['seo']['description'] ?? null,
                 'indexable' => (bool) ($validated['seo']['indexable'] ?? true),
+                'image_asset_id' => isset($validated['seo']['image_asset_id']) ? (int) $validated['seo']['image_asset_id'] : null,
             ],
         ];
     }

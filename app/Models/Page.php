@@ -102,6 +102,7 @@ class Page extends Model implements Revisionable
                 'title' => $seo?->meta_title,
                 'description' => $seo?->meta_description,
                 'indexable' => $seo?->isIndexable() ?? true,
+                'image_asset_id' => $seo?->og_asset_id,
             ],
         ];
     }
@@ -142,6 +143,7 @@ class Page extends Model implements Revisionable
             'meta_title' => $seo['title'] ?? null,
             'meta_description' => $seo['description'] ?? null,
             'robots' => ($seo['indexable'] ?? true) ? SeoMetadata::INDEX : SeoMetadata::NOINDEX,
+            'og_asset_id' => $seo['image_asset_id'] ?? null,
         ]);
 
         app(RedirectMovedPage::class)->handle($this, $previousPath, $revision);

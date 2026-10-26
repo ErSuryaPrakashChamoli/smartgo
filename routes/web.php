@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Web\DesignPreviewController;
+use App\Http\Controllers\Web\MediaController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Middleware\EnsureDesignPreviewIsAvailable;
+use App\Models\MediaAsset;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +29,12 @@ Route::middleware(EnsureDesignPreviewIsAvailable::class)
         Route::get('/enterprise', 'enterprise')->name('enterprise');
         Route::get('/flows/{flow}', 'flow')->name('flow');
     });
+
+// Image renditions, shown to visitors only when published content uses them (BR-MED-3).
+Route::get('/media/{mediaAsset}/{rendition}', MediaController::class)
+    ->whereNumber('mediaAsset')
+    ->whereIn('rendition', array_keys(MediaAsset::RENDITIONS))
+    ->name('media.show');
 
 // Published pages and live redirects, for paths no other route claims (BR-CMS-6).
 Route::fallback(PageController::class);

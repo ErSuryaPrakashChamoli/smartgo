@@ -55,6 +55,7 @@ class EditPage extends EditRecord
                 'title' => $payload['seo']['title'] ?? null,
                 'description' => $payload['seo']['description'] ?? null,
                 'indexable' => $payload['seo']['indexable'] ?? true,
+                'image_asset_id' => $payload['seo']['image_asset_id'] ?? null,
             ],
         ];
     }

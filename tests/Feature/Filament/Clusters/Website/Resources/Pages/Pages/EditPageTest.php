@@ -79,7 +79,7 @@ it('saves the search-engine fields with the draft', function () {
 
     $undoBuilderFake();
 
-    expect($this->draft->fresh()->payload['seo'])->toEqual(['title' => 'About SmartGro | Coworking in Noida', 'description' => 'Who we are.', 'indexable' => false])
+    expect($this->draft->fresh()->payload['seo'])->toEqual(['title' => 'About SmartGro | Coworking in Noida', 'description' => 'Who we are.', 'indexable' => false, 'image_asset_id' => null])
         ->and($this->page->fresh()->seo)->toBeNull();
 });
 

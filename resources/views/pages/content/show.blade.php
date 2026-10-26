@@ -7,6 +7,7 @@
     :robots="$robots"
     :canonical="$canonical"
     :navigation="$navigation"
+    :share-image="$shareImage ?? null"
 >
     @if ($preview !== null)
         <x-slot:banner>

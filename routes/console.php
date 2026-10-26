@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('content:publish-scheduled')->everyMinute()->withoutOverlapping(10);
+Schedule::command('media:licence-reminders')->dailyAt('09:00')->timezone(config('backoffice.timezone'))->withoutOverlapping(30);
