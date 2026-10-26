@@ -6,7 +6,7 @@
 | | |
 |---|---|
 | Last updated | 2026-10-25 |
-| Current phase | Phase 0: APPROVED in principle · **Phase 1: APPROVED (2026-10-24)** · **Phase 2: READY FOR REVIEW** (AC-2.1 to AC-2.4 met with evidence; AC-2.5 owner sign-off of the visual direction outstanding) · **Phase 3: IN PROGRESS** (local foundation verified; AC-3.1 and AC-3.5 deferred until local completion, OD-79; OD-74 back-office access awaiting decision; R-14 owner action) · acceptance records in `docs/phases/PHASE_STATUS.md` |
+| Current phase | Phase 0: APPROVED in principle · **Phase 1: APPROVED (2026-10-24)** · **Phase 2: APPROVED (2026-10-26, OD-82)** · **Phase 3: APPROVED with deferred items (2026-10-26, OD-83**; CI, staging and the GitHub push deferred until local completion, OD-79) · **Phase 4: IN PROGRESS (started 2026-10-26)** · acceptance records in `docs/phases/PHASE_STATUS.md` |
 | Live status register | [`docs/phases/PHASE_STATUS.md`](docs/phases/PHASE_STATUS.md) |
 | Decisions and risks | [`docs/decisions/DECISION_REGISTER.md`](docs/decisions/DECISION_REGISTER.md) |
 

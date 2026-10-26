@@ -27,17 +27,18 @@ enum StaffRole: string
     }
 
     /**
-     * Capabilities granted to the role. The Super Admin receives every capability
-     * explicitly rather than through a gate bypass, so separation-of-duties checks
-     * ("never approve your own work") still apply to the Super Admin.
+     * Capabilities assigned to the role (SECURITY_MODEL §3.1). Every role is listed explicitly,
+     * the Super Admin included: a new capability reaches no role until it is added here after
+     * review against the matrix (OD-74). The Super Admin holds capabilities rather than a gate
+     * bypass, so separation-of-duties checks ("never approve your own work") still apply to it.
      *
      * @return list<Capability>
      */
     public function capabilities(): array
     {
         return match ($this) {
-            self::SuperAdmin => Capability::cases(),
-            default => [],
+            self::SuperAdmin => [Capability::AccessBackoffice, Capability::ManageUsers, Capability::ViewAuditLog],
+            default => [Capability::AccessBackoffice],
         };
     }
 

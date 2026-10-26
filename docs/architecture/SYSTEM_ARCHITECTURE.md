@@ -25,7 +25,7 @@ Facts observed in the repository and on the development machine. See the Phase 0
 | Redis | **Not installed**; `phpredis` extension **not loaded**; `predis` not installed | Redis | Install server + `php8.5-redis`, or use `predis` (ADR-0007) |
 | Object storage | `league/flysystem-aws-s3-v3` **not installed**; AWS keys empty | S3-compatible | Add adapter at Phase 4 (dependency approval) |
 | Three.js | not installed (npm latest `three@0.186.1`, checked 2026-10-24) | yes | Add at Phase 7 |
-| Version control | **Git initialised 2026-10-24** on `main` (reviewed baseline + small commits). No remote yet. | Git + private GitHub, organisation `Smartgro` (OD-78) | Remote: D-31 / action A-2. Destination conflict R-21; push not authorised. |
+| Version control | **Git initialised 2026-10-24** on `main` (reviewed baseline + small commits). Interim private backup remote only (`ErSuryaPrakashChamoli/smartgo`, OD-80). | Git + private GitHub, organisation `Smartgro` (OD-78) | Remote: D-31 / action A-2. Destination conflict R-21; push not authorised. |
 | Spreadsheet reading | `openspout/openspout` 4.32.0 and `league/csv` 9.28.0 present as Filament dependencies | XLSX import (ADR-0012) | Declare openspout as a direct dependency (D-24) |
 | Image processing | `gd` and `imagick` extensions loaded | yes | — |
 
@@ -266,7 +266,7 @@ No version downgrade or replacement of the requested stack is needed based on cu
 ### Changes required when the panel is installed in Phase 3 (verified in the smoke test)
 
 1. `php artisan filament:install --panels` creates and registers `App\Providers\Filament\AdminPanelProvider`. It adds `@php artisan filament:upgrade` to Composer `post-autoload-dump`, and adds `/public/css/filament`, `/public/fonts/filament` and `/public/js/filament` to `.gitignore`.
-2. **`App\Models\User` must implement `Filament\Models\Contracts\FilamentUser`** with a real `canAccessPanel()` based on active status and role (`../security/SECURITY_MODEL.md`). *Superseded by OD-74 (2026-10-25):* access must depend on the explicit `backoffice.access` permission, not on role membership. That change is not implemented (SECURITY_MODEL §11.3). Without it, **every** user gets 403 outside `APP_ENV=local`. This was confirmed in the smoke test (a plain `User` received 403 in the testing environment).
+2. **`App\Models\User` must implement `Filament\Models\Contracts\FilamentUser`** with a real `canAccessPanel()` based on active status and role (`../security/SECURITY_MODEL.md`). *Superseded by OD-74:* access depends on the explicit `backoffice.access` permission within a staff role's scope, not on role membership alone (implemented 2026-10-26). Without it, **every** user gets 403 outside `APP_ENV=local`. This was confirmed in the smoke test (a plain `User` received 403 in the testing environment).
 3. Required MFA, custom theme (`make:filament-theme`), clusters and dashboards per ADR-0003.
 4. Deployments must run `composer install` (which triggers `filament:upgrade` to republish the git-ignored assets) and `php artisan filament:optimize` (`../operations/DEPLOYMENT_RUNBOOK.md` §4).
 

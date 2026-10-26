@@ -23,7 +23,7 @@ use Filament\Tables\Table;
 /**
  * Permissions review: view, edit, approve, verify and publish are separate capabilities. Rows follow
  * SECURITY_MODEL §11: the approved matrix (§3.1) and the owner's decisions OD-51 to OD-75. Only
- * users.manage and audit_log.view exist in code today; the rest are policy, not yet built.
+ * backoffice.access, users.manage and audit_log.view exist in code today; the rest are policy, not yet built.
  */
 class PermissionsReview extends Page implements HasTable
 {
@@ -69,7 +69,7 @@ class PermissionsReview extends Page implements HasTable
         $afterApproval = "After another's approval";
 
         return [
-            $row('Staff and audit', 'backoffice.access', 'Enter the back office: every protected page, route and API', ['Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes'], 'decided'),
+            $row('Staff and audit', 'backoffice.access', 'Enter the back office: every protected page, route and API', ['Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes'], 'implemented'),
             $row('Staff and audit', 'users.manage', 'Manage staff, roles and two-step login resets', ['Yes', '—', '—', '—', '—', '—'], 'implemented'),
             $row('Staff and audit', 'audit_log.view', 'Read the audit log', ['Yes', '—', '—', '—', '—', '—'], 'implemented'),
             $row('Pricing', 'pricing.view', 'See prices', ['Yes', 'Yes', 'Own properties', 'Yes', 'Yes', 'Yes'], 'matrix'),
@@ -112,7 +112,7 @@ class PermissionsReview extends Page implements HasTable
     public function content(Schema $schema): Schema
     {
         return $schema->components([
-            $this->previewNotice('A review of the role design. It changes no permission: only users.manage and audit_log.view exist in code today. The owner\'s decisions (OD-51 to OD-75) are added by the modules that need them.'),
+            $this->previewNotice('A review of the role design. It changes no permission: only backoffice.access, users.manage and audit_log.view exist in code today. The owner\'s other decisions (OD-51 to OD-75) are added by the modules that need them.'),
             EmbeddedTable::make(),
             Callout::make('Safeguards kept in every module')
                 ->description('Viewing, editing, approving, verifying and publishing are separate. The author never approves; the approver never publishes that version; the author may publish (OD-65, OD-73). Nobody approves a booking request or reschedule they created or submitted (OD-72), and legal details are verified by someone who did not edit them (OD-62). Every change is audited. There is no Super Admin override: the Super Admin holds only the permissions listed for it.')
@@ -124,7 +124,6 @@ class PermissionsReview extends Page implements HasTable
                 ->footer([
                     UnorderedList::make([
                         Text::make('A permission assigned to a role applies to all its members; individual grants are optional and stay within the role\'s scope. Role membership alone grants nothing (OD-68).'),
-                        Text::make('Entering the back office needs the backoffice.access permission (OD-74).'),
                         Text::make('Contact details, redirects, brand settings and tracking IDs go live only after another person approves them (OD-69 to OD-71).'),
                         Text::make('A tag manager is used only if it enforces the same approval, publication and audit (OD-75).'),
                         Text::make('One content approval by someone other than the author is enough (OD-73).'),

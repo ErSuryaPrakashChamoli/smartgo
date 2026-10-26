@@ -11,9 +11,9 @@
 |---|---|---|---|
 | 0 | Discovery, audit, requirements clarification | **APPROVED in principle** (project owner, 2026-10-24) | — (open items carried into Phase 1) |
 | 1 | PRD, IA, architecture, database design, acceptance criteria | **APPROVED** (owner, 2026-10-24: "continue next phase") | — (deferred items carried to the Phase 3 and Phase 5 gates) |
-| 2 | Brand system, UX/UI, design system | **READY FOR REVIEW** (2026-10-25): AC-2.1 to AC-2.4 met with evidence (acceptance record below). **Not approved, not complete.** | **owner sign-off of the visual direction (AC-2.5, P2-C)**; vector master still requested (D-11b, not an acceptance criterion) |
-| 3 | Foundation, auth, permissions, security | **IN PROGRESS** (started 2026-10-24); all locally actionable work done and verified (round 25) | OD-74 decision and authorisation (`backoffice.access`); R-14 owner action; GitHub, CI and staging deferred until local completion (OD-79; R-21 and D-14 at handover) |
-| 4 | CMS, page builder, media, publishing | NOT STARTED | Phases 2, 3 |
+| 2 | Brand system, UX/UI, design system | **APPROVED** (owner, 2026-10-26: "Phase 2 visual direction: Approve", OD-82). All of AC-2.1 to AC-2.5 met. Not COMPLETE: the open items below are carried forward. | — (open, not gating: vector master D-11b; manual accessibility review, Phase 14) |
+| 3 | Foundation, auth, permissions, security | **APPROVED with deferred items** (owner, 2026-10-26: "Phase 3 acceptance: Accept", OD-83). Not COMPLETE. | Deferred to the handover (OD-79): AC-3.1 CI, AC-3.5 staging, step 3.1 push, step 3.11; R-21 and D-14. Owner action: R-14. An interim private backup remote exists (OD-80). |
+| 4 | CMS, page builder, media, publishing | **IN PROGRESS** (started 2026-10-26) | profiles (step 4.7) wait for the Phase 5 tables; the moderated usability test (AC-4.2) needs the owner to arrange it |
 | 5 | Inventory, pricing, availability | NOT STARTED | Phase 3; entry gate: floors and real inventory, pricing values PR-1…PR-11 |
 | 6 | Public website | NOT STARTED | Phases 2, 4, 5 |
 | 7 | 3D digital twin | NOT STARTED | Phases 4, 5, 6; D-13 |
@@ -62,7 +62,7 @@
 
 | Field | Detail |
 |---|---|
-| Status | **IN PROGRESS** (started 2026-10-24). Acceptance record updated in round 25 below: AC-3.3 and AC-3.4 pass; AC-3.2 passes for the built capabilities but is blocked for `backoffice.access` (OD-74); AC-3.1 and AC-3.5 deferred until local completion (OD-79). |
+| Status | **APPROVED with deferred items** (owner, 2026-10-26, OD-83). AC-3.2, AC-3.3 and AC-3.4 pass. AC-3.1 and AC-3.5 are deferred until local completion (OD-79). Step 3.1's MySQL user waits on R-14. **Not COMPLETE**: the deferred items stay open until the handover. |
 | Scope | Back-office panel with custom theme and required MFA; the six owner-defined roles and the permission catalogue; user management; audit log; security headers and password policy; architecture tests; CI workflow; GitHub remote and staging (owner inputs) |
 | Dependencies | Phase 1 approved. Packages approved under D-24 (installed now: `spatie/laravel-permission`, `spatie/laravel-activitylog`). Redis client and Horizon wait until Redis is installed locally (ADR-0007). |
 | Steps | **3.1** GitHub organisation, private repository, push; dedicated MySQL user. *Owner actions needed: create the `Smartgro` organisation, repository and push credential, then authorise the push (D-31); run the setup script (R-14).* · **3.2** install approved packages · **3.3** Filament panel (configurable path, D-30), brand colours, custom theme · **3.4** users: active flag, panel access by role, required MFA · **3.5** roles and permission catalogue (six roles, OD-33) · **3.6** user management for the Super Admin · **3.7** audit log (logins, failures, user and role changes) and viewer · **3.8** security headers, password policy · **3.9** architecture tests · **3.10** CI workflow · **3.11** staging environment (needs D-14) |
@@ -70,13 +70,12 @@
 | Progress (2026-10-24) | **Done locally, not yet committed to a remote:** 3.2 packages (`spatie/laravel-permission` 8.3.2, `spatie/laravel-activitylog` 5.1.3) · 3.3 panel at `BACKOFFICE_PATH` (default `admin`), SmartGro name, primary `#2E8B18`, custom Vite theme, strict authorisation, database transactions · 3.4 `is_active`, `last_login_at`, panel access only for active users holding a staff role, MFA **required** (authenticator app with 8 recovery codes, or email code) · 3.5 six roles and the capability catalogue (`users.manage`, `audit_log.view`), synced by `php artisan access:sync`; first Super Admin via `php artisan access:assign-role` · 3.6 Settings → Staff users (create, edit roles, deactivate, reset two-step login; no delete) · 3.7 audit log for sign-in, failed sign-in, sign-out, role changes, activation changes, two-step login changes and resets, and (since 2026-10-25) role capability changes made by `access:sync`; read-only Settings → Audit log viewer · 3.8 baseline security headers, HSTS in production, password policy (12+ characters, mixed case, numbers; breached-password check in production) · 3.9 Pest architecture tests (`tests/Arch`) · 3.10 CI workflow `.github/workflows/ci.yml` (runs once the remote exists) · back-office logo from the supplied file (OD-39), larger on sign-in pages; button colour shade 600 `#297D15` so button text is white at AA contrast. **Waiting on owner inputs:** 3.1 (D-31 owner actions and push authorisation; R-14 dedicated MySQL user) and 3.11 (D-14 hosting). |
 | Acceptance criteria status | AC-3.1: the same checks pass locally (Pint, MySQL tests, `composer audit` 0 advisories, `npm audit` 0 vulnerabilities); a green CI run needs the remote (D-31). AC-3.2: policy tests cover every role for both capabilities that exist so far, allowed and denied; later modules add their own rows. AC-3.3: met (tests prove staff without two-step login are sent to set-up). AC-3.4: met for every §7 action that exists in Phase 3 (sign-in success and failure, MFA changes, role changes, activation changes); the other §7 actions are audited by the modules that introduce them. Property scoping (`property_user`) arrives with properties in Phase 5. |
 | Tests and results | 2026-10-24, local MySQL 8.4.11 (`smartgro_testing`): the Phase 3 test files (`tests/Feature/{Actions,Console,Filament,Http,Listeners,Models,Policies,Providers}`, `tests/Arch`) **100 passed, 0 failed**. Pint clean across the repository. Full suite (`php artisan test --compact`, including the concurrency harness): latest run 2026-10-25 (round 24), **310 passed, 0 failed (763 assertions, exit code 0)**. |
-| Known issues | Redis not installed locally (Horizon and the Redis client wait, ADR-0007). No hosting decision yet (D-14). Login throttling is Filament's 5 attempts per minute per IP address, which depends on correct trusted-proxy settings behind Cloudflare (open item in `../operations/DEPLOYMENT_RUNBOOK.md` §7). Content Security Policy is deferred to Phase 14. Back-office dark mode is off: the approved back-office theme is light (OD-48). Back-office access is by role membership until OD-74 is implemented; the Super Admin receives every capability automatically (SECURITY_MODEL §11.3). |
+| Known issues | Redis not installed locally (Horizon and the Redis client wait, ADR-0007). No hosting decision yet (D-14). Login throttling is Filament's 5 attempts per minute per IP address, which depends on correct trusted-proxy settings behind Cloudflare (open item in `../operations/DEPLOYMENT_RUNBOOK.md` §7). Content Security Policy is deferred to Phase 14. Back-office dark mode is off: the approved back-office theme is light (OD-48). |
 
 ### Phase 3 acceptance record (updated 2026-10-25, round 25)
 
-**Result: IN PROGRESS. Not READY FOR REVIEW, not APPROVED, not COMPLETE.** All locally actionable Phase 3 work is done. Everything that remains is one of:
+**Result: APPROVED with deferred items (owner acceptance, 2026-10-26, OD-83). Not COMPLETE.** All locally actionable Phase 3 work is done. Everything that remains is one of:
 * deferred by the owner (OD-79: GitHub and deployment wait until the application is fully developed and verified locally);
-* blocked on OD-74;
 * an owner action (R-14).
 
 Local checks passing are **not** the same as a green GitHub CI run or a staging deployment.
@@ -84,7 +83,7 @@ Local checks passing are **not** the same as a green GitHub CI run or a staging 
 | # | Criterion (source) | Evidence examined | Method | Result | Remaining action (owner) |
 |---|---|---|---|---|---|
 | AC-3.1 | CI runs Pint, MySQL tests, `composer audit` and `npm audit`, all green (master plan) | `.github/workflows/ci.yml` (valid; same steps). Local runs, round 25:<br>• Pint: exit code 0;<br>• tests: 320 passed, exit code 0;<br>• `composer audit`: no advisories, exit code 0;<br>• `npm audit --audit-level=high`: 0 vulnerabilities, exit code 0;<br>• `npm run build`: exit code 0. | executed locally | **DEFERRED** (OD-79): no remote, so CI has never run. Local results do not count as CI. | At handover: checklist G-1 to G-7 below. |
-| AC-3.2 | A policy test for every role × capability cell, allowed and denied (master plan) | `tests/Feature/Policies/*`, `ListUsersTest`, `ManageActivitiesTest`: all six roles, allowed and denied, for `users.manage` and `audit_log.view`. The policies check permissions, never role names. | code review and automated tests | **PASS** for the implemented capabilities. **BLOCKED** for `backoffice.access` (OD-74): `User::canAccessPanel()` still checks role membership. | Confirm the OD-74 role list and authorise implementation. |
+| AC-3.2 | A policy test for every role × capability cell, allowed and denied (master plan) | `tests/Feature/Policies/*`, `ListUsersTest`, `ManageActivitiesTest`: all six roles, allowed and denied, for `users.manage` and `audit_log.view`. `AdminPanelProviderTest` and `SyncAccessControlTest` cover `backoffice.access`:<br>• every role is let in;<br>• every back-office page refuses a role without it;<br>• exceptions and revocation;<br>• no entry without a staff role;<br>• recovery after `access:sync`.<br>The policies and panel access check permissions, never role names alone. | code review and automated tests | **PASS** (`backoffice.access` implemented 2026-10-26, OD-81) | — |
 | AC-3.3 | MFA is enforced (master plan) | `AdminPanelProvider` (two-step login required: authenticator app with recovery codes, or email code); `AdminPanelProviderTest`; `LoginTest` (full sign-in through the password step and the emailed code) | code review and automated tests | **PASS** | — |
 | AC-3.4 | Audit entries for every sensitive action in SECURITY_MODEL §7 (master plan) | `RecordAuthenticationActivityTest`; tests for user, role, two-step and role-capability changes; `LoginTest` (wrong two-step code, added in round 25) | code review and automated tests | **PASS** for the §7 actions that exist in Phase 3 | — |
 | AC-3.5 | Staging deployed, reachable only by the team (master plan) | none | — | **DEFERRED** (OD-79); also needs D-14 | At handover: D-14. |
@@ -126,10 +125,30 @@ Both pages are registered in `AdminPanelProvider`.
 **Tests added:** 10, in `tests/Feature/Filament/Pages/Auth/LoginTest.php` (5) and `RequestPasswordResetTest.php` (5). Each was checked by temporarily removing the fix it covers; the matching test failed every time.
 
 **Role-name checks remaining:**
-* `User::canAccessPanel()` (OD-74, blocked);
+* `User::canAccessPanel()` checks for a staff role only as the scope limit; entry needs the `backoffice.access` permission (OD-74, implemented 2026-10-26);
 * the Super Admin-only design-preview gate (Phase 2 tooling, never in production).
 
+### Phase 3 work in round 26 (2026-10-26): OD-74 implemented
+
+Authorised by the owner (OD-81: all six roles; implement now).
+
+**Changes:**
+* `App\Enums\Access\Capability::AccessBackoffice` (`backoffice.access`);
+* `StaffRole::capabilities()` now lists every role explicitly: the Super Admin gets `backoffice.access`, `users.manage` and `audit_log.view`; the other roles get `backoffice.access`;
+* `User::canAccessPanel()` now needs an active account, a staff role (scope, OD-68) and the permission;
+* the permissions-review preview marks the row implemented.
+
+Sign-in, password policy, throttling and two-step login are unchanged.
+
+**Tests:**
+* 5 new tests: every page refused without the permission; an exception granted then revoked; a direct grant without a role refused; recovery after `access:sync`; a console-created first Super Admin can enter;
+* `SyncAccessControlTest` updated for the explicit lists and their audit entries.
+
+Three deliberate breaks (permission check, role scope, role assignment) were each caught. Rollout: run `php artisan access:sync` before the new code serves requests. Until then no role holds `backoffice.access`, and staff are refused.
+
 ### Deferred GitHub and deployment checklist (OD-79; for the final handover)
+
+**Interim backup (OD-80):** `main` is on the owner's private personal repository `ErSuryaPrakashChamoli/smartgo` (pushed by the owner on 2026-10-26, commit `427b65f`). It is a backup only; the rows below still apply to the company organisation, and Claude pushes nothing.
 
 | # | Task | Status | Blocker | Owner action |
 |---|---|---|---|---|
@@ -156,7 +175,7 @@ Nothing below has been done on the owner's behalf. No organisation is named, no 
   * set up the push credential;
   * authorise the first push separately;
   * add at least one other organisation owner if available, with two-step login required for members (OD-76).
-* **Current state:** no remote is configured; the GitHub CLI is not installed; there is no SSH key. CI (`.github/workflows/ci.yml`) runs once the remote exists.
+* **Current state (2026-10-26):** the only remote is the owner's interim private backup (OD-80); the GitHub CLI is not installed; there is no SSH key. CI (`.github/workflows/ci.yml`) runs once the remote exists.
 * **Steps after the answer:** `docs/operations/LOCAL_DEVELOPMENT.md` §5 (create a private `smartgro` repository, push `main`, protect `main`, enable secret scanning).
 
 **2. R-14: dedicated MySQL user (part of step 3.1)**
@@ -187,7 +206,7 @@ Nothing below has been done on the owner's behalf. No organisation is named, no 
 * **Runtime needs:** PHP 8.5, MySQL 8.4, Redis, queue workers and a scheduler (runbook §2).
 * **Order:** staging deploys from `main`, so D-31 comes first.
 
-**4. OD-74: `backoffice.access` by role (needed before AC-3.2 can be completed)**
+**4. OD-74: `backoffice.access` by role. Resolved: confirmed and implemented on 2026-10-26 (OD-81)**
 
 Proposed (derived, not yet confirmed by the owner): **all six roles** receive `backoffice.access` as a role assignment, because each has back-office duties in SECURITY_MODEL §3.1. This keeps today's access. Today, access comes from holding any of the six roles. Not implemented.
 
@@ -217,14 +236,12 @@ Removing access from a role does not delete the role's other permissions, but th
 * D-31: create the organisation, repository and push credential, then authorise the first push;
 * run the R-14 script yourself, or decline;
 * the D-14 hosting decision;
-* confirm or change the OD-74 role list above;
-* separately, authorise implementing OD-74 when you want it built.
 
 ## Phase 2: Brand system, UX/UI design, responsive design system
 
 | Field | Detail |
 |---|---|
-| Status | **READY FOR REVIEW** (2026-10-25): AC-2.1 to AC-2.4 are met with evidence (acceptance record below). AC-2.5, the owner's sign-off of the visual direction, is outstanding. **Not APPROVED and not COMPLETE.** Started 2026-10-24 (OD-41). |
+| Status | **APPROVED** (owner, 2026-10-26: "Phase 2 visual direction: Approve", OD-82). AC-2.1 to AC-2.4 were met with evidence; AC-2.5, the owner's sign-off of the visual direction, is now given. **Not COMPLETE**: the vector master (D-11b) and a manual accessibility review are carried forward. Started 2026-10-24 (OD-41). |
 | Scope | `PROJECT_MASTER_PLAN.md` §2, Phase 2: tokens sampled from the real logo, type scale, component library, high-fidelity designs (home, city, property, workspace category, enterprise, tour and booking flows, back-office dashboard and key wizards), mobile-first responsive specification |
 | Dependencies | Phase 1 approved (OD-38). Logo supplied (OD-39). Photography plan D-12 is deferred, so designs use clearly labelled photo placeholders, never stock or AI images presented as real. |
 | Steps | **2.1** colour tokens from the logo, contrast-verified · **2.2** typefaces and fluid type scale · **2.3** logo renditions (favicon, mark, reversed: *need owner approval*) · **2.4** component library with all states · **2.5** visual-direction sample (home page, 360 px and 1440 px) → **owner sign-off (AC-2.5)** · **2.6** remaining high-fidelity templates and flows · **2.7** responsive specification · **2.8** accessibility and state-coverage verification |
@@ -237,7 +254,7 @@ Removing access from a role does not delete the role's other permissions, but th
 
 ### Phase 2 acceptance record (2026-10-25)
 
-Criteria from `PROJECT_MASTER_PLAN.md` §2 (Phase 2) and the checks the owner asked for on 2026-10-25. **Result: READY FOR REVIEW. Not APPROVED and not COMPLETE: AC-2.5 needs the owner's sign-off.**
+Criteria from `PROJECT_MASTER_PLAN.md` §2 (Phase 2) and the checks the owner asked for on 2026-10-25. **Result: APPROVED (owner, 2026-10-26, OD-82). Not COMPLETE: the vector master (D-11b) and a manual accessibility review are carried forward.**
 
 | # | Criterion (source) | Evidence examined | Method | Result | Remaining action (owner) |
 |---|---|---|---|---|---|
@@ -245,7 +262,7 @@ Criteria from `PROJECT_MASTER_PLAN.md` §2 (Phase 2) and the checks the owner as
 | AC-2.2 | Designs cover mobile (360 px) and desktop (1440 px) (master plan) | Screenshots and overflow checks:<br>• `../design/review/2026-10-24/`: public pages at 360 and 1440 px; back office at 1440 px;<br>• `../design/review/2026-10-25/`: all 15 back-office previews at 360 px, and the 6 updated ones at 1440 px;<br>• overflow checks: back office 60 of 60 (360, 768, 1024, 1440 px, 2026-10-25); public 75 of 75 (2026-10-24; public pages unchanged since). | screenshots and width measurement in headless Chromium | **PASS** | — |
 | AC-2.3 | Every component has hover, focus, disabled, error, empty and loading states (master plan) | component gallery `/design/components`; `tests/Feature/Views/Components/*` | automated tests and gallery screenshots | **PASS** for the Phase 2 component library. Back-office screens use Filament's own component states. | — |
 | AC-2.4 | No competitor layout or asset copied (master plan) | Assets: only the owner's logo and renditions made from it (`public/brand/`, `resources/brand/source/`), self-hosted open-licensed fonts, and placeholders drawn in code. Nothing from the old site (OD-19). | file inventory and review | **PASS** by inventory and review. Layout similarity cannot be proven by a test. | The owner may confirm while reviewing AC-2.5. |
-| AC-2.5 | The owner signs off the visual direction (master plan; P2-C) | Register §0.13 to §0.16: "P2-C not signed off". No later sign-off is recorded. | register search | **BLOCKED** | **Owner:** review the home page and templates, then sign off or name changes. |
+| AC-2.5 | The owner signs off the visual direction (master plan; P2-C) | the owner's message of 2026-10-26: "Phase 2 visual direction: Approve" (register §0.27, OD-82) | owner sign-off | **PASS** | — |
 | D-1 | Deliverables exist and agree (owner check 1) | Deliverables:<br>• tokens and type scale (`DesignTokens`, Sora and Inter);<br>• component library;<br>• high-fidelity previews (`/design`, `/admin/design-previews`);<br>• responsive specification (`DESIGN_SYSTEM.md` §8).<br>The back-office previews were updated to the decided policy on 2026-10-25, and a new test checks the permissions review against SECURITY_MODEL §11. | inspection and automated test | **PASS** | — |
 | D-2 | Owner decisions recorded; nothing open treated as approved (owner checks 2, 3) | Q-OW-16 to Q-OW-21 are answered (OD-46 to OD-75). P2-C is open and not treated as approved. D-11b is open. | register review | **PASS** | — |
 | D-3 | Contradictions searched and resolved or recorded (owner check 4) | register §0.17 to §0.20 reconciliation tables; code gaps in SECURITY_MODEL §11.3 | repository-wide text search | **PASS** (the code-level gaps are recorded, not hidden) | — |
@@ -281,7 +298,20 @@ The screenshots are committed and unchanged. On 2026-10-25 each page below was c
 
 **Owner reply needed for AC-2.5:** approve the visual direction, or name the changes wanted. Until then Phase 2 stays READY FOR REVIEW: not approved, not complete.
 
-## Phases 4–15
+## Phase 4: Visual CMS, page builder, media library, publishing workflow
+
+| Field | Detail |
+|---|---|
+| Status | **IN PROGRESS** (started 2026-10-26, after Phase 2 approval OD-82 and Phase 3 acceptance OD-83) |
+| Scope | `PROJECT_MASTER_PLAN.md` §2, Phase 4: block library, pages and sections, navigation, profiles, media library with licensing and renditions, revisions and approvals, previews, scheduling, redirects on slug change |
+| Dependencies | Phases 2 and 3 approved (OD-82, OD-83).<br>• **Packages:** `spatie/laravel-medialibrary` and `filament/spatie-laravel-media-library-plugin` are on the approved list (D-24) for Phase 4, but under OD-79 each install needs the owner's explicit approval. The S3 adapter waits for hosting (D-14).<br>• **Profiles:** property and offering profiles (FR-CMS-6) attach to the `properties` and `offerings` tables, which Phase 5 builds.<br>• **Content:** legal-page wording needs counsel (D-15); real photography needs D-12; real copy comes from SmartGro. |
+| Rules carried in | The publishing rules:<br>• Draft → Submitted → Approved → Published (BR-CMS-1);<br>• the author never approves, the approver never publishes that version, one approval is enough (BR-CMS-2, BR-CMS-2a, OD-65, OD-73; cases in SECURITY_MODEL §11.6);<br>• contact details, redirects, brand settings and tracking IDs follow the same separation (BR-CMS-9, OD-64 to OD-71).<br>Nothing is taken from the old site (BR-CMS-8), and nothing is invented. |
+| Steps | **4.1** content permissions per SECURITY_MODEL §3.1 and §11, the `revisions` model (author, approver and publisher recorded separately) and the approve and publish actions with the §11.6 rules and audit · **4.2** pages: the block library (Filament Builder, already installed), page editor, signed `noindex` preview (BR-CMS-4), scheduling (BR-CMS-5), rollback (BR-CMS-3), redirect on slug change (BR-CMS-6) · **4.3** navigation, header and footer editors (FR-CMS-4) · **4.4** media library with origin, licence, alt text and renditions (FR-CMS-5, BR-MED-*; *needs package approval*) · **4.5** posts, FAQs, testimonials (consent on file), case studies, legal pages (FR-CMS-7) · **4.6** public settings with approval: contact details, brand settings, tracking IDs, manual redirects (FR-CMS-8, OD-64 to OD-71) · **4.7** property and offering profiles (FR-CMS-6; *after Phase 5 tables*) · **4.8** moderated test of UJ-7 and UJ-8 (*owner arranges*) |
+| Acceptance criteria | `PROJECT_MASTER_PLAN.md` §2, Phase 4: AC-4.1 FR-CMS-1 to FR-CMS-8 pass; AC-4.2 a Marketing Manager completes UJ-7, and a second approver UJ-8, unaided in a moderated test; AC-4.3 no routine CMS task needs code, JSON or SQL |
+| Approvals (2026-10-26) | Packages approved (OD-84; installed at step 4.4). Model additions approved (OD-85). Claude runs additive migrations on `smart_go` after tests pass (OD-86). One local commit per verified step, never pushed (OD-87). |
+| Progress | Opened 2026-10-26. |
+
+## Phases 5–15
 Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.md` §2. Each phase gets a full entry here when it starts.
 
 ---
@@ -290,6 +320,8 @@ Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.
 
 | Date | Change |
 |---|---|
+| 2026-10-26 | Round 27:<br>• **Phase 2 APPROVED** (owner: "Phase 2 visual direction: Approve", OD-82).<br>• **Phase 3 APPROVED with deferred items** (owner: "Phase 3 acceptance: Accept", OD-83). Neither phase is COMPLETE.<br>• **Phase 4 opened** with a step plan; packages and model additions await owner approval. |
+| 2026-10-26 | Round 26:<br>• Found the owner's commit `427b65f` ("morning pull oct 26", including the staged `CLAUDE.md` edit) and its push to `ErSuryaPrakashChamoli/smartgo`. The owner confirmed it as an interim private backup (OD-80).<br>• OD-74 confirmed and authorised (OD-81), and implemented: `backoffice.access` for all six roles, explicit role lists, permission-based panel access. 5 tests added, sync tests updated. AC-3.2 now passes.<br>• Not committed. Phase 3 stays IN PROGRESS. |
 | 2026-10-25 | Round 25 (Phase 3 local completion):<br>• Owner direction OD-79 recorded: GitHub and deployment are deferred until the application is fully developed and verified locally.<br>• Fixed: the password-reset page revealed which emails are staff accounts; a wrong two-step code was not audited. 10 tests added.<br>• Checks, all exit code 0: 320 tests passed (844 assertions, none skipped); Pint passed; `composer audit` no advisories; `npm audit --audit-level=high` 0 vulnerabilities; build passed.<br>• Acceptance record reclassified (PASS, BLOCKED, DEFERRED, NOT VERIFIED). Deferred GitHub and deployment checklist added.<br>• Not committed. Phase 3 stays IN PROGRESS. |
 | 2026-10-25 | Round 24 (Phase 3 finalisation audit):<br>• Re-verified on MySQL, all exit code 0: Pint passed; 310 tests passed (763 assertions); `composer audit` no advisories; `npm audit --audit-level=high` 0 vulnerabilities; `npm run build` passed.<br>• Recorded the round-23 pre-push findings: GitHub has no organisation `Smartgro`; the name is held by a personal user account (R-21); no push credential is visible here.<br>• Updated stale statements in the deployment runbook and system architecture.<br>• No code, permission, sign-in or schema change. Not committed. Phase 3 stays IN PROGRESS. |
 | 2026-10-25 | Round 22:<br>• D-31 organisation and owner confirmed by the owner (OD-78): organisation `Smartgro`, legal owner Smart Gro Services Private Limited.<br>• D-31 stays open: the owner creates the organisation, repository and push credential; the first push is not authorised.<br>• Documentation only, not committed. Phase 3 stays IN PROGRESS. |

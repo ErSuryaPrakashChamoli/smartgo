@@ -30,7 +30,7 @@
 | Passwords | Laravel `Password::defaults()`: min 12 chars, mixed case, numbers, `uncompromised()` check, bcrypt (existing `BCRYPT_ROUNDS`). |
 | Throttling | login rate limit per email + IP; lockout notice to user; audit-log failed attempts. |
 | Sessions | `SESSION_SECURE_COOKIE=true`, `SameSite=Lax`, `http_only`, idle timeout 120 min for staff [DEFAULT], session regenerated on login and on privilege change. |
-| Back-office access | **Requires the explicit `backoffice.access` permission** (OD-74). It applies to every protected back-office page, route, Livewire action and API. Role membership alone never grants access. Sign-in and two-step login are unchanged by OD-74. **Not implemented:** today any active user holding one of the six roles can enter (§10, §11.3). |
+| Back-office access | **Requires the explicit `backoffice.access` permission** (OD-74). It applies to every protected back-office page, route, Livewire action and API. Role membership alone never grants access. Sign-in and two-step login are unchanged by OD-74. **Implemented 2026-10-26** (OD-81): entry needs an active account, a staff role (the scope, OD-68) and the permission, assigned to the role or granted as an exception (§10). |
 | Deactivation | `users.is_active = false` blocks panel access immediately (`canAccessPanel`, checked on every request including Livewire requests per Filament 5 docs). |
 | Customers | No customer accounts at launch (D-20). Customer self-service (view/cancel booking) uses signed, expiring links. |
 
@@ -86,7 +86,7 @@ One approval by someone other than the author is enough. The author may publish 
 
 | Capability | Super Admin | Operations Manager | Property Manager | Sales/CRM Executive | Marketing Manager | Finance |
 |---|---|---|---|---|---|---|
-| Back-office access (`backoffice.access`) ‡ (OD-74; assigned to all six roles, because each has back-office duties in this matrix: derived, which keeps today's access) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Back-office access (`backoffice.access`) ‡ (OD-74; all six roles confirmed by the owner, OD-81; **implemented 2026-10-26**) | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Users, roles, MFA reset | M | — | — | — | — | — |
 | Integrations (connection status) | M | — | — | — | V | — |
 | Tracking IDs, analytics identifiers, advertising pixels ‡ (OD-71: independent approval before they become active; approvers as for other public settings) | M/A (not own) | — | — | — | M/A (not own) | — |
@@ -240,11 +240,11 @@ What exists in code now, and where it differs from the plan above. Each row is c
 |---|---|---|
 | Staff login | Filament panel login at `BACKOFFICE_PATH` (default `admin`); no registration; password reset by email. Since 2026-10-25 the reset-request page gives every request the same answer and an empty form, so it never reveals whether an address belongs to a staff account. | none |
 | MFA | required for every staff user; authenticator app (8 recovery codes, regenerable) or email code | none |
-| Panel access | only users who are active **and** hold at least one of the six roles; checked on every request | **OD-74 requires the explicit `backoffice.access` permission instead of role membership. Not implemented** (§11.3); changing it was not authorised in this documentation round. |
+| Panel access | only users who are active, hold a staff role, **and** have the `backoffice.access` permission (assigned to all six roles, or granted as an exception within a staff role's scope); checked on every request, including Livewire requests (OD-74, OD-81; since 2026-10-26) | none |
 | Passwords | `Password::defaults()`: at least 12 characters, mixed case, numbers | the breached-password check (`uncompromised()`) runs **in production only**, because it calls an external service |
 | Throttling | Filament login limit: 5 attempts per minute per IP address (covered by a test since 2026-10-25); two-step codes are rate-limited per user (Filament) | not per email + IP. Behind Cloudflare the app must trust Cloudflare's proxy ranges, otherwise every visitor shares one IP (`../operations/DEPLOYMENT_RUNBOOK.md` §7). A per-email limit is reviewed in Phase 14. |
 | Sessions | Laravel defaults; Filament regenerates the session at login | secure-cookie and idle-timeout values are set per environment at deployment. No session regeneration on privilege change: permissions are re-checked on every request, so a role change applies on the next request. |
-| Capabilities | `users.manage` and `audit_log.view`, both Super Admin only (matrix rows "Users, roles, MFA reset" and "Audit log"). Super Admin receives each capability explicitly; there is no blanket bypass, so "not own" rules will still apply to the Super Admin. | other capabilities are added by the module that needs them; property scoping arrives with properties in Phase 5. The code gives the Super Admin **every** capability in the enum (`Capability::cases()`). OD-74 requires each Super Admin assignment to be reviewed against §3.1 instead (§11.3). |
+| Capabilities | `backoffice.access` (all six roles), `users.manage` and `audit_log.view` (Super Admin only; matrix rows "Users, roles, MFA reset" and "Audit log"). Every role's capabilities are an explicit list in `StaffRole::capabilities()`, the Super Admin's included, so a new capability reaches no role until it is reviewed against §3.1 (OD-74, since 2026-10-26). There is no blanket bypass, so "not own" rules will still apply to the Super Admin. | other capabilities are added by the module that needs them; property scoping arrives with properties in Phase 5 |
 | User lifecycle | create, edit, change roles, deactivate, reset two-step login. Accounts are never deleted. Staff cannot deactivate themselves or remove their own Super Admin role. | none |
 | Headers | `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options: SAMEORIGIN`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`; HSTS over HTTPS in production | Content Security Policy (including `frame-ancestors 'none'` for the back office) is added in Phase 14 |
 | Audit trail | sign-in, failed sign-in (email address only, never the password), sign-out, role changes (old and new roles), changes to a role's capabilities made by `access:sync` (role, old and new capabilities; recorded without a causer because the change comes from code, added 2026-10-25), wrong two-step login codes (user, IP, browser; never the code; added 2026-10-25), activation and name/email changes, two-step login changes (which methods are on, never secrets or codes), two-step login resets. Read-only viewer at Settings → Audit log. | the other §7 actions are audited by the modules that introduce them |
@@ -255,7 +255,7 @@ What exists in code now, and where it differs from the plan above. Each row is c
 
 A review of the role design for pricing, enquiries, booking requests, tours, contact and legal details, website content, redirects and brand settings. **Viewing, editing, approving, verifying and publishing are separate capabilities.** The owner answered the open rows on 2026-10-25: Q-OW-18 → OD-51 to OD-57 (round 13), Q-OW-19 → OD-58 to OD-67 (round 14), Q-OW-20 and D-17 → OD-68 to OD-73 (round 15), Q-OW-21 → OD-74, OD-75 (round 16). See §11.1.
 
-**An approved decision is not an implemented permission.** Only `users.manage` and `audit_log.view` exist in code (§10). Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review. It was updated on 2026-10-25, and a test checks that both list the same capabilities and role values (§11.3).
+**An approved decision is not an implemented permission.** Only `backoffice.access`, `users.manage` and `audit_log.view` exist in code (§10). Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review. It was updated on 2026-10-25, and a test checks that both list the same capabilities and role values (§11.3).
 
 **Each value is the role's permitted scope (OD-68).** A permission applies to every member of the role once it has been explicitly assigned to the role. Otherwise it may be granted to one member as an individual exception within that scope (§11.2).
 
@@ -276,7 +276,7 @@ Approved matrix, OD and Derived rows are **not implemented**.
 
 | Area | Capability | Purpose | Super Admin | Operations | Property | Sales/CRM | Marketing | Finance | Basis |
 |---|---|---|---|---|---|---|---|---|---|
-| Staff and audit | `backoffice.access` | Enter the back office: every protected page, route, Livewire action and API | Yes | Yes | Yes | Yes | Yes | Yes | OD-74 (roles: derived from §3.1) |
+| Staff and audit | `backoffice.access` | Enter the back office: every protected page, route, Livewire action and API | Yes | Yes | Yes | Yes | Yes | Yes | Implemented (OD-74; roles confirmed by OD-81) |
 | Staff and audit | `users.manage` | Manage staff, roles, permission grants and two-step login resets | Yes | — | — | — | — | — | Implemented (role assignments; individual exceptions, OD-68: not implemented) |
 | Staff and audit | `audit_log.view` | Read the audit log | Yes | — | — | — | — | — | Implemented |
 | Pricing | `pricing.view` | See prices | Yes | Yes | Own properties | Yes | Yes | Yes | Approved matrix |
@@ -365,7 +365,7 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
 | OD-71 | "Changes to tracking IDs, analytics identifiers and advertising pixels require independent approval before they become active on the public website." | Resolves Q-OW-20.4. Tracking is no longer exempt and follows author → approver → publisher (`settings.tracking.*`). **Interpretation:** the approvers are the Super Admin and the Marketing Manager, the roles that may edit tracking IDs (§3.1), "not own". This applies OD-71's instruction to use "the same principles used for other public-facing settings" (OD-69, OD-70). The CSP allow-list stays a separate configuration change (§5). |
 | OD-72 | "A user who creates or submits a booking request or reschedule must not approve that same request or reschedule. Approval must be performed by another authorised person with explicit approval permission. Every booking or reschedule must re-check availability under the required inventory lock. No Super Admin override or forced approval may bypass availability or separation-of-duties rules." | Resolves Q-OW-20.5, reversing the round-14 default that one person could do both. A request submitted by a customer is approved by any user granted `bookings.approve`. A request or reschedule entered by staff needs a different approver. An outside-hours override (BR-BK-9) never skips approval or the re-check. **Interpretation:** rejection follows the same rule (OD-61). |
 | OD-73 | "The author and approver must be different people, and the approver must not publish the version they approved. The author may publish an approved version if they are not the approver. A two-person workflow is therefore permitted." | **Resolves D-17:** one approval by a person other than the author is enough, and no second approval is required. Permitted combinations and failure cases: §11.6. |
-| OD-74 | "Back-office access requires an explicit backoffice.access permission. Role membership alone does not grant access." | Resolves Q-OW-21.1.<br>• `backoffice.access` is required for every protected back-office page, route, Livewire action and API.<br>• Assignment to a role covers all its members; individual grants are optional, within the role's scope (OD-68).<br>• §3.1 shows the permission for all six roles (**derived:** each has back-office duties there, and this keeps today's access).<br>• The Super Admin's assignments are reviewed against §3.1 permission by permission, with no automatic "every permission" rule.<br>• Sign-in and two-step login are unchanged. **Not implemented** (§11.3). |
+| OD-74 | "Back-office access requires an explicit backoffice.access permission. Role membership alone does not grant access." | Resolves Q-OW-21.1.<br>• `backoffice.access` is required for every protected back-office page, route, Livewire action and API.<br>• Assignment to a role covers all its members; individual grants are optional, within the role's scope (OD-68).<br>• §3.1 shows the permission for all six roles (**derived:** each has back-office duties there, and this keeps today's access).<br>• The Super Admin's assignments are reviewed against §3.1 permission by permission, with no automatic "every permission" rule.<br>• Sign-in and two-step login are unchanged. **Round 26:** the role list was confirmed and implementation authorised (OD-81); implemented on 2026-10-26. |
 | OD-75 | "External tag managers are optional, not prohibited. They must never provide a bypass around OD-71." | Resolves Q-OW-21.2.<br>• Changes to tracking IDs, analytics identifiers, advertising pixels and tag configurations need independent approval before they become active, wherever the change is made (SmartGro or an external provider).<br>• No one approves their own change or publishes a version they approved.<br>• Requirements are in §11.2 rule 7.<br>• A provider that cannot enforce them is **not enabled for live website tracking**.<br>• No provider is chosen or integrated (D-18). |
 
 ### 11.2 Rules every capability follows
@@ -422,14 +422,12 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
   * `content.approve`, `content.publish`, `testimonials.publish`;
   * `redirects.manage`, `redirects.approve`, `redirects.publish`;
   * `brand.manage`, `brand.approve`, `brand.publish`;
-  * `settings.tracking.manage`, `settings.tracking.approve`, `settings.tracking.publish`;
-  * `backoffice.access` (OD-74).
+  * `settings.tracking.manage`, `settings.tracking.approve`, `settings.tracking.publish`.
 
   No role is assigned them, and no policy checks them. Each is added by the module that builds the feature.
 * **Grants (OD-68).** The code already assigns permissions to roles (`StaffRole::capabilities()`), which is what OD-68 describes. Round 14 listed this as a mismatch with a per-user reading of OD-60; that reading is superseded, so it is no longer a gap.
   * **Individual exceptions** are not supported. If they are added, they need the scope limit, precedence, revocation and audit in §11.2 rule 1.
-  * **Super Admin assignment (OD-74).** `StaffRole::capabilities()` assigns **every** capability in the enum to the Super Admin (`Capability::cases()`). The result is right today, because the Super Admin is permitted both implemented capabilities. But it is the automatic "every future permission" rule that OD-74 rules out. It must become an explicit list reviewed against §3.1.
-  * **Back-office access (OD-74).** `User::canAccessPanel()` checks `is_active` and `hasAnyRole(StaffRole::cases())`: role membership, not `backoffice.access`. Changing it touches the sign-in path and was not authorised in this documentation round. Sign-in and two-step login must stay unchanged when it is changed.
+  * **Super Admin assignment and back-office access (OD-74):** implemented on 2026-10-26 (OD-81). They are no longer gaps. A test cannot yet tell an explicit Super Admin list from "every capability", because today the Super Admin is permitted every built capability; the difference shows once a capability is added that the Super Admin should not hold.
 * **People-level checks.** None exist yet:
   * author ≠ approver for real content, contact details, redirects, brand settings, tracking IDs and prices;
   * approver ≠ publisher;
@@ -458,12 +456,10 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
 * **External tag manager (OD-75):** none is chosen or integrated, so none of the §11.2 rule 7 controls exist. None may be enabled for live tracking until they do.
 * Every preview is Super Admin only, so none of them shows per-role or per-user behaviour.
 
-**Tests:** no test proves any OD-51 to OD-75 rule. Each needs policy tests per role × capability (§9), including:
+**Tests:** apart from OD-74 (back-office access, tested since 2026-10-26), no test proves any OD-51 to OD-75 rule. Each needs policy tests per role × capability (§9), including:
 
 * **grants:**
   * a user in a role without the permission assigned, and without an exception, is refused;
-  * a user without `backoffice.access` is refused on every back-office page, route, Livewire action and API, even with a role;
-  * the Super Admin holds exactly the permissions listed for it in §3.1;
   * an exception outside the role's scope cannot be granted;
   * a revoked exception, or one whose role was removed, is refused from the next request;
 * **bookings:**
@@ -481,7 +477,16 @@ Recorded in `../decisions/DECISION_REGISTER.md` §0.17 (OD-51 to OD-57), §0.18 
 * **redirects:** an automatic slug-change redirect goes live with its approved page;
 * **audit:** each action writes its audit entry.
 
-Existing tests cover only the previews:
+Production tests for OD-74 (since 2026-10-26):
+
+* a Super Admin whose role lacks `backoffice.access` is refused on every back-office page;
+* an individual exception within a staff role's scope lets a user in, and revoking it locks them out again;
+* a user without a staff role is refused even with the permission granted directly;
+* after `access:sync`, every staff role is back in;
+* a first Super Admin created from the console can enter;
+* each role holds exactly its listed capabilities.
+
+Existing preview tests:
 
 * refusing approval of a booking request whose space is no longer free;
 * Approve and Publish disabled for the author;
@@ -526,7 +531,7 @@ They do not prove production enforcement.
 * an automatic slug-change redirect is covered by its page's approval (OD-66);
 * social links are brand settings (OD-67);
 * the tracking-ID approvers are the Super Admin and the Marketing Manager (OD-71);
-* `backoffice.access` is assigned to all six roles, because each has back-office duties in §3.1 (OD-74);
+* `backoffice.access` is assigned to all six roles, because each has back-office duties in §3.1 (OD-74; **confirmed by the owner, OD-81**);
 * the creator of a booking request cannot reject it either, but may withdraw it (OD-72);
 * any edit after approval or verification creates a new version that needs its own approval or verification (OD-55, OD-73).
 

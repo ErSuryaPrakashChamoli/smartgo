@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Access\Capability;
 use App\Enums\Access\StaffRole;
 use Database\Factories\UserFactory;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
@@ -63,12 +64,16 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     }
 
     /**
-     * Only active users holding at least one staff role may enter the back office.
-     * Filament re-checks this on every request, so deactivation takes effect immediately.
+     * Entering the back office needs the explicit backoffice.access permission (OD-74), assigned to a
+     * role the user holds or granted to them as an exception within a staff role's scope (OD-68), so
+     * neither a role alone nor a permission without a staff role lets anyone in. Filament re-checks
+     * this on every request, including Livewire requests, so deactivation or revocation applies at once.
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_active && $this->hasAnyRole(StaffRole::cases());
+        return $this->is_active
+            && $this->hasAnyRole(StaffRole::cases())
+            && $this->can(Capability::AccessBackoffice);
     }
 
     /**

@@ -93,7 +93,7 @@ The staff back office is a Filament panel at `/{BACKOFFICE_PATH}` (default `/adm
 3. `php artisan access:assign-role you@example.com super_admin`
 4. Open the back office and sign in. Two-step login is required: set up an authenticator app (save the recovery codes) or email codes. With `MAIL_MAILER=log`, email codes are written to `storage/logs/laravel.log`.
 
-Other staff accounts are then created in **Settings → Staff users**. Only active users with at least one of the six staff roles can enter (current behaviour; OD-74 will require the explicit `backoffice.access` permission instead, not implemented yet). The audit log is at **Settings → Audit log**.
+Other staff accounts are then created in **Settings → Staff users**. Only active users with a staff role **and** the `backoffice.access` permission can enter (OD-74, since 2026-10-26). All six roles receive the permission through `php artisan access:sync`, so run it after pulling this change. The audit log is at **Settings → Audit log**.
 
 ### MySQL concurrency harness
 
@@ -122,7 +122,7 @@ Booking-domain tests (T-BK-*, `../testing/TEST_STRATEGY.md` §8) reuse this harn
 
 ## 5. Connecting the private GitHub remote (owner action)
 
-**Deferred (OD-79, 2026-10-25):** no GitHub work happens until the application is fully developed and verified locally. The steps below are kept for the final handover.
+**Deferred (OD-79, 2026-10-25):** no GitHub work happens until the application is fully developed and verified locally. The steps below are kept for the final handover. **Interim backup (OD-80, 2026-10-26):** the remote `origin` is the owner's private personal repository `ErSuryaPrakashChamoli/smartgo`, a backup only. Claude pushes nothing to it.
 
 The GitHub CLI is not installed on this machine and no SSH key exists yet. Local version control works without a remote. Choose **one** option.
 

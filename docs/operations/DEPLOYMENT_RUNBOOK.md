@@ -12,7 +12,7 @@
 
 | Item | State / plan |
 |---|---|
-| Repository | Git, branch `main`, initialised 2026-10-24 with a reviewed baseline. **No remote yet; GitHub setup and deployment are deferred until the application is fully developed and verified locally (OD-79).** D-31 decided the organisation `Smartgro`, owned by Smart Gro Services Private Limited (OD-78). The owner creates the organisation, repository and push credential, and the first push needs separate authorisation. The pre-push check found the GitHub name `smartgro` held by a personal user account (R-21). Steps: `LOCAL_DEVELOPMENT.md` §5. |
+| Repository | Git, branch `main`, initialised 2026-10-24 with a reviewed baseline. **GitHub setup and deployment are deferred until the application is fully developed and verified locally (OD-79).** The only remote is the owner's interim private backup `ErSuryaPrakashChamoli/smartgo` (OD-80). D-31 decided the organisation `Smartgro`, owned by Smart Gro Services Private Limited (OD-78). The owner creates the organisation, repository and push credential, and the first push needs separate authorisation. The pre-push check found the GitHub name `smartgro` held by a personal user account (R-21). Steps: `LOCAL_DEVELOPMENT.md` §5. |
 | Branching | short-lived feature branches → pull request → `main`. `main` is protected once the remote exists. |
 | CI (Phase 3, `.github/workflows/ci.yml`) | on every push to `main` and every PR: PHP 8.5 + MySQL 8.4 service container → `composer install` → `npm ci && npm run build` → `vendor/bin/pint --test` → `php artisan test` (full suite, including the `concurrency` group) → `composer audit` and `npm audit --audit-level=high`. A green CI is required to merge. The workflow is committed and starts running once the remote exists (D-31). |
 | Secrets in CI | the CI MySQL uses throwaway credentials defined in the workflow (test-only). Deployment secrets live only in the host's secret store or encrypted CI secrets. |
@@ -61,7 +61,7 @@ To be added as integrations are chosen: payment gateway keys and webhook secret,
 3. `npm ci && npm run build`
 4. `php artisan down --render="errors::503" --retry=60` (only for migrations that need it; prefer zero-downtime)
 5. `php artisan migrate --force` (backups taken first; destructive migrations need a separately approved plan)
-6. `php artisan access:sync` (brings staff roles and capabilities in line with the code; safe on every release; any change to a role's capabilities is written to the audit log)
+6. `php artisan access:sync` (brings staff roles and capabilities in line with the code; safe on every release; any change to a role's capabilities is written to the audit log). **It must run before new code serves requests:** back-office access needs the `backoffice.access` permission it assigns (OD-74).
 7. `php artisan optimize` and `php artisan filament:optimize`
 8. `php artisan horizon:terminate` (or `queue:restart`) so workers load the new code
 9. `php artisan up`

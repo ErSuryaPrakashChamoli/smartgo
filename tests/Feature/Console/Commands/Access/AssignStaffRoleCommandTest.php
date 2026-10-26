@@ -3,9 +3,11 @@
 use App\Actions\Access\SyncAccessControl;
 use App\Enums\Access\StaffRole;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Activitylog\Models\Activity;
 
+use function Pest\Laravel\actingAs;
 use function Pest\Laravel\artisan;
 
 uses(RefreshDatabase::class);
@@ -24,6 +26,14 @@ it('gives an existing user a staff role and audits it', function () {
     expect($user->fresh()->hasRole(StaffRole::SuperAdmin))->toBeTrue()
         ->and(Activity::query()->where('event', 'roles_changed')->whereMorphedTo('subject', $user)->sole()->properties->all())
         ->toEqual(['added' => 'super_admin', 'via' => 'console']);
+});
+
+it('lets a first Super Admin created from the console into the back office', function () {
+    $user = User::factory()->withEmailAuthentication()->create(['email' => 'first.admin@example.test']);
+
+    artisan('access:assign-role', ['email' => 'first.admin@example.test', 'role' => 'super_admin'])->assertSuccessful();
+
+    actingAs($user->fresh())->get(Filament::getUrl())->assertOk();
 });
 
 it('fails with the list of valid roles when the role is unknown', function () {

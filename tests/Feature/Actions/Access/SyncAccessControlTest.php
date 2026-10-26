@@ -22,21 +22,22 @@ it('creates the six staff roles and the capability catalogue', function () {
         'super_admin',
     ])->and(Permission::query()->orderBy('name')->pluck('name')->all())->toBe([
         'audit_log.view',
+        'backoffice.access',
         'users.manage',
     ]);
 });
 
-it('grants the Super Admin every capability explicitly', function () {
+it('grants the Super Admin exactly the capabilities listed for it', function () {
     app(SyncAccessControl::class)->handle();
 
     expect(Role::findByName(StaffRole::SuperAdmin->value)->permissions->pluck('name')->sort()->values()->all())
-        ->toBe(['audit_log.view', 'users.manage']);
+        ->toBe(['audit_log.view', 'backoffice.access', 'users.manage']);
 });
 
-it('grants no capabilities to the other roles until their modules are built', function (StaffRole $role) {
+it('gives the other roles back-office access and nothing else yet', function (StaffRole $role) {
     app(SyncAccessControl::class)->handle();
 
-    expect(Role::findByName($role->value)->permissions)->toBeEmpty();
+    expect(Role::findByName($role->value)->permissions->pluck('name')->all())->toBe(['backoffice.access']);
 })->with(collect(StaffRole::cases())->reject(fn (StaffRole $role): bool => $role === StaffRole::SuperAdmin)->all());
 
 it('can run repeatedly without duplicating roles or capabilities', function () {
@@ -53,20 +54,21 @@ it('removes a capability from a role when the code no longer grants it', functio
 
     app(SyncAccessControl::class)->handle();
 
-    expect(Role::findByName(StaffRole::Finance->value)->permissions)->toBeEmpty();
+    expect(Role::findByName(StaffRole::Finance->value)->permissions->pluck('name')->all())->toBe(['backoffice.access']);
 });
 
-it('audits the capabilities it grants to a role', function () {
+it('audits the capabilities it grants to each role', function () {
     app(SyncAccessControl::class)->handle();
 
-    $entry = Activity::query()->where('event', 'role_capabilities_changed')->sole();
+    $superAdminRole = Role::findByName(StaffRole::SuperAdmin->value);
+    $entry = Activity::query()->where('event', 'role_capabilities_changed')->whereMorphedTo('subject', $superAdminRole)->sole();
 
-    expect($entry->subject->is(Role::findByName(StaffRole::SuperAdmin->value)))->toBeTrue()
+    expect(Activity::query()->where('event', 'role_capabilities_changed')->count())->toBe(count(StaffRole::cases()))
         ->and($entry->causer)->toBeNull()
         ->and($entry->properties->all())->toEqual([
             'role' => 'super_admin',
             'old' => [],
-            'new' => ['audit_log.view', 'users.manage'],
+            'new' => ['audit_log.view', 'backoffice.access', 'users.manage'],
         ]);
 });
 
@@ -78,7 +80,7 @@ it('audits a capability it removes from a role', function () {
 
     $entry = Activity::query()->where('event', 'role_capabilities_changed')->latest('id')->first();
 
-    expect($entry->properties->all())->toEqual(['role' => 'finance', 'old' => ['users.manage'], 'new' => []]);
+    expect($entry->properties->all())->toEqual(['role' => 'finance', 'old' => ['backoffice.access', 'users.manage'], 'new' => ['backoffice.access']]);
 });
 
 it('writes no audit entry when the roles already match the code', function () {
@@ -86,5 +88,5 @@ it('writes no audit entry when the roles already match the code', function () {
 
     app(SyncAccessControl::class)->handle();
 
-    expect(Activity::query()->where('event', 'role_capabilities_changed')->count())->toBe(1);
+    expect(Activity::query()->where('event', 'role_capabilities_changed')->count())->toBe(count(StaffRole::cases()));
 });

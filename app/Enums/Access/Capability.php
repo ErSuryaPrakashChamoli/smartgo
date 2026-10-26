@@ -11,6 +11,9 @@ namespace App\Enums\Access;
  */
 enum Capability: string
 {
+    /** Entering the back office at all: every protected page, route and Livewire action (OD-74). */
+    case AccessBackoffice = 'backoffice.access';
+
     case ManageUsers = 'users.manage';
     case ViewAuditLog = 'audit_log.view';
 }

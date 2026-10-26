@@ -21,7 +21,7 @@ Examples use **synthetic** identifiers (`synthville`, `SYN-…`). They are not r
 | Money | `{ "amount_minor": 1499900, "currency": "INR", "tax": "exclusive", "display": "₹14,999 + GST" }`. Only returned where the price display policy allows (BR-PR-3). |
 | Visibility | Only published properties in **publicly visible cities** (OD-18), and publicly listable, non-decommissioned spaces, are returned. Hidden records answer **404**, never 403, so they cannot be discovered. |
 | Personal data | **Never returned** by public endpoints |
-| Auth | Public read endpoints: none. No public write endpoints at launch (forms go through Livewire, §3). A future write API would use Sanctum tokens. **Back office** (not part of this public API): every protected page, route, Livewire action and back-office API requires sign-in with two-step login **and** the explicit `backoffice.access` permission (OD-74; not implemented, SECURITY_MODEL §11.3). |
+| Auth | Public read endpoints: none. No public write endpoints at launch (forms go through Livewire, §3). A future write API would use Sanctum tokens. **Back office** (not part of this public API): every protected page, route, Livewire action and back-office API requires sign-in with two-step login **and** the explicit `backoffice.access` permission (OD-74; implemented 2026-10-26). |
 | CORS | same-origin only |
 | Rate limits | named limiter `public-api`: 60 requests/min per IP; `slots`: 30/min per IP. Over the limit → **429** with `Retry-After`. |
 | Errors | Laravel's standard JSON shapes: `404 {"message": …}`; `422 {"message": …, "errors": {field: [..]}}`; `429 {"message": …}`; `500 {"message": "Server Error"}` (no details in production) |
