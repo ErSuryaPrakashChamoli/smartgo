@@ -12,7 +12,7 @@
 | 0 | Discovery, audit, requirements clarification | **APPROVED in principle** (project owner, 2026-10-24) | — (open items carried into Phase 1) |
 | 1 | PRD, IA, architecture, database design, acceptance criteria | **APPROVED** (owner, 2026-10-24: "continue next phase") | — (deferred items carried to the Phase 3 and Phase 5 gates) |
 | 2 | Brand system, UX/UI, design system | **READY FOR REVIEW** (2026-10-25): AC-2.1 to AC-2.4 met with evidence (acceptance record below). **Not approved, not complete.** | **owner sign-off of the visual direction (AC-2.5, P2-C)**; vector master still requested (D-11b, not an acceptance criterion) |
-| 3 | Foundation, auth, permissions, security | **IN PROGRESS** (started 2026-10-24) | step 3.1 needs the owner to create the `Smartgro` organisation, repository and push credential and to authorise the first push (D-31), and a dedicated MySQL user (R-14); staging needs the hosting decision (D-14); owner authorisation to implement OD-74 (`backoffice.access`) and an explicit Super Admin permission list (acceptance record below) |
+| 3 | Foundation, auth, permissions, security | **IN PROGRESS** (started 2026-10-24); all locally actionable work done and verified (round 25) | OD-74 decision and authorisation (`backoffice.access`); R-14 owner action; GitHub, CI and staging deferred until local completion (OD-79; R-21 and D-14 at handover) |
 | 4 | CMS, page builder, media, publishing | NOT STARTED | Phases 2, 3 |
 | 5 | Inventory, pricing, availability | NOT STARTED | Phase 3; entry gate: floors and real inventory, pricing values PR-1…PR-11 |
 | 6 | Public website | NOT STARTED | Phases 2, 4, 5 |
@@ -62,7 +62,7 @@
 
 | Field | Detail |
 |---|---|
-| Status | **IN PROGRESS** (started 2026-10-24). Acceptance record 2026-10-25 below: AC-3.1 and AC-3.5 blocked on owner inputs; AC-3.2 open for `backoffice.access` (OD-74). |
+| Status | **IN PROGRESS** (started 2026-10-24). Acceptance record updated in round 25 below: AC-3.3 and AC-3.4 pass; AC-3.2 passes for the built capabilities but is blocked for `backoffice.access` (OD-74); AC-3.1 and AC-3.5 deferred until local completion (OD-79). |
 | Scope | Back-office panel with custom theme and required MFA; the six owner-defined roles and the permission catalogue; user management; audit log; security headers and password policy; architecture tests; CI workflow; GitHub remote and staging (owner inputs) |
 | Dependencies | Phase 1 approved. Packages approved under D-24 (installed now: `spatie/laravel-permission`, `spatie/laravel-activitylog`). Redis client and Horizon wait until Redis is installed locally (ADR-0007). |
 | Steps | **3.1** GitHub organisation, private repository, push; dedicated MySQL user. *Owner actions needed: create the `Smartgro` organisation, repository and push credential, then authorise the push (D-31); run the setup script (R-14).* · **3.2** install approved packages · **3.3** Filament panel (configurable path, D-30), brand colours, custom theme · **3.4** users: active flag, panel access by role, required MFA · **3.5** roles and permission catalogue (six roles, OD-33) · **3.6** user management for the Super Admin · **3.7** audit log (logins, failures, user and role changes) and viewer · **3.8** security headers, password policy · **3.9** architecture tests · **3.10** CI workflow · **3.11** staging environment (needs D-14) |
@@ -72,18 +72,77 @@
 | Tests and results | 2026-10-24, local MySQL 8.4.11 (`smartgro_testing`): the Phase 3 test files (`tests/Feature/{Actions,Console,Filament,Http,Listeners,Models,Policies,Providers}`, `tests/Arch`) **100 passed, 0 failed**. Pint clean across the repository. Full suite (`php artisan test --compact`, including the concurrency harness): latest run 2026-10-25 (round 24), **310 passed, 0 failed (763 assertions, exit code 0)**. |
 | Known issues | Redis not installed locally (Horizon and the Redis client wait, ADR-0007). No hosting decision yet (D-14). Login throttling is Filament's 5 attempts per minute per IP address, which depends on correct trusted-proxy settings behind Cloudflare (open item in `../operations/DEPLOYMENT_RUNBOOK.md` §7). Content Security Policy is deferred to Phase 14. Back-office dark mode is off: the approved back-office theme is light (OD-48). Back-office access is by role membership until OD-74 is implemented; the Super Admin receives every capability automatically (SECURITY_MODEL §11.3). |
 
-### Phase 3 acceptance record (2026-10-25)
+### Phase 3 acceptance record (updated 2026-10-25, round 25)
 
-**Result: IN PROGRESS, blocked on owner inputs. Not READY FOR REVIEW.**
+**Result: IN PROGRESS. Not READY FOR REVIEW, not APPROVED, not COMPLETE.** All locally actionable Phase 3 work is done. Everything that remains is one of:
+* deferred by the owner (OD-79: GitHub and deployment wait until the application is fully developed and verified locally);
+* blocked on OD-74;
+* an owner action (R-14).
+
+Local checks passing are **not** the same as a green GitHub CI run or a staging deployment.
 
 | # | Criterion (source) | Evidence examined | Method | Result | Remaining action (owner) |
 |---|---|---|---|---|---|
-| AC-3.1 | CI runs Pint, MySQL tests, `composer audit` and `npm audit`, all green (master plan) | `.github/workflows/ci.yml` exists. Local runs of the same steps (latest 2026-10-25, round 24): Pint passed (exit code 0); 310 tests passed (exit code 0); `composer audit` no advisories (exit code 0); `npm audit --audit-level=high` 0 vulnerabilities (exit code 0); `npm run build` succeeded (exit code 0). | executed locally | **BLOCKED**: there is no remote repository, so CI has never run | **Owner:** create the `Smartgro` organisation, repository and push credential, then authorise the first push (D-31). The pre-push check found the GitHub name `smartgro` held by a personal user account (R-21); resolve that first. |
-| AC-3.2 | A policy test for every role × capability cell, allowed and denied (master plan) | `tests/Feature/Policies/*` cover all six roles for `users.manage` and `audit_log.view` | automated tests | **PASS** for the implemented capabilities. **OPEN** for `backoffice.access`: it is in the matrix (OD-74) but not implemented, and sign-in is still by role membership. | **Owner:** authorise implementing OD-74 and an explicit Super Admin permission list. This changes the sign-in path, so it needs explicit authorisation. |
-| AC-3.3 | MFA is enforced (master plan) | `tests/Feature/Providers/Filament/AdminPanelProviderTest.php`, `tests/Feature/Models/UserTest.php` | automated tests | **PASS** | — |
-| AC-3.4 | Audit entries for every sensitive action in SECURITY_MODEL §7 (master plan) | `tests/Feature/Listeners/RecordAuthenticationActivityTest.php`; user and role change tests; `tests/Feature/Actions/Access/SyncAccessControlTest.php` (role capability changes, added 2026-10-25) | automated tests | **PASS** for the §7 actions that exist in Phase 3. Until 2026-10-25, a role's capability changes made by `access:sync` were not audited; they are now. The other entries are added by the modules that introduce those actions. | — |
-| AC-3.5 | Staging deployed, reachable only by the team (master plan) | none | — | **BLOCKED** | **Owner:** hosting decision (D-14). |
-| 3.1 | Push to a private remote; dedicated MySQL user (master plan step 3.1) | none | — | **BLOCKED** | **Owner:** D-31 owner actions and push authorisation; run the R-14 setup script. |
+| AC-3.1 | CI runs Pint, MySQL tests, `composer audit` and `npm audit`, all green (master plan) | `.github/workflows/ci.yml` (valid; same steps). Local runs, round 25:<br>• Pint: exit code 0;<br>• tests: 320 passed, exit code 0;<br>• `composer audit`: no advisories, exit code 0;<br>• `npm audit --audit-level=high`: 0 vulnerabilities, exit code 0;<br>• `npm run build`: exit code 0. | executed locally | **DEFERRED** (OD-79): no remote, so CI has never run. Local results do not count as CI. | At handover: checklist G-1 to G-7 below. |
+| AC-3.2 | A policy test for every role × capability cell, allowed and denied (master plan) | `tests/Feature/Policies/*`, `ListUsersTest`, `ManageActivitiesTest`: all six roles, allowed and denied, for `users.manage` and `audit_log.view`. The policies check permissions, never role names. | code review and automated tests | **PASS** for the implemented capabilities. **BLOCKED** for `backoffice.access` (OD-74): `User::canAccessPanel()` still checks role membership. | Confirm the OD-74 role list and authorise implementation. |
+| AC-3.3 | MFA is enforced (master plan) | `AdminPanelProvider` (two-step login required: authenticator app with recovery codes, or email code); `AdminPanelProviderTest`; `LoginTest` (full sign-in through the password step and the emailed code) | code review and automated tests | **PASS** | — |
+| AC-3.4 | Audit entries for every sensitive action in SECURITY_MODEL §7 (master plan) | `RecordAuthenticationActivityTest`; tests for user, role, two-step and role-capability changes; `LoginTest` (wrong two-step code, added in round 25) | code review and automated tests | **PASS** for the §7 actions that exist in Phase 3 | — |
+| AC-3.5 | Staging deployed, reachable only by the team (master plan) | none | — | **DEFERRED** (OD-79); also needs D-14 | At handover: D-14. |
+| 3.1 | Push to a private remote (step 3.1) | no remote; destination conflict R-21 | read-only check | **DEFERRED** (OD-79); R-21 open | At handover. |
+| 3.1 | Dedicated MySQL user (R-14, step 3.1) | the local `.env` still connects as MySQL `root` | read-only check | **BLOCKED: owner action** | Run the setup script yourself, or decline (R-14). |
+| 3.11 | Staging environment (step 3.11) | — | — | **DEFERRED** (OD-79); needs D-14 | — |
+| — | Breached-password check (production only) | `AppServiceProvider` adds `uncompromised()` in production | code review | **NOT VERIFIED**: it runs only in production and calls an external service, so local tests do not exercise it | Verify on staging. |
+| — | Trusted proxies, production session settings, back-office network restriction (D-30) | `../operations/DEPLOYMENT_RUNBOOK.md` §7 | — | **DEFERRED** (OD-79); depend on D-14 | — |
+
+### Phase 3 local completion work (round 25, 2026-10-25)
+
+**Inspected:**
+* the panel provider;
+* `User` (panel access, hidden attributes, audit options);
+* the policies, access actions and console commands;
+* the authentication audit listener, security headers and password policy;
+* Filament's own login, two-step challenge and password-reset pages (vendor code);
+* every Phase 3 test.
+
+**Found and fixed:**
+1. **The "forgot password" page revealed which email addresses are staff accounts.**
+   * Before: an unknown address got "We can't find a user with that email address." and a recently used one "Please wait before retrying.". Only a success cleared the form.
+   * Now: `App\Filament\Pages\Auth\RequestPasswordReset` gives every request the same answer and an empty form. Reset links still go only to active staff.
+2. **A wrong two-step login code was not audited**, although §7 requires "login success and failure". Filament fires no event for it, unlike a wrong password.
+   * Now: `App\Filament\Pages\Auth\Login` records it as `two_factor_failed` through `App\Actions\Access\RecordFailedTwoStepLogin`. The entry holds the user, IP address and browser, never the code.
+   * In every other way the page behaves exactly as Filament's.
+
+Both pages are registered in `AdminPanelProvider`.
+
+**Verified correct, unchanged:**
+* two-step login is required, with recovery codes, and staff without it are sent to set it up;
+* "Signed in" is recorded only after the second step, and wrong passwords are audited without the password;
+* the password, remember token, authenticator secret and recovery codes are hidden from serialisation;
+* the policies are permission-based;
+* staff accounts cannot be deleted, and nobody can deactivate themselves or remove their own Super Admin role;
+* non-staff and deactivated staff get 403;
+* the login limit is 5 attempts a minute (now tested).
+
+**Tests added:** 10, in `tests/Feature/Filament/Pages/Auth/LoginTest.php` (5) and `RequestPasswordResetTest.php` (5). Each was checked by temporarily removing the fix it covers; the matching test failed every time.
+
+**Role-name checks remaining:**
+* `User::canAccessPanel()` (OD-74, blocked);
+* the Super Admin-only design-preview gate (Phase 2 tooling, never in production).
+
+### Deferred GitHub and deployment checklist (OD-79; for the final handover)
+
+| # | Task | Status | Blocker | Owner action |
+|---|---|---|---|---|
+| G-1 | Company-controlled GitHub organisation (D-31, OD-76, OD-78) | Deferred | R-21: the GitHub name `smartgro` is held by a personal user account, and no organisation `Smartgro` exists | Confirm the organisation's exact name and ownership |
+| G-2 | Private repository `smartgro` | Deferred | G-1 | Create it yourself (§5 checklist, OD-77) |
+| G-3 | Secure access: two owners if available, required two-factor authentication, least-privilege access, a repository-only push credential | Deferred | G-1, G-2 | Configure it yourself; never share credentials in chat |
+| G-4 | Final full-history and repository-content secret review | Deferred (last run 2026-10-25: clean) | — | Re-run immediately before the push (OD-77) |
+| G-5 | Remote configuration | Deferred | G-2, G-3 | Authorise |
+| G-6 | First push of `main` | Deferred | G-1 to G-5 | Explicit authorisation |
+| G-7 | GitHub Actions CI run and branch protection (AC-3.1) | Deferred | G-6 | — |
+| H-1 | Hosting provider, region, accounts, DNS and budget (D-14) | Deferred | owner decision | Decide |
+| H-2 | Staging environment with team-only access (AC-3.5, step 3.11, D-30) | Deferred | H-1, G-6 | — |
+| H-3 | Trusted proxies, production session settings, breached-password check verification | Deferred | H-1 | — |
 
 ### Phase 3 owner decision checklist (prepared 2026-10-25)
 
@@ -231,6 +290,7 @@ Scope, deliverables and acceptance criteria are defined in `PROJECT_MASTER_PLAN.
 
 | Date | Change |
 |---|---|
+| 2026-10-25 | Round 25 (Phase 3 local completion):<br>• Owner direction OD-79 recorded: GitHub and deployment are deferred until the application is fully developed and verified locally.<br>• Fixed: the password-reset page revealed which emails are staff accounts; a wrong two-step code was not audited. 10 tests added.<br>• Checks, all exit code 0: 320 tests passed (844 assertions, none skipped); Pint passed; `composer audit` no advisories; `npm audit --audit-level=high` 0 vulnerabilities; build passed.<br>• Acceptance record reclassified (PASS, BLOCKED, DEFERRED, NOT VERIFIED). Deferred GitHub and deployment checklist added.<br>• Not committed. Phase 3 stays IN PROGRESS. |
 | 2026-10-25 | Round 24 (Phase 3 finalisation audit):<br>• Re-verified on MySQL, all exit code 0: Pint passed; 310 tests passed (763 assertions); `composer audit` no advisories; `npm audit --audit-level=high` 0 vulnerabilities; `npm run build` passed.<br>• Recorded the round-23 pre-push findings: GitHub has no organisation `Smartgro`; the name is held by a personal user account (R-21); no push credential is visible here.<br>• Updated stale statements in the deployment runbook and system architecture.<br>• No code, permission, sign-in or schema change. Not committed. Phase 3 stays IN PROGRESS. |
 | 2026-10-25 | Round 22:<br>• D-31 organisation and owner confirmed by the owner (OD-78): organisation `Smartgro`, legal owner Smart Gro Services Private Limited.<br>• D-31 stays open: the owner creates the organisation, repository and push credential; the first push is not authorised.<br>• Documentation only, not committed. Phase 3 stays IN PROGRESS. |
 | 2026-10-25 | Round 21:<br>• The owner approved the D-31 setup checklist wording (OD-77), including two additions: re-check the history and contents for secrets immediately before pushing; keep `CLAUDE.md` out of commits unless authorised.<br>• D-31 is still unresolved: no organisation name selected, no legal owner, repository creation and push not authorised.<br>• Documentation only. Phase 3 stays IN PROGRESS. |

@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Login;
+use App\Filament\Pages\Auth\RequestPasswordReset;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -38,8 +40,8 @@ class AdminPanelProvider extends PanelProvider
             ) ? '6rem' : '3rem')
             ->darkMode(false)
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->login()
-            ->passwordReset()
+            ->login(Login::class)
+            ->passwordReset(RequestPasswordReset::class)
             ->profile(isSimple: false)
             ->multiFactorAuthentication([
                 AppAuthentication::make()->recoverable(),

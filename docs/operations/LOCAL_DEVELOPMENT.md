@@ -122,6 +122,8 @@ Booking-domain tests (T-BK-*, `../testing/TEST_STRATEGY.md` §8) reuse this harn
 
 ## 5. Connecting the private GitHub remote (owner action)
 
+**Deferred (OD-79, 2026-10-25):** no GitHub work happens until the application is fully developed and verified locally. The steps below are kept for the final handover.
+
 The GitHub CLI is not installed on this machine and no SSH key exists yet. Local version control works without a remote. Choose **one** option.
 
 **Repository owner (D-31):** a GitHub **organisation**, not a personal account (OD-29): organisation `Smartgro`, owned by **Smart Gro Services Private Limited** (OD-78, 2026-10-25).
