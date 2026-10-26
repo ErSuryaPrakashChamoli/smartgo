@@ -462,6 +462,13 @@ Source: the owner's decisions OD-74 and OD-75, with IDs given by the owner, answ
 |---|---|
 | OD-101 | **One local commit authorised** for the withdrawn-consent implementation, its tests, migration and documentation, after review and safe verification. The review before the commit fixed two defects (see PHASE_STATUS, round 35). **Applying the migration to `smart_go` is not authorised**; it runs only on the test database and, later, on databases the owner chooses. **OD-100 unchanged:** tracking stays disabled. **Phase 4 is not accepted.** The legal evidence policy stays open for the owner and counsel (§0.33). |
 
+
+### 0.35 Owner decisions — 2026-10-26 (round 36): development database
+
+| ID | Decision |
+|---|---|
+| OD-102 | **`smart_go` keeps the OD-101 migration.** At 16:21:53 a command run outside Claude's session (a terminal command, by the GNOME session log; the actor is not identified) applied `2026_10_26_101929_add_consent_withdrawal_to_testimonials_and_case_studies` to `smart_go` as batch 9, although applying it there was not authorised (§0.34). It only added two empty, nullable columns to two empty tables. The owner chose to keep it, so the development database matches the committed code. No rollback was run. |
+
 ---
 
 ## 1. Decisions
