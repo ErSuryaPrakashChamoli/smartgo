@@ -22,6 +22,29 @@
             <div class="flex flex-col gap-4">
                 <x-site.brand-logo size="lg" class="self-start" />
                 <p class="max-w-xs text-sm text-muted">Coworking and managed workspaces in Noida, Delhi NCR.</p>
+                @if (($navigation['contact'] ?? []) !== [])
+                    <dl class="flex flex-col gap-2 text-sm">
+                        @foreach ($navigation['contact'] as $detail)
+                            <div>
+                                <dt class="sr-only">{{ $detail['label'] }}</dt>
+                                <dd class="text-muted">
+                                    @if ($detail['href'])
+                                        <a href="{{ $detail['href'] }}" class="hover:text-leaf-700">{{ $detail['label'] === 'WhatsApp' ? 'WhatsApp '.$detail['text'] : $detail['text'] }}</a>
+                                    @else
+                                        <span class="whitespace-pre-line">{{ $detail['text'] }}</span>
+                                    @endif
+                                </dd>
+                            </div>
+                        @endforeach
+                    </dl>
+                @endif
+                @if (($navigation['social'] ?? []) !== [])
+                    <ul aria-label="SmartGro on social networks" class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+                        @foreach ($navigation['social'] as $link)
+                            <li><a href="{{ $link['href'] }}" rel="me noopener" class="font-medium text-forest hover:text-leaf-700">{{ $link['label'] }}</a></li>
+                        @endforeach
+                    </ul>
+                @endif
             </div>
             @foreach ($columns as $column)
                 <nav aria-label="{{ $column['label'] }}" class="flex flex-col gap-3">

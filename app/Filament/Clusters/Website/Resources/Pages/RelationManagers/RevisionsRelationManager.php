@@ -94,7 +94,7 @@ class RevisionsRelationManager extends RelationManager
                     ->icon(Heroicon::OutlinedEye)
                     ->iconButton()
                     ->color('gray')
-                    ->visible(fn (Revision $record): bool => Gate::allows('view', $record))
+                    ->visible(fn (Revision $record): bool => RevisionPreviewController::isAvailableFor($record) && Gate::allows('view', $record))
                     ->url(fn (Revision $record): string => RevisionPreviewController::url($record), shouldOpenInNewTab: true),
                 Action::make('restore')
                     ->label('Restore')

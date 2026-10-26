@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 /**
  * The website's menus (FR-CMS-4): header links, header buttons, footer columns and legal links. Every
@@ -28,6 +29,8 @@ class NavigationMenuResource extends Resource
     protected static ?string $cluster = WebsiteCluster::class;
 
     protected static ?string $navigationLabel = 'Navigation';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Site setup';
 
     protected static ?string $modelLabel = 'menu';
 

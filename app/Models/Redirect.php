@@ -11,14 +11,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * A live redirect (DATABASE_ERD §7). Only approved changes reach this table: a published page's
- * change of address (BR-CMS-6) now, and redirects made by hand after their own approval in step 4.6
- * (OD-66, BR-CMS-9). Targets are always paths on this website.
+ * change of address (BR-CMS-6, source `automatic`), and redirects made by hand after their own
+ * approval and publication (OD-66, BR-CMS-9, source `manual`). Targets are always paths on this website.
  */
 #[Fillable(['from_path', 'match_type', 'to_path', 'status_code'])]
 class Redirect extends Model
 {
     /** @use HasFactory<RedirectFactory> */
     use HasFactory;
+
+    public const string SOURCE_AUTOMATIC = 'automatic';
+
+    public const string SOURCE_MANUAL = 'manual';
 
     /**
      * @return array<string, string>

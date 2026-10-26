@@ -33,13 +33,14 @@ use Livewire\Attributes\On;
 use Spatie\Activitylog\Models\Activity;
 
 /**
- * The revision workflow on an edit page of publishable content (pages, menus). The form shows the
- * version being worked on, or the live content when there is none, and can be changed only while that
- * version is a draft the user may edit. Every button runs a workflow action that checks permission and
- * state again on the server under a lock, so hiding or disabling a button is only a convenience.
+ * The revision workflow on an edit page of publishable content (pages, menus, posts, settings,
+ * redirects). The form shows the version being worked on, or the live content when there is none,
+ * and can be changed only while that version is a draft the user may edit. Every button runs a
+ * workflow action that checks permission and state again on the server under a lock, so hiding or
+ * disabling a button is only a convenience.
  *
- * The page using it implements formDataFromPayload() and may override contentNoun() and
- * workflowExtraNotice().
+ * The page using it implements formDataFromPayload() and may override contentNoun(), approvalLabel()
+ * and workflowExtraNotice().
  */
 trait HasRevisionWorkflow
 {
@@ -63,6 +64,14 @@ trait HasRevisionWorkflow
     protected function contentNoun(): string
     {
         return 'page';
+    }
+
+    /**
+     * The approval button's label ("Verify" for legal details, OD-55).
+     */
+    protected function approvalLabel(): string
+    {
+        return 'Approve';
     }
 
     /**
@@ -179,7 +188,7 @@ trait HasRevisionWorkflow
                 ->label('Preview')
                 ->icon(Heroicon::OutlinedEye)
                 ->color('gray')
-                ->visible(fn (): bool => $this->workingRevision() !== null && Gate::allows('view', $this->workingRevision()))
+                ->visible(fn (): bool => $this->workingRevision() !== null && RevisionPreviewController::isAvailableFor($this->workingRevision()) && Gate::allows('view', $this->workingRevision()))
                 ->url(fn (): ?string => $this->workingRevision() === null ? null : RevisionPreviewController::url($this->workingRevision()), shouldOpenInNewTab: true),
             ...$extraActions,
             $this->workflowAction('submit', 'submit', RevisionState::Draft)
@@ -195,11 +204,11 @@ trait HasRevisionWorkflow
                     app(SubmitRevision::class)->handle($this->workingRevisionOrFail(), $user);
                 }, 'Submitted for approval')),
             $this->workflowAction('approve', 'approve', RevisionState::Submitted)
-                ->label('Approve')
+                ->label(fn (): string => $this->approvalLabel())
                 ->icon(Heroicon::OutlinedCheckCircle)
                 ->color('success')
                 ->requiresConfirmation()
-                ->modalDescription('Check the preview first. One approval is enough. You will not be able to publish or schedule this version yourself.')
+                ->modalDescription(fn (): string => ($this->workingRevision() === null || RevisionPreviewController::isAvailableFor($this->workingRevision()) ? 'Check the preview first. ' : 'Check every value above first. ').'One approval is enough. You will not be able to publish or schedule this version yourself.')
                 ->action(fn () => $this->runStep(fn (User $user) => app(ApproveRevision::class)->handle($this->workingRevisionOrFail(), $user), 'Version approved')),
             $this->workflowAction('reject', 'reject', RevisionState::Submitted)
                 ->label('Reject')
@@ -348,7 +357,7 @@ trait HasRevisionWorkflow
             return $notice(
                 "Draft: version {$revision->number}",
                 ($this->canChangeDraft()
-                    ? 'Save your changes, preview them, then submit the draft for approval. Fields marked * must be filled before you submit.'
+                    ? (RevisionPreviewController::isAvailableFor($revision) ? 'Save your changes, preview them, then submit the draft for approval.' : 'Save your changes, then submit the draft for approval.').' Fields marked * must be filled before you submit.'
                     : 'You cannot change this draft: '.Gate::inspect('update', $revision)->message()).' '.$extra,
                 Heroicon::OutlinedPencilSquare,
                 'gray',

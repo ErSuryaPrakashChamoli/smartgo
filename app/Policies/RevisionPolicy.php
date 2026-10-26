@@ -24,9 +24,15 @@ class RevisionPolicy
         return $user->is_active ? null : Response::deny('This account is deactivated.');
     }
 
+    /**
+     * Listing versions, which only happens inside an editor the user may already open.
+     */
     public function viewAny(User $user): bool
     {
-        return $user->can(Capability::ViewContent);
+        return collect([
+            Capability::ViewContent, Capability::ManageContactSettings, Capability::ManageBrand,
+            Capability::ManageTracking, Capability::ViewLegalSettings, Capability::ManageRedirects,
+        ])->contains(fn (Capability $capability): bool => $user->can($capability));
     }
 
     /**

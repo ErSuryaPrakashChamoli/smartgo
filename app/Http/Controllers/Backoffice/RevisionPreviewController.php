@@ -8,7 +8,9 @@ use App\Models\Faq;
 use App\Models\NavigationMenu;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\RedirectMap;
 use App\Models\Revision;
+use App\Models\SiteSetting;
 use App\Models\Testimonial;
 use App\Services\Content\BlockLibrary;
 use App\Services\Content\PageRenderer;
@@ -31,6 +33,15 @@ class RevisionPreviewController extends Controller
     public const string ROUTE = 'filament.admin.content.revisions.preview';
 
     public const int LIFETIME_MINUTES = 30;
+
+    /**
+     * Whether the version can be shown as a website page. Settings and the redirect list are reviewed
+     * in their editor instead.
+     */
+    public static function isAvailableFor(Revision $revision): bool
+    {
+        return ! in_array($revision->revisionable_type, [(new SiteSetting)->getMorphClass(), (new RedirectMap)->getMorphClass()], true);
+    }
 
     public static function url(Revision $revision): string
     {
