@@ -415,7 +415,16 @@ Source: the owner's decisions OD-74 and OD-75, with IDs given by the owner, answ
 | ID | Decision |
 |---|---|
 | OD-90 | **Commit step 4.2** (owner's words: "commit step 4.2"). Committed locally with explicit paths; not pushed (OD-79, OD-80). |
-| OD-91 | **Step 4.3 is not committed in its run** (owner's brief for step 4.3: "Do not commit changes without separate authorisation"; "Do not commit, push, deploy, or start Step 4.4 during this run"). |
+| OD-91 | **Step 4.3 is not committed in its run** (owner's brief for step 4.3: "Do not commit changes without separate authorisation"; "Do not commit, push, deploy, or start Step 4.4 during this run"). **Closed by OD-95.** |
+
+### 0.30 Owner decisions — 2026-10-26 (round 31): accelerate Phase 4
+
+| ID | Decision |
+|---|---|
+| OD-92 | **Navigation limits confirmed:** main menu 7 items; header buttons 2; footer 4 columns of up to 10 links; legal links 8; each main-menu group 12 links; one level of nesting; labels 40 characters; addresses 2,048 characters. **They stay in code** (`NavigationMenu::STRUCTURES`, enforced server-side by `NavigationPayload` and mirrored by the editor). **Trade-off:** changing a limit needs a code change and a release; in exchange there is one source of truth for the server and the editor and no settings screen to secure. They can move to configuration later if the business needs it. |
+| OD-93 | **Canonical URLs stay automatic** (`APP_URL` + the published address), with no manual override. The production HTTPS `APP_URL` requirement is in DEPLOYMENT_RUNBOOK §3. The automatic description never exceeds 160 characters including the ellipsis (regression test added). |
+| OD-94 | **Work faster within the approved requirements.** Claude makes reasonable, reversible engineering decisions without asking, records assumptions here, and completes Phase 4 steps 4.4 to 4.8 in order. Claude stops and asks before anything affecting legal compliance, security, production data, external spending or an irreversible operation, and never invents company facts, testimonials, prices, availability, legal statements or contact details. |
+| OD-95 | **Commit step 4.3 locally** after the SEO fix, a safe test rerun and a diff review; stage only step 4.3 files; never push, fetch, pull, access GitHub, change remotes or deploy. **Interpretation:** the owner's brief sets no general no-commit rule for steps 4.4 to 4.8, so OD-87 (one local commit per verified step, never pushed) applies to them again. |
 
 ---
 

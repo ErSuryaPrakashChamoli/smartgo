@@ -2,11 +2,14 @@
     'homeHref' => '/',
     'categories' => [],
     'properties' => [],
+    'navigation' => null,
 ])
 
 {{--
     Menus use the native Popover API: the browser handles opening, closing on Escape or an outside
     click, and the expanded state, so marketing pages ship no framework JavaScript (NFR-PERF-2).
+    $navigation (App\Services\Content\SiteNavigation) holds the published menus; without it the
+    Phase 2 design previews show their sample menus.
 --}}
 <header {{ $attributes->class(['sticky top-0 z-40 border-b border-line bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/85']) }}>
     <div class="container-page flex h-18 items-center justify-between gap-6 lg:h-20">
@@ -14,6 +17,8 @@
             <x-site.brand-logo />
         </a>
 
+        @if ($navigation === null)
+            {{-- Phase 2 design preview: sample menus with placeholder links (never served in production). --}}
         <nav aria-label="Main" class="hidden lg:block">
             <ul class="flex items-center gap-1">
                 <li>
@@ -91,8 +96,12 @@
             <x-heroicon-m-bars-3 class="size-5" aria-hidden="true" />
             Menu
         </button>
+        @else
+            <x-site.navigation.bar :items="$navigation['main']" :actions="$navigation['actions']" />
+        @endif
     </div>
 
+    @if ($navigation === null)
     <div
         id="mobile-menu"
         popover
@@ -142,4 +151,7 @@
             </div>
         </nav>
     </div>
+    @else
+        <x-site.navigation.sheet :items="$navigation['main']" :actions="$navigation['actions']" />
+    @endif
 </header>

@@ -89,18 +89,49 @@ class ContentLink
         return $href === null ? null : ['label' => (string) $link['label'], 'href' => $href, 'external' => ($link['type'] ?? null) === self::TO_URL];
     }
 
+    /**
+     * An https address on another website. Addresses on this website are refused: pages are picked from
+     * the list, so a change of address never breaks the link and no back-office or preview link is
+     * ever published.
+     */
     public function isSafeExternalUrl(string $url): bool
     {
-        return str_starts_with(strtolower(trim($url)), 'https://') && $this->richText->isSafeLink($url);
+        return str_starts_with(strtolower(trim($url)), 'https://') && $this->richText->isSafeLink($url) && ! $this->isOwnSite($url);
     }
 
-    private function safeUrlRule(): Closure
+    public function isOwnSite(string $url): bool
+    {
+        $host = strtolower((string) parse_url(trim($url), PHP_URL_HOST));
+        $ownHost = strtolower((string) parse_url((string) config('app.url'), PHP_URL_HOST));
+
+        return $host !== '' && $ownHost !== '' && preg_replace('/^www\./', '', $host) === preg_replace('/^www\./', '', $ownHost);
+    }
+
+    public function safeUrlRule(): Closure
     {
         return function (string $attribute, mixed $value, Closure $fail): void {
-            if (filled($value) && (! is_string($value) || ! $this->isSafeExternalUrl($value))) {
+            if (blank($value)) {
+                return;
+            }
+
+            if (is_string($value) && $this->isOwnSite($value)) {
+                $fail('Pick the page from the list instead of typing an address on this website.');
+            } elseif (! is_string($value) || ! $this->isSafeExternalUrl($value)) {
                 $fail('The web address must be a full https:// address.');
             }
         };
+    }
+
+    /**
+     * Addresses of the given pages that are published, keyed by page ID.
+     *
+     * @param  list<int>  $pageIds
+     * @return array<int, string>
+     */
+    public function publishedPagePaths(array $pageIds): array
+    {
+        return $pageIds === [] ? [] : Page::query()->whereKey(array_unique($pageIds))->where('status', 'published')
+            ->pluck('slug', 'id')->map(fn (string $slug): string => '/'.$slug)->all();
     }
 
     private function publishedPagePath(mixed $pageId): ?string

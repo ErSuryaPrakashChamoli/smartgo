@@ -42,7 +42,7 @@ class PagePayload
      * Returns the payload as it is stored: only page fields, blocks as a list, rich text sanitised.
      *
      * @param  array<string, mixed>  $payload
-     * @return array{title: ?string, slug: ?string, template: string, blocks: list<array{type: string, data: array<string, mixed>}>}
+     * @return array{title: ?string, slug: ?string, template: string, blocks: list<array{type: string, data: array<string, mixed>}>, seo: array{title: ?string, description: ?string, indexable: bool}}
      *
      * @throws ValidationException
      */
@@ -58,6 +58,10 @@ class PagePayload
             'title' => [$required, 'string', 'max:120'],
             'slug' => [$required, 'string', 'max:150', 'regex:'.self::SLUG_PATTERN, $this->notReservedRule(), Rule::unique('pages', 'slug')->ignore($page->getKey())],
             'template' => ['required', Rule::in(self::TEMPLATES)],
+            'seo' => ['nullable', 'array:title,description,indexable'],
+            'seo.title' => ['nullable', 'string', 'max:60', 'not_regex:/[<>]/'],
+            'seo.description' => ['nullable', 'string', 'max:160', 'not_regex:/[<>]/'],
+            'seo.indexable' => ['nullable', 'boolean'],
             ...$blockRules,
             ...($forSubmission ? ['blocks' => [...$blockRules['blocks'], 'min:1']] : []),
         ], [
@@ -67,9 +71,13 @@ class PagePayload
             'blocks.min' => 'Add at least one section.',
             'blocks.max' => 'A page can have at most '.BlockLibrary::MAX_BLOCKS.' sections.',
             'blocks.*.type.in' => 'This kind of section is not available.',
+            'seo.title.not_regex' => 'Use plain text: < and > are not allowed.',
+            'seo.description.not_regex' => 'Use plain text: < and > are not allowed.',
         ], [
             'title' => 'page title',
             'slug' => 'page address',
+            'seo.title' => 'title in search results',
+            'seo.description' => 'description in search results',
             ...$blockAttributes,
         ])->validate();
 
@@ -78,6 +86,11 @@ class PagePayload
             'slug' => $validated['slug'] ?? null,
             'template' => $validated['template'],
             'blocks' => $this->blockLibrary->normalize($validated['blocks'] ?? []),
+            'seo' => [
+                'title' => $validated['seo']['title'] ?? null,
+                'description' => $validated['seo']['description'] ?? null,
+                'indexable' => (bool) ($validated['seo']['indexable'] ?? true),
+            ],
         ];
     }
 

@@ -67,6 +67,22 @@ it('saves changes to the draft and never to the live page', function () {
         ->and($this->page->fresh())->title->toBeNull()->status->toBe('draft');
 });
 
+it('saves the search-engine fields with the draft', function () {
+    actingAs($this->author);
+    $undoBuilderFake = Builder::fake();
+
+    pageEditor($this->page)
+        ->assertSchemaStateSet(['seo.indexable' => true])
+        ->fillForm(['seo' => ['title' => 'About SmartGro | Coworking in Noida', 'description' => 'Who we are.', 'indexable' => false]])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    $undoBuilderFake();
+
+    expect($this->draft->fresh()->payload['seo'])->toEqual(['title' => 'About SmartGro | Coworking in Noida', 'description' => 'Who we are.', 'indexable' => false])
+        ->and($this->page->fresh()->seo)->toBeNull();
+});
+
 it('shows a server-side error on the exact field, with the form\'s own item keys', function () {
     $unsafe = [...editorPayload('About SmartGro'), 'blocks' => [['type' => 'cta', 'data' => ['eyebrow' => null, 'heading' => 'Go', 'text' => null, 'primary_link' => ['label' => 'Click', 'type' => 'url', 'page_id' => null, 'url' => 'javascript:alert(1)'], 'secondary_link' => null]]]];
     $this->draft->forceFill(['payload' => $unsafe])->save();

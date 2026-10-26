@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Validation\ValidationException;
 
@@ -51,6 +52,16 @@ class Page extends Model implements Revisionable
     }
 
     /**
+     * The live search-engine metadata, written when a version is published.
+     *
+     * @return MorphOne<SeoMetadata, $this>
+     */
+    public function seo(): MorphOne
+    {
+        return $this->morphOne(SeoMetadata::class, 'seoable');
+    }
+
+    /**
      * @param  Builder<self>  $query
      */
     public function scopePublished(Builder $query): void
@@ -83,7 +94,16 @@ class Page extends Model implements Revisionable
 
     public function toRevisionPayload(): array
     {
-        return $this->only(self::CONTENT_FIELDS);
+        $seo = $this->seo()->first();
+
+        return [
+            ...$this->only(self::CONTENT_FIELDS),
+            'seo' => [
+                'title' => $seo?->meta_title,
+                'description' => $seo?->meta_description,
+                'indexable' => $seo?->isIndexable() ?? true,
+            ],
+        ];
     }
 
     public function prepareRevisionPayload(array $payload, bool $forSubmission): array
@@ -92,8 +112,8 @@ class Page extends Model implements Revisionable
     }
 
     /**
-     * Puts the version live and, when a published page changes address, redirects the old address
-     * (BR-CMS-6). Runs inside the publishing transaction with this row locked.
+     * Puts the version live with its search-engine metadata and, when a published page changes address,
+     * redirects the old address (BR-CMS-6). Runs inside the publishing transaction with this row locked.
      *
      * @throws ValidationException when another page already uses the version's address
      */
@@ -116,6 +136,13 @@ class Page extends Model implements Revisionable
         } catch (UniqueConstraintViolationException) {
             throw ValidationException::withMessages(['slug' => 'Another page already uses this address.']);
         }
+
+        $seo = $revision->payload['seo'] ?? [];
+        $this->seo()->updateOrCreate([], [
+            'meta_title' => $seo['title'] ?? null,
+            'meta_description' => $seo['description'] ?? null,
+            'robots' => ($seo['indexable'] ?? true) ? SeoMetadata::INDEX : SeoMetadata::NOINDEX,
+        ]);
 
         app(RedirectMovedPage::class)->handle($this, $previousPath, $revision);
     }

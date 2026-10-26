@@ -5,7 +5,9 @@ namespace App\Filament\Clusters\Website\Resources\Pages\Schemas;
 use App\Services\Content\BlockLibrary;
 use App\Services\Content\PagePayload;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -46,6 +48,26 @@ class PageForm
                             ->addActionLabel('Add section')
                             ->blockNumbers()
                             ->collapsible(),
+                    ]),
+                Section::make('Search engines')
+                    ->description('Published together with the page. Leave a field empty to use the page title or the introduction.')
+                    ->statePath('seo')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('title')
+                            ->label('Title in search results')
+                            ->maxLength(60)
+                            ->helperText('Up to 60 characters. Plain text.'),
+                        Toggle::make('indexable')
+                            ->label('Allow search engines to index this page')
+                            ->default(true)
+                            ->inline(false),
+                        Textarea::make('description')
+                            ->label('Description in search results')
+                            ->maxLength(160)
+                            ->rows(2)
+                            ->helperText('Up to 160 characters. Plain text.')
+                            ->columnSpanFull(),
                     ]),
             ]);
     }

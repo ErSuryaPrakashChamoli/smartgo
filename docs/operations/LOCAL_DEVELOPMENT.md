@@ -83,7 +83,7 @@ Optional hardening: `chmod 600 .env .env.backup`. Skip this if a separate web-se
 | View the Phase 2 design previews (never served in production) | open `/design` on the local server |
 | View the back-office design previews (Super Admin only, never in production) | open `/admin/design-previews` |
 | Give an existing user a staff role | `php artisan access:assign-role <email> <role>` |
-| Website pages (Phase 4) | open `/admin/website/pages` (needs `content.view`) |
+| Website pages and menus (Phase 4) | open `/admin/website/pages` and `/admin/website/navigation-menus` (need `content.view`) |
 | Publish scheduled pages while developing | `php artisan schedule:work` (runs `content:publish-scheduled` every minute), or once with `php artisan content:publish-scheduled` |
 
 ### Back office (Phase 3)
@@ -96,6 +96,10 @@ The staff back office is a Filament panel at `/{BACKOFFICE_PATH}` (default `/adm
 4. Open the back office and sign in. Two-step login is required: set up an authenticator app (save the recovery codes) or email codes. With `MAIL_MAILER=log`, email codes are written to `storage/logs/laravel.log`.
 
 Other staff accounts are then created in **Settings → Staff users**. After pulling the Phase 4 content work, run `php artisan migrate` and `php artisan access:sync` again: it adds the `content.*` permissions to the Super Admin and Marketing Manager. Times in the back office are shown in India Standard Time (`BACKOFFICE_TIMEZONE`, default `Asia/Kolkata`); the database stores UTC. Only active users with a staff role **and** the `backoffice.access` permission can enter (OD-74, since 2026-10-26). All six roles receive the permission through `php artisan access:sync`, so run it after pulling this change. The audit log is at **Settings → Audit log**.
+
+### Cached configuration and routes
+
+Do not run `php artisan optimize`, `config:cache` or `route:cache` in this working copy while developing or testing. On 2026-10-26 a run outside the development session cached the configuration and routes. The cached configuration pointed the tests at `smart_go` (the `*_testing` guard in `tests/TestCase.php` refused them, so nothing was harmed), and the cached routes hid route changes from the tests. If `bootstrap/cache/config.php`, `routes-v7.php` or `events.php` exists, run `php artisan config:clear`, `php artisan route:clear` and `php artisan event:clear` before testing. Caching belongs to deployment (`DEPLOYMENT_RUNBOOK.md`).
 
 ### MySQL concurrency harness
 

@@ -1,5 +1,13 @@
 {{-- A published page, or a staff preview of one of its versions (BR-CMS-4): the same view renders both. --}}
-<x-layouts::site :title="$title" :noindex="$preview !== null">
+<x-layouts::site
+    :title="$title"
+    :meta-title="$metaTitle"
+    :description="$metaDescription"
+    :noindex="$preview !== null"
+    :robots="$robots"
+    :canonical="$canonical"
+    :navigation="$navigation"
+>
     @if ($preview !== null)
         <x-slot:banner>
             <x-site.revision-preview-banner :number="$preview['number']" :state="$preview['state']" :expires-at="$preview['expires_at']" />
