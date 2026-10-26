@@ -1,0 +1,18 @@
+{{-- A published page, or a staff preview of one of its versions (BR-CMS-4): the same view renders both. --}}
+<x-layouts::site :title="$title" :noindex="$preview !== null">
+    @if ($preview !== null)
+        <x-slot:banner>
+            <x-site.revision-preview-banner :number="$preview['number']" :state="$preview['state']" :expires-at="$preview['expires_at']" />
+        </x-slot:banner>
+    @endif
+
+    @unless ($startsWithIntroduction)
+        <div class="container-page pt-12 pb-2 sm:pt-16">
+            <h1 class="max-w-4xl font-display text-display-xl font-semibold text-balance text-forest">{{ $title }}</h1>
+        </div>
+    @endunless
+
+    @foreach ($blocks as $block)
+        <x-dynamic-component :component="$block['component']" :data="$block['data']" />
+    @endforeach
+</x-layouts::site>

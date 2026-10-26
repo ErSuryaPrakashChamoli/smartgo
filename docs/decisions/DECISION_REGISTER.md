@@ -403,6 +403,20 @@ Source: the owner's decisions OD-74 and OD-75, with IDs given by the owner, answ
 | OD-86 | **Claude may run additive migrations on the local development database `smart_go`** after tests pass. Tests keep running on `smartgro_testing`. |
 | OD-87 | **Phase 4 work is committed locally, one commit per verified step**, with explicit file paths, and is never pushed (OD-79, OD-80). Interpretation: this also covers the already-verified OD-74 work and the decision records of rounds 26 and 27, because they share documents with the Phase 4 commits. |
 
+### 0.28 Owner directions — 2026-10-26 (round 29): brief for Phase 4 step 4.2
+
+| ID | Decision |
+|---|---|
+| OD-88 | **Restoring an earlier version creates a new revision that goes through approval and publication** (owner's brief, §9: "Restoration must create a new revision based on the selected historical content; it must not mutate or delete historical revisions … the restored version must go through the required approval and publication workflow"). The person restoring may not be the approver of the version being restored. **Supersedes** BR-CMS-3's "rolling back republishes a previous revision" and ADR-0005's "rollback is republish revision N"; the step 4.1 direct-republish action is removed. **Interpretation:** the restored version's original author and editors count as editors of the new draft, so none of them approves their own words (as for OD-55). |
+| OD-89 | **Step 4.2 is not committed in this run** (owner's brief: "Do not commit changes without separate owner authorisation"; "Do not commit, push, deploy, or begin Phase 4.3 during this run"). This overrides OD-87 for step 4.2 until the owner authorises a commit. **Closed by OD-90.** |
+
+### 0.29 Owner directions — 2026-10-26 (round 30)
+
+| ID | Decision |
+|---|---|
+| OD-90 | **Commit step 4.2** (owner's words: "commit step 4.2"). Committed locally with explicit paths; not pushed (OD-79, OD-80). |
+| OD-91 | **Step 4.3 is not committed in its run** (owner's brief for step 4.3: "Do not commit changes without separate authorisation"; "Do not commit, push, deploy, or start Step 4.4 during this run"). |
+
 ---
 
 ## 1. Decisions

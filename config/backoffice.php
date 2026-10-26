@@ -14,4 +14,17 @@ return [
 
     'path' => env('BACKOFFICE_PATH', 'admin'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Back Office Time Zone
+    |--------------------------------------------------------------------------
+    |
+    | Times staff enter and read in the back office, such as scheduled
+    | publication. The application stores every time in UTC; SmartGro works
+    | in India Standard Time.
+    |
+    */
+
+    'timezone' => env('BACKOFFICE_TIMEZONE', 'Asia/Kolkata'),
+
 ];

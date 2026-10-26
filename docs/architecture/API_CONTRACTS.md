@@ -241,6 +241,21 @@ These signatures are what other modules may call (`SYSTEM_ARCHITECTURE.md` §3).
 | `Inventory\AllocateSpace` | space or seat, agreement data, actor | allocation | `OverAllocation` |
 | `Inventory\ImportInventoryWorkbook` | import record (approved) | commit summary | `ImportStale`, validation issues |
 | `Crm\CaptureLead` | contact data, context, attribution, consent | lead (created or updated) | — |
-| `Content\Publish` | revision, actor | published model | `NotApproved`, `SelfApprovalNotAllowed`, `ApproverCannotPublish` (OD-65) |
+| `Content\CreateDraft` | publishable item, actor, payload (optional), earlier version to copy (optional) | revision (`draft`) | refusal: no `content.edit`; validation: a version is already in progress, unsafe payload |
+| `Content\UpdateDraft` | revision, actor, payload | revision | refusal: not a draft, no `content.edit`; validation: unsafe payload |
+| `Content\SubmitRevision` | revision, actor | revision (`submitted`) | refusal: not a draft, actor did not work on it; validation: incomplete payload |
+| `Content\ApproveRevision` / `RejectRevision` | revision, actor (and a note to reject) | revision (`approved` / `rejected`) | refusal: actor edited the version (OD-65), no `content.approve`; validation: missing note |
+| `Content\PublishRevision` | revision, actor | revision (`published`); live record updated; old address redirected (BR-CMS-6) | refusal: not approved, actor is the approver (OD-65); validation: address now taken or content no longer valid |
+| `Content\ScheduleRevision` / `UnscheduleRevision` | revision, actor, time | revision | refusal: as for publishing; validation: time not in the next year |
+| `Content\RestoreRevision` | earlier published revision, actor | new revision (`draft`) with the earlier content (OD-88) | refusal: actor approved that version, not previously published; validation: a version is already in progress |
+
+Refusals are `AuthorizationException`s with a readable message; validation failures are `ValidationException`s keyed by payload path (for example `blocks.2.data.items.0.answer`). Every content action re-reads the revision under a row lock before deciding.
 
 Domain events emitted after commit are listed in `INTEGRATION_CONTRACTS.md` §4.
+
+### 5.1 Content web routes (Phase 4 step 4.2)
+
+| Route | Who | Behaviour |
+|---|---|---|
+| `GET /{path}` (fallback: only paths no other route claims) | anyone | A published page at that address, else a live redirect (301/302 to a path on this site, or 410), else 404. Drafts and unpublished pages are never served. |
+| `GET /{BACKOFFICE_PATH}/content/revisions/{revision}/preview?expires=…&signature=…` | signed-in staff with two-step login, back-office access and `content.view` | Renders the version with the public page view. The link expires after 30 minutes. Responses carry `X-Robots-Tag: noindex, nofollow`, `Cache-Control: no-store, private` and `Referrer-Policy: no-referrer`; nothing is written. |

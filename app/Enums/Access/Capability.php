@@ -17,12 +17,15 @@ enum Capability: string
     case ManageUsers = 'users.manage';
     case ViewAuditLog = 'audit_log.view';
 
-    /** Writing and changing drafts of website content. */
+    /** Reading website content in the back office: drafts, their history and previews. */
+    case ViewContent = 'content.view';
+
+    /** Writing and changing drafts of website content, including restoring an earlier version as a new draft. */
     case EditContent = 'content.edit';
 
     /** Approving someone else's submitted content; never one's own (BR-CMS-2, OD-73). */
     case ApproveContent = 'content.approve';
 
-    /** Publishing, scheduling or rolling back an approved version someone else approved (BR-CMS-2a, OD-65). */
+    /** Publishing or scheduling an approved version someone else approved (BR-CMS-2a, OD-65). */
     case PublishContent = 'content.publish';
 }

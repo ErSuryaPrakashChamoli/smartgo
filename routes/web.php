@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\DesignPreviewController;
+use App\Http\Controllers\Web\PageController;
 use App\Http\Middleware\EnsureDesignPreviewIsAvailable;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,6 @@ Route::middleware(EnsureDesignPreviewIsAvailable::class)
         Route::get('/enterprise', 'enterprise')->name('enterprise');
         Route::get('/flows/{flow}', 'flow')->name('flow');
     });
+
+// Published pages and live redirects, for paths no other route claims (BR-CMS-6).
+Route::fallback(PageController::class);

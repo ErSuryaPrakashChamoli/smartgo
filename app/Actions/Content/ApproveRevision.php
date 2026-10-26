@@ -5,6 +5,7 @@ namespace App\Actions\Content;
 use App\Enums\Content\RevisionState;
 use App\Models\Revision;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 /**
@@ -16,17 +17,20 @@ class ApproveRevision
 
     public function handle(Revision $revision, User $approver): Revision
     {
-        Gate::forUser($approver)->authorize('approve', $revision);
+        return DB::transaction(function () use ($revision, $approver): Revision {
+            $revision = Revision::query()->lockForUpdate()->findOrFail($revision->getKey());
+            Gate::forUser($approver)->authorize('approve', $revision);
 
-        $revision->forceFill([
-            'state' => RevisionState::Approved,
-            'reviewer_id' => $approver->getKey(),
-            'reviewed_at' => now(),
-            'review_note' => null,
-        ])->save();
+            $revision->forceFill([
+                'state' => RevisionState::Approved,
+                'reviewer_id' => $approver->getKey(),
+                'reviewed_at' => now(),
+                'review_note' => null,
+            ])->save();
 
-        $this->recordRevisionActivity->handle($revision, $approver, 'revision_approved', 'Content approved');
+            $this->recordRevisionActivity->handle($revision, $approver, 'revision_approved', 'Content approved');
 
-        return $revision;
+            return $revision;
+        });
     }
 }

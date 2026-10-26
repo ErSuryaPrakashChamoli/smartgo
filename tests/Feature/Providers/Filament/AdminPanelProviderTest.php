@@ -3,6 +3,7 @@
 use App\Actions\Access\SyncAccessControl;
 use App\Enums\Access\Capability;
 use App\Enums\Access\StaffRole;
+use App\Models\Revision;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -48,8 +49,10 @@ it('refuses, on every back-office page, staff whose role has not been given back
 
     expect($pages)->not->toBeEmpty();
 
+    $revision = Revision::factory()->create();
+
     foreach ($pages as $name) {
-        actingAs($superAdmin)->get(route($name, ['record' => $superAdmin]))->assertForbidden();
+        actingAs($superAdmin)->get(route($name, ['record' => $superAdmin, 'revision' => $revision]))->assertForbidden();
     }
 });
 

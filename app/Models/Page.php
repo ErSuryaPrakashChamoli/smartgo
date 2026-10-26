@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use App\Actions\Content\RedirectMovedPage;
 use App\Enums\Access\Capability;
 use App\Models\Concerns\HasRevisions;
 use App\Models\Contracts\Revisionable;
+use App\Services\Content\PagePayload;
 use Database\Factories\PageFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -37,9 +42,39 @@ class Page extends Model implements Revisionable
         ];
     }
 
+    /**
+     * @return BelongsTo<Revision, $this>
+     */
+    public function publishedRevision(): BelongsTo
+    {
+        return $this->belongsTo(Revision::class, 'published_revision_id');
+    }
+
+    /**
+     * @param  Builder<self>  $query
+     */
+    public function scopePublished(Builder $query): void
+    {
+        $query->where('status', 'published');
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->status === 'published';
+    }
+
+    /**
+     * The public address, or null before the first publication.
+     */
+    public function path(): ?string
+    {
+        return $this->isPublished() ? '/'.$this->slug : null;
+    }
+
     public function revisionCapabilities(): array
     {
         return [
+            'view' => Capability::ViewContent,
             'edit' => Capability::EditContent,
             'approve' => Capability::ApproveContent,
             'publish' => Capability::PublishContent,
@@ -51,22 +86,37 @@ class Page extends Model implements Revisionable
         return $this->only(self::CONTENT_FIELDS);
     }
 
+    public function prepareRevisionPayload(array $payload, bool $forSubmission): array
+    {
+        return app(PagePayload::class)->validate($this, $payload, $forSubmission);
+    }
+
     /**
+     * Puts the version live and, when a published page changes address, redirects the old address
+     * (BR-CMS-6). Runs inside the publishing transaction with this row locked.
+     *
      * @throws ValidationException when another page already uses the version's address
      */
     public function applyPublishedRevision(Revision $revision): void
     {
+        $previousPath = $this->path();
         $content = array_intersect_key($revision->payload, array_flip(self::CONTENT_FIELDS));
 
         if (filled($content['slug'] ?? null) && static::query()->whereKeyNot($this->getKey())->where('slug', $content['slug'])->exists()) {
             throw ValidationException::withMessages(['slug' => 'Another page already uses this address.']);
         }
 
-        $this->forceFill([
-            ...$content,
-            'status' => 'published',
-            'published_revision_id' => $revision->getKey(),
-            'published_at' => $revision->published_at,
-        ])->save();
+        try {
+            $this->forceFill([
+                ...$content,
+                'status' => 'published',
+                'published_revision_id' => $revision->getKey(),
+                'published_at' => $revision->published_at,
+            ])->save();
+        } catch (UniqueConstraintViolationException) {
+            throw ValidationException::withMessages(['slug' => 'Another page already uses this address.']);
+        }
+
+        app(RedirectMovedPage::class)->handle($this, $previousPath, $revision);
     }
 }

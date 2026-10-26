@@ -12,7 +12,7 @@ use Illuminate\Auth\Access\Response;
 /**
  * Who may move a revision through the workflow (BR-CMS-1, BR-CMS-2, BR-CMS-2a; SECURITY_MODEL §11.6).
  * Everyone who edited a version is its author and may not approve it; the approver may not publish,
- * schedule or roll back that version. The Super Admin follows the same rules: there is no bypass.
+ * schedule or restore that version. The Super Admin follows the same rules: there is no bypass.
  */
 class RevisionPolicy
 {
@@ -22,6 +22,21 @@ class RevisionPolicy
     public function before(User $user, string $ability): ?Response
     {
         return $user->is_active ? null : Response::deny('This account is deactivated.');
+    }
+
+    public function viewAny(User $user): bool
+    {
+        return $user->can(Capability::ViewContent);
+    }
+
+    /**
+     * Reading a version and its preview.
+     */
+    public function view(User $user, Revision $revision): Response
+    {
+        return $user->can($this->capabilities($revision)['view'])
+            ? Response::allow()
+            : Response::deny('You cannot view this content.');
     }
 
     public function create(User $user, Revisionable $content): Response
@@ -77,6 +92,9 @@ class RevisionPolicy
         return $this->approve($user, $revision);
     }
 
+    /**
+     * Publishing now or scheduling: both put the version live (BR-CMS-5).
+     */
     public function publish(User $user, Revision $revision): Response
     {
         if (! $user->can($this->capabilities($revision)['publish'])) {
@@ -92,10 +110,28 @@ class RevisionPolicy
             : Response::allow();
     }
 
-    public function rollBack(User $user, Revision $revision): Response
+    /**
+     * Cancelling a scheduled publication leaves the version approved and unpublished.
+     */
+    public function unschedule(User $user, Revision $revision): Response
     {
         if (! $user->can($this->capabilities($revision)['publish'])) {
             return Response::deny('You cannot publish this content.');
+        }
+
+        return $revision->state === RevisionState::Approved && $revision->scheduled_for !== null
+            ? Response::allow()
+            : Response::deny('Only a scheduled, approved version can be unscheduled.');
+    }
+
+    /**
+     * Restoring copies an earlier published version into a new draft, which needs approval and
+     * publication like any other version (OD-88; replaces republishing it directly).
+     */
+    public function restore(User $user, Revision $revision): Response
+    {
+        if (! $user->can($this->capabilities($revision)['edit'])) {
+            return Response::deny('You cannot edit this content.');
         }
 
         if ($revision->state !== RevisionState::Superseded) {
@@ -108,7 +144,7 @@ class RevisionPolicy
     }
 
     /**
-     * @return array{edit: Capability, approve: Capability, publish: Capability}
+     * @return array{view: Capability, edit: Capability, approve: Capability, publish: Capability}
      */
     private function capabilities(Revision $revision): array
     {

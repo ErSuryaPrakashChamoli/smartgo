@@ -5,6 +5,7 @@ namespace App\Actions\Content;
 use App\Enums\Content\RevisionState;
 use App\Models\Revision;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
@@ -17,25 +18,32 @@ class RejectRevision
     public function __construct(private RecordRevisionActivity $recordRevisionActivity) {}
 
     /**
-     * @throws ValidationException when the note is empty
+     * @throws ValidationException when the note is empty or too long
      */
     public function handle(Revision $revision, User $reviewer, string $note): Revision
     {
-        Gate::forUser($reviewer)->authorize('reject', $revision);
+        return DB::transaction(function () use ($revision, $reviewer, $note): Revision {
+            $revision = Revision::query()->lockForUpdate()->findOrFail($revision->getKey());
+            Gate::forUser($reviewer)->authorize('reject', $revision);
 
-        if (blank($note)) {
-            throw ValidationException::withMessages(['review_note' => 'Say why the version is rejected.']);
-        }
+            if (blank($note)) {
+                throw ValidationException::withMessages(['review_note' => 'Say why the version is rejected.']);
+            }
 
-        $revision->forceFill([
-            'state' => RevisionState::Rejected,
-            'reviewer_id' => $reviewer->getKey(),
-            'reviewed_at' => now(),
-            'review_note' => $note,
-        ])->save();
+            if (mb_strlen($note) > 2000) {
+                throw ValidationException::withMessages(['review_note' => 'Keep the note under 2,000 characters.']);
+            }
 
-        $this->recordRevisionActivity->handle($revision, $reviewer, 'revision_rejected', 'Content rejected', ['note' => $note]);
+            $revision->forceFill([
+                'state' => RevisionState::Rejected,
+                'reviewer_id' => $reviewer->getKey(),
+                'reviewed_at' => now(),
+                'review_note' => trim($note),
+            ])->save();
 
-        return $revision;
+            $this->recordRevisionActivity->handle($revision, $reviewer, 'revision_rejected', 'Content rejected', ['note' => trim($note)]);
+
+            return $revision;
+        });
     }
 }

@@ -34,6 +34,8 @@
             <x-site.preview-banner />
         @endif
 
+        {{ $banner ?? '' }}
+
         <x-site.header :home-href="$homeHref" :categories="$categories" :properties="$properties" />
 
         <main id="content">

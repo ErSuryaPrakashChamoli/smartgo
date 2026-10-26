@@ -10,8 +10,10 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Publishes every approved version whose scheduled time has come, as the person who scheduled it. The
- * rules are checked again at that moment; a version that no longer passes stays unpublished and the
- * failure is audited.
+ * rules are checked again at that moment. A version that no longer passes stays approved and
+ * unpublished, its schedule is cleared, and the failure is audited with the reason, so staff can see
+ * it and publish or schedule again. A version that someone published or unscheduled in the meantime
+ * is skipped.
  */
 class PublishScheduledRevisions
 {
@@ -37,13 +39,20 @@ class PublishScheduledRevisions
                 $scheduler = $revision->scheduler;
 
                 try {
-                    $this->makeRevisionLive->handle($revision, $scheduler, 'publish', 'revision_published', 'Scheduled content published');
+                    $this->makeRevisionLive->handle($revision, $scheduler, 'Scheduled content published');
                     $published++;
                 } catch (AuthorizationException|ValidationException $exception) {
-                    $revision->forceFill(['scheduled_for' => null, 'scheduled_by' => null])->save();
+                    $current = $revision->fresh();
 
-                    $this->recordRevisionActivity->handle($revision, $scheduler, 'revision_schedule_failed', 'Scheduled publication failed', [
+                    if ($current === null || $current->state !== RevisionState::Approved || $current->scheduled_by !== $scheduler->getKey()) {
+                        return;
+                    }
+
+                    $current->forceFill(['scheduled_for' => null, 'scheduled_by' => null])->save();
+
+                    $this->recordRevisionActivity->handle($current, $scheduler, 'revision_schedule_failed', 'Scheduled publication failed', [
                         'reason' => $exception->getMessage(),
+                        'was_scheduled_for' => $revision->scheduled_for?->toIso8601String(),
                     ]);
                 }
             });

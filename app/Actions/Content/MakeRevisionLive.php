@@ -10,27 +10,31 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Puts a version live in one transaction (ADR-0005): the item and the version are locked first, the
- * caller's permission is checked again under the lock, the version previously live is superseded, and
- * the payload is copied into the live record. Used by publishing, scheduled publishing and rollback.
+ * publisher's permission and the payload are checked again under the lock, the version previously live
+ * is superseded, and the payload is copied into the live record. Used by publishing and scheduled
+ * publishing.
  */
 class MakeRevisionLive
 {
     public function __construct(private RecordRevisionActivity $recordRevisionActivity) {}
 
     /**
-     * @param  'publish'|'rollBack'  $ability
+     * @throws ValidationException when the payload is no longer valid, e.g. its address is now taken
      */
-    public function handle(Revision $revision, User $publisher, string $ability, string $event, string $description): Revision
+    public function handle(Revision $revision, User $publisher, string $description): Revision
     {
-        return DB::transaction(function () use ($revision, $publisher, $ability, $event, $description): Revision {
+        return DB::transaction(function () use ($revision, $publisher, $description): Revision {
             /** @var Revisionable&Model $content */
             $content = $revision->revisionable()->lockForUpdate()->firstOrFail();
 
             $revision = Revision::query()->lockForUpdate()->findOrFail($revision->getKey());
-            Gate::forUser($publisher)->authorize($ability, $revision);
+            Gate::forUser($publisher)->authorize('publish', $revision);
+
+            $content->prepareRevisionPayload($revision->payload, forSubmission: true);
 
             $content->revisions()->whereKeyNot($revision->getKey())->where('state', RevisionState::Published)
                 ->update(['state' => RevisionState::Superseded]);
@@ -45,7 +49,7 @@ class MakeRevisionLive
 
             $content->applyPublishedRevision($revision);
 
-            $this->recordRevisionActivity->handle($revision, $publisher, $event, $description);
+            $this->recordRevisionActivity->handle($revision, $publisher, 'revision_published', $description);
 
             ContentPublished::dispatch($revision);
 

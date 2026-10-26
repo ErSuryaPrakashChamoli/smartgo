@@ -113,3 +113,35 @@
         padding-inline: 2.5rem;
     }
 }
+
+/* Formatted text written in the page editor. Only these elements survive sanitising (App\Services\Content\RichText). */
+@layer components {
+    .rich-text {
+        @apply flex flex-col gap-4 text-lg/relaxed text-ink;
+    }
+
+    .rich-text h3 {
+        @apply mt-2 font-display text-subheading font-semibold text-forest;
+    }
+
+    .rich-text a {
+        @apply font-medium text-leaf-700 underline underline-offset-2 hover:text-leaf-800;
+    }
+
+    .rich-text strong,
+    .rich-text b {
+        @apply font-semibold text-forest;
+    }
+
+    .rich-text ul {
+        @apply flex list-disc flex-col gap-2 pl-6;
+    }
+
+    .rich-text ol {
+        @apply flex list-decimal flex-col gap-2 pl-6;
+    }
+
+    .rich-text blockquote {
+        @apply border-l-4 border-leaf-500 pl-4 text-muted italic;
+    }
+}

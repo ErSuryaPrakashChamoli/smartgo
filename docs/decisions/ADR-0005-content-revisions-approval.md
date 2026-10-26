@@ -13,5 +13,5 @@ Marketing must create, preview, submit for approval and publish without touching
 * Preview renders a revision via a signed, expiring, `noindex` URL.
 
 ## Consequences
-* (+) Live reads stay simple and fast; drafts never leak; rollback is "republish revision N".
+* (+) Live reads stay simple and fast; drafts never leak; rollback is "republish revision N". **Amended 2026-10-26 (OD-88):** restoring copies revision N into a new draft that is approved and published like any other; historical revisions are never changed.
 * (−) Every publishable type needs a mapping between its form schema and its payload. A shared trait and tests keep this consistent.

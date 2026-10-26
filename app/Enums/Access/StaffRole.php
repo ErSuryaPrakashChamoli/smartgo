@@ -39,11 +39,11 @@ enum StaffRole: string
         return match ($this) {
             self::SuperAdmin => [
                 Capability::AccessBackoffice, Capability::ManageUsers, Capability::ViewAuditLog,
-                Capability::EditContent, Capability::ApproveContent, Capability::PublishContent,
+                Capability::ViewContent, Capability::EditContent, Capability::ApproveContent, Capability::PublishContent,
             ],
             self::MarketingManager => [
                 Capability::AccessBackoffice,
-                Capability::EditContent, Capability::ApproveContent, Capability::PublishContent,
+                Capability::ViewContent, Capability::EditContent, Capability::ApproveContent, Capability::PublishContent,
             ],
             default => [Capability::AccessBackoffice],
         };
