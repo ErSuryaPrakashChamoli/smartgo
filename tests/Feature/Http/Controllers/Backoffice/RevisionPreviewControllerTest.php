@@ -6,8 +6,12 @@ use App\Enums\Access\Capability;
 use App\Enums\Access\StaffRole;
 use App\Events\Content\ContentPublished;
 use App\Http\Controllers\Backoffice\RevisionPreviewController;
+use App\Models\CaseStudy;
+use App\Models\Faq;
 use App\Models\Page;
+use App\Models\Post;
 use App\Models\Revision;
+use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -103,3 +107,19 @@ it('changes nothing: no write, no publication, and the live page stays as it is'
     Event::assertNotDispatched(ContentPublished::class);
     get('/about')->assertOk()->assertSee('Live title')->assertDontSee('Draft heading');
 });
+
+it('previews articles, customer stories, FAQs and testimonials as they would appear', function (string $model, array $payload, string $expected) {
+    $revision = app(CreateDraft::class)->handle($model::factory()->create(), $this->editor, $payload);
+
+    actingAs($this->editor)
+        ->get(RevisionPreviewController::url($revision))
+        ->assertOk()
+        ->assertSee($expected)
+        ->assertSee('Preview of version 1 (Draft). Not published')
+        ->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+})->with([
+    'article' => [Post::class, ['title' => 'Draft article', 'excerpt' => 'Draft summary', 'blocks' => []], 'Draft summary'],
+    'customer story' => [CaseStudy::class, ['title' => 'Draft story', 'company_name' => 'Rao Studio', 'blocks' => []], 'Rao Studio'],
+    'FAQ' => [Faq::class, ['question' => 'Draft question?', 'answer' => 'Draft answer.'], 'Draft answer.'],
+    'testimonial' => [Testimonial::class, ['quote' => 'Draft statement.', 'person_name' => 'Asha Rao'], 'Draft statement.'],
+]);

@@ -92,12 +92,17 @@ class Page extends Model implements Revisionable
         ];
     }
 
+    /**
+     * The live content as a draft payload. A legal review reference belongs to one reviewed text, so a
+     * new draft starts without one (OD-97).
+     */
     public function toRevisionPayload(): array
     {
         $seo = $this->seo()->first();
 
         return [
             ...$this->only(self::CONTENT_FIELDS),
+            'legal_review_reference' => null,
             'seo' => [
                 'title' => $seo?->meta_title,
                 'description' => $seo?->meta_description,
@@ -146,6 +151,6 @@ class Page extends Model implements Revisionable
             'og_asset_id' => $seo['image_asset_id'] ?? null,
         ]);
 
-        app(RedirectMovedPage::class)->handle($this, $previousPath, $revision);
+        app(RedirectMovedPage::class)->handle($this, $previousPath, (string) $this->path(), $revision);
     }
 }

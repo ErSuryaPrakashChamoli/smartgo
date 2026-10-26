@@ -3,13 +3,14 @@
 namespace App\Actions\Content;
 
 use App\Enums\Content\RedirectMatch;
-use App\Models\Page;
 use App\Models\Redirect;
 use App\Models\Revision;
+use Illuminate\Database\Eloquent\Model;
 use LogicException;
 
 /**
- * Keeps the redirects right when a page version goes live (BR-CMS-6, FR-SEO-4). The redirect is part
+ * Keeps the redirects right when a page, post or case study version goes live with a new address
+ * (BR-CMS-6, FR-SEO-4). The redirect is part
  * of the approved and published page version, so it needs no separate approval (interpretation of
  * OD-66). Runs inside the publishing transaction:
  *
@@ -20,10 +21,8 @@ use LogicException;
  */
 class RedirectMovedPage
 {
-    public function handle(Page $page, ?string $previousPath, Revision $revision): void
+    public function handle(Model $page, ?string $previousPath, string $newPath, Revision $revision): void
     {
-        $newPath = (string) $page->path();
-
         Redirect::query()->where('from_path', $newPath)->where('match_type', RedirectMatch::Exact)->lockForUpdate()->get()
             ->each(function (Redirect $redirect) use ($page, $revision): void {
                 $redirect->delete();
@@ -57,7 +56,7 @@ class RedirectMovedPage
     /**
      * @param  array<string, mixed>  $extra
      */
-    private function record(Redirect $redirect, Page $page, Revision $revision, string $event, string $description, array $extra = []): void
+    private function record(Redirect $redirect, Model $page, Revision $revision, string $event, string $description, array $extra = []): void
     {
         activity('content')
             ->performedOn($redirect)
@@ -67,7 +66,7 @@ class RedirectMovedPage
                 'from' => $redirect->from_path,
                 'to' => $redirect->to_path,
                 'status_code' => $redirect->status_code,
-                'page' => 'Page #'.$page->getKey(),
+                'page' => class_basename($page).' #'.$page->getKey(),
                 'revision' => $revision->number,
                 ...$extra,
             ])

@@ -11,6 +11,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 /**
@@ -39,6 +40,20 @@ class PageForm
                             ->regex(PagePayload::SLUG_PATTERN)
                             ->validationMessages(['regex' => 'Use lowercase letters, numbers and hyphens, with / between parts (for example legal/privacy).'])
                             ->helperText('If a published page gets a new address, the old address redirects to it automatically once the change is published (BR-CMS-6).'),
+                        Select::make('template')
+                            ->label('Layout')
+                            ->options(['standard' => 'Standard page', 'legal' => 'Legal page'])
+                            ->default('standard')
+                            ->selectablePlaceholder(false)
+                            ->required()
+                            ->live()
+                            ->helperText('Legal pages hold text sections only and show the date they were last updated.'),
+                        TextInput::make('legal_review_reference')
+                            ->label('Legal review reference')
+                            ->maxLength(120)
+                            ->visible(fn (Get $get): bool => $get('template') === 'legal')
+                            ->markAsRequired()
+                            ->helperText('The reference of the review of this exact text by counsel, e.g. a ticket or email reference. Each new version needs its own (D-15).'),
                     ]),
                 Section::make('Sections')
                     ->description('Sections appear on the page in this order. Images arrive with the media library.')

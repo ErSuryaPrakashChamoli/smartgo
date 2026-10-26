@@ -39,7 +39,7 @@ beforeEach(function () {
  */
 function pagePayload(string $title, string $slug = 'about'): array
 {
-    return ['title' => $title, 'slug' => $slug, 'template' => 'standard', 'blocks' => [
+    return ['title' => $title, 'slug' => $slug, 'template' => 'standard', 'legal_review_reference' => null, 'blocks' => [
         ['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Coworking and managed offices in Noida.</p>']],
     ], 'seo' => ['title' => null, 'description' => null, 'indexable' => true, 'image_asset_id' => null]];
 }

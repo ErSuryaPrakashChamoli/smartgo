@@ -17,11 +17,12 @@ use Illuminate\Validation\ValidationException;
 class PagePayload
 {
     /**
-     * Layouts a page may use. The landing and legal layouts arrive with Phase 6 and step 4.5.
+     * Layouts a page may use. `legal` pages hold text sections only and need a legal review reference
+     * before submission (D-15, OD-97); the landing layout arrives with Phase 6.
      *
      * @var list<string>
      */
-    public const array TEMPLATES = ['standard'];
+    public const array TEMPLATES = ['standard', 'legal'];
 
     /**
      * Lowercase words joined by hyphens, with / between parts, e.g. `about` or `legal/privacy`.
@@ -42,7 +43,7 @@ class PagePayload
      * Returns the payload as it is stored: only page fields, blocks as a list, rich text sanitised.
      *
      * @param  array<string, mixed>  $payload
-     * @return array{title: ?string, slug: ?string, template: string, blocks: list<array{type: string, data: array<string, mixed>}>, seo: array{title: ?string, description: ?string, indexable: bool, image_asset_id: ?int}}
+     * @return array{title: ?string, slug: ?string, template: string, legal_review_reference: ?string, blocks: list<array{type: string, data: array<string, mixed>}>, seo: array{title: ?string, description: ?string, indexable: bool, image_asset_id: ?int}}
      *
      * @throws ValidationException
      */
@@ -52,20 +53,22 @@ class PagePayload
         $payload['template'] ??= self::TEMPLATES[0];
 
         $required = $forSubmission ? 'required' : 'nullable';
-        ['rules' => $blockRules, 'attributes' => $blockAttributes] = $this->blockLibrary->rules(is_array($payload['blocks']) ? $payload['blocks'] : [], $forSubmission);
+        $isLegal = $payload['template'] === 'legal';
+        ['rules' => $blockRules, 'attributes' => $blockAttributes] = $this->blockLibrary->rules(is_array($payload['blocks']) ? $payload['blocks'] : [], $forSubmission, $isLegal ? ['text'] : null);
 
         $validated = Validator::make($payload, [
             'title' => [$required, 'string', 'max:120'],
             'slug' => [$required, 'string', 'max:150', 'regex:'.self::SLUG_PATTERN, $this->notReservedRule(), Rule::unique('pages', 'slug')->ignore($page->getKey())],
             'template' => ['required', Rule::in(self::TEMPLATES)],
+            'legal_review_reference' => [$forSubmission && $isLegal ? 'required' : 'nullable', 'string', 'max:120', 'not_regex:/[<>]/'],
             'seo' => ['nullable', 'array:title,description,indexable,image_asset_id'],
             'seo.title' => ['nullable', 'string', 'max:60', 'not_regex:/[<>]/'],
             'seo.description' => ['nullable', 'string', 'max:160', 'not_regex:/[<>]/'],
             'seo.indexable' => ['nullable', 'boolean'],
             'seo.image_asset_id' => ['nullable', 'integer', Rule::exists('media_assets', 'id')],
             ...$blockRules,
-            ...($forSubmission ? ['blocks' => [...$blockRules['blocks'], 'min:1']] : []),
         ], [
+            'legal_review_reference.required' => 'Legal pages need the reference of their review by counsel before they can be submitted (D-15).',
             'slug.regex' => 'Use lowercase letters, numbers and hyphens, with / between parts (for example legal/privacy).',
             'slug.unique' => 'Another page already uses this address.',
             'blocks.required' => 'Add at least one section.',
@@ -86,6 +89,7 @@ class PagePayload
             'title' => $validated['title'] ?? null,
             'slug' => $validated['slug'] ?? null,
             'template' => $validated['template'],
+            'legal_review_reference' => $isLegal ? ($validated['legal_review_reference'] ?? null) : null,
             'blocks' => $this->blockLibrary->normalize($validated['blocks'] ?? []),
             'seo' => [
                 'title' => $validated['seo']['title'] ?? null,

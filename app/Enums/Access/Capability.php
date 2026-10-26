@@ -29,6 +29,9 @@ enum Capability: string
     /** Publishing or scheduling an approved version someone else approved (BR-CMS-2a, OD-65). */
     case PublishContent = 'content.publish';
 
+    /** Publishing testimonials and case studies, only with consent on file and after another's approval (BR-CMS-7). */
+    case PublishTestimonials = 'testimonials.publish';
+
     /** Uploading media with its origin and licence, and editing its descriptions (FR-CMS-5, BR-MED-1). */
     case ManageMedia = 'media.manage';
 }

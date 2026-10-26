@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
-use App\Models\Redirect;
 use App\Models\SeoMetadata;
+use App\Services\Content\LiveRedirects;
 use App\Services\Content\PageRenderer;
 use App\Services\Content\SiteNavigation;
 use Illuminate\Http\RedirectResponse;
@@ -20,7 +20,7 @@ use Illuminate\Http\Response;
  */
 class PageController extends Controller
 {
-    public function __invoke(Request $request, PageRenderer $pageRenderer, SiteNavigation $siteNavigation): Response|RedirectResponse
+    public function __invoke(Request $request, PageRenderer $pageRenderer, SiteNavigation $siteNavigation, LiveRedirects $liveRedirects): Response|RedirectResponse
     {
         $path = '/'.trim($request->path(), '/');
 
@@ -36,19 +36,10 @@ class PageController extends Controller
                 'canonical' => rtrim((string) config('app.url'), '/').$page->path(),
                 'shareImage' => $content['shareImagePath'] === null ? null : rtrim((string) config('app.url'), '/').$content['shareImagePath'],
                 'navigation' => $siteNavigation->present(),
+                'lastUpdated' => $page->published_at,
             ]);
         }
 
-        $redirect = Redirect::findFor($path);
-
-        if ($redirect === null || ! $redirect->isServable()) {
-            abort(404);
-        }
-
-        $redirect->recordHit();
-
-        abort_if($redirect->status_code === 410, 410);
-
-        return redirect()->to((string) $redirect->to_path, $redirect->status_code);
+        return $liveRedirects->respond($path);
     }
 }

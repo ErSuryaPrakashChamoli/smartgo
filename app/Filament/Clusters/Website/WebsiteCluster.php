@@ -8,8 +8,8 @@ use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Support\Icons\Heroicon;
 
 /**
- * Website content managed without code (Phase 4): pages now; navigation, posts, FAQs, media and
- * public settings join in later steps.
+ * Website content managed without code (Phase 4): pages, navigation, media, insights, customer
+ * stories, testimonials and FAQs; public settings join in step 4.6.
  */
 class WebsiteCluster extends Cluster
 {

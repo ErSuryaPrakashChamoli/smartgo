@@ -40,12 +40,12 @@ enum StaffRole: string
             self::SuperAdmin => [
                 Capability::AccessBackoffice, Capability::ManageUsers, Capability::ViewAuditLog,
                 Capability::ViewContent, Capability::EditContent, Capability::ApproveContent, Capability::PublishContent,
-                Capability::ManageMedia,
+                Capability::ManageMedia, Capability::PublishTestimonials,
             ],
             self::MarketingManager => [
                 Capability::AccessBackoffice,
                 Capability::ViewContent, Capability::EditContent, Capability::ApproveContent, Capability::PublishContent,
-                Capability::ManageMedia,
+                Capability::ManageMedia, Capability::PublishTestimonials,
             ],
             default => [Capability::AccessBackoffice],
         };

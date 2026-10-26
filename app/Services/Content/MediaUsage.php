@@ -2,14 +2,16 @@
 
 namespace App\Services\Content;
 
+use App\Models\CaseStudy;
 use App\Models\MediaAsset;
 use App\Models\Page;
+use App\Models\Post;
 use App\Models\Revision;
 use App\Models\SeoMetadata;
 
 /**
- * Where an asset is used. Image blocks store `media_asset_id` in their data and share images are
- * `seo.image_asset_id` in a page payload (`og_asset_id` once live).
+ * Where an asset is used. Image blocks (in pages, posts and case studies) store `media_asset_id` in
+ * their data, and share images are `seo.image_asset_id` in a page payload (`og_asset_id` once live).
  */
 class MediaUsage
 {
@@ -19,6 +21,8 @@ class MediaUsage
     public function isPubliclyUsed(MediaAsset $asset): bool
     {
         return Page::query()->published()->whereRaw('JSON_CONTAINS(blocks, ?)', [$this->blockNeedle($asset)])->exists()
+            || Post::query()->published()->whereRaw('JSON_CONTAINS(blocks, ?)', [$this->blockNeedle($asset)])->exists()
+            || CaseStudy::query()->published()->whereRaw('JSON_CONTAINS(blocks, ?)', [$this->blockNeedle($asset)])->exists()
             || SeoMetadata::query()->where('og_asset_id', $asset->getKey())
                 ->whereHasMorph('seoable', [Page::class], fn ($query) => $query->where('status', 'published'))
                 ->exists();
@@ -31,6 +35,8 @@ class MediaUsage
     public function isReferenced(MediaAsset $asset): bool
     {
         return Page::query()->whereRaw('JSON_CONTAINS(blocks, ?)', [$this->blockNeedle($asset)])->exists()
+            || Post::query()->whereRaw('JSON_CONTAINS(blocks, ?)', [$this->blockNeedle($asset)])->exists()
+            || CaseStudy::query()->whereRaw('JSON_CONTAINS(blocks, ?)', [$this->blockNeedle($asset)])->exists()
             || SeoMetadata::query()->where('og_asset_id', $asset->getKey())->exists()
             || Revision::query()->where(fn ($query) => $query
                 ->whereRaw('JSON_CONTAINS(payload, ?)', [json_encode(['blocks' => [['data' => ['media_asset_id' => $asset->getKey()]]]])])

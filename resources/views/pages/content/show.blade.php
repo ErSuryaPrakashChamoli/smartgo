@@ -16,8 +16,11 @@
     @endif
 
     @unless ($startsWithIntroduction)
-        <div class="container-page pt-12 pb-2 sm:pt-16">
+        <div class="container-page flex flex-col gap-3 pt-12 pb-2 sm:pt-16">
             <h1 class="max-w-4xl font-display text-display-xl font-semibold text-balance text-forest">{{ $title }}</h1>
+            @if (($template ?? 'standard') === 'legal')
+                <p class="text-sm text-muted">{{ isset($lastUpdated) && $lastUpdated ? 'Last updated '.$lastUpdated->copy()->timezone(config('backoffice.timezone'))->format('j F Y') : 'Not published yet' }}</p>
+            @endif
         </div>
     @endunless
 

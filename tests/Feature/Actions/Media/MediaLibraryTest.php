@@ -10,8 +10,10 @@ use App\Actions\Media\DeleteMediaAsset;
 use App\Actions\Media\UpdateMediaAsset;
 use App\Enums\Access\StaffRole;
 use App\Enums\Content\MediaOrigin;
+use App\Models\CaseStudy;
 use App\Models\MediaAsset;
 use App\Models\Page;
+use App\Models\Post;
 use App\Models\User;
 use App\Notifications\MediaLicenceExpiring;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -119,6 +121,17 @@ it('serves renditions to visitors only once published content uses the image', f
     get($asset->renditionPath('w480'))->assertOk()->assertHeader('Content-Type', 'image/webp');
     get('/media/'.$asset->id.'/original')->assertNotFound();
 });
+
+it('serves renditions to visitors once a published article or customer story uses the image', function (string $model) {
+    $asset = uploadImage($this->manager);
+    $content = $model::factory()->published()->create(['blocks' => [['type' => 'image', 'data' => ['media_asset_id' => $asset->id, 'alt' => 'Reception', 'decorative' => false, 'caption' => null]]]]);
+
+    get($asset->renditionPath('w480'))->assertOk();
+
+    $content->forceFill(['status' => 'draft'])->save();
+
+    get($asset->renditionPath('w480'))->assertNotFound();
+})->with([Post::class, CaseStudy::class]);
 
 it('renders the image block with renditions, alt text, caption, credit and the concept label', function () {
     $asset = uploadImage($this->manager, ['origin' => MediaOrigin::Render->value, 'credit_line' => 'Render by the architect']);

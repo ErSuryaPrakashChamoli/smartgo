@@ -50,6 +50,8 @@ class EditPage extends EditRecord
         return [
             'title' => $payload['title'] ?? null,
             'slug' => $payload['slug'] ?? null,
+            'template' => $payload['template'] ?? 'standard',
+            'legal_review_reference' => $payload['legal_review_reference'] ?? null,
             'blocks' => $payload['blocks'] ?? [],
             'seo' => [
                 'title' => $payload['seo']['title'] ?? null,

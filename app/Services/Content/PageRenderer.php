@@ -26,6 +26,7 @@ class PageRenderer
             'title' => (string) ($payload['title'] ?? ''),
             'blocks' => $blocks,
             'startsWithIntroduction' => ($blocks[0]['type'] ?? null) === 'hero',
+            'template' => (string) ($payload['template'] ?? 'standard'),
             'metaTitle' => filled($seo['title'] ?? null) ? (string) $seo['title'] : null,
             'metaDescription' => filled($seo['description'] ?? null) ? (string) $seo['description'] : $this->defaultDescription($blocks),
             'indexable' => (bool) ($seo['indexable'] ?? true),

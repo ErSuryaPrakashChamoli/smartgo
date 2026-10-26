@@ -8,6 +8,7 @@ use App\Services\Content\Blocks\FaqBlock;
 use App\Services\Content\Blocks\FeatureGridBlock;
 use App\Services\Content\Blocks\HeroBlock;
 use App\Services\Content\Blocks\ImageBlock;
+use App\Services\Content\Blocks\TestimonialBlock;
 use App\Services\Content\Blocks\TextBlock;
 use Closure;
 use Filament\Forms\Components\Builder\Block;
@@ -17,8 +18,8 @@ use Illuminate\Validation\Rule;
  * The fixed set of page sections editors can use (FR-CMS-1). A new kind of section is added by
  * writing a ContentBlock and listing it here; nothing else is accepted in a payload.
  *
- * Not offered yet: testimonials (step 4.5, consent on file, BR-CMS-7), workspace and property cards
- * (Phase 5 data), and enquiry forms (Phase 6). Nothing in a block may invent prices, availability or claims.
+ * Not offered yet: workspace and property cards (Phase 5 data) and enquiry forms (Phase 6). Nothing in
+ * a block may invent prices, availability or claims.
  */
 class BlockLibrary
 {
@@ -33,6 +34,7 @@ class BlockLibrary
         ImageBlock::class,
         FeatureGridBlock::class,
         FaqBlock::class,
+        TestimonialBlock::class,
         CallToActionBlock::class,
     ];
 
@@ -57,25 +59,29 @@ class BlockLibrary
     }
 
     /**
+     * @param  list<string>|null  $types  the kinds of section offered; all when null
      * @return list<Block>
      */
-    public function editorBlocks(): array
+    public function editorBlocks(?array $types = null): array
     {
-        return array_values(array_map(fn (ContentBlock $block): Block => $block->editorBlock(), $this->all()));
+        $blocks = $types === null ? $this->all() : array_intersect_key($this->all(), array_flip($types));
+
+        return array_values(array_map(fn (ContentBlock $block): Block => $block->editorBlock(), $blocks));
     }
 
     /**
      * Rules and readable field names for a list of blocks stored under `blocks`.
      *
      * @param  list<mixed>  $blocks
+     * @param  list<string>|null  $types  the kinds of section allowed; all when null
      * @return array{rules: array<string, mixed>, attributes: array<string, string>}
      */
-    public function rules(array $blocks, bool $forSubmission): array
+    public function rules(array $blocks, bool $forSubmission, ?array $types = null): array
     {
         $rules = [
-            'blocks' => [$forSubmission ? 'required' : 'present', 'array', 'list', 'max:'.self::MAX_BLOCKS, $this->introductionFirstRule()],
+            'blocks' => [$forSubmission ? 'required' : 'present', 'array', 'list', 'max:'.self::MAX_BLOCKS, ...($forSubmission ? ['min:1'] : []), $this->introductionFirstRule()],
             'blocks.*' => ['required', 'array:type,data'],
-            'blocks.*.type' => ['required', 'string', Rule::in(array_keys($this->all()))],
+            'blocks.*.type' => ['required', 'string', Rule::in($types ?? array_keys($this->all()))],
             'blocks.*.data' => ['present', 'array'],
         ];
         $attributes = [];

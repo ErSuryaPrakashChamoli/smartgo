@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\DesignPreviewController;
 use App\Http\Controllers\Web\MediaController;
 use App\Http\Controllers\Web\PageController;
+use App\Http\Controllers\Web\PublishedContentController;
 use App\Http\Middleware\EnsureDesignPreviewIsAvailable;
 use App\Models\MediaAsset;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,15 @@ Route::middleware(EnsureDesignPreviewIsAvailable::class)
         Route::get('/enterprise', 'enterprise')->name('enterprise');
         Route::get('/flows/{flow}', 'flow')->name('flow');
     });
+
+// Insights, customer stories and FAQs (FR-CMS-7): published items only.
+Route::controller(PublishedContentController::class)->group(function (): void {
+    Route::get('/insights', 'insights')->name('insights.index');
+    Route::get('/insights/{slug}', 'insight')->where('slug', '[a-z0-9-]+')->name('insights.show');
+    Route::get('/customers', 'customers')->name('customers.index');
+    Route::get('/customers/{slug}', 'customer')->where('slug', '[a-z0-9-]+')->name('customers.show');
+    Route::get('/faqs', 'faqs')->name('faqs');
+});
 
 // Image renditions, shown to visitors only when published content uses them (BR-MED-3).
 Route::get('/media/{mediaAsset}/{rendition}', MediaController::class)
