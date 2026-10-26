@@ -621,3 +621,23 @@ Other failure cases:
 | 11 | A submits a time-only reschedule | no approval | **Permitted**, if the re-check under lock passes (OD-63 interpretation) |
 
 **Legal and GST details:** A edits and B verifies: **permitted**. A verifies their own edit: **refused**. An edit after verification clears the verification.
+
+### 11.7 Tracking stays disabled until consent is agreed (OD-100)
+
+**Owner decision (2026-10-26, round 32):** tracking IDs may be configured and approved in the back office, but analytics and advertising scripts stay disabled until the cookie-consent approach is agreed with legal counsel. Approving a tracking ID is not permission to run its script.
+
+**How it is enforced today:**
+* No template, component, script or controller reads the tracking group (`site_settings` handle `tracking`); the only public script is the site's own Vite bundle.
+* An automated test publishes IDs for Google Analytics 4, Google Tag Manager and the Meta pixel and checks that public pages contain neither the IDs nor any script from those providers.
+* A browser check on 2026-10-26 (test database, IDs published, eight public pages of every type) recorded no request to any host other than the site, none of the IDs in the page, no `gtag`, `dataLayer` or `fbq` in the page, and only the site's own session and `XSRF-TOKEN` cookies.
+* There is **no Content Security Policy yet** (planned for Phase 14, §5). Until then, nothing in the browser would block a provider script if code were added to load one, so the absence of such code is the only control. A review of any change that touches public layouts must check this.
+
+**Acceptance criteria before any tracking is enabled** (all must be met and recorded):
+1. The owner and counsel agree the consent approach and record it as an owner decision: which categories need consent, that non-essential tracking is off until the visitor agrees, how consent is recorded, and how it is withdrawn. Counsel confirms the approach and the wording (D-15).
+2. Any consent package or provider integration is approved by the owner before it is installed (as for OD-84).
+3. A cookie or privacy notice with counsel's text is published as a legal page.
+4. Before consent, no provider script loads and no request reaches a provider's domain. This is proven by an automated test and by a browser check of network requests.
+5. After consent, only providers whose IDs are **published** in the back office load. Withdrawing consent stops them, and withdrawing is as easy as giving consent.
+6. A Content Security Policy is in place and lists exactly the approved providers' domains, as a reviewed configuration change. Approving an ID never changes the policy (§5).
+7. A tag manager is enabled only if it meets §11.2 rule 7 (OD-75).
+8. The owner signs off enabling tracking, with the evidence for criteria 1 to 7.

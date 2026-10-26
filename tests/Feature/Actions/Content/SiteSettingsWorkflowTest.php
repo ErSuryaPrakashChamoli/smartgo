@@ -105,9 +105,15 @@ it('needs legal details verified by someone who did not edit them, and put in us
     expect(setting('legal')->value('legal_name'))->toBe('Example Private Limited');
 });
 
-it('never adds tracking IDs to the website, even once published', function () {
+it('never adds tracking IDs or provider scripts to the website, even once published (OD-100)', function (string $path) {
     app(PublishRevision::class)->handle(approvedSettings('tracking', ['ga4_measurement_id' => 'G-ABC1234567', 'gtm_container_id' => 'GTM-ABC1234', 'meta_pixel_id' => '1234567890'], $this->author, $this->approver), $this->publisher);
 
-    expect(setting('tracking')->value('ga4_measurement_id'))->toBe('G-ABC1234567');
-    get('/about')->assertOk()->assertDontSee('G-ABC1234567')->assertDontSee('GTM-ABC1234')->assertDontSee('1234567890');
-});
+    $html = get($path)->assertOk()->getContent();
+    preg_match_all('/<script\\b[^>]*>/i', $html, $scriptTags);
+
+    expect(setting('tracking')->value('ga4_measurement_id'))->toBe('G-ABC1234567')
+        ->and($html)->not->toContain('G-ABC1234567')->not->toContain('GTM-ABC1234')->not->toContain('1234567890')
+        ->and(strtolower($html))->not->toContain('googletagmanager')->not->toContain('google-analytics')->not->toContain('gtag(')
+        ->not->toContain('datalayer')->not->toContain('fbq(')->not->toContain('connect.facebook.net')
+        ->and($scriptTags[0])->each->toMatch('#\\ssrc="'.preg_quote(rtrim(config('app.url'), '/'), '#').'/build/assets/[^"]+\\.js"#');
+})->with(['/about', '/insights', '/customers', '/faqs']);
