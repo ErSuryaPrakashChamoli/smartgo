@@ -24,7 +24,7 @@ class Post extends Model implements Revisionable
     /**
      * @var list<string>
      */
-    public const array BLOCK_TYPES = ['text', 'image', 'features', 'faq', 'cta', 'testimonial'];
+    public const array BLOCK_TYPES = ['text', 'image', 'features', 'stats', 'comparison', 'faq', 'cta', 'testimonial'];
 
     /**
      * @return array<string, string>

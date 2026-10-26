@@ -3,11 +3,13 @@
 namespace App\Services\Content;
 
 use App\Services\Content\Blocks\CallToActionBlock;
+use App\Services\Content\Blocks\ComparisonBlock;
 use App\Services\Content\Blocks\ContentBlock;
 use App\Services\Content\Blocks\FaqBlock;
 use App\Services\Content\Blocks\FeatureGridBlock;
 use App\Services\Content\Blocks\HeroBlock;
 use App\Services\Content\Blocks\ImageBlock;
+use App\Services\Content\Blocks\StatsBlock;
 use App\Services\Content\Blocks\TestimonialBlock;
 use App\Services\Content\Blocks\TextBlock;
 use Closure;
@@ -18,8 +20,8 @@ use Illuminate\Validation\Rule;
  * The fixed set of page sections editors can use (FR-CMS-1). A new kind of section is added by
  * writing a ContentBlock and listing it here; nothing else is accepted in a payload.
  *
- * Not offered yet: workspace and property cards (Phase 5 data) and enquiry forms (Phase 6). Nothing in
- * a block may invent prices, availability or claims.
+ * Not offered yet: workspace and property cards and location lists (Phase 5 data) and enquiry forms
+ * (Phase 6). Nothing in a block may invent prices, availability or claims.
  */
 class BlockLibrary
 {
@@ -33,6 +35,8 @@ class BlockLibrary
         TextBlock::class,
         ImageBlock::class,
         FeatureGridBlock::class,
+        StatsBlock::class,
+        ComparisonBlock::class,
         FaqBlock::class,
         TestimonialBlock::class,
         CallToActionBlock::class,
