@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Enums\Access\Capability;
 use App\Enums\Content\RevisionState;
 use App\Models\Contracts\Revisionable;
+use App\Models\Contracts\Unpublishable;
 use App\Models\Revision;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -114,6 +115,28 @@ class RevisionPolicy
         return $revision->reviewer_id === $user->getKey()
             ? Response::deny('You approved this version, so someone else must publish it.')
             : Response::allow();
+    }
+
+    /**
+     * Taking live content off the website at once (OD-98): anyone who may publish that content may,
+     * including its approver, because removing content never puts anything unapproved live. Only
+     * testimonials and customer stories offer it, and only their live version.
+     */
+    public function unpublish(User $user, Revision $revision): Response
+    {
+        $content = $revision->revisionable;
+
+        if (! $content instanceof Unpublishable) {
+            return Response::deny('This content cannot be taken down here.');
+        }
+
+        if (! $user->can($content->revisionCapabilities()['publish'])) {
+            return Response::deny('You cannot take this content down.');
+        }
+
+        return $revision->state === RevisionState::Published && $content->getAttribute('status') === 'published' && (int) $content->getAttribute('published_revision_id') === (int) $revision->getKey()
+            ? Response::allow()
+            : Response::deny('Only live content can be taken down.');
     }
 
     /**

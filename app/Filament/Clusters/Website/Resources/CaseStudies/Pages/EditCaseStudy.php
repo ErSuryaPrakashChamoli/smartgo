@@ -3,6 +3,7 @@
 namespace App\Filament\Clusters\Website\Resources\CaseStudies\Pages;
 
 use App\Filament\Clusters\Website\Concerns\HasRevisionWorkflow;
+use App\Filament\Clusters\Website\Concerns\TakesContentDown;
 use App\Filament\Clusters\Website\Resources\CaseStudies\CaseStudyResource;
 use App\Models\CaseStudy;
 use Filament\Actions\Action;
@@ -16,7 +17,7 @@ use Filament\Support\Icons\Heroicon;
  */
 class EditCaseStudy extends EditRecord
 {
-    use HasRevisionWorkflow;
+    use HasRevisionWorkflow, TakesContentDown;
 
     protected static string $resource = CaseStudyResource::class;
 
@@ -27,7 +28,11 @@ class EditCaseStudy extends EditRecord
 
     public function getSubheading(): ?string
     {
-        return $this->record->isPublished() ? 'Live at '.$this->record->path() : 'Not published yet';
+        return match ($this->record->status) {
+            'published' => 'Live at '.$this->record->path(),
+            'unpublished' => 'Taken off the website',
+            default => 'Not published yet',
+        };
     }
 
     protected function getHeaderActions(): array
@@ -39,6 +44,7 @@ class EditCaseStudy extends EditRecord
                 ->color('gray')
                 ->visible(fn (): bool => $this->record->isPublished())
                 ->url(fn (): string => url((string) $this->record->path()), shouldOpenInNewTab: true),
+            $this->takeDownAction(),
         ]);
     }
 
@@ -66,6 +72,6 @@ class EditCaseStudy extends EditRecord
 
         return $this->record->isPublished() && filled($newSlug) && $newSlug !== $this->record->slug
             ? "The old address {$this->record->path()} will redirect permanently to /customers/{$newSlug}."
-            : '';
+            : $this->takeDownNotice();
     }
 }

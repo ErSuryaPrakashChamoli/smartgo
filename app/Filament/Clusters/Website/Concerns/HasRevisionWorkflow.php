@@ -335,6 +335,12 @@ trait HasRevisionWorkflow
             $rejected = $this->latestRejectedRevision();
 
             return match (true) {
+                $this->record->getAttribute('status') === 'unpublished' => $notice(
+                    'Taken off the website',
+                    'Start a new draft to put it back; it needs approval and publication as usual. '.$this->workflowExtraNotice(),
+                    Heroicon::OutlinedEyeSlash,
+                    'danger',
+                ),
                 $rejected !== null => $notice(
                     "Version {$rejected->number} was rejected",
                     "By {$rejected->reviewer?->name} on {$this->time($rejected->reviewed_at)}: \u{201C}{$rejected->review_note}\u{201D} Revise it to start a new draft from it.",

@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Schema;
 use RuntimeException;
 
 /**
- * Runs publish attempts in parallel PHP processes against committed data in the testing database,
- * to prove that publishing locks the page and the version (ADR-0005, SECURITY_MODEL §11.6).
+ * Runs publish and take-down attempts in parallel PHP processes against committed data in the testing
+ * database, to prove that both lock the content and its versions (ADR-0005, SECURITY_MODEL §11.6, OD-98).
  */
 final class PublishingHarness
 {
@@ -20,7 +20,7 @@ final class PublishingHarness
      * @var list<string>
      */
     private const TABLES = [
-        'activity_log', 'redirects', 'revisions', 'pages',
+        'activity_log', 'redirects', 'revisions', 'pages', 'testimonials', 'case_studies',
         'model_has_roles', 'model_has_permissions', 'role_has_permissions', 'roles', 'permissions', 'users',
     ];
 
@@ -36,7 +36,7 @@ final class PublishingHarness
     /**
      * Run one worker per attempt, all released at the same instant.
      *
-     * @param  list<array{mode: 'manual'|'scheduled', revision_id?: int, user_id?: int, start_delay_ms?: int}>  $attempts
+     * @param  list<array{mode: 'manual'|'scheduled'|'takedown', revision_id?: int, user_id?: int, testimonial_id?: int, start_delay_ms?: int}>  $attempts
      * @return array<string, array{outcome: string, message: string|null}> worker name => result
      */
     public static function runWorkers(array $attempts): array
@@ -66,6 +66,7 @@ final class PublishingHarness
                         'PUBLISH_MODE' => $attempt['mode'],
                         'PUBLISH_REVISION_ID' => (string) ($attempt['revision_id'] ?? ''),
                         'PUBLISH_USER_ID' => (string) ($attempt['user_id'] ?? ''),
+                        'PUBLISH_TESTIMONIAL_ID' => (string) ($attempt['testimonial_id'] ?? ''),
                         'PUBLISH_START_DELAY_MS' => (string) ($attempt['start_delay_ms'] ?? 0),
                     ])
                     ->command([PHP_BINARY, 'tests/Support/Concurrency/publish-worker.php']);

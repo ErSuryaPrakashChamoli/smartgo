@@ -3,6 +3,7 @@
 namespace App\Filament\Clusters\Website\Resources\Testimonials\Pages;
 
 use App\Filament\Clusters\Website\Concerns\HasRevisionWorkflow;
+use App\Filament\Clusters\Website\Concerns\TakesContentDown;
 use App\Filament\Clusters\Website\Resources\Testimonials\TestimonialResource;
 use App\Models\Testimonial;
 use Filament\Resources\Pages\EditRecord;
@@ -14,7 +15,7 @@ use Filament\Resources\Pages\EditRecord;
  */
 class EditTestimonial extends EditRecord
 {
-    use HasRevisionWorkflow;
+    use HasRevisionWorkflow, TakesContentDown;
 
     protected static string $resource = TestimonialResource::class;
 
@@ -25,14 +26,21 @@ class EditTestimonial extends EditRecord
 
     public function getSubheading(): ?string
     {
-        return $this->record->isPublished()
-            ? 'Live: shown wherever a page, article or customer story includes it'
-            : 'Not published yet';
+        return match ($this->record->status) {
+            'published' => 'Live: shown wherever a page, article or customer story includes it',
+            'unpublished' => 'Taken off the website',
+            default => 'Not published yet',
+        };
     }
 
     protected function getHeaderActions(): array
     {
-        return $this->workflowHeaderActions();
+        return $this->workflowHeaderActions([$this->takeDownAction()]);
+    }
+
+    protected function workflowExtraNotice(): string
+    {
+        return $this->takeDownNotice();
     }
 
     protected function contentNoun(): string

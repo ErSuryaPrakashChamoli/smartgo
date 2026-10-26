@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\Access\Capability;
 use App\Models\Concerns\HasRevisions;
 use App\Models\Concerns\PublishesRevisionFields;
-use App\Models\Contracts\Revisionable;
+use App\Models\Contracts\Unpublishable;
 use App\Services\Content\ContentRules;
 use Database\Factories\TestimonialFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * published only with consent on file and a verified, unedited statement (BR-CMS-7), and is published
  * with `testimonials.publish`. Nothing here may be invented.
  */
-class Testimonial extends Model implements Revisionable
+class Testimonial extends Model implements Unpublishable
 {
     /** @use HasFactory<TestimonialFactory> */
     use HasFactory, HasRevisions, PublishesRevisionFields;
@@ -27,6 +27,11 @@ class Testimonial extends Model implements Revisionable
     protected function casts(): array
     {
         return ['consent_on_file' => 'boolean', 'statement_verified' => 'boolean', 'published_at' => 'datetime'];
+    }
+
+    public function contentLabel(): string
+    {
+        return 'testimonial';
     }
 
     public function revisionCapabilities(): array

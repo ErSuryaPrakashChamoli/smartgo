@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\Access\Capability;
 use App\Models\Concerns\HasRevisions;
 use App\Models\Concerns\PublishesRevisionFields;
-use App\Models\Contracts\Revisionable;
+use App\Models\Contracts\Unpublishable;
 use App\Services\Content\BlockLibrary;
 use App\Services\Content\ContentRules;
 use Database\Factories\CaseStudyFactory;
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * A customer case study (FR-CMS-7) at /customers/{slug}. A version is submitted and published only
  * with the customer's consent on file (BR-CMS-7), and is published with `testimonials.publish`.
  */
-class CaseStudy extends Model implements Revisionable
+class CaseStudy extends Model implements Unpublishable
 {
     /** @use HasFactory<CaseStudyFactory> */
     use HasFactory, HasRevisions, PublishesRevisionFields;
@@ -37,6 +37,11 @@ class CaseStudy extends Model implements Revisionable
     public function path(): ?string
     {
         return $this->isPublished() ? '/customers/'.$this->slug : null;
+    }
+
+    public function contentLabel(): string
+    {
+        return 'customer story';
     }
 
     public function revisionCapabilities(): array

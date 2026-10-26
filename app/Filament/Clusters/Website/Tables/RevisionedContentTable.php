@@ -49,9 +49,17 @@ class RevisionedContentTable
                 TextColumn::make('status')
                     ->label('On the website')
                     ->badge()
-                    ->formatStateUsing(fn (string $state, Model $record): string => $state === 'published' ? 'Live: v'.$record->publishedRevision?->number : 'Not published')
-                    ->color(fn (string $state): string => $state === 'published' ? 'success' : 'gray')
-                    ->description(fn (Model $record): ?string => $record->publishedRevision?->publisher === null ? null : 'Published by '.$record->publishedRevision->publisher->name),
+                    ->formatStateUsing(fn (string $state, Model $record): string => match ($state) {
+                        'published' => 'Live: v'.$record->publishedRevision?->number,
+                        'unpublished' => 'Taken down',
+                        default => 'Not published',
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'published' => 'success',
+                        'unpublished' => 'danger',
+                        default => 'gray',
+                    })
+                    ->description(fn (Model $record): ?string => $record->getAttribute('status') !== 'published' || $record->publishedRevision?->publisher === null ? null : 'Published by '.$record->publishedRevision->publisher->name),
                 TextColumn::make('workingRevision.state')
                     ->label('In progress')
                     ->badge()
@@ -77,7 +85,7 @@ class RevisionedContentTable
             ->filters([
                 SelectFilter::make('status')
                     ->label('On the website')
-                    ->options(['published' => 'Live', 'draft' => 'Not published']),
+                    ->options(['published' => 'Live', 'draft' => 'Not published', 'unpublished' => 'Taken down']),
                 SelectFilter::make('workflow')
                     ->label('In progress')
                     ->options(collect(RevisionState::open())->mapWithKeys(fn (RevisionState $state): array => [$state->value => $state->label()])->all())
