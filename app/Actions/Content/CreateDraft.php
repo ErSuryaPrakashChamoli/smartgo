@@ -3,6 +3,7 @@
 namespace App\Actions\Content;
 
 use App\Enums\Content\RevisionState;
+use App\Models\Contracts\RequiresConsent;
 use App\Models\Contracts\Revisionable;
 use App\Models\Revision;
 use App\Models\User;
@@ -12,7 +13,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Starts a new draft of a publishable item. An item has at most one version in progress.
+ * Starts a new draft of a publishable item. An item has at most one version in progress. While an
+ * item's consent is withdrawn, the draft starts with its consent cleared, whatever it copies (OD-101).
  */
 class CreateDraft
 {
@@ -43,6 +45,12 @@ class CreateDraft
                 throw ValidationException::withMessages(['revision' => 'This content already has a version in progress.']);
             }
 
+            $clearsConsent = $content instanceof RequiresConsent && $content->consentWithdrawn();
+
+            if ($clearsConsent) {
+                $payload = $content->withoutConsent($payload);
+            }
+
             $revision = $content->revisions()->create([
                 'number' => (int) $content->revisions()->max('number') + 1,
                 'payload' => $payload,
@@ -51,7 +59,10 @@ class CreateDraft
                 'editor_ids' => $editorIds,
             ]);
 
-            $this->recordRevisionActivity->handle($revision, $author, 'revision_created', 'Draft started', $basedOn === null ? [] : ['based_on' => $basedOn->number]);
+            $this->recordRevisionActivity->handle($revision, $author, 'revision_created', 'Draft started', [
+                ...($basedOn === null ? [] : ['based_on' => $basedOn->number]),
+                ...($clearsConsent ? ['consent_cleared' => true] : []),
+            ]);
 
             return $revision;
         });

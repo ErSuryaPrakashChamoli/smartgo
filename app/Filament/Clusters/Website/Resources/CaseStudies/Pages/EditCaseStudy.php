@@ -62,6 +62,7 @@ class EditCaseStudy extends EditRecord
             'summary' => $payload['summary'] ?? null,
             'consent_on_file' => (bool) ($payload['consent_on_file'] ?? false),
             'consent_reference' => $payload['consent_reference'] ?? null,
+            'consent_reconfirmed' => (bool) ($payload['consent_reconfirmed'] ?? false),
             'blocks' => $payload['blocks'] ?? [],
         ];
     }

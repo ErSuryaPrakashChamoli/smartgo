@@ -84,7 +84,7 @@ it('takes a live testimonial off every page at once, keeping its content and his
     $testimonial = liveTestimonialOnAboutPage($this->author, $this->approver, $this->publisher);
     get('/about')->assertSee('Moving in took a day.');
 
-    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn by email on 26 October 2026');
+    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn by email on 26 October 2026', consentWithdrawn: true);
 
     get('/about')->assertOk()->assertDontSee('Moving in took a day.');
     expect($testimonial->fresh())
@@ -99,7 +99,7 @@ it('takes a customer story off the list and its own address at once', function (
     $caseStudy = liveCustomerStory($this->author, $this->approver, $this->publisher);
     get('/customers/rao-studio')->assertOk();
 
-    app(UnpublishContent::class)->handle($caseStudy, $this->author, 'Customer asked us to remove it');
+    app(UnpublishContent::class)->handle($caseStudy, $this->author, 'Customer asked us to remove it', consentWithdrawn: false);
 
     get('/customers/rao-studio')->assertNotFound();
     get('/customers')->assertOk()->assertDontSee('Rao Studio grows');
@@ -108,7 +108,7 @@ it('takes a customer story off the list and its own address at once', function (
 it('lets anyone who may publish testimonials take one down, including the person who approved it', function () {
     $testimonial = liveTestimonialOnAboutPage($this->author, $this->approver, $this->publisher);
 
-    app(UnpublishContent::class)->handle($testimonial, $this->approver, 'Consent withdrawn');
+    app(UnpublishContent::class)->handle($testimonial, $this->approver, 'Consent withdrawn', consentWithdrawn: true);
 
     expect($testimonial->fresh()->status)->toBe('unpublished');
 });
@@ -122,7 +122,7 @@ it('refuses people who may not publish testimonials, and the item stays live', f
 
     $user = $who === 'finance' ? User::factory()->withRole(StaffRole::Finance)->create() : $this->publisher->fresh();
 
-    expect(fn () => app(UnpublishContent::class)->handle($testimonial, $user, 'Consent withdrawn'))
+    expect(fn () => app(UnpublishContent::class)->handle($testimonial, $user, 'Consent withdrawn', consentWithdrawn: true))
         ->toThrow(AuthorizationException::class, 'You cannot take this content down.');
     get('/about')->assertSee('Moving in took a day.');
 })->with(['finance', 'super admin without testimonials.publish']);
@@ -131,7 +131,7 @@ it('refuses a deactivated account, and the item stays live', function () {
     $testimonial = liveTestimonialOnAboutPage($this->author, $this->approver, $this->publisher);
     $this->publisher->forceFill(['is_active' => false])->save();
 
-    expect(fn () => app(UnpublishContent::class)->handle($testimonial, $this->publisher->fresh(), 'Consent withdrawn'))
+    expect(fn () => app(UnpublishContent::class)->handle($testimonial, $this->publisher->fresh(), 'Consent withdrawn', consentWithdrawn: true))
         ->toThrow(AuthorizationException::class, 'This account is deactivated.');
     get('/about')->assertSee('Moving in took a day.');
 });
@@ -139,7 +139,7 @@ it('refuses a deactivated account, and the item stays live', function () {
 it('needs a reason, and the item stays live without one', function (string $reason, string $message) {
     $testimonial = liveTestimonialOnAboutPage($this->author, $this->approver, $this->publisher);
 
-    expect(fn () => app(UnpublishContent::class)->handle($testimonial, $this->publisher, $reason))->toThrow(ValidationException::class, $message);
+    expect(fn () => app(UnpublishContent::class)->handle($testimonial, $this->publisher, $reason, consentWithdrawn: false))->toThrow(ValidationException::class, $message);
     get('/about')->assertSee('Moving in took a day.');
 })->with([
     'empty' => ['', 'Say why it is taken down.'],
@@ -151,10 +151,10 @@ it('refuses content that is not live', function () {
     $draftOnly = Testimonial::factory()->create();
     app(CreateDraft::class)->handle($draftOnly, $this->author, consentedTestimonial());
     $testimonial = liveTestimonialOnAboutPage($this->author, $this->approver, $this->publisher);
-    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn');
+    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn', consentWithdrawn: true);
 
-    expect(fn () => app(UnpublishContent::class)->handle($draftOnly, $this->publisher, 'Consent withdrawn'))->toThrow(AuthorizationException::class, 'Only live content can be taken down.')
-        ->and(fn () => app(UnpublishContent::class)->handle($testimonial->fresh(), $this->publisher, 'Again'))->toThrow(AuthorizationException::class, 'Only live content can be taken down.')
+    expect(fn () => app(UnpublishContent::class)->handle($draftOnly, $this->publisher, 'Consent withdrawn', consentWithdrawn: true))->toThrow(AuthorizationException::class, 'Only live content can be taken down.')
+        ->and(fn () => app(UnpublishContent::class)->handle($testimonial->fresh(), $this->publisher, 'Again', consentWithdrawn: false))->toThrow(AuthorizationException::class, 'Only live content can be taken down.')
         ->and(Activity::query()->where('event', 'content_unpublished')->count())->toBe(1);
 });
 
@@ -172,7 +172,7 @@ it('sends approved versions back to their authors and cancels their schedule, so
     $waiting = approvedVersion($testimonial, consentedTestimonial('An approved change.'), $this->author, $this->approver);
     app(ScheduleRevision::class)->handle($waiting, $this->publisher, now()->addHour());
 
-    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn');
+    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn', consentWithdrawn: true);
 
     expect($waiting->fresh())
         ->state->toBe(RevisionState::Rejected)
@@ -194,7 +194,7 @@ it('audits the take-down with the actor, time, item, reason and the version that
     $waiting = approvedVersion($testimonial, consentedTestimonial('An approved change.'), $this->author, $this->approver);
 
     $this->freezeTime(function () use ($testimonial, $live, $waiting): void {
-        app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn');
+        app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn', consentWithdrawn: true);
 
         $entry = Activity::query()->where('event', 'content_unpublished')->sole();
         $returned = Activity::query()->where('event', 'revision_returned')->sole();
@@ -218,7 +218,7 @@ it('audits the take-down with the actor, time, item, reason and the version that
 
 it('puts a taken-down testimonial back only through a new version approved and published by different people', function () {
     $testimonial = liveTestimonialOnAboutPage($this->author, $this->approver, $this->publisher);
-    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Wrong job title');
+    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Wrong job title', consentWithdrawn: false);
 
     expect(fn () => app(PublishRevision::class)->handle($testimonial->revisions()->sole(), $this->publisher))->toThrow(AuthorizationException::class);
 
@@ -234,7 +234,7 @@ it('puts a taken-down testimonial back only through a new version approved and p
 
 it('keeps a testimonial whose consent was withdrawn off the website until a new version records consent and is approved', function () {
     $testimonial = liveTestimonialOnAboutPage($this->author, $this->approver, $this->publisher);
-    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn');
+    app(UnpublishContent::class)->handle($testimonial, $this->publisher, 'Consent withdrawn', consentWithdrawn: true);
 
     $draft = app(CreateDraft::class)->handle($testimonial->fresh(), $this->author, [...consentedTestimonial(), 'consent_on_file' => false, 'consent_reference' => null]);
 

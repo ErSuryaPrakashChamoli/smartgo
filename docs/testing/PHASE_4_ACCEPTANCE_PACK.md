@@ -2,11 +2,11 @@
 
 | | |
 |---|---|
-| Status | **Ready to schedule once the preconditions in §2 are met (updated 2026-10-26, round 33).** Not yet run. No scenario has a result yet. Phase 4 is **not** accepted. |
+| Status | **Ready to schedule once the preconditions in §2 are met (updated 2026-10-26, round 34).** Not yet run. No scenario has a result yet. Phase 4 is **not** accepted. |
 | Purpose | Human evidence for Phase 4 acceptance: AC-4.1 (FR-CMS-1 to FR-CMS-8), AC-4.2 (UJ-7 and UJ-8 completed unaided in a moderated test) and AC-4.3 (no routine CMS task needs code, JSON or SQL). `PROJECT_MASTER_PLAN.md` §2, Phase 4. |
 | Who runs it | The owner, or someone the owner names, moderates. Participants are the real people who will use the back office. A second person takes notes if possible. |
 | Where | The owner's local environment or a demo environment the owner chooses. Staging is deferred (OD-79), so nothing in this session is public. |
-| Related | `../phases/PHASE_STATUS.md` (Phase 4), `../decisions/DECISION_REGISTER.md` (OD-94 to OD-101, §0.31, §0.32), `../security/SECURITY_MODEL.md` §11.6 and §11.7, `../requirements/INFORMATION_ARCHITECTURE.md` (UJ-7, UJ-8) |
+| Related | `../phases/PHASE_STATUS.md` (Phase 4), `../decisions/DECISION_REGISTER.md` (OD-94 to OD-101, §0.31 to §0.33), `../security/SECURITY_MODEL.md` §11.6 and §11.7, `../requirements/INFORMATION_ARCHITECTURE.md` (UJ-7, UJ-8) |
 
 **Automated tests do not replace this session.** A passing test suite shows that the rules are coded; only the session shows that people can use them unaided. No scenario may be marked as passed unless it was observed in the session.
 
@@ -22,7 +22,7 @@
 | Articles, FAQs, testimonials, customer stories, legal pages | S7, S8 |
 | Contact details, social links, legal entity details, manual redirects | S9, S10, S11 |
 | Access refusals | S12 |
-| Taking a testimonial or customer story off the website (OD-98) | S13 (needs a commit that includes OD-98, precondition 2.10) |
+| Taking a testimonial or customer story off the website, and withdrawn consent (OD-98, OD-101) | S13 (needs a commit that includes both, precondition 2.10) |
 | Tracking stays disabled (OD-100) | S14 |
 
 **Not covered** (not built, or built only in part; these are not defects):
@@ -32,7 +32,7 @@
 | Property and offering profiles, and a centre's photo gallery | They attach to the property and offering records Phase 5 builds (step 4.7). No stand-in records are created. UJ-7 is run on a **page with image sections** here and **must be repeated against a real centre profile in Phase 5**. | PHASE_STATUS, step 4.7 |
 | Location list and enquiry form sections | Need Phase 5 data and Phase 6 forms. | FR-CMS-1 |
 | Analytics and advertising code | Disabled until the consent approach is agreed with counsel. | OD-100, SECURITY_MODEL §11.7 |
-| Recording that consent was withdrawn, and forcing new consent before republishing | The system cannot yet tell withdrawn consent from valid consent; reviewers must check. | OD-101 (open) |
+| What counts as valid consent evidence, how long withdrawn content is kept, and recording a withdrawal for an item that is not live | Policy questions for the owner and counsel. | OD-101 (§0.33) |
 | Taking down pages, articles, FAQs or other content | Not in the approved scope. | OD-98 |
 | Editing the logo and design colours | Needs SVG sanitising and contrast checks. | OD-99 |
 | Side-by-side comparison of two versions | The approver uses the preview and the editor. Record in the notes whether this was enough. | UJ-8 |
@@ -55,7 +55,7 @@ Complete this checklist on the day, before participants arrive. If an item fails
 | 2.7 | `php artisan schedule:work` is running in a terminal for the whole session (needed for S4). | ☐ |
 | 2.8 | The website starts clean: no page, menu, setting or redirect from earlier tests is live. | ☐ |
 | 2.9 | The full automated suite passed on the agreed commit (record the count): ________ | ☐ |
-| 2.10 | The agreed commit includes the OD-98 take-down feature (built locally on 2026-10-26, not yet committed; committing it needs the owner's authorisation) and its automated tests pass. Otherwise S13 is marked **Blocked**. | ☐ |
+| 2.10 | The agreed commit includes the take-down feature (OD-98, committed as `84a8f35`) **and** the withdrawn-consent rules (OD-101, committed locally in round 35), the session database has been migrated (precondition 2.3, which adds the OD-101 columns), and their automated tests pass. Otherwise S13 is marked **Blocked**. | ☐ |
 | 2.11 | A browser with developer tools (Chrome, Edge or Firefox) is available for S14. | ☐ |
 | 2.12 | Screen recording or screenshots are allowed by every participant. | ☐ |
 
@@ -232,28 +232,30 @@ Each step has an expected outcome. Record the actual result in the results sheet
 | S12.1 | P5 signs in and looks for Website → Pages | Not shown; opening its address directly is refused. |
 | S12.2 | P4 looks for Website → Pages | Not shown or refused; only legal details are visible. |
 
-### S13. Take a testimonial and a customer story off the website (P2 or P3; P1; P5) — OD-98
+### S13. Take a testimonial and a customer story off the website, and withdrawn consent (P1, P2, P3; P5) — OD-98, OD-101
 
-**Blocked unless precondition 2.10 is met.** If blocked, record "Blocked: OD-98 not in the tested commit" for every step; this is not a pass.
+**Blocked unless precondition 2.10 is met.** If blocked, record "Blocked: OD-98 or OD-101 not in the tested commit" for every step; this is not a pass.
 
 **Set-up by the moderator:** the testimonial from S7 is live and shown on a page; one further version of it is **approved and scheduled** for tomorrow (so S13.4 can be observed); a customer story is live.
 
-**Task for P2 or P3:** "The person in the published testimonial has withdrawn consent. Take the testimonial off the website now." Then: "Do the same for the customer story."
+**Task for P2 or P3:** "The person in the published testimonial has withdrawn consent. Take the testimonial off the website now." Then, for P1: "Take the customer story down because its title has a mistake; the customer has not withdrawn consent."
 
 | Step | Action | Expected outcome |
 |---|---|---|
 | S13.1 | Website → Testimonials → open the live testimonial | **Take off the website** is shown (red), next to the workflow buttons. |
-| S13.2 | Choose it and confirm without a reason | Refused: a reason is required. The testimonial stays live. |
-| S13.3 | Confirm with a reason, for example "Consent withdrawn by email on [date]" | Notification "Testimonial taken off the website". The editor says "Taken off the website" with the date, the person and the reason, and warns not to put it back until consent has been given again and recorded. In the list it shows **Taken down**. |
-| S13.4 | Open the version history | The version that was live is "Previously published"; the approved, scheduled version is now **Rejected**, with the note "Sent back automatically: the testimonial was taken off the website. Reason: …", and is no longer scheduled. Every version's content is still there. |
+| S13.2 | Choose it and confirm with no answer and no reason | Refused: "Was consent withdrawn?" and the reason are both required. The testimonial stays live. |
+| S13.3 | Answer **Yes: the person or customer withdrew consent**, give a reason (for example "Consent withdrawn by email on [date]") and confirm | Notification "Testimonial taken off the website". The editor says "Taken off the website" with the date, person and reason, and "Consent was withdrawn on … by …". The list shows **Taken down**. |
+| S13.4 | Open the version history | The version that was live is "Previously published"; the approved, scheduled version is **Rejected**, with the note "Sent back automatically: …", and is no longer scheduled. Every version's content is still there. |
 | S13.5 | Visit the page that showed the quote, in a private browser window | The quote is gone at once. |
-| S13.6 | Version history → **Activity** on the previously published version; Settings → Audit log (P3) | An entry "Testimonial taken off the website" with who, when and the reason; the returned version has its own entry. |
-| S13.7 | Wait until after the cancelled scheduled time (or ask P3 to check the next day) | The returned version did not go live. |
-| S13.8 | P1 opens a live customer story and takes it off the website with a reason | Allowed: any holder of `testimonials.publish` (every Marketing Manager and Super Admin) may take it down, including whoever approved it. /customers and the story's own address no longer show it (the address answers "not found"). |
-| S13.9 | P5 tries to open Website → Testimonials | Not shown or refused, so no take-down is possible. |
-| S13.10 | Open an article or FAQ editor | No **Take off the website** button (only testimonials and customer stories have it). |
-| S13.11 | "Put the customer story back." | Only possible by starting a new draft (or revising or restoring a version), submitting it, having someone else approve it, and publishing it. |
-| S13.12 | **Observation, not a pass criterion (OD-101 open):** in S13.11, note whether the new draft already has consent ticked with the old reference | Expected today: yes, it does. The system does not yet force new consent after a withdrawal; the approver must check. Record what the participants did. |
+| S13.6 | Version history → **Activity**; Settings → Audit log (P3) | Entries for the take-down (who, when, reason), the withdrawal of consent and the returned version. |
+| S13.7 | After the cancelled scheduled time (or the next day) | The returned version did not go live. |
+| S13.8 | P1: start a new draft of the testimonial (or revise the returned version, or restore an earlier one) | The draft has **no consent**: consent unticked, no reference. A field "Consent was given again after it was withdrawn…" is shown. |
+| S13.9 | P1 ticks consent, enters the **old** reference, ticks the confirmation and submits | Refused: the reference was used before. |
+| S13.10 | P1 enters a **new** reference, without the confirmation, and submits; then with the confirmation | First refused (confirmation needed); then submitted for approval. |
+| S13.11 | P2 approves; P2 tries to publish; P3 (or P1) publishes | P2 cannot publish their own approval. After publication the quote is back on the page and the editor no longer says consent is withdrawn. The audit log shows "Consent re-established with a new version". |
+| S13.12 | P1 takes the live customer story down, answering **No: it is taken down for another reason** | Allowed for any holder of `testimonials.publish`. /customers and the story's address no longer show it. A new draft keeps the existing consent and reference, and can be submitted without the confirmation. |
+| S13.13 | P5 tries to open Website → Testimonials | Not shown or refused, so no take-down is possible. |
+| S13.14 | Open an article or FAQ editor | No **Take off the website** button (only testimonials and customer stories have it). |
 
 ### S14. Tracking stays disabled (moderator, with P1, P2, P3) — OD-100
 
@@ -321,7 +323,7 @@ Approval of an ID is not permission to run its script (OD-100). Any provider req
 1. The fix comes with an automated test that fails without it, and the full suite passes. Record the commit in the log.
 2. The moderator retests the failing step with the participant who found it, or a person with the same role, and records the result. Only the retest can close the defect.
 3. **Regression after any fix:** rerun these steps, as a minimum, and record them in the results sheet as retests:
-   * S2.6 (submit), S3.6 and S3.7 (author cannot approve, approver cannot publish), S4.1 (publish), S12 (refusals), S13.2 to S13.5 (take-down, when OD-98 is in the tested commit) and S14 (tracking);
+   * S2.6 (submit), S3.6 and S3.7 (author cannot approve, approver cannot publish), S4.1 (publish), S12 (refusals), S13.2 to S13.5 and S13.8 to S13.10 (take-down and withdrawn consent, when they are in the tested commit) and S14 (tracking);
    * every scenario that touches the changed screen or rule.
 4. A Blocker or Major defect closed after the session also needs the affected scenario rerun in full, unaided, before sign-off.
 
@@ -351,7 +353,7 @@ Automated evidence, 2026-10-26 (test database only, outside caches bypassed): 63
 | FR-CMS-4 Navigation, header and footer | Yes | `NavigationWorkflowTest`, `EditNavigationMenuTest`, `PublicShellTest` | S6 | Built | |
 | FR-CMS-5 Media library | Yes; licence expiry hides images | `MediaLibraryTest`, `MediaLibraryScreensTest` | S1 | **Partial:** blocking concept images from centre galleries comes with the galleries (Phase 5) | |
 | FR-CMS-6 Location and offering profiles | No | none | none | **Not built:** depends on Phase 5 (step 4.7); UJ-7 to be repeated on a real centre | |
-| FR-CMS-7 Insights, FAQs, testimonials, customer stories, legal pages | Yes; taking testimonials and customer stories down built locally (OD-98, not yet committed) | `ContentTypesWorkflowTest`, `PublishedContentControllerTest`, `ContentTypeScreensTest`, `UnpublishContentTest`, `TakeDownScreensTest`, `ContentPublishingConcurrencyTest` | S7, S8, S13 | **Partial:** FAQ location and product scopes (Phase 5); withdrawn consent is not recorded as such (OD-101) | |
+| FR-CMS-7 Insights, FAQs, testimonials, customer stories, legal pages | Yes; taking testimonials and customer stories down (OD-98, committed `84a8f35`); withdrawn consent (OD-101, committed locally in round 35) | `ContentTypesWorkflowTest`, `PublishedContentControllerTest`, `ContentTypeScreensTest`, `UnpublishContentTest`, `ConsentWithdrawalTest`, `TakeDownScreensTest`, `ContentPublishingConcurrencyTest` | S7, S8, S13 | **Partial:** FAQ location and product scopes (Phase 5); consent-evidence policy questions open with the owner and counsel (OD-101) | |
 | FR-CMS-8 Brand settings | Contact details, social links, tracking IDs (stored only), legal details, manual redirects | `SiteSettingsWorkflowTest`, `RedirectMapWorkflowTest`, `SettingsAndRedirectsScreensTest` | S9 to S11, S14 | **Partial:** design tokens and logo (OD-99); tracking disabled by decision (OD-100) | |
 
 ### 9.3 AC-4.2, AC-4.3 and the owner's decisions
@@ -362,8 +364,8 @@ Automated evidence, 2026-10-26 (test database only, outside caches bypassed): 63
 | P2 completed UJ-8 (S3, S4) unaided | ☐ Yes ☐ No | |
 | No step needed code, JSON or SQL (AC-4.3) | ☐ Yes ☐ No | |
 | Every refusal in S1 to S3 and S7 to S12 behaved as expected | ☐ Yes ☐ No | |
-| OD-98 committed in the tested version, and S13 passed | ☐ Yes ☐ No ☐ Blocked | |
-| OD-101 decided, or the owner accepts reviewer checks of consent until it is built | ☐ Yes ☐ No | |
+| OD-98 and OD-101 committed in the tested version, and S13 passed | ☐ Yes ☐ No ☐ Blocked | |
+| The owner and counsel have answered the OD-101 policy questions, or accepted the current evidence rule (new reference plus confirmation) for now | ☐ Yes ☐ No | |
 | S14 passed: no tracking script, request or ID on any public page (OD-100) | ☐ Yes ☐ No | |
 | No Blocker or Major defect open | ☐ Yes ☐ No | |
 | Retests and regression steps recorded for every fixed defect | ☐ Yes ☐ No ☐ None needed | |

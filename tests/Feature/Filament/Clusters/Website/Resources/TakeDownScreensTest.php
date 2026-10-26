@@ -58,13 +58,13 @@ it('takes a live testimonial off the website from its editor, only with a reason
     Livewire::test(EditTestimonial::class, ['record' => $testimonial->getRouteKey()])
         ->assertActionVisible('takeDown')
         ->assertActionEnabled('takeDown')
-        ->callAction('takeDown', data: ['reason' => ''])
-        ->assertHasActionErrors(['reason' => 'required']);
+        ->callAction('takeDown', data: ['reason' => '', 'consent_withdrawn' => null])
+        ->assertHasActionErrors(['reason' => 'required', 'consent_withdrawn' => 'required']);
 
     expect($testimonial->fresh()->status)->toBe('published');
 
     Livewire::test(EditTestimonial::class, ['record' => $testimonial->getRouteKey()])
-        ->callAction('takeDown', data: ['reason' => 'Consent withdrawn by email'])
+        ->callAction('takeDown', data: ['reason' => 'Consent withdrawn by email', 'consent_withdrawn' => '1'])
         ->assertHasNoActionErrors()
         ->assertNotified('Testimonial taken off the website');
 
@@ -74,7 +74,8 @@ it('takes a live testimonial off the website from its editor, only with a reason
         ->assertActionHidden('takeDown')
         ->assertSee('Taken off the website')
         ->assertSee('Consent withdrawn by email')
-        ->assertSee('do not put it back until consent has been given again and recorded');
+        ->assertSee('Consent was withdrawn on')
+        ->assertSee('A new version can only be submitted with new consent');
 });
 
 it('shows the button disabled, with the reason, to someone who may not publish testimonials', function () {
@@ -95,7 +96,7 @@ it('lists a taken-down customer story as taken down', function () {
         'consent_on_file' => true, 'consent_reference' => 'Email 12 Oct',
         'blocks' => [['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Story.</p>']]],
     ], $this->author, $this->approver, $this->publisher);
-    app(UnpublishContent::class)->handle($caseStudy, $this->publisher, 'Customer asked us to remove it');
+    app(UnpublishContent::class)->handle($caseStudy, $this->publisher, 'Customer asked us to remove it', consentWithdrawn: false);
 
     actingAs($this->author)->get(CaseStudyResource::getUrl('index'))->assertOk()->assertSee('Taken down');
 });
@@ -107,4 +108,27 @@ it('offers no take-down button for other content, such as articles', function ()
     actingAs($this->publisher);
 
     Livewire::test(EditPost::class, ['record' => $post->getRouteKey()])->assertActionDoesNotExist('takeDown');
+});
+
+it('asks for new consent in the editor once consent is withdrawn, and only then', function () {
+    $testimonial = screenTestimonial($this->author, $this->approver, $this->publisher);
+    actingAs($this->author);
+    app(CreateDraft::class)->handle($testimonial, $this->author);
+
+    Livewire::test(EditTestimonial::class, ['record' => $testimonial->getRouteKey()])->assertFormFieldHidden('consent_reconfirmed');
+
+    app(UnpublishContent::class)->handle($testimonial->fresh(), $this->publisher, 'Consent withdrawn', consentWithdrawn: true);
+    app(CreateDraft::class)->handle($testimonial->fresh(), $this->author);
+
+    Livewire::test(EditTestimonial::class, ['record' => $testimonial->getRouteKey()])
+        ->assertFormFieldVisible('consent_reconfirmed')
+        ->assertSchemaStateSet(['consent_on_file' => false, 'consent_reference' => null, 'consent_reconfirmed' => false])
+        ->fillForm(['consent_on_file' => true, 'consent_reference' => 'Email 2 Nov 2026'])
+        ->callAction('submit')
+        ->assertHasErrors(['data.consent_reconfirmed']);
+
+    Livewire::test(EditTestimonial::class, ['record' => $testimonial->getRouteKey()])
+        ->fillForm(['consent_on_file' => true, 'consent_reference' => 'Email 2 Nov 2026', 'consent_reconfirmed' => true])
+        ->callAction('submit')
+        ->assertNotified('Submitted for approval');
 });

@@ -57,6 +57,7 @@ class EditTestimonial extends EditRecord
             'company_name' => $payload['company_name'] ?? null,
             'consent_on_file' => (bool) ($payload['consent_on_file'] ?? false),
             'consent_reference' => $payload['consent_reference'] ?? null,
+            'consent_reconfirmed' => (bool) ($payload['consent_reconfirmed'] ?? false),
             'statement_verified' => (bool) ($payload['statement_verified'] ?? false),
         ];
     }

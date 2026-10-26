@@ -36,7 +36,7 @@ final class PublishingHarness
     /**
      * Run one worker per attempt, all released at the same instant.
      *
-     * @param  list<array{mode: 'manual'|'scheduled'|'takedown', revision_id?: int, user_id?: int, testimonial_id?: int, start_delay_ms?: int}>  $attempts
+     * @param  list<array{mode: 'manual'|'scheduled'|'takedown'|'submit'|'approve'|'restore', revision_id?: int, user_id?: int, testimonial_id?: int, consent_withdrawn?: bool, start_delay_ms?: int}>  $attempts
      * @return array<string, array{outcome: string, message: string|null}> worker name => result
      */
     public static function runWorkers(array $attempts): array
@@ -67,6 +67,7 @@ final class PublishingHarness
                         'PUBLISH_REVISION_ID' => (string) ($attempt['revision_id'] ?? ''),
                         'PUBLISH_USER_ID' => (string) ($attempt['user_id'] ?? ''),
                         'PUBLISH_TESTIMONIAL_ID' => (string) ($attempt['testimonial_id'] ?? ''),
+                        'PUBLISH_CONSENT_WITHDRAWN' => ($attempt['consent_withdrawn'] ?? false) ? '1' : '0',
                         'PUBLISH_START_DELAY_MS' => (string) ($attempt['start_delay_ms'] ?? 0),
                     ])
                     ->command([PHP_BINARY, 'tests/Support/Concurrency/publish-worker.php']);

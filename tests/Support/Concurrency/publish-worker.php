@@ -3,14 +3,17 @@
 /*
  * Test-only worker for Tests\Support\Concurrency\PublishingHarness.
  *
- * Boots the application, waits for the shared release instant, then publishes a revision by hand, runs
- * the scheduled publisher or takes a testimonial off the website. After every read of a revision it
+ * Boots the application, waits for the shared release instant, then publishes, submits, approves or
+ * restores a revision, runs the scheduled publisher, or takes a testimonial off the website. After every read of a revision it
  * pauses briefly, which widens the race window so a missing lock would show up as a double
  * publication. Prints one JSON line.
  */
 
+use App\Actions\Content\ApproveRevision;
 use App\Actions\Content\PublishRevision;
 use App\Actions\Content\PublishScheduledRevisions;
+use App\Actions\Content\RestoreRevision;
+use App\Actions\Content\SubmitRevision;
 use App\Actions\Content\UnpublishContent;
 use App\Models\Revision;
 use App\Models\Testimonial;
@@ -51,8 +54,17 @@ try {
     if (getenv('PUBLISH_MODE') === 'scheduled') {
         $outcome = app(PublishScheduledRevisions::class)->handle() > 0 ? 'published' : 'skipped';
     } elseif (getenv('PUBLISH_MODE') === 'takedown') {
-        app(UnpublishContent::class)->handle(Testimonial::query()->findOrFail((int) getenv('PUBLISH_TESTIMONIAL_ID')), User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')), 'Consent withdrawn');
+        app(UnpublishContent::class)->handle(Testimonial::query()->findOrFail((int) getenv('PUBLISH_TESTIMONIAL_ID')), User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')), 'Consent withdrawn', consentWithdrawn: getenv('PUBLISH_CONSENT_WITHDRAWN') === '1');
         $outcome = 'taken down';
+    } elseif (getenv('PUBLISH_MODE') === 'approve') {
+        app(ApproveRevision::class)->handle(Revision::query()->findOrFail((int) getenv('PUBLISH_REVISION_ID')), User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')));
+        $outcome = 'approved';
+    } elseif (getenv('PUBLISH_MODE') === 'submit') {
+        app(SubmitRevision::class)->handle(Revision::query()->findOrFail((int) getenv('PUBLISH_REVISION_ID')), User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')));
+        $outcome = 'submitted';
+    } elseif (getenv('PUBLISH_MODE') === 'restore') {
+        app(RestoreRevision::class)->handle(Revision::query()->findOrFail((int) getenv('PUBLISH_REVISION_ID')), User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')));
+        $outcome = 'restored';
     } else {
         app(PublishRevision::class)->handle(Revision::query()->findOrFail((int) getenv('PUBLISH_REVISION_ID')), User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')));
         $outcome = 'published';

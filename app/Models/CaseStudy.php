@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\Access\Capability;
 use App\Models\Concerns\HasRevisions;
 use App\Models\Concerns\PublishesRevisionFields;
+use App\Models\Concerns\TracksConsentWithdrawal;
+use App\Models\Contracts\RequiresConsent;
 use App\Models\Contracts\Unpublishable;
 use App\Services\Content\BlockLibrary;
 use App\Services\Content\ContentRules;
@@ -14,12 +16,13 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * A customer case study (FR-CMS-7) at /customers/{slug}. A version is submitted and published only
- * with the customer's consent on file (BR-CMS-7), and is published with `testimonials.publish`.
+ * with the customer's consent on file (BR-CMS-7), and is published with `testimonials.publish`. It can
+ * be taken off the website at once (OD-98); withdrawn consent is recorded on it (OD-101).
  */
-class CaseStudy extends Model implements Unpublishable
+class CaseStudy extends Model implements RequiresConsent, Unpublishable
 {
     /** @use HasFactory<CaseStudyFactory> */
-    use HasFactory, HasRevisions, PublishesRevisionFields;
+    use HasFactory, HasRevisions, PublishesRevisionFields, TracksConsentWithdrawal;
 
     /**
      * @var list<string>
@@ -31,12 +34,22 @@ class CaseStudy extends Model implements Unpublishable
      */
     protected function casts(): array
     {
-        return ['blocks' => 'array', 'consent_on_file' => 'boolean', 'published_at' => 'datetime'];
+        return ['blocks' => 'array', 'consent_on_file' => 'boolean', 'consent_withdrawn_at' => 'datetime', 'published_at' => 'datetime'];
     }
 
     public function path(): ?string
     {
         return $this->isPublished() ? '/customers/'.$this->slug : null;
+    }
+
+    protected function payloadOnlyFields(): array
+    {
+        return ['consent_reconfirmed'];
+    }
+
+    protected function revisionPublished(Revision $revision): void
+    {
+        $this->reestablishConsentOnPublication($revision);
     }
 
     public function contentLabel(): string
@@ -62,6 +75,7 @@ class CaseStudy extends Model implements Unpublishable
     protected function revisionRules(array $payload, bool $forSubmission): array
     {
         $rules = app(ContentRules::class);
+        $consentRules = $this->withdrawnConsentRules($forSubmission);
         ['rules' => $blockRules, 'attributes' => $attributes] = app(BlockLibrary::class)->rules($payload['blocks'], $forSubmission, self::BLOCK_TYPES);
 
         return [
@@ -71,16 +85,17 @@ class CaseStudy extends Model implements Unpublishable
                 'company_name' => $rules->plainText($forSubmission, 120),
                 'summary' => $rules->plainText($forSubmission, 300),
                 'consent_on_file' => $forSubmission ? ['accepted'] : ['nullable', 'boolean'],
-                'consent_reference' => $rules->plainText($forSubmission, 120),
+                'consent_reference' => [...$rules->plainText($forSubmission, 120), ...($consentRules['consent_reference'] ?? [])],
+                'consent_reconfirmed' => $consentRules['consent_reconfirmed'],
                 ...$blockRules,
             ],
-            'messages' => $rules->messages(),
+            'messages' => [...$rules->messages(), ...$this->withdrawnConsentMessages()],
             'attributes' => $attributes,
         ];
     }
 
     protected function normalizeRevisionPayload(array $payload): array
     {
-        return [...$payload, 'consent_on_file' => (bool) $payload['consent_on_file'], 'blocks' => app(BlockLibrary::class)->normalize($payload['blocks'] ?? [])];
+        return [...$payload, 'consent_on_file' => (bool) $payload['consent_on_file'], 'consent_reconfirmed' => (bool) $payload['consent_reconfirmed'], 'blocks' => app(BlockLibrary::class)->normalize($payload['blocks'] ?? [])];
     }
 }

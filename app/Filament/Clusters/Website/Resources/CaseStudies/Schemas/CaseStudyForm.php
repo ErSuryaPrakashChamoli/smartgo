@@ -3,6 +3,7 @@
 namespace App\Filament\Clusters\Website\Resources\CaseStudies\Schemas;
 
 use App\Models\CaseStudy;
+use App\Models\Contracts\RequiresConsent;
 use App\Services\Content\BlockLibrary;
 use App\Services\Content\ContentRules;
 use Filament\Forms\Components\Builder;
@@ -11,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * The customer story editor. The rules on CaseStudy are the authority; consent must be on file before
@@ -62,7 +64,15 @@ class CaseStudyForm
                             ->label('Where the consent is kept')
                             ->markAsRequired()
                             ->maxLength(120)
-                            ->helperText('For example the signed form or email reference.'),
+                            ->helperText(fn (?Model $record): string => $record instanceof RequiresConsent && $record->consentWithdrawn()
+                                ? 'Consent was withdrawn: enter the reference of the new consent. A reference used before is refused.'
+                                : 'For example the signed form or email reference.'),
+                        Toggle::make('consent_reconfirmed')
+                            ->label('Consent was given again after it was withdrawn, and is recorded under the reference above')
+                            ->visible(fn (?Model $record): bool => $record instanceof RequiresConsent && $record->consentWithdrawn())
+                            ->markAsRequired()
+                            ->inline(false)
+                            ->columnSpanFull(),
                     ]),
                 Section::make('Sections')
                     ->description('Sections appear in the story in this order.')

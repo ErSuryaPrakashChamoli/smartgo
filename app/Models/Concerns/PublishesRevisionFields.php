@@ -32,6 +32,22 @@ trait PublishesRevisionFields
     abstract protected function revisionRules(array $payload, bool $forSubmission): array;
 
     /**
+     * Fields kept in a version's payload but not copied to the live row, such as a confirmation that
+     * only matters for that version.
+     *
+     * @return list<string>
+     */
+    protected function payloadOnlyFields(): array
+    {
+        return [];
+    }
+
+    /**
+     * Runs after a version's fields are copied to the live row, inside the publishing transaction.
+     */
+    protected function revisionPublished(Revision $revision): void {}
+
+    /**
      * Prepares raw input for validation, e.g. turns keyed lists into plain lists.
      *
      * @param  array<string, mixed>  $payload
@@ -84,7 +100,7 @@ trait PublishesRevisionFields
 
     public function toRevisionPayload(): array
     {
-        return $this->only($this->revisionFields());
+        return [...$this->only($this->revisionFields()), ...array_fill_keys($this->payloadOnlyFields(), null)];
     }
 
     public function prepareRevisionPayload(array $payload, bool $forSubmission): array
@@ -93,9 +109,11 @@ trait PublishesRevisionFields
         $definition = $this->revisionRules($payload, $forSubmission);
         $validated = Validator::make($payload, $definition['rules'], $definition['messages'] ?? [], $definition['attributes'] ?? [])->validate();
 
+        $fields = [...$this->revisionFields(), ...$this->payloadOnlyFields()];
+
         return $this->normalizeRevisionPayload(array_merge(
-            array_fill_keys($this->revisionFields(), null),
-            Arr::only($validated, $this->revisionFields()),
+            array_fill_keys($fields, null),
+            Arr::only($validated, $fields),
         ));
     }
 
@@ -120,5 +138,7 @@ trait PublishesRevisionFields
         if ($this->path() !== null) {
             app(RedirectMovedPage::class)->handle($this, $previousPath, $this->path(), $revision);
         }
+
+        $this->revisionPublished($revision);
     }
 }

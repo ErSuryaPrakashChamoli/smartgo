@@ -11,6 +11,7 @@ use App\Models\Page;
 use App\Models\Revision;
 use App\Models\Testimonial;
 use App\Models\User;
+use Illuminate\Validation\ValidationException;
 use Spatie\Activitylog\Models\Activity;
 use Tests\Support\Concurrency\PublishingHarness;
 
@@ -144,4 +145,84 @@ it('takes a testimonial down once when two people do it at the same instant (OD-
         ->and(collect($results)->firstWhere('outcome', 'refused')['message'])->toBe('Only live content can be taken down.')
         ->and(Activity::query()->where('event', 'content_unpublished')->count())->toBe(1)
         ->and(Activity::query()->where('event', 'revision_returned')->count())->toBe(1);
+})->group('mysql', 'concurrency');
+
+/**
+ * A live testimonial with a second version submitted for approval.
+ *
+ * @return array{0: Testimonial, 1: Revision}
+ */
+function liveTestimonialWithSubmittedChange(User $author, User $approver, User $publisher): array
+{
+    [$testimonial, $approved] = liveTestimonialWithApprovedChange($author, $approver, $publisher);
+    app(PublishRevision::class)->handle($approved, $publisher);
+    $payload = [...$approved->payload, 'quote' => 'Submitted change.'];
+    $submitted = app(SubmitRevision::class)->handle(app(CreateDraft::class)->handle($testimonial->fresh(), $author, $payload), $author);
+
+    return [$testimonial, $submitted];
+}
+
+it('leaves nothing approvable or publishable when consent is withdrawn while a version is approved (OD-101)', function () {
+    [$testimonial, $submitted] = liveTestimonialWithSubmittedChange($this->author, $this->approver, $this->publisher);
+
+    $results = PublishingHarness::runWorkers([
+        ['mode' => 'approve', 'revision_id' => $submitted->id, 'user_id' => $this->approver->id],
+        ['mode' => 'takedown', 'testimonial_id' => $testimonial->id, 'user_id' => $this->publisher->id, 'consent_withdrawn' => true],
+    ]);
+
+    expect($results['worker-1']['outcome'])->toBe('taken down')
+        ->and($results['worker-0']['outcome'] === 'approved' || $results['worker-0']['message'] === 'Only a submitted version can be approved or rejected.')->toBeTrue()
+        ->and($submitted->fresh()->state)->toBe(RevisionState::Rejected)
+        ->and($testimonial->revisions()->whereIn('state', [RevisionState::Submitted, RevisionState::Approved])->count())->toBe(0)
+        ->and($testimonial->fresh())->status->toBe('unpublished')->consent_withdrawn_at->not->toBeNull();
+})->group('mysql', 'concurrency');
+
+it('records the withdrawal and keeps the item off the website when it races a publication (OD-101)', function () {
+    [$testimonial, $approvedChange] = liveTestimonialWithApprovedChange($this->author, $this->approver, $this->publisher);
+
+    PublishingHarness::runWorkers([
+        ['mode' => 'manual', 'revision_id' => $approvedChange->id, 'user_id' => $this->publisher->id],
+        ['mode' => 'takedown', 'testimonial_id' => $testimonial->id, 'user_id' => $this->author->id, 'consent_withdrawn' => true],
+    ]);
+
+    expect($testimonial->fresh())->status->toBe('unpublished')->consent_withdrawn_at->not->toBeNull()
+        ->and($testimonial->revisions()->whereIn('state', [RevisionState::Approved, RevisionState::Published])->count())->toBe(0);
+})->group('mysql', 'concurrency');
+
+it('never lets a version restored during a withdrawal keep the withdrawn consent (OD-101)', function () {
+    [$testimonial, $approvedChange] = liveTestimonialWithApprovedChange($this->author, $this->approver, $this->publisher);
+    app(PublishRevision::class)->handle($approvedChange, $this->publisher);
+    $earlier = $testimonial->revisions()->where('state', RevisionState::Superseded)->sole();
+
+    $results = PublishingHarness::runWorkers([
+        ['mode' => 'restore', 'revision_id' => $earlier->id, 'user_id' => $this->author->id],
+        ['mode' => 'takedown', 'testimonial_id' => $testimonial->id, 'user_id' => $this->publisher->id, 'consent_withdrawn' => true],
+    ]);
+    $open = $testimonial->revisions()->whereIn('state', RevisionState::open())->get();
+
+    expect($results['worker-1']['outcome'])->toBe('taken down')
+        ->and($results['worker-0']['outcome'])->toBe('restored')
+        ->and($open->filter(fn (Revision $revision): bool => (bool) ($revision->payload['consent_on_file'] ?? false))->count())->toBe(0)
+        ->and($earlier->fresh()->payload['consent_on_file'])->toBeTrue()
+        ->and($testimonial->fresh()->consent_withdrawn_at)->not->toBeNull();
+
+    foreach ($open as $draft) {
+        expect(fn () => app(SubmitRevision::class)->handle($draft, $this->author))->toThrow(ValidationException::class);
+    }
+})->group('mysql', 'concurrency');
+
+it('never lets a draft with the withdrawn consent be submitted while consent is withdrawn (OD-101)', function () {
+    [$testimonial, $approvedChange] = liveTestimonialWithApprovedChange($this->author, $this->approver, $this->publisher);
+    app(PublishRevision::class)->handle($approvedChange, $this->publisher);
+    $draft = app(CreateDraft::class)->handle($testimonial->fresh(), $this->author);
+
+    $results = PublishingHarness::runWorkers([
+        ['mode' => 'submit', 'revision_id' => $draft->id, 'user_id' => $this->author->id],
+        ['mode' => 'takedown', 'testimonial_id' => $testimonial->id, 'user_id' => $this->publisher->id, 'consent_withdrawn' => true],
+    ]);
+
+    expect($results['worker-1']['outcome'])->toBe('taken down')
+        ->and($draft->fresh()->state)->toBe(RevisionState::Rejected)
+        ->and($testimonial->revisions()->whereIn('state', RevisionState::open())->count())->toBe(0)
+        ->and($testimonial->fresh()->consent_withdrawn_at)->not->toBeNull();
 })->group('mysql', 'concurrency');

@@ -3,10 +3,12 @@
 namespace App\Filament\Clusters\Website\Concerns;
 
 use App\Actions\Content\UnpublishContent;
+use App\Models\Contracts\RequiresConsent;
 use App\Models\Contracts\Unpublishable;
 use App\Models\Revision;
 use App\Models\User;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Gate;
@@ -31,8 +33,16 @@ trait TakesContentDown
             ->disabled(fn (): bool => $this->liveRevision() === null || Gate::denies('unpublish', $this->liveRevision()))
             ->tooltip(fn (): ?string => $this->liveRevision() === null ? null : Gate::inspect('unpublish', $this->liveRevision())->message())
             ->modalHeading(fn (): string => 'Take the '.$this->record->contentLabel().' off the website')
-            ->modalDescription('It disappears from every page at once. Its content and history are kept. Any approved version waiting to be published is sent back to its authors, and any scheduled publication is cancelled. Putting it back needs a new version, approved and published as usual.')
+            ->modalDescription('It disappears from every page at once. Its content and history are kept. Any version waiting for approval or publication is sent back to its authors, and any scheduled publication is cancelled. Putting it back needs a new version, approved and published as usual.')
             ->schema([
+                Radio::make('consent_withdrawn')
+                    ->label('Was consent withdrawn?')
+                    ->options([
+                        '1' => 'Yes: the person or customer withdrew consent',
+                        '0' => 'No: it is taken down for another reason',
+                    ])
+                    ->required()
+                    ->helperText('If yes, a draft in progress is sent back too, and it can only go back on the website with new consent, recorded under a new reference and confirmed.'),
                 Textarea::make('reason')
                     ->label('Reason')
                     ->required()
@@ -42,18 +52,23 @@ trait TakesContentDown
             ])
             ->modalSubmitActionLabel('Take it off the website')
             ->action(fn (array $data) => $this->runStep(
-                fn (User $user) => app(UnpublishContent::class)->handle($this->record, $user, (string) $data['reason']),
+                fn (User $user) => app(UnpublishContent::class)->handle($this->record, $user, (string) $data['reason'], (bool) $data['consent_withdrawn']),
                 ucfirst($this->record->contentLabel()).' taken off the website',
             ));
     }
 
     /**
-     * When, by whom and why the item was taken down, with the warning about withdrawn consent.
+     * When, by whom and why the item was taken down, and what withdrawn consent means for putting it back.
      */
     protected function takeDownNotice(): string
     {
+        $consent = $this->record instanceof RequiresConsent && $this->record->consentWithdrawn()
+            ? 'Consent was withdrawn on '.$this->record->consent_withdrawn_at->copy()->timezone(config('backoffice.timezone'))->format('j M Y, H:i T')
+                .' by '.$this->record->consentWithdrawnBy?->name.'. A new version can only be submitted with new consent: tick consent, enter the new reference and confirm that consent was given again.'
+            : '';
+
         if ($this->record->getAttribute('status') !== 'unpublished') {
-            return '';
+            return $consent;
         }
 
         $entry = Activity::query()->inLog('content')->where('event', 'content_unpublished')
@@ -62,8 +77,7 @@ trait TakesContentDown
             ->with('causer')->latest('id')->first();
         $when = $entry?->created_at?->copy()->timezone(config('backoffice.timezone'))->format('j M Y, H:i T');
 
-        return trim(($entry === null ? '' : "Taken off the website on {$when} by {$entry->causer?->name}. Reason: \u{201C}{$entry->properties->get('reason')}\u{201D} ")
-            .'If consent was withdrawn, do not put it back until consent has been given again and recorded.');
+        return trim(($entry === null ? '' : "Taken off the website on {$when} by {$entry->causer?->name}. Reason: \u{201C}{$entry->properties->get('reason')}\u{201D} ").$consent);
     }
 
     private function liveRevision(): ?Revision
