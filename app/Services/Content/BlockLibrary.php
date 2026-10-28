@@ -4,6 +4,7 @@ namespace App\Services\Content;
 
 use App\Services\Content\Blocks\CallToActionBlock;
 use App\Services\Content\Blocks\ComparisonBlock;
+use App\Services\Content\Blocks\ContactDetailsBlock;
 use App\Services\Content\Blocks\ContentBlock;
 use App\Services\Content\Blocks\FaqBlock;
 use App\Services\Content\Blocks\FeatureGridBlock;
@@ -20,8 +21,10 @@ use Illuminate\Validation\Rule;
  * The fixed set of page sections editors can use (FR-CMS-1). A new kind of section is added by
  * writing a ContentBlock and listing it here; nothing else is accepted in a payload.
  *
- * Not offered yet: workspace and property cards and location lists (Phase 5 data) and enquiry forms
- * (Phase 6). Nothing in a block may invent prices, availability or claims.
+ * The contact details section reads the published contact setting and the locations on the website;
+ * it stores no details itself. Not offered yet: workspace cards and enquiry forms (the enquiry form
+ * stays closed until a privacy notice is published, D8.1). Nothing in a block may invent prices,
+ * availability or claims.
  */
 class BlockLibrary
 {
@@ -40,6 +43,7 @@ class BlockLibrary
         FaqBlock::class,
         TestimonialBlock::class,
         CallToActionBlock::class,
+        ContactDetailsBlock::class,
     ];
 
     /**

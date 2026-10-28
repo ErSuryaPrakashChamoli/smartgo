@@ -9,11 +9,13 @@ use App\Filament\Clusters\Website\Resources\MediaAssets\Schemas\MediaAssetForm;
 use App\Filament\Clusters\Website\Resources\MediaAssets\Tables\MediaAssetsTable;
 use App\Filament\Clusters\Website\WebsiteCluster;
 use App\Models\MediaAsset;
+use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * The media library (FR-CMS-5, ADR-0006): images with origin, licence and descriptions.
@@ -35,6 +37,19 @@ class MediaAssetResource extends Resource
     protected static bool $isGloballySearchable = false;
 
     protected static ?int $navigationSort = 3;
+
+    /**
+     * A Property Manager lists only the photos of their assigned properties.
+     *
+     * @return Builder<MediaAsset>
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        return parent::getEloquentQuery()->visibleTo($user);
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -43,6 +43,7 @@ The seven category pages follow the owner's catalogue (OD-07). Each is published
   /locations/{city}                       City: sectors/micro-markets, properties, map/list, FAQs
                                           (or "Coming soon — register interest" if visible without a property; noindex)
   /locations/{city}/area/{micro-market}   Sector / micro-market (when ≥ 1 property)
+  /locations/compare?locations[]=…        Compare two or three properties side by side (FR-DISC-4; built in Phase 6, OD-113; noindex)
   /locations/{city}/{property}            Property page (the "sales kit")
     /locations/{city}/{property}/rooms/{room}   meeting / conference / training room booking
 /enterprise                               Enterprise and GCC track ◇

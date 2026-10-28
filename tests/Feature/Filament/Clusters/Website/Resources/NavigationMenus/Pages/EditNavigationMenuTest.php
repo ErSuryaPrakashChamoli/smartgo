@@ -10,6 +10,7 @@ use App\Filament\Clusters\Website\Resources\NavigationMenus\Pages\ListNavigation
 use App\Http\Controllers\Backoffice\RevisionPreviewController;
 use App\Models\NavigationMenu;
 use App\Models\Page;
+use App\Models\Property;
 use App\Models\User;
 use Filament\Forms\Components\Repeater;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -63,6 +64,28 @@ it('takes a menu from draft to the live header with three different people', fun
 
     expect($this->menu->fresh()->isPublished())->toBeTrue();
     get('/about')->assertSee('About us');
+});
+
+it('links items to a part of the website and to a location picked from lists', function () {
+    $property = Property::factory()->open()->create();
+    actingAs($this->author);
+    $undoRepeaterFake = Repeater::fake();
+
+    Livewire::test(EditNavigationMenu::class, ['record' => $this->menu->getRouteKey()])
+        ->callAction('startDraft')
+        ->fillForm(['items' => [
+            ['label' => 'Locations', 'type' => 'section', 'section' => 'locations', 'children' => []],
+            ['label' => 'Visit A-70', 'type' => 'property', 'property_id' => $property->id, 'children' => []],
+        ]])
+        ->call('save')
+        ->assertHasNoFormErrors();
+    $undoRepeaterFake();
+
+    expect($this->menu->fresh()->workingRevision->payload['items'])
+        ->sequence(
+            fn ($item) => $item->toMatchArray(['type' => 'section', 'section' => 'locations']),
+            fn ($item) => $item->toMatchArray(['type' => 'property', 'property_id' => $property->id]),
+        );
 });
 
 it('shows a refused destination on the item it belongs to', function () {

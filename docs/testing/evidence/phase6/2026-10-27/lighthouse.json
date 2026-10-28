@@ -1,0 +1,13 @@
+[
+{"path":"/","lighthouse":"12.8.2","performance":0.91,"accessibility":1,"bestPractices":1,"seo":1,"fcpMs":2553,"lcpMs":3003,"cls":0,"tbtMs":0,"scriptBytes":154,"notes":["uses-text-compression","uses-long-cache-ttl"]}
+,
+{"path":"/locations/noida","lighthouse":"12.8.2","performance":0.94,"accessibility":1,"bestPractices":1,"seo":1,"fcpMs":2257,"lcpMs":2707,"cls":0.0002,"tbtMs":0,"scriptBytes":154,"notes":["uses-text-compression","uses-long-cache-ttl"]}
+,
+{"path":"/locations/noida/a-70","lighthouse":"12.8.2","performance":0.92,"accessibility":1,"bestPractices":1,"seo":1,"fcpMs":2407,"lcpMs":2857,"cls":0.0001,"tbtMs":0,"scriptBytes":154,"notes":["uses-text-compression","uses-long-cache-ttl"]}
+,
+{"path":"/locations/noida/a-70/hot-desks","lighthouse":"12.8.2","performance":0.92,"accessibility":1,"bestPractices":1,"seo":1,"fcpMs":2404,"lcpMs":2854,"cls":0.0001,"tbtMs":0,"scriptBytes":154,"notes":["uses-text-compression","uses-long-cache-ttl"]}
+,
+{"path":"/locations/compare?locations[]=noida/a-70&locations[]=noida/h-105","lighthouse":"12.8.2","performance":0.92,"accessibility":1,"bestPractices":1,"seo":0.66,"fcpMs":2409,"lcpMs":2859,"cls":0,"tbtMs":0,"scriptBytes":154,"notes":["uses-text-compression","uses-long-cache-ttl"]}
+,
+{"path":"/contact","lighthouse":"12.8.2","performance":0.96,"accessibility":1,"bestPractices":1,"seo":1,"fcpMs":1951,"lcpMs":2401,"cls":0.0008,"tbtMs":1,"scriptBytes":154,"notes":["uses-text-compression","uses-long-cache-ttl"]}
+]

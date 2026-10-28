@@ -1,0 +1,163 @@
+{
+ "startedAt": "2026-10-27T14:18:12.047Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "151.0.7922.34",
+ "screens": [
+  {
+   "who": "marketing",
+   "path": "/admin/properties/website-profiles/1/edit",
+   "label": "property profile editor (\"Getting here\" section)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/website-profiles/1/edit",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/properties/website-profiles/1/edit",
+   "label": "property profile editor (\"Getting here\" section)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/website-profiles/1/edit",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/1/edit",
+   "label": "page editor with the contact details section",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/pages/1/edit",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/1/edit",
+   "label": "page editor with the contact details section",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/pages/1/edit",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/create",
+   "label": "new page editor",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/pages/create",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/create",
+   "label": "new page editor",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/pages/create",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/cities/1/edit",
+   "label": "city editor (reserved address)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/cities/1/edit",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/cities/1/edit",
+   "label": "city editor (reserved address)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/cities/1/edit",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin",
+   "label": "dashboard",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin",
+   "label": "dashboard",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/closing-reasons",
+   "label": "back-office 403 page",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/closing-reasons",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/closing-reasons",
+   "label": "back-office 403 page",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/closing-reasons",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries/999999",
+   "label": "back-office 404 page",
+   "width": 360,
+   "status": 404,
+   "finalPath": "/admin/sales/enquiries/999999",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries/999999",
+   "label": "back-office 404 page",
+   "width": 1440,
+   "status": 404,
+   "finalPath": "/admin/sales/enquiries/999999",
+   "overflow": 0,
+   "external": [],
+   "axe": []
+  }
+ ],
+ "failures": [],
+ "finishedAt": "2026-10-27T14:18:31.746Z"
+}

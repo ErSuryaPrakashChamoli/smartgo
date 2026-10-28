@@ -1,6 +1,15 @@
 <?php
 
+use App\Actions\Twin\CreateTwinModel;
+use App\Enums\Twin\CaptureType;
+use App\Models\Offering;
+use App\Models\Product;
+use App\Models\Property;
+use App\Models\TwinModel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Tests\Support\Twin\TestGlb;
 use Tests\TestCase;
 
 /*
@@ -47,4 +56,62 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * Puts a property's website profile in the state approving and publishing it leaves it, so the
+ * property is on the website while its state allows it. Workflow tests publish through the actions.
+ *
+ * @param  array<string, mixed>  $content
+ */
+function publishPropertyProfileForTest(Property $property, array $content = []): Property
+{
+    $property->profile()->firstOrCreate([])->forceFill([
+        'headline' => 'Workspaces at SmartGro '.$property->name,
+        'summary' => 'Summary of SmartGro '.$property->name.'.',
+        ...$content,
+        'status' => 'published',
+        'published_at' => now(),
+    ])->save();
+
+    return $property->fresh();
+}
+
+/**
+ * Records that a property offers a category, with its offering profile published unless asked not to.
+ *
+ * @param  array<string, mixed>  $content
+ */
+function offerForTest(Property $property, string $productKey, bool $published = true, array $content = []): Offering
+{
+    $productId = Product::query()->where('key', $productKey)->sole()->getKey();
+    $offering = Offering::query()->where('property_id', $property->getKey())->where('product_id', $productId)->first()
+        ?? Offering::query()->forceCreate(['property_id' => $property->getKey(), 'product_id' => $productId, 'is_active' => true]);
+
+    $offering->profile()->firstOrCreate([])->forceFill($published ? [
+        'headline' => 'Headline of '.$productKey.' at '.$property->name,
+        'description' => 'Description of '.$productKey.'.',
+        'included' => ['Wi-Fi'],
+        'not_included' => ['Parking'],
+        ...$content,
+        'status' => 'published',
+        'published_at' => now(),
+    ] : $content)->save();
+
+    return $offering->fresh();
+}
+
+/**
+ * Uploads a 3D model through the real action: the test-only model (TestGlb) unless other bytes are given.
+ *
+ * @param  array<string, mixed>  $details
+ */
+function uploadTwinModelForTest(User $uploader, Property $property, array $details = [], ?string $bytes = null, string $fileName = 'model.glb'): TwinModel
+{
+    return app(CreateTwinModel::class)->handle($uploader, UploadedFile::fake()->createWithContent($fileName, $bytes ?? TestGlb::model()), [
+        'property_id' => $property->getKey(),
+        'title' => 'Test model',
+        'capture_type' => CaptureType::ConceptualModel->value,
+        ...$details,
+    ]);
 }

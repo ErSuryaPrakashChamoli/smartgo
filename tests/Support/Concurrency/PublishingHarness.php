@@ -20,7 +20,9 @@ final class PublishingHarness
      * @var list<string>
      */
     private const TABLES = [
-        'activity_log', 'redirects', 'revisions', 'pages', 'testimonials', 'case_studies',
+        'activity_log', 'redirects', 'revisions', 'pages', 'testimonials', 'case_studies', 'seo_metadata',
+        'lead_activities', 'leads', 'contacts', 'customer_segments', 'property_user',
+        'offering_profiles', 'offerings', 'property_profiles', 'buildings', 'properties', 'micro_markets', 'cities', 'products',
         'model_has_roles', 'model_has_permissions', 'role_has_permissions', 'roles', 'permissions', 'users',
     ];
 
@@ -36,7 +38,7 @@ final class PublishingHarness
     /**
      * Run one worker per attempt, all released at the same instant.
      *
-     * @param  list<array{mode: 'manual'|'scheduled'|'takedown'|'submit'|'approve'|'restore', revision_id?: int, user_id?: int, testimonial_id?: int, consent_withdrawn?: bool, start_delay_ms?: int}>  $attempts
+     * @param  list<array{mode: 'manual'|'scheduled'|'takedown'|'submit'|'approve'|'restore'|'assign_lead'|'submit_enquiry'|'close_property', revision_id?: int, user_id?: int, testimonial_id?: int, consent_withdrawn?: bool, start_delay_ms?: int, lead_id?: int, owner_id?: int, property_id?: int, enquiry?: array<string, mixed>}>  $attempts
      * @return array<string, array{outcome: string, message: string|null}> worker name => result
      */
     public static function runWorkers(array $attempts): array
@@ -69,6 +71,10 @@ final class PublishingHarness
                         'PUBLISH_TESTIMONIAL_ID' => (string) ($attempt['testimonial_id'] ?? ''),
                         'PUBLISH_CONSENT_WITHDRAWN' => ($attempt['consent_withdrawn'] ?? false) ? '1' : '0',
                         'PUBLISH_START_DELAY_MS' => (string) ($attempt['start_delay_ms'] ?? 0),
+                        'PUBLISH_LEAD_ID' => (string) ($attempt['lead_id'] ?? ''),
+                        'PUBLISH_OWNER_ID' => (string) ($attempt['owner_id'] ?? ''),
+                        'PUBLISH_PROPERTY_ID' => (string) ($attempt['property_id'] ?? ''),
+                        'PUBLISH_ENQUIRY' => json_encode($attempt['enquiry'] ?? [], JSON_THROW_ON_ERROR),
                     ])
                     ->command([PHP_BINARY, 'tests/Support/Concurrency/publish-worker.php']);
             }

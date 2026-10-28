@@ -1,0 +1,392 @@
+{
+ "startedAt": "2026-10-28T03:11:03.268Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "151.0.7922.34",
+ "threeDFiles": [
+  "assets/twin-viewer-D-IHldMA.js",
+  "assets/draco_decoder-C32yEggz.wasm",
+  "assets/draco_wasm_wrapper-DxJM36Ib.js",
+  "assets/draco_decoder-fzg4nYZr.js",
+  "assets/draco_wasm_wrapper-fZCQGLGb.js",
+  "assets/draco_decoder-Z1_iN-Ht.wasm",
+  "assets/basis_transcoder-VXdx5NbI.wasm",
+  "assets/basis_transcoder-o4Hde_L7.js"
+ ],
+ "screens": [
+  {
+   "who": "marketing",
+   "path": "/admin/properties/website-profiles/1/edit",
+   "label": "property profile editor (\"Getting here\" section)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/website-profiles/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/properties/website-profiles/1/edit",
+   "label": "property profile editor (\"Getting here\" section)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/website-profiles/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/1/edit",
+   "label": "page editor with the contact details section",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/pages/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/1/edit",
+   "label": "page editor with the contact details section",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/pages/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/create",
+   "label": "new page editor",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/pages/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/create",
+   "label": "new page editor",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/pages/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/cities/1/edit",
+   "label": "city editor (reserved address)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/cities/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/cities/1/edit",
+   "label": "city editor (reserved address)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/cities/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin",
+   "label": "dashboard",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin",
+   "label": "dashboard",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/closing-reasons",
+   "label": "back-office 403 page",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/closing-reasons",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/closing-reasons",
+   "label": "back-office 403 page",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/closing-reasons",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries/999999",
+   "label": "back-office 404 page",
+   "width": 360,
+   "status": 404,
+   "finalPath": "/admin/sales/enquiries/999999",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries/999999",
+   "label": "back-office 404 page",
+   "width": 1440,
+   "status": 404,
+   "finalPath": "/admin/sales/enquiries/999999",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/twin-models",
+   "label": "3D models list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/twin-models",
+   "label": "3D models list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/twin-models/create",
+   "label": "3D model upload form",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/twin-models/create",
+   "label": "3D model upload form",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/website/twin-models/1",
+   "label": "3D model page, viewer not opened",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/website/twin-models/1",
+   "label": "3D model page, viewer not opened",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  }
+ ],
+ "viewer": [
+  {
+   "compression": "meshopt",
+   "width": 360,
+   "reducedMotion": "reduce",
+   "beforeAsking": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownAfterMs": 368,
+   "loaded": [
+    {
+     "path": "/build/assets/twin-viewer-D-IHldMA.js",
+     "bytes": 725518
+    },
+    {
+     "path": "/admin/twin-models/1/file",
+     "bytes": 2216
+    }
+   ],
+   "whole": {
+    "green": 432,
+    "amber": 785,
+    "drawn": 9495,
+    "total": 44240
+   },
+   "cameraStatus": "Camera position 1 shown.",
+   "camera": {
+    "green": 2326,
+    "amber": 3135,
+    "drawn": 8922,
+    "total": 44240
+   },
+   "canvas": {
+    "role": "img",
+    "label": "3D model of SmartGro A-70",
+    "width": 280,
+    "height": 158,
+    "tabIndex": 0
+   },
+   "axe": [],
+   "consoleErrors": [],
+   "overflow": 0
+  },
+  {
+   "compression": "meshopt",
+   "width": 1440,
+   "reducedMotion": "no-preference",
+   "beforeAsking": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownAfterMs": 342,
+   "loaded": [
+    {
+     "path": "/build/assets/twin-viewer-D-IHldMA.js",
+     "bytes": 725518
+    },
+    {
+     "path": "/admin/twin-models/1/file",
+     "bytes": 2216
+    }
+   ],
+   "whole": {
+    "green": 5570,
+    "amber": 10284,
+    "drawn": 120802,
+    "total": 571536
+   },
+   "cameraStatus": "Camera position 1 shown.",
+   "camera": {
+    "green": 30039,
+    "amber": 41052,
+    "drawn": 178890,
+    "total": 571536
+   },
+   "canvas": {
+    "role": "img",
+    "label": "3D model of SmartGro A-70",
+    "width": 1008,
+    "height": 567,
+    "tabIndex": 0
+   },
+   "axe": [],
+   "consoleErrors": [],
+   "overflow": 0
+  },
+  {
+   "compression": "draco",
+   "width": 1440,
+   "reducedMotion": "no-preference",
+   "beforeAsking": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownAfterMs": 375,
+   "loaded": [
+    {
+     "path": "/build/assets/twin-viewer-D-IHldMA.js",
+     "bytes": 725518
+    },
+    {
+     "path": "/admin/twin-models/2/file",
+     "bytes": 2004
+    },
+    {
+     "path": "/build/assets/draco_wasm_wrapper-DxJM36Ib.js",
+     "bytes": 58763
+    },
+    {
+     "path": "/build/assets/draco_decoder-C32yEggz.wasm",
+     "bytes": 285747
+    }
+   ],
+   "whole": {
+    "green": 5570,
+    "amber": 10284,
+    "drawn": 120802,
+    "total": 571536
+   },
+   "cameraStatus": "Camera position 1 shown.",
+   "camera": {
+    "green": 30039,
+    "amber": 41052,
+    "drawn": 178890,
+    "total": 571536
+   },
+   "canvas": {
+    "role": "img",
+    "label": "3D model of SmartGro A-70",
+    "width": 1008,
+    "height": 567,
+    "tabIndex": 0
+   },
+   "axe": [],
+   "consoleErrors": [],
+   "overflow": 0
+  }
+ ],
+ "failures": [],
+ "finishedAt": "2026-10-28T03:11:45.449Z"
+}

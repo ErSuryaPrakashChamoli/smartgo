@@ -2,6 +2,7 @@
 
 namespace App\Filament\Clusters\Settings\Resources\Users\Pages;
 
+use App\Actions\Access\SyncUserProperties;
 use App\Actions\Access\SyncUserRoles;
 use App\Enums\Access\StaffRole;
 use App\Filament\Clusters\Settings\Resources\Users\UserResource;
@@ -20,10 +21,13 @@ class CreateUser extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         $roles = Arr::pull($data, 'roles', []);
+        $propertyIds = Arr::pull($data, 'property_ids', []);
+        $hasAllPropertyAccess = (bool) Arr::pull($data, 'has_all_property_access', false);
 
         $user = User::create($data);
 
         app(SyncUserRoles::class)->handle($user, array_map(StaffRole::from(...), $roles), auth()->user());
+        app(SyncUserProperties::class)->handle($user, array_map(intval(...), $propertyIds), auth()->user(), $hasAllPropertyAccess);
 
         return $user;
     }

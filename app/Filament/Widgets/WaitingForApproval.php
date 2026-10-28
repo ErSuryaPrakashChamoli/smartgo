@@ -3,6 +3,8 @@
 namespace App\Filament\Widgets;
 
 use App\Enums\Content\RevisionState;
+use App\Filament\Clusters\Properties\Resources\OfferingProfiles\OfferingProfileResource;
+use App\Filament\Clusters\Properties\Resources\PropertyProfiles\PropertyProfileResource;
 use App\Filament\Clusters\Website\Resources\CaseStudies\CaseStudyResource;
 use App\Filament\Clusters\Website\Resources\Faqs\FaqResource;
 use App\Filament\Clusters\Website\Resources\NavigationMenus\NavigationMenuResource;
@@ -14,8 +16,10 @@ use App\Filament\Clusters\Website\Resources\Testimonials\TestimonialResource;
 use App\Models\CaseStudy;
 use App\Models\Faq;
 use App\Models\NavigationMenu;
+use App\Models\OfferingProfile;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\PropertyProfile;
 use App\Models\RedirectMap;
 use App\Models\Revision;
 use App\Models\SiteSetting;
@@ -45,6 +49,8 @@ class WaitingForApproval extends TableWidget
         CaseStudy::class => CaseStudyResource::class,
         Testimonial::class => TestimonialResource::class,
         Faq::class => FaqResource::class,
+        PropertyProfile::class => PropertyProfileResource::class,
+        OfferingProfile::class => OfferingProfileResource::class,
         NavigationMenu::class => NavigationMenuResource::class,
         SiteSetting::class => SiteSettingResource::class,
         RedirectMap::class => RedirectMapResource::class,
@@ -139,6 +145,8 @@ class WaitingForApproval extends TableWidget
             $content instanceof CaseStudy => 'Customer story',
             $content instanceof Testimonial => 'Testimonial',
             $content instanceof Faq => 'FAQ',
+            $content instanceof PropertyProfile => 'Property profile',
+            $content instanceof OfferingProfile => 'Workspace offering',
             $content instanceof NavigationMenu => 'Menu',
             $content instanceof SiteSetting => 'Settings',
             default => 'Redirects',
@@ -153,6 +161,8 @@ class WaitingForApproval extends TableWidget
         return (string) match (true) {
             $content instanceof Testimonial => 'From '.($payload['person_name'] ?? 'unnamed'),
             $content instanceof Faq => $payload['question'] ?? 'FAQ',
+            $content instanceof PropertyProfile => 'SmartGro '.$content->property->name,
+            $content instanceof OfferingProfile => $content->offering->displayName(),
             $content instanceof NavigationMenu => $content->name,
             $content instanceof SiteSetting => $content->group()['name'],
             $content instanceof RedirectMap => 'Manual redirects',

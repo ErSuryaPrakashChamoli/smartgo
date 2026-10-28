@@ -124,7 +124,7 @@ The *mechanisms* (locking, approval, propagation, labelling) are architecture. T
 | BR-CRM-3a | Assigning or reassigning a lead's owner by hand requires `leads.assign`: users explicitly granted it, through a role assignment or an individual exception (OD-60, OD-68), in the Super Admin or Sales/CRM Executive role (OD-51; "Sales/CRM Manager" means the Sales/CRM Executive role for now, OD-58; not implemented). Every manual assignment is audited. |
 | BR-CRM-4 | First-response SLA target: **15 minutes during business hours** [DEFAULT]. A breach notifies the Operations Manager and the Super Admin (confirmed, OD-36). **[UNRESOLVED → D-09]** |
 | BR-CRM-5 | A lead can only be marked `lost` or `disqualified` with a reason from a managed list. |
-| BR-CRM-6 | Sales/CRM Executives see **all** leads by default, because there is no separate sales-manager role (confirmed, OD-36). Access can be restricted per user to assigned properties. Property Managers see leads for their properties (read-only). |
+| BR-CRM-6 | Sales/CRM Executives see **all** leads by default, because there is no separate sales-manager role (confirmed, OD-36). Access can be restricted per user to assigned properties. Property Managers see leads for their properties (read-only). **Changed by OD-111 (b), 2026-10-27:** Sales/CRM Executives see only the leads of their assigned properties by default; the Super Admin may record per person that they work on every property (then they see all leads). |
 | BR-CRM-7 | A won deal with allocated spaces creates `space_allocations` through the inventory service, so the availability rules apply. Sales cannot edit inventory directly. |
 
 ## 7. Content and publishing

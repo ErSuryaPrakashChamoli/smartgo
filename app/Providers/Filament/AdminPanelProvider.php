@@ -2,9 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\AvatarProviders\InitialsAvatarProvider;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Auth\RequestPasswordReset;
 use App\Http\Controllers\Backoffice\RevisionPreviewController;
+use App\Http\Controllers\Backoffice\TwinModelFileController;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -41,6 +43,7 @@ class AdminPanelProvider extends PanelProvider
                 'filament.admin.auth.multi-factor-authentication.*',
             ) ? '6rem' : '3rem')
             ->darkMode(false)
+            ->defaultAvatarProvider(InitialsAvatarProvider::class)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login(Login::class)
             ->passwordReset(RequestPasswordReset::class)
@@ -83,6 +86,9 @@ class AdminPanelProvider extends PanelProvider
                 Route::get('content/revisions/{revision}/preview', RevisionPreviewController::class)
                     ->middleware(['signed', $panel->getMultiFactorAuthenticationRequiredMiddleware()])
                     ->name('content.revisions.preview');
+                Route::get('twin-models/{twinModel}/file', TwinModelFileController::class)
+                    ->middleware($panel->getMultiFactorAuthenticationRequiredMiddleware())
+                    ->name('twin-models.file');
             });
     }
 }

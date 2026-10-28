@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval.** Six owner-defined roles (OD-33); duties of removed draft roles confirmed (OD-36, OD-37). Phase 3 implementation status: §10. Owner permission and publishing decisions (OD-51 to OD-75, **approved policy, not implemented**): §11. |
-| Last updated | 2026-10-25 |
+| Last updated | 2026-10-28 |
 | Target baseline | OWASP ASVS 4.0 Level 2 for the back office and booking flows; OWASP Top 10 for the public site |
 
 ---
@@ -40,7 +40,7 @@
 
 * `spatie/laravel-permission` (proposed) holds roles and permissions. **Permissions are business capabilities** (e.g. `inventory.update_status`, `pricing.approve`), not one per CRUD screen.
 * Every Filament resource and page, Livewire action and controller checks a **Policy**. Hiding a UI element is never the control.
-* **Property scoping:** Property Managers act only on properties in their `property_user` scope (Sales/CRM Executives can optionally be restricted the same way per user). This is enforced in policies **and** in query scopes so lists, exports, global search and relation managers cannot leak other locations' records.
+* **Property scoping:** Property Managers act only on properties in their `property_user` scope (Sales/CRM Executives can optionally be restricted the same way per user). This is enforced in policies **and** in query scopes so lists, exports, global search and relation managers cannot leak other locations' records. **Implemented 2026-10-26 (Phase 5)** for properties and property profiles: `StaffRole::isLimitedToAssignedProperties()` marks the Property Manager, `User::hasCapabilityForProperty()` is used by the policies and `RevisionPolicy`, and `Property::scopeVisibleTo()` by the property and profile lists. A user who also holds a role without the limit has that role's reach. The optional per-user restriction of Sales/CRM Executives is not built.
 * **Separation of duties: the author, the approver and the publisher of a change are kept apart.**
   * Authors cannot approve their own work: content (BR-CMS-2, OD-65, OD-73), price plans (BR-PR-2), imports.
   * One approval by a person other than the author is enough (OD-73, resolves D-17).
@@ -122,7 +122,7 @@ One approval by someone other than the author is enough. The author may publish 
 | Assignment rules, pipeline stages | M † | — | — | — | — | — |
 | SLA-breach alerts received | ✓ † | ✓ † | — | owner of the lead | — | — |
 | Message templates, campaigns, automations | M/A | — | — | V | M/A (not own) | — |
-| 3D model upload and anchors (models prepared by a 3D-modelling supplier) | M | V | — | — | M † | — |
+| 3D model upload and anchors (models prepared by a 3D-modelling supplier; **implemented 2026-10-28** as `twin_models.view` and `twin_models.manage`, §11) | M | V | — | — | M † | — |
 | 3D scenes, hotspot ↔ space mapping | M/A | V | M (S) | — | M/A (not own) | — |
 | Public contact details (business email, phone, business address) ‡ (OD-53; independent approval before going live, OD-64, OD-69) | M/A (not own) | — | — | — | M/A (not own) | — |
 | Legal entity and GST details: view ‡ (derived from OD-54, OD-55) | V | — | — | — | — | V |
@@ -166,8 +166,8 @@ One approval by someone other than the author is enough. The author may publish 
 | Validation | Form Requests (controllers) and validated Livewire/Filament schemas; enums for every status/type field; server-side recomputation of all prices and availability. |
 | Output encoding | Blade `{{ }}` escaping by default. Rich text from the CMS is sanitised to an allow-list of tags at save time. `{!! !!}` only on sanitised fields, each reviewed. |
 | CSRF | Laravel default on all web and Livewire routes; webhooks are excluded and use signature verification instead. |
-| Uploads | MIME sniffed with `fileinfo` plus extension allow-list per collection; size limits per kind; images re-encoded on processing (strips EXIF GPS); SVG allowed only for Brand Admin and sanitised; GLB parsed and validated (no external URIs, budgets); stored with random names in private storage, served through CDN URLs; never executed. |
-| Public forms | Rate limiting per IP and per phone/email; honeypot field + Cloudflare Turnstile (D-14); OTP verification only if spam warrants it (it adds friction). |
+| Uploads | MIME sniffed with `fileinfo` plus extension allow-list per collection; size limits per kind; images re-encoded on processing (strips EXIF GPS); SVG allowed only for Brand Admin and sanitised; GLB parsed and validated (no external URIs, budgets); stored with random names in private storage, served through CDN URLs; never executed. **3D models as built (2026-10-28, OD-119):** a GLB is recognised by its own bytes, not its name; its size is read before any byte is, and its description is measured before it is decoded; every reference and byte range is checked; nothing is decompressed on the server; all checks of one file stop at a time limit (10 seconds by default); a file that fails is not stored. Files are served only to signed-in staff with two-step login who may see models (`TwinModelFileController`, never cached), never through the public storage address without a signature. |
+| Public forms | Rate limiting per IP and per phone/email; honeypot field + Cloudflare Turnstile (D-14); OTP verification only if spam warrants it (it adds friction). **Implemented 2026-10-27 for the enquiry form (Phase 5):** CSRF; 3 submissions a minute and 10 an hour per address (`throttle:enquiries`); 5 a day per email or phone (hashed keys); a hidden trap field and a signed minimum fill time of 3 seconds (spam is answered like success and stored nowhere); a repeat within 10 minutes returns the first enquiry; identical submissions at the same instant are serialised by per-email and per-phone MySQL locks. Location, workspace type and city are re-read from published records, never trusted from the browser. The form opens only once a privacy notice is published at `/legal/privacy`; the agreement text, the notice's version and an HMAC of the address are stored with the enquiry. No personal data is logged; the confirmation page shows only the reference. Turnstile is **not** used: it is an external service that needs approval. |
 | IDOR | Customer-facing references are random (`SG-BK-…`); signed URLs for customer self-service; route model binding scoped by policy. |
 | Mass assignment | `#[Fillable]` attributes (existing project convention in `app/Models/User.php`) with explicit lists; never `$guarded = []`. |
 
@@ -220,6 +220,7 @@ Audit records are append-only for application roles; retention 2 years [DEFAULT,
 
 * Data minimisation per form (BR-PRV-1); purpose shown at collection; consent recorded with notice version (BR-PRV-2).
 * Data subject requests (access, correction, erasure) handled through a back-office workflow with an audit record.
+* **Logs never hold enquiry personal data (OD-111 d, implemented 2026-10-27):** nothing in the enquiry path logs, mails or notifies; database errors are reported with bound values masked (`mask_bindings_in_exception_messages` on every connection), quoted values removed from the database's message and no call arguments in the trace (`bootstrap/app.php`); exception traces never record call arguments (`zend.exception_ignore_args` set by the application, `AppServiceProvider`). Rate-limit keys and lock names use keyed hashes of the email and phone. Tests: `EnquiryControllerTest` (a failed save leaves no name, email or phone in the written log file; no mail or notification is sent), `AppServiceProviderTest`.
 * Applicable law, including India's Digital Personal Data Protection Act, 2023 and its Rules, plus any other jurisdiction SmartGro serves, is to be confirmed by SmartGro's legal counsel. This document does not constitute legal advice.
 
 ---
@@ -256,7 +257,7 @@ What exists in code now, and where it differs from the plan above. Each row is c
 
 A review of the role design for pricing, enquiries, booking requests, tours, contact and legal details, website content, redirects and brand settings. **Viewing, editing, approving, verifying and publishing are separate capabilities.** The owner answered the open rows on 2026-10-25: Q-OW-18 → OD-51 to OD-57 (round 13), Q-OW-19 → OD-58 to OD-67 (round 14), Q-OW-20 and D-17 → OD-68 to OD-73 (round 15), Q-OW-21 → OD-74, OD-75 (round 16). See §11.1.
 
-**An approved decision is not an implemented permission.** Only `backoffice.access`, `users.manage`, `audit_log.view` and, since 2026-10-26, `content.view`, `content.edit`, `content.approve`, `content.publish`, `media.manage`, `testimonials.publish`, and the `settings.contact.*`, `settings.legal.*`, `settings.tracking.*`, `redirects.*` and `brand.*` capabilities exist in code (§10). Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review. It was updated on 2026-10-25, and a test checks that both list the same capabilities and role values (§11.3).
+**An approved decision is not an implemented permission.** Only `backoffice.access`, `users.manage`, `audit_log.view` and, since 2026-10-26, `content.view`, `content.edit`, `content.approve`, `content.publish`, `media.manage`, `testimonials.publish`, and the `settings.contact.*`, `settings.legal.*`, `settings.tracking.*`, `redirects.*` and `brand.*` capabilities, and (Phase 5) `properties.view`, `properties.manage`, `products.manage`, `profiles.view` and `profiles.edit`, the `leads.*` capabilities, and (Phase 7, 2026-10-28) `twin_models.view` and `twin_models.manage` exist in code (§10). The "Own properties" scope is implemented for the Property Manager through `property_user`. Every other row below is approved policy that the module building the feature must implement and test (§11.3). No live permission or role assignment was changed by this review or by recording the decisions. The same table is shown in the back office at Design previews → Permissions review. It was updated on 2026-10-25, and a test checks that both list the same capabilities and role values (§11.3).
 
 **Each value is the role's permitted scope (OD-68).** A permission applies to every member of the role once it has been explicitly assigned to the role. Otherwise it may be granted to one member as an individual exception within that scope (§11.2).
 
@@ -280,14 +281,18 @@ Approved matrix, OD and Derived rows are **not implemented**.
 | Staff and audit | `backoffice.access` | Enter the back office: every protected page, route, Livewire action and API | Yes | Yes | Yes | Yes | Yes | Yes | Implemented (OD-74; roles confirmed by OD-81) |
 | Staff and audit | `users.manage` | Manage staff, roles, permission grants and two-step login resets | Yes | — | — | — | — | — | Implemented (role assignments; individual exceptions, OD-68: not implemented) |
 | Staff and audit | `audit_log.view` | Read the audit log | Yes | — | — | — | — | — | Implemented |
+| Properties | `properties.view` | See cities, properties, buildings and workspace categories | Yes | Yes | Own properties | Yes | Yes | Yes | Implemented (2026-10-26, Phase 5); the Property Manager lists and opens only the properties assigned to them in `property_user` (assigned by the Super Admin in the staff editor, audited as `properties_assigned`) |
+| Properties | `properties.manage` | Add and edit cities, properties and buildings: address, status, operating model | Yes | Yes | Own properties (edit only) | — | — | — | Implemented (2026-10-26, Phase 5); the Property Manager edits only assigned properties and cannot add properties, cities or sectors, nor change the categories a property offers (`products.manage`) |
+| Properties | `products.manage` | Add and edit workspace categories and which properties offer them | Yes | Yes | — | — | — | — | Implemented (§3.1 "Product categories and non-financial rules") |
 | Pricing | `pricing.view` | See prices | Yes | Yes | Own properties | Yes | Yes | Yes | Approved matrix |
 | Pricing | `pricing.manage` | Create and edit draft prices | Yes | — | — | — | — | Yes | Approved matrix |
 | Pricing | `pricing.approve` | Activate prices | Not own | — | — | — | — | Not own | Approved matrix |
 | Pricing | `quotations.manage` | Prepare enterprise quotations | Yes | — | — | Up to limit | — | Approves | Approved matrix |
-| Enquiries | `leads.view` | See enquiries | Yes | Totals | Own properties | Yes | Totals | Deal values | Approved matrix |
-| Enquiries | `leads.manage` | Change status, log follow-ups | Yes | — | — | Yes | — | — | Approved matrix |
-| Enquiries | `leads.assign` | Assign or reassign an owner by hand | Yes | — | — | Yes | — | — | OD-51, OD-58 |
-| Enquiries | `leads.export` | Export enquiries (audited) | Yes | — | — | — | — | — | Approved matrix |
+| Enquiries | `leads.view` | See enquiries | Yes | Totals | Own properties | Yes | Totals | Deal values | Implemented (2026-10-27, Phase 5) for the Super Admin, the Property Manager (assigned properties, read-only) and the Sales/CRM Executive (assigned properties unless the Super Admin records that the person works on every property, OD-36 per-user restriction on by default; the default is now an owner decision, OD-111 (b)). "Totals" and "Deal values" are reports that do not exist yet, so the Operations Manager, Marketing Manager and Finance see no enquiry |
+| Enquiries | `leads.manage` | Change status, log follow-ups | Yes | — | — | Yes | — | — | Implemented (2026-10-27, Phase 5), within the same property scope; every change locks the enquiry and refuses a stale view |
+| Enquiries | `leads.assign` | Assign or reassign an owner by hand | Yes | — | — | Yes | — | — | Implemented (2026-10-27, Phase 5; OD-51, OD-58); only to active staff who may work on that property's enquiries; audited |
+| Enquiries | `leads.export` | Export enquiries (audited) | Yes | — | — | — | — | — | Implemented (2026-10-27, Phase 5): CSV of the filtered list, Super Admin only (FR-CRM-6), audited with the row count, formula-safe cells |
+| Enquiries | `leads.settings.manage` | Manage the reasons for closing an enquiry | Yes | — | — | — | — | — | Implemented (2026-10-27, Phase 5 round 41): the managed lists of lost and disqualification reasons (BR-CRM-5, FR-CRM-5), following §3.1 "Assignment rules, pipeline stages: Super Admin"; a reason in use is switched off, never deleted; changes audited |
 | Bookings | `bookings.view` | See booking requests and bookings | Yes | Yes | Own properties | Yes | — | Yes | Approved matrix |
 | Bookings | `bookings.approve` | Approve or reject booking requests, and reschedules that change inventory, price or terms, never one the user created or submitted; every approval re-checks availability under lock | Not own | Not own | Own properties, not own | — | — | — | OD-52, OD-61, OD-63, OD-72 |
 | Bookings | `bookings.cancel` | Cancel bookings | Yes | Yes | Own properties | Yes | — | — | Approved matrix |
@@ -299,12 +304,14 @@ Approved matrix, OD and Derived rows are **not implemented**.
 | Contact and legal | `settings.legal.view` | See legal entity and GST details | Yes | — | — | — | — | Yes | Implemented (2026-10-26, step 4.6); Derived: editors and verifiers (OD-54, OD-55) must see the details; no other role was proposed |
 | Contact and legal | `settings.legal.manage` | Edit legal entity and GST details | Yes | — | — | — | — | Yes | Implemented (2026-10-26, step 4.6); OD-54, OD-59 |
 | Contact and legal | `settings.legal.verify` | Verify legal details against the registration documents | Not own | — | — | — | — | Not own | Implemented (2026-10-26, step 4.6); OD-55, OD-62 |
-| Website content | `content.view` | Read drafts and previews | Yes | Profiles | Own properties | Profiles | Yes | — | Implemented for pages (2026-10-26, Super Admin and Marketing Manager); the profile and own-property scopes come with profiles (step 4.7) |
-| Website content | `content.edit` | Edit drafts | Yes | — | Own properties | — | Yes | — | Implemented for pages (2026-10-26); the Property Manager's scope comes with property profiles (step 4.7) |
+| Website content | `content.view` | Read drafts and previews | Yes | Profiles | Own properties | Profiles | Yes | — | Implemented for pages (2026-10-26, Super Admin and Marketing Manager); the "Profiles" and "Own properties" cells are implemented by `profiles.view` |
+| Website content | `content.edit` | Edit drafts | Yes | — | Own properties | — | Yes | — | Implemented for pages (2026-10-26); the "Own properties" cell is implemented by `profiles.edit` |
+| Website content | `profiles.view` | Read property profiles: drafts, history and previews | Yes | Yes | Own properties | Yes | Yes | — | Implemented (2026-10-26, step 4.7 in Phase 5): the "Profiles" and "Own properties" cells of `content.view`, as their own capability so that these roles see no other content |
+| Website content | `profiles.edit` | Edit drafts of property profiles | Yes | — | Own properties | — | Yes | — | Implemented (2026-10-26, step 4.7 in Phase 5): the "Own properties" cell of `content.edit`. Approval and publication use `content.approve` and `content.publish` |
 | Website content | `content.approve` | Approve submitted content (one approval is enough) | Not own | — | — | — | Not own | — | Implemented for pages (2026-10-26); OD-65, OD-73 |
 | Website content | `content.publish` | Publish or schedule an approved version | After another's approval | — | — | — | After another's approval | — | Implemented for pages (2026-10-26); OD-56, OD-65, OD-73 |
 | Website content | `testimonials.publish` | Publish testimonials and case studies (consent on file) | After another's approval | — | — | — | After another's approval | — | Implemented (2026-10-26, step 4.5); OD-56, OD-65 |
-| Website content | `media.manage` | Upload media with origin and licence | Yes | — | Own properties | — | Yes | — | Implemented (2026-10-26, Super Admin and Marketing Manager); the Property Manager's scope comes with Phase 5 |
+| Website content | `media.manage` | Upload media with origin and licence | Yes | — | Own properties | — | Yes | — | Implemented (2026-10-26, Super Admin and Marketing Manager; 2026-10-27 the Property Manager, only photos of assigned properties: the property shown is required at upload and fixed, and the library, renditions and edits are limited to those) |
 | Redirects | `redirects.manage` | Draft redirect changes | Yes | — | — | — | Yes | — | Implemented (2026-10-26, step 4.6); Approved matrix |
 | Redirects | `redirects.approve` | Approve redirect changes | Not own | — | — | — | Not own | — | Implemented (2026-10-26, step 4.6); OD-66 |
 | Redirects | `redirects.publish` | Put approved redirects live | After another's approval | — | — | — | After another's approval | — | Implemented (2026-10-26, step 4.6); OD-66, OD-65 |
@@ -314,6 +321,8 @@ Approved matrix, OD and Derived rows are **not implemented**.
 | Tracking | `settings.tracking.manage` | Draft changes to tracking IDs, analytics identifiers and advertising pixels | Yes | — | — | — | Yes | — | Implemented (2026-10-26, step 4.6); Approved matrix |
 | Tracking | `settings.tracking.approve` | Approve tracking changes | Not own | — | — | — | Not own | — | Implemented (2026-10-26, step 4.6); OD-71 (holders as for contact details and brand, OD-69, OD-70) |
 | Tracking | `settings.tracking.publish` | Make approved tracking changes active on the public website | After another's approval | — | — | — | After another's approval | — | Implemented (2026-10-26, step 4.6); OD-71, OD-65 |
+| 3D models | `twin_models.view` | See uploaded 3D models, their checks and anchors, and preview them | Yes | Yes | — | — | Yes | — | Implemented (2026-10-28, Phase 7, OD-118): §3.1 "3D model upload and anchors" (the Operations Manager views) |
+| 3D models | `twin_models.manage` | Upload 3D models (GLB files) and delete them | Yes | — | — | — | Yes | — | Implemented (2026-10-28, Phase 7, OD-118): §3.1 "3D model upload and anchors" (OD-37: the supplier prepares models, the Marketing Manager uploads them). Scenes and hotspot-to-space mapping (§3.1 next row) are not built |
 
 **Changes from the round-12 table (round 13):**
 * The seven rows marked "Needs owner confirmation" now show the owner's decisions.

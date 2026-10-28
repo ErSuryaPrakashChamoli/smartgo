@@ -2,6 +2,7 @@
 
 use App\Models\NavigationMenu;
 use App\Models\Page;
+use App\Models\Property;
 use App\Services\Content\NavigationPayload;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
@@ -53,6 +54,18 @@ it('accepts links to pages and other websites, and groups where the menu allows 
         ->and(menuErrors('legal', [pageLink('Privacy', $about)]))->toBe([]);
 });
 
+it('accepts links to parts of the website and to locations, keeping only the chosen destination', function () {
+    $property = Property::factory()->create();
+
+    $payload = app(NavigationPayload::class)->validate(menuNamed('main'), ['items' => [
+        ['label' => 'Locations', 'type' => 'section', 'section' => 'locations', 'property_id' => $property->id],
+        ['label' => 'Centres', 'type' => 'group', 'children' => [['label' => 'A-70', 'type' => 'property', 'property_id' => $property->id, 'section' => 'faqs']]],
+    ]], forSubmission: true);
+
+    expect($payload['items'][0])->toMatchArray(['type' => 'section', 'section' => 'locations', 'property_id' => null, 'page_id' => null, 'url' => null])
+        ->and($payload['items'][1]['children'][0])->toMatchArray(['type' => 'property', 'property_id' => $property->id, 'section' => null]);
+});
+
 it('stores items as an ordered list and drops links under items that are not groups', function () {
     $about = Page::factory()->published()->create();
 
@@ -74,6 +87,9 @@ it('refuses destinations that are unsafe or point back at this website', functio
     'protocol relative' => [['label' => 'X', 'type' => 'url', 'page_id' => null, 'url' => '//partner.example'], 'url'],
     'typed path' => [['label' => 'X', 'type' => 'url', 'page_id' => null, 'url' => '/about'], 'url'],
     'missing page' => [['label' => 'X', 'type' => 'page', 'page_id' => 999999, 'url' => null], 'page_id'],
+    'unknown part of the website' => [['label' => 'X', 'type' => 'section', 'section' => 'admin'], 'section'],
+    'no part of the website chosen' => [['label' => 'X', 'type' => 'section', 'section' => null], 'section'],
+    'missing location' => [['label' => 'X', 'type' => 'property', 'property_id' => 999999], 'property_id'],
     'no page chosen' => [['label' => 'X', 'type' => 'page', 'page_id' => null, 'url' => null], 'page_id'],
     'markup in the label' => [['label' => '<b>X</b>', 'type' => 'url', 'page_id' => null, 'url' => 'https://partner.example'], 'label'],
     'unknown kind' => [['label' => 'X', 'type' => 'script', 'page_id' => null, 'url' => null], 'type'],

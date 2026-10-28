@@ -179,7 +179,7 @@ Format: **FR-ID**: requirement. *Acceptance:* testable criteria. The Phase colum
 
 | ID | Requirement | Acceptance |
 |---|---|---|
-| FR-CRM-1 | Lead inbox with filters, ownership, status, SLA timers, duplicate detection (BR-CRM-2). | Sales/CRM Executives see all leads unless restricted per user (OD-36); Property Managers see their properties' leads read-only (policy tests). |
+| FR-CRM-1 | Lead inbox with filters, ownership, status, SLA timers, duplicate detection (BR-CRM-2). | Sales/CRM Executives see all leads unless restricted per user (OD-36); Property Managers see their properties' leads read-only (policy tests). **Default changed by OD-111 (b), 2026-10-27:** restricted to assigned properties unless the Super Admin records that the person works on every property. |
 | FR-CRM-2 | Assignment rules (round-robin, fixed, least-loaded) by city, location, product or seat band. | Deterministic assignment with tests per strategy. Unmatched leads go to the manager queue. |
 | FR-CRM-3 | Activities (call, WhatsApp, email, meeting, note, task) with reminders. | One-tap call/WhatsApp from the lead screen logs an activity. |
 | FR-CRM-4 | Pipeline (configurable stages), deals with proposed spaces from canonical inventory. | Proposed spaces show live availability. Won deals create allocations through the inventory service (BR-CRM-7). |

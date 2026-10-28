@@ -50,8 +50,9 @@ class PageRenderer
     public const int DESCRIPTION_LIMIT = 160;
 
     /**
-     * When no description is written, the introduction's text, or else the first text section, cut on a
-     * word boundary so that the result, ellipsis included, never exceeds DESCRIPTION_LIMIT (FR-SEO-1).
+     * When no description is written, the introduction's text, or else the first text section or contact
+     * details section's introduction, cut on a word boundary so that the result, ellipsis included, never
+     * exceeds DESCRIPTION_LIMIT (FR-SEO-1).
      *
      * @param  list<array{component: string, type: string, data: array<string, mixed>}>  $blocks
      */
@@ -59,7 +60,7 @@ class PageRenderer
     {
         foreach ($blocks as $block) {
             $text = match ($block['type']) {
-                'hero' => $block['data']['intro'] ?? null,
+                'hero', 'contact' => $block['data']['intro'] ?? null,
                 'text' => html_entity_decode(strip_tags(str_replace('</p>', '</p> ', (string) ($block['data']['body'] ?? ''))), ENT_QUOTES | ENT_HTML5),
                 default => null,
             };

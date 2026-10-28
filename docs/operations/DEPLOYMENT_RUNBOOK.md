@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Status | **Phase 1 baseline v1.0 (2026-10-24), submitted for owner approval. Deployment plan.** Hosting provider to be chosen in Phase 3 (D-14). The provider-specific runbook is completed in Phase 15. |
-| Last updated | 2026-10-25 |
+| Last updated | 2026-10-28 |
 | Local development | [`LOCAL_DEVELOPMENT.md`](LOCAL_DEVELOPMENT.md) |
 
 ---
@@ -50,7 +50,7 @@
 
 Present in the current `.env.example`: `APP_*`, `BACKOFFICE_PATH` (use a non-default value in production, D-30), `DB_*`, `SESSION_*`, `CACHE_STORE`, `QUEUE_CONNECTION`, `REDIS_*`, `MAIL_*`, `AWS_*`, `FILESYSTEM_DISK`, `VITE_APP_NAME`.
 
-**Media files** live on the private `local` disk (`storage/app/private`) until hosting is chosen (D-14; S3 per ADR-0006); include that folder in backups. The scheduler must run (`content:publish-scheduled` every minute, `media:licence-reminders` daily), and mail must be configured for licence reminders.
+**Media files** live on the private `local` disk (`storage/app/private`) until hosting is chosen (D-14; S3 per ADR-0006); include that folder in backups. 3D models (GLB files, Phase 7) are kept there too. **3D model limits** are configuration (`config/twin.php`, OD-119): the owner-approved 15 MB and 500,000 triangles can be changed with `TWIN_MODEL_MAX_MEGABYTES` and `TWIN_MODEL_MAX_TRIANGLES` (rebuild the configuration cache afterwards), and the other safeguards in that file. The supplier specification, `../requirements/CLIENT_INPUTS_REQUIRED.md` C-6.5, must say the same; a test fails until it does. The media library's own file limit is raised from its 10 MB default to 32 MB (`config/media-library.php`), or a model between 10 and 15 MB would pass the checks and then fail to be stored (found by the browser checks, 2026-10-28). **PHP upload limits:** `upload_max_filesize` and `post_max_size` must allow 32 MB, the back office's limit for an upload in progress (`config/livewire.php`; a model may be up to 15 MB, and larger files reach the checks so the uploader is told why they are refused). Raising the model limit above 32 MB needs these raised too. PHP's `max_execution_time` must leave room for the checks (at most 10 seconds by default, `check_seconds`) and the copy of the file, and `memory_limit` should be at least 256 MB: decoding a 4 MB description took up to 45 MB in a local test (2026-10-28), and each embedded texture is read whole. The web server's request-size limit (for example nginx `client_max_body_size`) must allow the same. The scheduler must run (`content:publish-scheduled` every minute, `media:licence-reminders` daily), and mail must be configured for licence reminders.
 
 **`APP_URL` must be the production address over HTTPS** (for example `https://www.example.com`, no trailing slash) in every public environment. Canonical URLs (`<link rel="canonical">`), menu and media links are built from it, never from the request's host header (FR-SEO-1, OD-93). A wrong or `http://` value publishes wrong canonical URLs; check it before every first release to a new environment. `BACKOFFICE_TIMEZONE` defaults to `Asia/Kolkata`.
 

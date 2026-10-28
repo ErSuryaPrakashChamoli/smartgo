@@ -2,8 +2,11 @@
 
 namespace App\Filament\Clusters\Website\Resources\MediaAssets\Schemas;
 
+use App\Enums\Access\Capability;
 use App\Enums\Content\MediaOrigin;
 use App\Models\MediaAsset;
+use App\Models\Property;
+use App\Models\User;
 use App\Services\Content\MediaAssetRules;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -56,6 +59,14 @@ class MediaAssetForm
                             ->visibleOn('create'),
                         Text::make(fn (?MediaAsset $record): string => 'Origin: '.$record?->origin->label().($record?->origin->isConcept() ? ' (shown as "Concept visual")' : ''))
                             ->visibleOn('edit'),
+                        Select::make('depicts_property_id')
+                            ->label('Property shown')
+                            ->options(fn (): array => self::propertyOptions())
+                            ->required(fn (): bool => ! (auth()->user()?->hasCapabilityForEveryProperty(Capability::ManageMedia) ?? false))
+                            ->helperText('The property this photo shows. Only photos of a property can be chosen for its website profile and workspace offerings. Leave empty for an image of no particular property. It cannot be changed later.')
+                            ->visibleOn('create'),
+                        Text::make(fn (?MediaAsset $record): string => 'Property shown: '.($record?->depictedProperty === null ? 'none' : 'SmartGro '.$record->depictedProperty->name))
+                            ->visibleOn('edit'),
                         TextInput::make('title')->required()->maxLength(120)->helperText('For finding the image in the library; not shown on the website.'),
                         Toggle::make('is_decorative')->label('Decorative only: screen readers skip it')->live()->inline(false),
                         TextInput::make('alt_text')
@@ -81,5 +92,20 @@ class MediaAssetForm
                     ->validationMessages(['accepted' => 'Nothing from the old website may be reused (OD-19).'])
                     ->visibleOn('create'),
             ]);
+    }
+
+    /**
+     * The properties the user may add photos for.
+     *
+     * @return array<int, string>
+     */
+    private static function propertyOptions(): array
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        return Property::query()->visibleTo($user, Capability::ManageMedia)->orderBy('code')->get()
+            ->mapWithKeys(fn (Property $property): array => [$property->getKey() => 'SmartGro '.$property->name])
+            ->all();
     }
 }

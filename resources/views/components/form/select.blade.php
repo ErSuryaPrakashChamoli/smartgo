@@ -4,6 +4,7 @@
     'placeholder' => null,
     'invalid' => false,
     'describedBy' => null,
+    'selected' => null,
 ])
 
 <div class="relative">
@@ -23,7 +24,7 @@
             <option value="">{{ $placeholder }}</option>
         @endif
         @foreach ($options as $value => $label)
-            <option value="{{ $value }}">{{ $label }}</option>
+            <option value="{{ $value }}" @selected($selected !== null && (string) $value === (string) $selected)>{{ $label }}</option>
         @endforeach
     </select>
     <x-heroicon-m-chevron-up-down class="pointer-events-none absolute top-1/2 right-3 size-5 -translate-y-1/2 text-muted" aria-hidden="true" />

@@ -3,12 +3,14 @@
 use App\Actions\Access\SyncAccessControl;
 use App\Enums\Access\Capability;
 use App\Enums\Access\StaffRole;
+use App\Models\Property;
 use App\Models\Revision;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 use function Pest\Laravel\actingAs;
@@ -50,9 +52,11 @@ it('refuses, on every back-office page, staff whose role has not been given back
     expect($pages)->not->toBeEmpty();
 
     $revision = Revision::factory()->create();
+    Storage::fake('local');
+    $twinModel = uploadTwinModelForTest(User::factory()->withRole(StaffRole::MarketingManager)->create(), Property::factory()->create());
 
     foreach ($pages as $name) {
-        actingAs($superAdmin)->get(route($name, ['record' => $superAdmin, 'revision' => $revision]))->assertForbidden();
+        actingAs($superAdmin)->get(route($name, ['record' => $superAdmin, 'revision' => $revision, 'twinModel' => $twinModel]))->assertForbidden();
     }
 });
 

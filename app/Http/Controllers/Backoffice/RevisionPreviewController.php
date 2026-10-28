@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\CaseStudy;
 use App\Models\Faq;
 use App\Models\NavigationMenu;
+use App\Models\OfferingProfile;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\PropertyProfile;
 use App\Models\RedirectMap;
 use App\Models\Revision;
 use App\Models\SiteSetting;
@@ -15,6 +17,8 @@ use App\Models\Testimonial;
 use App\Services\Content\BlockLibrary;
 use App\Services\Content\PageRenderer;
 use App\Services\Content\SiteNavigation;
+use App\Services\Website\LocationPages;
+use App\Services\Website\WorkspaceCatalogue;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -22,8 +26,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 
 /**
- * Shows a version of a page, or of a menu in the real header and footer, exactly as it would be
- * published (BR-CMS-4, FR-CMS-3). The link is signed
+ * Shows a version of a page, of a property or workspace offering profile on its own page, or of a
+ * menu in the real header and footer, exactly as it would be published (BR-CMS-4, FR-CMS-3). The link is signed
  * and expires, and the route sits inside the back office, so it also needs a signed-in staff member
  * with two-step login, back-office access and permission to view the content. The response is never
  * indexed, cached or sent as a referrer, and nothing is written.
@@ -48,7 +52,7 @@ class RevisionPreviewController extends Controller
         return URL::temporarySignedRoute(self::ROUTE, now()->addMinutes(self::LIFETIME_MINUTES), ['revision' => $revision]);
     }
 
-    public function __invoke(Request $request, Revision $revision, PageRenderer $pageRenderer, SiteNavigation $siteNavigation, BlockLibrary $blockLibrary): Response
+    public function __invoke(Request $request, Revision $revision, PageRenderer $pageRenderer, SiteNavigation $siteNavigation, BlockLibrary $blockLibrary, WorkspaceCatalogue $catalogue, LocationPages $locationPages): Response
     {
         Gate::authorize('view', $revision);
 
@@ -89,6 +93,16 @@ class RevisionPreviewController extends Controller
                 ] : null,
                 'preview' => $preview, 'navigation' => $siteNavigation->present(),
             ]),
+            $content instanceof PropertyProfile => $locationPages->property(
+                $content->property->load(['city', 'microMarket', 'primaryBuilding', 'publishedOfferings.product', 'publishedOfferings.profile']),
+                $catalogue->profile($revision->payload, $content->property),
+                $preview,
+            ),
+            $content instanceof OfferingProfile => $locationPages->offering(
+                $content->offering->load(['product', 'property.city', 'property.microMarket', 'property.primaryBuilding']),
+                $catalogue->offeringProfile($revision->payload, $content->offering),
+                $preview,
+            ),
             $content instanceof NavigationMenu => view('pages.content.navigation-preview', [
                 'menuName' => $content->name,
                 'preview' => $preview,

@@ -79,4 +79,40 @@ enum Capability: string
 
     /** Making approved tracking changes active after another's approval (OD-71, OD-65). */
     case PublishTracking = 'settings.tracking.publish';
+
+    /** Seeing cities, properties, buildings and workspace categories in the back office (SECURITY_MODEL §3.1). */
+    case ViewProperties = 'properties.view';
+
+    /** Adding and editing cities, properties and buildings, including address, status and operating model (§3.1). */
+    case ManageProperties = 'properties.manage';
+
+    /** Adding and editing workspace categories and which properties offer them (§3.1, ADR-0013). */
+    case ManageProducts = 'products.manage';
+
+    /** Reading property profiles in the back office: drafts, their history and previews (FR-CMS-6; the "Profiles" cells of `content.view`). */
+    case ViewProfiles = 'profiles.view';
+
+    /** Writing drafts of property profiles; Property Managers only for their assigned properties (FR-CMS-6, §3.1). */
+    case EditProfiles = 'profiles.edit';
+
+    /** Seeing enquiries and their notes; limited to assigned properties for Property Managers and restricted Sales/CRM Executives (BR-CRM-6). */
+    case ViewLeads = 'leads.view';
+
+    /** Changing an enquiry's status and recording notes and follow-ups (§11 `leads.manage`). */
+    case ManageLeads = 'leads.manage';
+
+    /** Assigning or reassigning an enquiry's owner by hand, audited (BR-CRM-3a, OD-51). */
+    case AssignLeads = 'leads.assign';
+
+    /** Exporting enquiries, audited; Super Admin only (FR-CRM-6, OD-36). */
+    case ExportLeads = 'leads.export';
+
+    /** Managing the lists used on enquiries, such as the reasons for closing one (BR-CRM-5); Super Admin only, like assignment rules and pipeline stages (SECURITY_MODEL §3.1). */
+    case ManageLeadSettings = 'leads.settings.manage';
+
+    /** Seeing uploaded 3D models, their checks and anchors, and previewing them (§3.1 "3D model upload and anchors"). */
+    case ViewTwinModels = 'twin_models.view';
+
+    /** Uploading 3D models prepared by the 3D-modelling supplier, and removing them (§3.1, OD-37). */
+    case ManageTwinModels = 'twin_models.manage';
 }

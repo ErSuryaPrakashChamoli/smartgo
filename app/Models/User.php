@@ -17,8 +17,10 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
@@ -77,12 +79,60 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     }
 
     /**
+     * The properties the user is assigned to (`property_user`). A Property Manager acts only on these.
+     *
+     * @return BelongsToMany<Property, $this>
+     */
+    public function assignedProperties(): BelongsToMany
+    {
+        return $this->belongsToMany(Property::class)->withPivot('assigned_by')->withTimestamps();
+    }
+
+    /**
+     * Whether a role the user holds grants the capability for every property, rather than only for
+     * assigned ones (SECURITY_MODEL §3.1 "Own properties").
+     */
+    public function hasCapabilityForEveryProperty(Capability $capability): bool
+    {
+        return $this->can($capability) && $this->staffRoles()->contains(
+            fn (StaffRole $role): bool => ! $role->limitsToAssignedProperties($this) && in_array($capability, $role->capabilities(), true),
+        );
+    }
+
+    /**
+     * Whether the user has the capability for this property: for every property, or because they are
+     * assigned to it. Policies use this for anything that belongs to a property.
+     */
+    public function hasCapabilityForProperty(Capability $capability, Property $property): bool
+    {
+        return $this->can($capability)
+            && ($this->hasCapabilityForEveryProperty($capability) || $this->assignedProperties()->whereKey($property->getKey())->exists());
+    }
+
+    /**
+     * Whether the user holds the capability only for assigned properties, so their lists and searches
+     * are narrowed to those.
+     */
+    public function hasCapabilityOnlyForAssignedProperties(Capability $capability): bool
+    {
+        return $this->can($capability) && ! $this->hasCapabilityForEveryProperty($capability);
+    }
+
+    /**
+     * @return Collection<int, StaffRole>
+     */
+    public function staffRoles(): Collection
+    {
+        return $this->getRoleNames()->map(fn (string $name): ?StaffRole => StaffRole::tryFrom($name))->filter()->values();
+    }
+
+    /**
      * Audit changes to identity and access fields; passwords and two-factor secrets are never logged.
      */
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['name', 'email', 'is_active'])
+            ->logOnly(['name', 'email', 'is_active', 'has_all_property_access'])
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
             ->useLogName('access');
@@ -99,6 +149,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'has_all_property_access' => 'boolean',
             'last_login_at' => 'datetime',
         ];
     }

@@ -67,6 +67,20 @@ it('saves changes to the draft and never to the live page', function () {
         ->and($this->page->fresh())->title->toBeNull()->status->toBe('draft');
 });
 
+it('saves a contact details section, which stores no details of its own', function () {
+    actingAs($this->author);
+    $undoBuilderFake = Builder::fake();
+
+    pageEditor($this->page)
+        ->fillForm(['title' => 'Contact', 'slug' => 'contact', 'blocks' => [['type' => 'contact', 'data' => ['heading' => 'Talk to us', 'intro' => null, 'show_locations' => true]]]])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    $undoBuilderFake();
+
+    expect($this->draft->fresh()->payload['blocks'][0])->toEqual(['type' => 'contact', 'data' => ['heading' => 'Talk to us', 'intro' => null, 'show_locations' => true]]);
+});
+
 it('saves the search-engine fields with the draft', function () {
     actingAs($this->author);
     $undoBuilderFake = Builder::fake();

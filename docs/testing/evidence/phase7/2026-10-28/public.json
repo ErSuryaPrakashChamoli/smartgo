@@ -1,0 +1,1913 @@
+{
+ "startedAt": "2026-10-27T19:13:03.237Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "151.0.7922.34",
+ "axeCore": "4.13.0",
+ "axeTags": [
+  "wcag2a",
+  "wcag2aa",
+  "wcag21a",
+  "wcag21aa",
+  "wcag22aa"
+ ],
+ "widths": [
+  360,
+  768,
+  1024,
+  1440
+ ],
+ "threeDFiles": [
+  "assets/twin-viewer-CbrJygA5.js",
+  "assets/draco_decoder-C32yEggz.wasm",
+  "assets/draco_wasm_wrapper-DxJM36Ib.js",
+  "assets/draco_decoder-fzg4nYZr.js",
+  "assets/draco_wasm_wrapper-fZCQGLGb.js",
+  "assets/draco_decoder-Z1_iN-Ht.wasm",
+  "assets/basis_transcoder-VXdx5NbI.wasm",
+  "assets/basis_transcoder-o4Hde_L7.js"
+ ],
+ "pages": [
+  {
+   "path": "/",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   }
+  },
+  {
+   "path": "/locations",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/locations",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/noida",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/locations/noida",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/noida?workspace=hot-desks",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/locations/noida?workspace=hot-desks",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida?workspace=hot-desks",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida?workspace=hot-desks",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/gurugram",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/locations/gurugram",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/gurugram",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/gurugram",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/noida/area/sector-2",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/locations/noida/area/sector-2",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida/area/sector-2",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida/area/sector-2",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/noida/a-70",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000000",
+    "WhatsApp -> https://wa.me/910000000000",
+    "Enquire -> http://127.0.0.1:8767/enquire?property=1"
+   ]
+  },
+  {
+   "path": "/locations/noida/a-70",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida/a-70",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida/a-70",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/noida/a-70/hot-desks",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000000",
+    "WhatsApp -> https://wa.me/910000000000",
+    "Enquire -> http://127.0.0.1:8767/enquire?property=1&workspace=hot-desks"
+   ]
+  },
+  {
+   "path": "/locations/noida/a-70/hot-desks",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida/a-70/hot-desks",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida/a-70/hot-desks",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/noida/h-105",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001",
+    "Enquire -> http://127.0.0.1:8767/enquire?property=4"
+   ]
+  },
+  {
+   "path": "/locations/noida/h-105",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida/h-105",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/noida/h-105",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/workspaces",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/workspaces",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/workspaces",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/workspaces",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   }
+  },
+  {
+   "path": "/workspaces/hot-desks",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001",
+    "Enquire -> http://127.0.0.1:8767/enquire?workspace=hot-desks"
+   ]
+  },
+  {
+   "path": "/workspaces/hot-desks",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/workspaces/hot-desks",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/workspaces/hot-desks",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/workspaces/hot-desks/noida",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001",
+    "Enquire -> http://127.0.0.1:8767/enquire?workspace=hot-desks"
+   ]
+  },
+  {
+   "path": "/workspaces/hot-desks/noida",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/workspaces/hot-desks/noida",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/workspaces/hot-desks/noida",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/compare",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/locations/compare",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/compare",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/compare",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/locations/compare?locations[]=noida/a-70&locations[]=noida/a-71&locations[]=noida/h-105",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/locations/compare?locations[]=noida/a-70&locations[]=noida/a-71&locations[]=noida/h-105",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/compare?locations[]=noida/a-70&locations[]=noida/a-71&locations[]=noida/h-105",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/locations/compare?locations[]=noida/a-70&locations[]=noida/a-71&locations[]=noida/h-105",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/enquire",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/enquire",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/enquire",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/enquire",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/contact",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/contact",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/contact",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/contact",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/about",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/about",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/about",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/about",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/test-fixture-sections",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/test-fixture-sections",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/test-fixture-sections",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/test-fixture-sections",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": [
+     "color-contrast"
+    ]
+   }
+  },
+  {
+   "path": "/legal/terms",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/legal/terms",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/legal/terms",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/legal/terms",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/faqs",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/faqs",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/faqs",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/faqs",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/insights",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/insights",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/insights",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/insights",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/insights/test-fixture-insight",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/insights/test-fixture-insight",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/insights/test-fixture-insight",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/insights/test-fixture-insight",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/customers",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/customers",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/customers",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/customers",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/customers/test-fixture-customer-story",
+   "width": 360,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/customers/test-fixture-customer-story",
+   "width": 768,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/customers/test-fixture-customer-story",
+   "width": 1024,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/customers/test-fixture-customer-story",
+   "width": 1440,
+   "status": 200,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/no-such-page",
+   "width": 360,
+   "status": 404,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/no-such-page",
+   "width": 768,
+   "status": 404,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/no-such-page",
+   "width": 1024,
+   "status": 404,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/no-such-page",
+   "width": 1440,
+   "status": 404,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  },
+  {
+   "path": "/pin/old-page",
+   "width": 360,
+   "status": 410,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   },
+   "phoneBar": [
+    "Call -> tel:+910000000001",
+    "WhatsApp -> https://wa.me/910000000001"
+   ]
+  },
+  {
+   "path": "/pin/old-page",
+   "width": 768,
+   "status": 410,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/pin/old-page",
+   "width": 1024,
+   "status": 410,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": []
+  },
+  {
+   "path": "/pin/old-page",
+   "width": 1440,
+   "status": 410,
+   "overflow": 0,
+   "h1": 1,
+   "external": [],
+   "failed": [],
+   "consoleErrors": [],
+   "threeD": [],
+   "axe": {
+    "violations": [],
+    "incomplete": []
+   }
+  }
+ ],
+ "noJs": [
+  {
+   "path": "/",
+   "status": 200,
+   "h1": [
+    "Flexible workspaces in Noida"
+   ],
+   "mainText": 2656,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations",
+   "status": 200,
+   "h1": [
+    "SmartGro locations"
+   ],
+   "mainText": 339,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/noida",
+   "status": 200,
+   "h1": [
+    "Workspaces in Noida"
+   ],
+   "mainText": 437,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/noida?workspace=hot-desks",
+   "status": 200,
+   "h1": [
+    "Workspaces in Noida"
+   ],
+   "mainText": 434,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/gurugram",
+   "status": 200,
+   "h1": [
+    "SmartGro in Gurugram"
+   ],
+   "mainText": 524,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/noida/area/sector-2",
+   "status": 200,
+   "h1": [
+    "Workspaces in Sector 2, Noida"
+   ],
+   "mainText": 624,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/noida/a-70",
+   "status": 200,
+   "h1": [
+    "SmartGro A-70"
+   ],
+   "mainText": 1787,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/noida/a-70/hot-desks",
+   "status": 200,
+   "h1": [
+    "Hot desks at SmartGro A-70"
+   ],
+   "mainText": 860,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/noida/h-105",
+   "status": 200,
+   "h1": [
+    "SmartGro H-105"
+   ],
+   "mainText": 1532,
+   "headerLinks": 9
+  },
+  {
+   "path": "/workspaces",
+   "status": 200,
+   "h1": [
+    "Space for every way of working"
+   ],
+   "mainText": 1040,
+   "headerLinks": 9
+  },
+  {
+   "path": "/workspaces/hot-desks",
+   "status": 200,
+   "h1": [
+    "Hot desks"
+   ],
+   "mainText": 849,
+   "headerLinks": 9
+  },
+  {
+   "path": "/workspaces/hot-desks/noida",
+   "status": 200,
+   "h1": [
+    "Hot desks in Noida"
+   ],
+   "mainText": 864,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/compare",
+   "status": 200,
+   "h1": [
+    "Compare SmartGro locations"
+   ],
+   "mainText": 308,
+   "headerLinks": 9
+  },
+  {
+   "path": "/locations/compare?locations[]=noida/a-70&locations[]=noida/a-71&locations[]=noida/h-105",
+   "status": 200,
+   "h1": [
+    "Compare SmartGro locations"
+   ],
+   "mainText": 1668,
+   "headerLinks": 9
+  },
+  {
+   "path": "/enquire",
+   "status": 200,
+   "h1": [
+    "Ask about a workspace"
+   ],
+   "mainText": 625,
+   "headerLinks": 9
+  },
+  {
+   "path": "/contact",
+   "status": 200,
+   "h1": [
+    "Contact"
+   ],
+   "mainText": 287,
+   "headerLinks": 9
+  },
+  {
+   "path": "/about",
+   "status": 200,
+   "h1": [
+    "TEST FIXTURE about page"
+   ],
+   "mainText": 83,
+   "headerLinks": 9
+  },
+  {
+   "path": "/test-fixture-sections",
+   "status": 200,
+   "h1": [
+    "TEST FIXTURE hero heading"
+   ],
+   "mainText": 443,
+   "headerLinks": 9
+  },
+  {
+   "path": "/legal/terms",
+   "status": 200,
+   "h1": [
+    "TEST FIXTURE terms"
+   ],
+   "mainText": 79,
+   "headerLinks": 9
+  },
+  {
+   "path": "/faqs",
+   "status": 200,
+   "h1": [
+    "Frequently asked questions"
+   ],
+   "mainText": 49,
+   "headerLinks": 9
+  },
+  {
+   "path": "/insights",
+   "status": 200,
+   "h1": [
+    "Insights"
+   ],
+   "mainText": 70,
+   "headerLinks": 9
+  },
+  {
+   "path": "/insights/test-fixture-insight",
+   "status": 200,
+   "h1": [
+    "TEST FIXTURE insight"
+   ],
+   "mainText": 94,
+   "headerLinks": 9
+  },
+  {
+   "path": "/customers",
+   "status": 200,
+   "h1": [
+    "Customer stories"
+   ],
+   "mainText": 124,
+   "headerLinks": 9
+  },
+  {
+   "path": "/customers/test-fixture-customer-story",
+   "status": 200,
+   "h1": [
+    "TEST FIXTURE customer story"
+   ],
+   "mainText": 147,
+   "headerLinks": 9
+  },
+  {
+   "path": "/no-such-page",
+   "status": 404,
+   "h1": [
+    "Page not found"
+   ],
+   "mainText": 178,
+   "headerLinks": 9
+  },
+  {
+   "path": "/pin/old-page",
+   "status": 410,
+   "h1": [
+    "This page has been removed"
+   ],
+   "mainText": 162,
+   "headerLinks": 9
+  }
+ ],
+ "flows": [
+  {
+   "step": "phone menu opens without JavaScript",
+   "visibleLinks": 4
+  },
+  {
+   "step": "filter link without JavaScript",
+   "url": "/locations/noida?workspace=hot-desks",
+   "status": "2 locations in Noida offer hot desks. About hot desks in Noida"
+  },
+  {
+   "step": "comparison form without JavaScript",
+   "query": "?locations[]=noida/a-70&locations[]=noida/h-105",
+   "columns": [
+    "SmartGro A-70",
+    "SmartGro H-105"
+   ]
+  },
+  {
+   "step": "shared comparison address reopened",
+   "columns": [
+    "SmartGro A-70",
+    "SmartGro H-105"
+   ]
+  }
+ ],
+ "keyboard": {
+  "page": "/locations/noida/a-70",
+  "width": 360,
+  "height": 740,
+  "stops": 44,
+  "firstStop": "Skip to content",
+  "reachedBar": true,
+  "withoutIndicator": [],
+  "fullyHiddenBehindBar": [],
+  "partlyHiddenBehindBar": []
+ },
+ "statuses": [
+  {
+   "method": "GET",
+   "path": "/no-such-page?token=fixture-secret",
+   "status": 404,
+   "branded": true,
+   "noindex": true,
+   "echoesQuery": false
+  },
+  {
+   "method": "GET",
+   "path": "/pin/old-page",
+   "status": 410,
+   "branded": true,
+   "noindex": true,
+   "echoesQuery": false
+  },
+  {
+   "method": "POST",
+   "path": "/enquire",
+   "status": 419,
+   "branded": true,
+   "noindex": true,
+   "echoesQuery": false
+  }
+ ],
+ "errorPages": [
+  {
+   "status": 403,
+   "width": 360,
+   "h1": [
+    "You cannot open this page"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 403,
+   "width": 1440,
+   "h1": [
+    "You cannot open this page"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 419,
+   "width": 360,
+   "h1": [
+    "This page has expired"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 419,
+   "width": 1440,
+   "h1": [
+    "This page has expired"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 429,
+   "width": 360,
+   "h1": [
+    "Too many requests"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 429,
+   "width": 1440,
+   "h1": [
+    "Too many requests"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 500,
+   "width": 360,
+   "h1": [
+    "Something went wrong"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 500,
+   "width": 1440,
+   "h1": [
+    "Something went wrong"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 503,
+   "width": 360,
+   "h1": [
+    "Back soon"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "status": 503,
+   "width": 1440,
+   "h1": [
+    "Back soon"
+   ],
+   "noindex": 1,
+   "overflow": 0,
+   "axe": []
+  }
+ ],
+ "failures": [],
+ "finishedAt": "2026-10-27T19:15:23.651Z"
+}

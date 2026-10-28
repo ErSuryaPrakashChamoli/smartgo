@@ -64,9 +64,7 @@ class SiteSettingPayload
 
         $rules = match ($setting->handle) {
             'contact' => [
-                'phone' => ['nullable', 'string', 'regex:/^\+?[0-9][0-9 ()-]{6,19}$/'],
-                'email' => ['nullable', 'string', 'max:120', 'email:rfc'],
-                'whatsapp' => ['nullable', 'string', 'regex:/^\+[1-9][0-9]{7,14}$/'],
+                ...app(ContentRules::class)->contactDetails(),
                 'address' => $plainText(300),
                 'opening_hours' => $plainText(120),
             ],

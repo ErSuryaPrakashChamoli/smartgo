@@ -11,14 +11,21 @@
     'robots' => null,
     'navigation' => null,
     'shareImage' => null,
+    'mobileActions' => null,
+    'mobileContact' => null,
 ])
 
 @php
-    $showsActionBar = $navigation === null || $navigation['actions'] !== [];
+    // The phone action bar (FR-DISC-6): a page may give its own buttons and contact details, such as a
+    // location's enquiry link and phone number; otherwise the published header buttons and main details.
+    $barActions = $mobileActions ?? $navigation['actions'] ?? null;
+    $barContact = $mobileContact ?? $navigation['contact'] ?? [];
+    $showsActionBar = $navigation === null || $barActions !== [] || collect($barContact)->whereIn('label', ['Phone', 'WhatsApp'])->isNotEmpty();
 @endphp
 
 <!DOCTYPE html>
-<html lang="en-IN" class="scroll-pt-24">
+{{-- Scroll padding keeps a focused or linked element clear of the sticky header and, on phones, of the action bar (WCAG 2.4.11). --}}
+<html lang="en-IN" @class(['scroll-pt-24', 'scroll-pb-24 lg:scroll-pb-0' => $showsActionBar])>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -48,6 +55,8 @@
             @endif
         @endif
 
+        {{ $head ?? '' }}
+
         @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -68,7 +77,7 @@
 
         <x-site.footer :categories="$categories" :properties="$properties" :navigation="$navigation" />
         @if ($showsActionBar)
-            <x-site.mobile-action-bar :actions="$navigation['actions'] ?? null" />
+            <x-site.mobile-action-bar :actions="$navigation === null ? null : $barActions" :contact="$barContact" />
         @endif
     </body>
 </html>

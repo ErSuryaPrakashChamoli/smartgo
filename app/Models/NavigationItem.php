@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
- * A published menu item: a link to a page (by ID, so a change of address never breaks it), a link to
- * another website, or a group heading whose links are its children (FR-CMS-4).
+ * A published menu item: a link to a page or a property (by ID, so a change of address never breaks
+ * it), to a fixed part of the website (by `section` key), to another website, or a group heading whose
+ * links are its children (FR-CMS-4).
  */
 class NavigationItem extends Model
 {
     public const string LINK_PAGE = 'page';
+
+    public const string LINK_PROPERTY = 'property';
+
+    public const string LINK_SECTION = 'section';
 
     public const string LINK_EXTERNAL = 'external';
 

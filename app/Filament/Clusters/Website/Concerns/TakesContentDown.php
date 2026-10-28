@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Gate;
 use Spatie\Activitylog\Models\Activity;
 
 /**
- * The "Take off the website" button of a testimonial or customer story editor (OD-98), and what the
- * editor says once the item is taken down. Used with HasRevisionWorkflow; the server action checks
+ * The "Take off the website" button of a testimonial, customer story, property profile or workspace
+ * offering editor (OD-98), and what the editor says once the item is taken down. The consent question
+ * is asked only for content that needs consent. Used with HasRevisionWorkflow; the server action checks
  * permission and state again under a lock, so hiding or disabling the button is only a convenience.
  *
  * @property Unpublishable $record
@@ -42,17 +43,18 @@ trait TakesContentDown
                         '0' => 'No: it is taken down for another reason',
                     ])
                     ->required()
+                    ->visible(fn (): bool => $this->record instanceof RequiresConsent)
                     ->helperText('If yes, a draft in progress is sent back too, and it can only go back on the website with new consent, recorded under a new reference and confirmed.'),
                 Textarea::make('reason')
                     ->label('Reason')
                     ->required()
                     ->maxLength(UnpublishContent::MAX_REASON_LENGTH)
                     ->rows(3)
-                    ->helperText('Kept in the audit log. For example: consent withdrawn by email on 26 October 2026.'),
+                    ->helperText('Kept in the audit log, for example why it must not be shown any more.'),
             ])
             ->modalSubmitActionLabel('Take it off the website')
             ->action(fn (array $data) => $this->runStep(
-                fn (User $user) => app(UnpublishContent::class)->handle($this->record, $user, (string) $data['reason'], (bool) $data['consent_withdrawn']),
+                fn (User $user) => app(UnpublishContent::class)->handle($this->record, $user, (string) $data['reason'], (bool) ($data['consent_withdrawn'] ?? false)),
                 ucfirst($this->record->contentLabel()).' taken off the website',
             ));
     }

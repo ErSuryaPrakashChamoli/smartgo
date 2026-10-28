@@ -129,6 +129,8 @@ class NavigationMenu extends Model implements Revisionable
     {
         $linkType = match ($item['type']) {
             ContentLink::TO_PAGE => NavigationItem::LINK_PAGE,
+            NavigationPayload::PROPERTY => NavigationItem::LINK_PROPERTY,
+            NavigationPayload::SECTION => NavigationItem::LINK_SECTION,
             ContentLink::TO_URL => NavigationItem::LINK_EXTERNAL,
             default => NavigationItem::LINK_GROUP,
         };
@@ -137,15 +139,24 @@ class NavigationMenu extends Model implements Revisionable
             'parent_id' => $parent?->getKey(),
             'label' => $item['label'],
             'link_type' => $linkType,
-            'linkable_type' => $linkType === NavigationItem::LINK_PAGE ? (new Page)->getMorphClass() : null,
-            'linkable_id' => $linkType === NavigationItem::LINK_PAGE ? $item['page_id'] : null,
+            'linkable_type' => match ($linkType) {
+                NavigationItem::LINK_PAGE => (new Page)->getMorphClass(),
+                NavigationItem::LINK_PROPERTY => (new Property)->getMorphClass(),
+                default => null,
+            },
+            'linkable_id' => match ($linkType) {
+                NavigationItem::LINK_PAGE => $item['page_id'],
+                NavigationItem::LINK_PROPERTY => $item['property_id'],
+                default => null,
+            },
+            'section' => $linkType === NavigationItem::LINK_SECTION ? $item['section'] : null,
             'url' => $linkType === NavigationItem::LINK_EXTERNAL ? $item['url'] : null,
             'sort_order' => $position,
         ]);
     }
 
     /**
-     * @return array{label: string, type: string, page_id: int|null, url: string|null}
+     * @return array{label: string, type: string, page_id: int|null, section: string|null, property_id: int|null, url: string|null}
      */
     private function itemPayload(NavigationItem $item): array
     {
@@ -153,10 +164,14 @@ class NavigationMenu extends Model implements Revisionable
             'label' => $item->label,
             'type' => match ($item->link_type) {
                 NavigationItem::LINK_PAGE => ContentLink::TO_PAGE,
+                NavigationItem::LINK_PROPERTY => NavigationPayload::PROPERTY,
+                NavigationItem::LINK_SECTION => NavigationPayload::SECTION,
                 NavigationItem::LINK_EXTERNAL => ContentLink::TO_URL,
                 default => NavigationPayload::GROUP,
             },
             'page_id' => $item->link_type === NavigationItem::LINK_PAGE ? $item->linkable_id : null,
+            'section' => $item->section,
+            'property_id' => $item->link_type === NavigationItem::LINK_PROPERTY ? $item->linkable_id : null,
             'url' => $item->url,
         ];
     }

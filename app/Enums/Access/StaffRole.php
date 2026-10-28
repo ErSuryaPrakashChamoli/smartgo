@@ -2,6 +2,8 @@
 
 namespace App\Enums\Access;
 
+use App\Models\User;
+
 /**
  * The six back-office roles defined by the owner (decision OD-33).
  */
@@ -46,6 +48,15 @@ enum StaffRole: string
                 Capability::ManageRedirects, Capability::ApproveRedirects, Capability::PublishRedirects,
                 Capability::ManageBrand, Capability::ApproveBrand, Capability::PublishBrand,
                 Capability::ManageTracking, Capability::ApproveTracking, Capability::PublishTracking,
+                Capability::ViewProperties, Capability::ManageProperties, Capability::ManageProducts,
+                Capability::ViewProfiles, Capability::EditProfiles,
+                Capability::ViewLeads, Capability::ManageLeads, Capability::AssignLeads, Capability::ExportLeads, Capability::ManageLeadSettings,
+                Capability::ViewTwinModels, Capability::ManageTwinModels,
+            ],
+            self::OperationsManager => [
+                Capability::AccessBackoffice,
+                Capability::ViewProperties, Capability::ManageProperties, Capability::ManageProducts,
+                Capability::ViewProfiles, Capability::ViewTwinModels,
             ],
             self::MarketingManager => [
                 Capability::AccessBackoffice,
@@ -55,13 +66,49 @@ enum StaffRole: string
                 Capability::ManageRedirects, Capability::ApproveRedirects, Capability::PublishRedirects,
                 Capability::ManageBrand, Capability::ApproveBrand, Capability::PublishBrand,
                 Capability::ManageTracking, Capability::ApproveTracking, Capability::PublishTracking,
+                Capability::ViewProperties, Capability::ViewProfiles, Capability::EditProfiles,
+                Capability::ViewTwinModels, Capability::ManageTwinModels,
             ],
             self::Finance => [
                 Capability::AccessBackoffice,
                 Capability::ViewLegalSettings, Capability::ManageLegalSettings, Capability::VerifyLegalSettings,
+                Capability::ViewProperties,
             ],
-            default => [Capability::AccessBackoffice],
+            self::PropertyManager => [
+                Capability::AccessBackoffice,
+                Capability::ViewProperties, Capability::ManageProperties,
+                Capability::ViewProfiles, Capability::EditProfiles, Capability::ManageMedia,
+                Capability::ViewLeads,
+            ],
+            self::SalesCrmExecutive => [
+                Capability::AccessBackoffice, Capability::ViewProperties, Capability::ViewProfiles,
+                Capability::ViewLeads, Capability::ManageLeads, Capability::AssignLeads,
+            ],
         };
+    }
+
+    /**
+     * Whether, for this user, the role's capabilities reach only the properties assigned to them
+     * (`property_user`): always for a Property Manager ("Own properties", SECURITY_MODEL §3.1), and for
+     * a Sales/CRM Executive unless the Super Admin has recorded that this person works on every property
+     * (OD-36's per-user restriction, on by default). A user who also holds a role without this limit
+     * has that role's capabilities for every property.
+     */
+    public function limitsToAssignedProperties(User $user): bool
+    {
+        return match ($this) {
+            self::PropertyManager => true,
+            self::SalesCrmExecutive => ! $user->has_all_property_access,
+            default => false,
+        };
+    }
+
+    /**
+     * Whether the role can be limited to assigned properties at all, so assignments matter for it.
+     */
+    public function usesPropertyAssignments(): bool
+    {
+        return in_array($this, [self::PropertyManager, self::SalesCrmExecutive], true);
     }
 
     /**

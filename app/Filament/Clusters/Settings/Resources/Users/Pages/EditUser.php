@@ -3,6 +3,7 @@
 namespace App\Filament\Clusters\Settings\Resources\Users\Pages;
 
 use App\Actions\Access\ResetTwoFactorAuthentication;
+use App\Actions\Access\SyncUserProperties;
 use App\Actions\Access\SyncUserRoles;
 use App\Enums\Access\StaffRole;
 use App\Filament\Clusters\Settings\Resources\Users\UserResource;
@@ -46,6 +47,7 @@ class EditUser extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $data['roles'] = $this->record->getRoleNames()->all();
+        $data['property_ids'] = $this->record->assignedProperties()->pluck('properties.id')->map(fn (int $id): string => (string) $id)->all();
 
         return $data;
     }
@@ -57,11 +59,14 @@ class EditUser extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $roles = Arr::pull($data, 'roles', []);
+        $propertyIds = Arr::pull($data, 'property_ids', []);
+        $hasAllPropertyAccess = (bool) Arr::pull($data, 'has_all_property_access', false);
 
         $record->update($data);
 
         try {
             app(SyncUserRoles::class)->handle($record, array_map(StaffRole::from(...), $roles), auth()->user());
+            app(SyncUserProperties::class)->handle($record, array_map(intval(...), $propertyIds), auth()->user(), $hasAllPropertyAccess);
         } catch (ValidationException $exception) {
             throw ValidationException::withMessages(
                 Arr::mapWithKeys($exception->errors(), fn (array $messages, string $key): array => ["data.{$key}" => $messages]),

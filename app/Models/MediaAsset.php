@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\Access\Capability;
 use App\Enums\Content\MediaOrigin;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Image\Enums\Fit;
@@ -58,6 +60,29 @@ class MediaAsset extends Model implements HasMedia
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    /**
+     * The property the image shows, set at upload and never changed.
+     *
+     * @return BelongsTo<Property, $this>
+     */
+    public function depictedProperty(): BelongsTo
+    {
+        return $this->belongsTo(Property::class, 'depicts_property_id');
+    }
+
+    /**
+     * The images the user may work with in the library: all, or only those of their assigned
+     * properties when their media access is limited to those.
+     *
+     * @param  Builder<self>  $query
+     */
+    public function scopeVisibleTo(Builder $query, User $user): void
+    {
+        if (! $user->can(Capability::ViewContent) && ! $user->hasCapabilityForEveryProperty(Capability::ManageMedia)) {
+            $query->whereIn('depicts_property_id', $user->assignedProperties()->select('properties.id'));
+        }
     }
 
     public function registerMediaCollections(): void

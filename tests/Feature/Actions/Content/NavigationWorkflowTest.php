@@ -12,6 +12,7 @@ use App\Enums\Content\RevisionState;
 use App\Models\NavigationItem;
 use App\Models\NavigationMenu;
 use App\Models\Page;
+use App\Models\Property;
 use App\Models\Revision;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -68,6 +69,23 @@ it('publishes a menu written by one person, approved by a second and published b
         ->and($items[2]->parent_id)->toBe($items[1]->id)
         ->and($items[0]->linkable_id)->toBe($this->about->id)
         ->and($this->menu->fresh()->toRevisionPayload())->toEqual($revision->fresh()->payload);
+});
+
+it('publishes links to parts of the website and to locations, and reads them back unchanged', function () {
+    $property = Property::factory()->open()->create();
+    $revision = approvedMenu($this->menu, $this->author, $this->approver, [
+        ['label' => 'Locations', 'type' => 'section', 'section' => 'locations'],
+        ['label' => 'Visit A-70', 'type' => 'property', 'property_id' => $property->id],
+    ]);
+
+    app(PublishRevision::class)->handle($revision, $this->publisher);
+
+    $items = NavigationItem::query()->where('navigation_menu_id', $this->menu->id)->orderBy('sort_order')->get();
+
+    expect($items->map(fn (NavigationItem $item): array => $item->only(['link_type', 'section', 'linkable_type', 'linkable_id']))->all())->toBe([
+        ['link_type' => 'section', 'section' => 'locations', 'linkable_type' => null, 'linkable_id' => null],
+        ['link_type' => 'property', 'section' => null, 'linkable_type' => $property->getMorphClass(), 'linkable_id' => $property->id],
+    ])->and($this->menu->fresh()->toRevisionPayload())->toEqual($revision->fresh()->payload);
 });
 
 it('keeps the separation of duties for menus, including for the Super Admin', function () {

@@ -33,6 +33,16 @@ class MediaAssetRules
     }
 
     /**
+     * The property a photo shows; required from users who manage media only for assigned properties.
+     *
+     * @return array<string, mixed>
+     */
+    public function property(bool $required): array
+    {
+        return ['depicts_property_id' => [$required ? 'required' : 'nullable', 'integer', Rule::exists('properties', 'id')]];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function details(?MediaOrigin $origin): array
@@ -66,6 +76,7 @@ class MediaAssetRules
             'file.dimensions' => 'The image must be between 200 and 8,000 pixels wide and high.',
             'alt_text.required_unless' => 'Describe what the image shows, or mark it as decorative (BR-MED-4).',
             'not_from_old_website.accepted' => 'Nothing from the old smartgro.space website may be reused (OD-19).',
+            'depicts_property_id.required' => 'Choose the property this photo shows.',
             '*.not_regex' => 'Use plain text: < and > are not allowed.',
         ];
     }
