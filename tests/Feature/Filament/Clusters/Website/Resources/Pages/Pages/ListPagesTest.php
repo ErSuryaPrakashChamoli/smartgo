@@ -63,6 +63,21 @@ it('filters pages by the state of the version in progress', function () {
         ->assertCanNotSeeTableRecords([$this->newPage, $this->livePage]);
 });
 
+it('marks sample pages, live or still in draft, and filters by layout (OD-149)', function () {
+    $liveSample = Page::factory()->published()->create(['title' => 'Day Pass', 'slug' => 'business-solutions/day-pass', 'template' => 'sample']);
+    $draftSample = Page::factory()->create();
+    app(CreateDraft::class)->handle($draftSample, $this->editor, ['title' => 'Training Rooms', 'slug' => 'business-solutions/training-rooms', 'template' => 'sample', 'blocks' => []]);
+    actingAs($this->editor);
+
+    Livewire::test(ListPages::class)
+        ->assertTableColumnFormattedStateSet('template', 'Sample content', $liveSample)
+        ->assertTableColumnFormattedStateSet('template', 'Sample content', $draftSample)
+        ->assertTableColumnFormattedStateSet('template', 'Standard', $this->newPage)
+        ->filterTable('template', 'sample')
+        ->assertCanSeeTableRecords([$liveSample, $draftSample])
+        ->assertCanNotSeeTableRecords([$this->livePage, $this->newPage]);
+});
+
 it('refuses staff without permission to view content', function (StaffRole $role) {
     actingAs(User::factory()->withEmailAuthentication()->withRole($role)->create())
         ->get(PageResource::getUrl('index'))

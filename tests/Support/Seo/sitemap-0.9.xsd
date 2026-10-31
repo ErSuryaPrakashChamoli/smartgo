@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Test-only schema for SmartGro's sitemap: the rules of the sitemaps.org protocol 0.9 that SmartGro uses
+  (urlset of url entries; loc required, an absolute http(s) address of 12 to 2,048 characters; lastmod
+  optional, a W3C date or date and time). changefreq and priority are not allowed: SmartGro has no facts
+  for them. Written for the tests from the protocol's rules, not copied from sitemaps.org.
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.sitemaps.org/schemas/sitemap/0.9"
+            xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+            xmlns:sm="http://www.sitemaps.org/schemas/sitemap/0.9"
+            elementFormDefault="qualified">
+  <xsd:element name="urlset">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="url" type="tUrl" minOccurs="0" maxOccurs="50000"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    <xsd:unique name="uniqueLoc">
+      <xsd:selector xpath="sm:url"/>
+      <xsd:field xpath="sm:loc"/>
+    </xsd:unique>
+  </xsd:element>
+  <xsd:complexType name="tUrl">
+    <xsd:sequence>
+      <xsd:element name="loc" type="tLoc"/>
+      <xsd:element name="lastmod" type="tLastmod" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="tLoc">
+    <xsd:restriction base="xsd:anyURI">
+      <xsd:minLength value="12"/>
+      <xsd:maxLength value="2048"/>
+      <xsd:pattern value="https?://.+"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="tLastmod">
+    <xsd:union memberTypes="xsd:date xsd:dateTime"/>
+  </xsd:simpleType>
+</xsd:schema>

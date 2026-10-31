@@ -1,6 +1,6 @@
 @props(['data'])
 
-<div class="container-page py-10 sm:py-14">
+<div class="container-page py-10 sm:py-14" data-reveal>
     <x-site.cta-band :eyebrow="$data['eyebrow']" :title="$data['heading']">
         {{ $data['text'] }}
         @if ($data['links'] !== [])

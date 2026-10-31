@@ -9,9 +9,14 @@
     :navigation="$navigation"
     :share-image="$shareImage ?? null"
 >
-    @if ($preview !== null)
+    @if ($preview !== null || ($template ?? 'standard') === 'sample')
         <x-slot:banner>
-            <x-site.revision-preview-banner :number="$preview['number']" :state="$preview['state']" :expires-at="$preview['expires_at']" />
+            @if ($preview !== null)
+                <x-site.revision-preview-banner :number="$preview['number']" :state="$preview['state']" :expires-at="$preview['expires_at']" />
+            @endif
+            @if (($template ?? 'standard') === 'sample')
+                <x-site.sample-content-notice />
+            @endif
         </x-slot:banner>
     @endif
 
@@ -25,6 +30,6 @@
     @endunless
 
     @foreach ($blocks as $block)
-        <x-dynamic-component :component="$block['component']" :data="$block['data']" />
+        <x-dynamic-component :component="$block['component']" :data="$block['data']" :preview="$preview !== null" />
     @endforeach
 </x-layouts::site>

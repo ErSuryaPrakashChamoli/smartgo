@@ -14,6 +14,7 @@ use App\Enums\Content\RevisionState;
 use App\Http\Controllers\Backoffice\RevisionPreviewController;
 use App\Models\Revision;
 use App\Models\User;
+use App\Services\Content\RevisionChanges;
 use Carbon\CarbonInterface;
 use Closure;
 use Filament\Actions\Action;
@@ -25,6 +26,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
@@ -38,6 +40,9 @@ use Spatie\Activitylog\Models\Activity;
  * and can be changed only while that version is a draft the user may edit. Every button runs a
  * workflow action that checks permission and state again on the server under a lock, so hiding or
  * disabling a button is only a convenience.
+ *
+ * "What changed" lists what the version being worked on changes compared with the live one, for the
+ * approver (UJ-8).
  *
  * The page using it implements formDataFromPayload() and may override contentNoun(), approvalLabel()
  * and workflowExtraNotice().
@@ -120,6 +125,16 @@ trait HasRevisionWorkflow
         return $this->workingRevisionCache;
     }
 
+    /**
+     * The version on the website, or the one last published; null when nothing was ever published.
+     */
+    public function lastPublishedRevision(): ?Revision
+    {
+        $id = $this->record->getAttribute('published_revision_id');
+
+        return $id === null ? null : Revision::query()->find($id);
+    }
+
     public function canChangeDraft(): bool
     {
         $revision = $this->workingRevision();
@@ -190,6 +205,18 @@ trait HasRevisionWorkflow
                 ->color('gray')
                 ->visible(fn (): bool => $this->workingRevision() !== null && RevisionPreviewController::isAvailableFor($this->workingRevision()) && Gate::allows('view', $this->workingRevision()))
                 ->url(fn (): ?string => $this->workingRevision() === null ? null : RevisionPreviewController::url($this->workingRevision()), shouldOpenInNewTab: true),
+            Action::make('changes')
+                ->label('What changed')
+                ->icon(Heroicon::OutlinedArrowsRightLeft)
+                ->color('gray')
+                ->visible(fn (): bool => $this->workingRevision() !== null && $this->lastPublishedRevision() !== null && Gate::allows('view', $this->workingRevision()))
+                ->modalHeading(fn (): string => 'What version '.$this->workingRevision()?->number.' changes')
+                ->modalDescription(fn (): string => 'Compared with version '.$this->lastPublishedRevision()?->number.', the one '.($this->record->getAttribute('status') === 'published' ? 'on the website now' : 'last published').'.')
+                ->modalContent(fn (): View => view('filament.revisions.changes', [
+                    'changes' => app(RevisionChanges::class)->between($this->lastPublishedRevision()?->payload ?? [], $this->workingRevision()?->payload ?? []),
+                ]))
+                ->modalSubmitAction(false)
+                ->modalCancelActionLabel('Close'),
             ...$extraActions,
             $this->workflowAction('submit', 'submit', RevisionState::Draft)
                 ->label('Submit for approval')

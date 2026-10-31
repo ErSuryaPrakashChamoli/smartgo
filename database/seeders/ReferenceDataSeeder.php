@@ -9,7 +9,9 @@ use App\Models\CustomerSegment;
 use App\Models\MicroMarket;
 use App\Models\Product;
 use App\Models\Property;
+use App\Models\SpaceType;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Arr;
 
 /**
  * Only facts the owner has confirmed, so it can run on any environment and run again safely:
@@ -19,6 +21,10 @@ use Illuminate\Database\Seeder;
  * once its profile is approved and published, so the seeder publishes nothing. Nothing is recorded about which property offers which category, nor about
  * floors, capacity, prices or availability: staff enter those from real information. Each property
  * gets an empty, unpublished website profile for staff to write.
+ *
+ * Where the database has them, each category also gets the inventory modes it can be sold with
+ * (BR-PRODCFG-2), and the initial space types of DATABASE_ERD §3.1 are added: both are rules, not facts
+ * about any property.
  */
 class ReferenceDataSeeder extends Seeder
 {
@@ -34,16 +40,48 @@ class ReferenceDataSeeder extends Seeder
     ];
 
     /**
-     * @var list<array{key: string, name: string, slug: string}>
+     * @var list<array{key: string, name: string, slug: string, allowed_inventory_modes: list<string>}>
      */
     private const array PRODUCTS = [
-        ['key' => 'private_office', 'name' => 'Private offices and cabins', 'slug' => 'private-cabins'],
-        ['key' => 'dedicated_desk', 'name' => 'Dedicated desks', 'slug' => 'dedicated-desks'],
-        ['key' => 'hot_desk', 'name' => 'Hot desks', 'slug' => 'hot-desks'],
-        ['key' => 'meeting_room', 'name' => 'Meeting rooms', 'slug' => 'meeting-rooms'],
-        ['key' => 'conference_room', 'name' => 'Conference and training rooms', 'slug' => 'conference-training-rooms'],
-        ['key' => 'virtual_office', 'name' => 'Virtual office', 'slug' => 'virtual-office'],
-        ['key' => 'managed_office', 'name' => 'Managed offices', 'slug' => 'managed-offices'],
+        ['key' => 'private_office', 'name' => 'Private offices and cabins', 'slug' => 'private-cabins', 'allowed_inventory_modes' => ['exclusive']],
+        ['key' => 'dedicated_desk', 'name' => 'Dedicated desks', 'slug' => 'dedicated-desks', 'allowed_inventory_modes' => ['per_seat', 'hybrid']],
+        ['key' => 'hot_desk', 'name' => 'Hot desks', 'slug' => 'hot-desks', 'allowed_inventory_modes' => ['pooled', 'per_seat', 'hybrid']],
+        ['key' => 'meeting_room', 'name' => 'Meeting rooms', 'slug' => 'meeting-rooms', 'allowed_inventory_modes' => ['exclusive']],
+        ['key' => 'conference_room', 'name' => 'Conference and training rooms', 'slug' => 'conference-training-rooms', 'allowed_inventory_modes' => ['exclusive']],
+        ['key' => 'virtual_office', 'name' => 'Virtual office', 'slug' => 'virtual-office', 'allowed_inventory_modes' => []],
+        ['key' => 'managed_office', 'name' => 'Managed offices', 'slug' => 'managed-offices', 'allowed_inventory_modes' => ['exclusive']],
+    ];
+
+    /**
+     * The initial space types (DATABASE_ERD §3.1): seed values, not facts about any property.
+     *
+     * @var list<array{key: string, name: string, default_inventory_mode: string, allowed_inventory_modes: list<string>, is_bookable_by_time: bool}>
+     */
+    private const array SPACE_TYPES = [
+        ['key' => 'private_cabin', 'name' => 'Private cabin or office', 'default_inventory_mode' => 'exclusive', 'allowed_inventory_modes' => ['exclusive'], 'is_bookable_by_time' => false],
+        ['key' => 'desk_zone_dedicated', 'name' => 'Dedicated desk zone', 'default_inventory_mode' => 'per_seat', 'allowed_inventory_modes' => ['per_seat', 'hybrid'], 'is_bookable_by_time' => false],
+        ['key' => 'desk_zone_flexible', 'name' => 'Flexible seating zone', 'default_inventory_mode' => 'pooled', 'allowed_inventory_modes' => ['pooled', 'per_seat', 'hybrid'], 'is_bookable_by_time' => false],
+        ['key' => 'meeting_room', 'name' => 'Meeting room', 'default_inventory_mode' => 'exclusive', 'allowed_inventory_modes' => ['exclusive'], 'is_bookable_by_time' => true],
+        ['key' => 'conference_training_room', 'name' => 'Conference or training room', 'default_inventory_mode' => 'exclusive', 'allowed_inventory_modes' => ['exclusive'], 'is_bookable_by_time' => true],
+        ['key' => 'office_suite', 'name' => 'Office suite or floor plate', 'default_inventory_mode' => 'exclusive', 'allowed_inventory_modes' => ['exclusive'], 'is_bookable_by_time' => false],
+    ];
+
+    /**
+     * The categories each initial space type can be sold as (BR-PRODCFG-2): DATABASE_ERD §3.1's "typically
+     * sellable as", plus the two combinations the approved SG-INV-1.3 synthetic workbook uses (D-35): a
+     * flexible seating zone's assigned seats as dedicated desks (hybrid zones, OD-15), and a conference or
+     * training room as a meeting room, which the ERD allows "if the owner allows" (owner decision, OD-153).
+     * Proposed defaults that staff change on each category's form.
+     *
+     * @var array<string, list<string>>
+     */
+    private const array SPACE_TYPE_CATEGORIES = [
+        'private_cabin' => ['private_office', 'managed_office'],
+        'desk_zone_dedicated' => ['dedicated_desk'],
+        'desk_zone_flexible' => ['hot_desk', 'dedicated_desk'],
+        'meeting_room' => ['meeting_room'],
+        'conference_training_room' => ['conference_room', 'meeting_room'],
+        'office_suite' => ['managed_office', 'private_office'],
     ];
 
     /**
@@ -79,7 +117,22 @@ class ReferenceDataSeeder extends Seeder
         }
 
         foreach (self::PRODUCTS as $position => $product) {
-            Product::query()->firstOrCreate(['key' => $product['key']], [...$product, 'sort_order' => ($position + 1) * 10, 'is_active' => true]);
+            Product::query()->firstOrCreate(['key' => $product['key']], [
+                ...Arr::except($product, Product::hasInventoryModes() ? [] : ['allowed_inventory_modes']),
+                'sort_order' => ($position + 1) * 10,
+                'is_active' => true,
+            ]);
+        }
+
+        if (SpaceType::isAvailable()) {
+            foreach (self::SPACE_TYPES as $position => $type) {
+                $spaceType = SpaceType::query()->firstOrCreate(['key' => $type['key']], [...$type, 'sort_order' => ($position + 1) * 10]);
+
+                // Only a type no category accepts yet gets the defaults, so staff choices are never undone.
+                if (Product::hasSpaceTypes() && ! $spaceType->products()->exists()) {
+                    $spaceType->products()->attach(Product::query()->whereIn('key', self::SPACE_TYPE_CATEGORIES[$type['key']] ?? [])->pluck('id')->all());
+                }
+            }
         }
 
         foreach (self::SEGMENTS as $position => $segment) {

@@ -10,7 +10,7 @@ use App\Models\Property;
 
 /**
  * The fixed parts of the website a menu can link to without a CMS page: the home page and its sections,
- * the workspace types, the locations list, the enquiry form, and the insights, customer stories and FAQ
+ * the workspace types, the locations list, the enquiry and tour request forms, and the insights, customer stories and FAQ
  * lists (FR-CMS-4). A part appears only while it has something published to show, so a menu never leads
  * to an empty list or a closed form.
  */
@@ -26,9 +26,11 @@ class SiteSections
         'locations' => ['label' => 'All locations', 'path' => '/locations'],
         'contact' => ['label' => 'Contact (on the home page)', 'path' => '/#contact'],
         'enquire' => ['label' => 'Enquiry form', 'path' => '/enquire'],
+        'book_a_tour' => ['label' => 'Tour request form', 'path' => '/book-a-tour'],
         'insights' => ['label' => 'Insights', 'path' => '/insights'],
         'customers' => ['label' => 'Customer stories', 'path' => '/customers'],
         'faqs' => ['label' => 'FAQs', 'path' => '/faqs'],
+        'search' => ['label' => 'Search', 'path' => '/search'],
     ];
 
     /**
@@ -63,6 +65,7 @@ class SiteSections
         return match ($key) {
             'workspaces', 'workspace_types' => Product::query()->shown()->exists(),
             'enquire' => app(EnquiryForm::class)->isOpen(),
+            'book_a_tour' => app(TourForm::class)->isOffered(),
             'locations' => Property::query()->publiclyListed()->exists(),
             'insights' => Post::query()->published()->exists(),
             'customers' => CaseStudy::query()->published()->where('consent_on_file', true)->exists(),

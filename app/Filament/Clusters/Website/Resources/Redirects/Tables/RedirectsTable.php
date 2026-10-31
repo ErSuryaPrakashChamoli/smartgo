@@ -16,6 +16,8 @@ class RedirectsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->emptyStateHeading('No redirects')
+            ->emptyStateDescription('Redirects appear here when a published page\'s address changes, or when a list of manual redirects is published.')
             ->defaultSort('from_path')
             ->columns([
                 TextColumn::make('from_path')

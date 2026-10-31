@@ -1,0 +1,136 @@
+
+ INFO Running migrations. 
+
+ 2026_10_27_185025_create_twin_models_table .. 
+ ⇂ create table `twin_models` (`id` bigint unsigned not null auto_increment primary key, `property_id` bigint unsigned not null, `title` varchar(120) not null, `capture_type` varchar(30) not null, `captured_on` date null, `captured_by` varchar(120) null, `file_bytes` bigint unsigned not null, `triangle_count` int unsigned not null, `validation_report` json not null, `uploaded_by` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `twin_models` add constraint `twin_models_property_id_foreign` foreign key (`property_id`) references `properties` (`id`) on delete restrict 
+ ⇂ alter table `twin_models` add constraint `twin_models_uploaded_by_foreign` foreign key (`uploaded_by`) references `users` (`id`) on delete restrict 
+ 2026_10_27_185026_create_twin_anchors_table .. 
+ ⇂ create table `twin_anchors` (`id` bigint unsigned not null auto_increment primary key, `twin_model_id` bigint unsigned not null, `node_name` varchar(120) not null, `anchor_type` varchar(20) not null, `reference` varchar(100) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `twin_anchors` add constraint `twin_anchors_twin_model_id_foreign` foreign key (`twin_model_id`) references `twin_models` (`id`) on delete cascade 
+ ⇂ alter table `twin_anchors` add unique `twin_anchors_twin_model_id_node_name_unique`(`twin_model_id`, `node_name`) 
+ 2026_10_28_101824_create_post_topics_table .. 
+ ⇂ create table `post_topics` (`id` bigint unsigned not null auto_increment primary key, `name` varchar(60) not null, `slug` varchar(60) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `post_topics` add unique `post_topics_name_unique`(`name`) 
+ ⇂ alter table `post_topics` add unique `post_topics_slug_unique`(`slug`) 
+ 2026_10_28_101825_add_topic_ids_to_posts_table .. 
+ ⇂ alter table `posts` add `topic_ids` json null after `blocks` 
+ 2026_10_28_123721_create_security_settings_table .. 
+ ⇂ create table `security_settings` (`id` bigint unsigned not null auto_increment primary key, `two_step_login_required` tinyint(1) not null default '0', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ insert into `security_settings` (`two_step_login_required`, `created_at`, `updated_at`) values (0, '2026-10-31 04:05:13', '2026-10-31 04:05:13') 
+ 2026_10_28_133128_add_scope_to_faqs_table .. 
+ ⇂ alter table `faqs` add `property_id` bigint unsigned null after `sort_order` 
+ ⇂ alter table `faqs` add constraint `faqs_property_id_foreign` foreign key (`property_id`) references `properties` (`id`) on delete restrict 
+ ⇂ alter table `faqs` add `product_id` bigint unsigned null after `property_id` 
+ ⇂ alter table `faqs` add constraint `faqs_product_id_foreign` foreign key (`product_id`) references `products` (`id`) on delete restrict 
+ 2026_10_28_173942_create_space_types_table .. 
+ ⇂ create table `space_types` (`id` bigint unsigned not null auto_increment primary key, `key` varchar(40) not null, `name` varchar(80) not null, `default_inventory_mode` varchar(20) not null, `allowed_inventory_modes` json not null, `is_bookable_by_time` tinyint(1) not null default '0', `sort_order` smallint unsigned not null default '0', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `space_types` add unique `space_types_key_unique`(`key`) 
+ 2026_10_28_173943_create_floors_table .. 
+ ⇂ create table `floors` (`id` bigint unsigned not null auto_increment primary key, `property_id` bigint unsigned not null, `building_id` bigint unsigned not null, `building_level` smallint not null, `label` varchar(120) not null, `sort_order` smallint unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `floors` add constraint `floors_property_id_foreign` foreign key (`property_id`) references `properties` (`id`) on delete restrict 
+ ⇂ alter table `floors` add constraint `floors_building_id_foreign` foreign key (`building_id`) references `buildings` (`id`) on delete restrict 
+ ⇂ alter table `floors` add unique `floors_building_id_building_level_unique`(`building_id`, `building_level`) 
+ ⇂ alter table `floors` add index `floors_property_id_building_level_index`(`property_id`, `building_level`) 
+ 2026_10_28_173945_create_spaces_table .. 
+ ⇂ create table `spaces` (`id` bigint unsigned not null auto_increment primary key, `property_id` bigint unsigned not null, `floor_id` bigint unsigned not null, `space_type_id` bigint unsigned not null, `code` varchar(30) not null, `name` varchar(120) null, `inventory_mode` varchar(20) not null, `capacity_seats` smallint unsigned not null, `area_sqft` int unsigned null, `operational_status` varchar(20) not null default 'active', `is_publicly_listable` tinyint(1) not null default '0', `turnaround_minutes` smallint unsigned null, `min_booking_minutes` smallint unsigned null, `max_booking_minutes` smallint unsigned null, `created_at` timestamp null, `updated_at` timestamp null, `deleted_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `spaces` add constraint `spaces_property_id_foreign` foreign key (`property_id`) references `properties` (`id`) on delete restrict 
+ ⇂ alter table `spaces` add constraint `spaces_floor_id_foreign` foreign key (`floor_id`) references `floors` (`id`) on delete restrict 
+ ⇂ alter table `spaces` add constraint `spaces_space_type_id_foreign` foreign key (`space_type_id`) references `space_types` (`id`) on delete restrict 
+ ⇂ alter table `spaces` add index `spaces_property_id_space_type_id_operational_status_index`(`property_id`, `space_type_id`, `operational_status`) 
+ ⇂ alter table `spaces` add unique `spaces_code_unique`(`code`) 
+ 2026_10_28_173946_create_space_seats_table .. 
+ ⇂ create table `space_seats` (`id` bigint unsigned not null auto_increment primary key, `space_id` bigint unsigned not null, `label` varchar(20) not null, `is_active` tinyint(1) not null default '1', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `space_seats` add constraint `space_seats_space_id_foreign` foreign key (`space_id`) references `spaces` (`id`) on delete restrict 
+ ⇂ alter table `space_seats` add unique `space_seats_space_id_label_unique`(`space_id`, `label`) 
+ 2026_10_28_173948_create_offering_space_table .. 
+ ⇂ create table `offering_space` (`offering_id` bigint unsigned not null, `space_id` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null, primary key (`offering_id`, `space_id`)) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `offering_space` add constraint `offering_space_offering_id_foreign` foreign key (`offering_id`) references `offerings` (`id`) on delete restrict 
+ ⇂ alter table `offering_space` add constraint `offering_space_space_id_foreign` foreign key (`space_id`) references `spaces` (`id`) on delete cascade 
+ ⇂ alter table `offering_space` add index `offering_space_space_id_index`(`space_id`) 
+ 2026_10_28_173949_create_space_allocations_table .. 
+ ⇂ create table `space_allocations` (`id` bigint unsigned not null auto_increment primary key, `space_id` bigint unsigned not null, `space_seat_id` bigint unsigned null, `agreement_reference` varchar(60) not null, `seats_allocated` smallint unsigned not null, `starts_on` date not null, `ends_on` date null, `notice_given_on` date null, `status` varchar(20) not null, `source` varchar(20) not null default 'manual', `created_by` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `space_allocations` add constraint `space_allocations_space_id_foreign` foreign key (`space_id`) references `spaces` (`id`) on delete restrict 
+ ⇂ alter table `space_allocations` add constraint `space_allocations_space_seat_id_foreign` foreign key (`space_seat_id`) references `space_seats` (`id`) on delete restrict 
+ ⇂ alter table `space_allocations` add constraint `space_allocations_created_by_foreign` foreign key (`created_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `space_allocations` add index `space_allocations_space_id_status_starts_on_ends_on_index`(`space_id`, `status`, `starts_on`, `ends_on`) 
+ ⇂ alter table `space_allocations` add index `space_allocations_agreement_reference_index`(`agreement_reference`) 
+ 2026_10_28_173951_add_allowed_inventory_modes_to_products_table .. 
+ ⇂ alter table `products` add `allowed_inventory_modes` json null after `is_active` 
+ ⇂ update `products` set `allowed_inventory_modes` = '[\"exclusive\"]' where `key` = 'private_office' and `allowed_inventory_modes` is null 
+ ⇂ update `products` set `allowed_inventory_modes` = '[\"per_seat\",\"hybrid\"]' where `key` = 'dedicated_desk' and `allowed_inventory_modes` is null 
+ ⇂ update `products` set `allowed_inventory_modes` = '[\"pooled\",\"per_seat\",\"hybrid\"]' where `key` = 'hot_desk' and `allowed_inventory_modes` is null 
+ ⇂ update `products` set `allowed_inventory_modes` = '[\"exclusive\"]' where `key` = 'meeting_room' and `allowed_inventory_modes` is null 
+ ⇂ update `products` set `allowed_inventory_modes` = '[\"exclusive\"]' where `key` = 'conference_room' and `allowed_inventory_modes` is null 
+ ⇂ update `products` set `allowed_inventory_modes` = '[]' where `key` = 'virtual_office' and `allowed_inventory_modes` is null 
+ ⇂ update `products` set `allowed_inventory_modes` = '[\"exclusive\"]' where `key` = 'managed_office' and `allowed_inventory_modes` is null 
+ 2026_10_28_193821_create_price_plans_table .. 
+ ⇂ create table `price_plans` (`id` bigint unsigned not null auto_increment primary key, `offering_id` bigint unsigned not null, `space_id` bigint unsigned null, `unit` varchar(20) not null, `bundle_size` smallint unsigned null, `amount_minor` bigint unsigned not null, `currency` char(3) not null default 'INR', `tax_treatment` varchar(10) not null default 'exclusive', `min_term_months` smallint unsigned null, `deposit_type` varchar(10) null, `deposit_months` decimal(5, 2) null, `deposit_minor` bigint unsigned null, `setup_fee_minor` bigint unsigned null, `valid_from` date not null, `valid_to` date null, `status` varchar(20) not null default 'draft', `editor_ids` json not null, `created_by` bigint unsigned not null, `submitted_by` bigint unsigned null, `submitted_at` timestamp null, `approved_by` bigint unsigned null, `approved_at` timestamp null, `retired_by` bigint unsigned null, `retired_at` timestamp null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `price_plans` add constraint `price_plans_offering_id_foreign` foreign key (`offering_id`) references `offerings` (`id`) on delete restrict 
+ ⇂ alter table `price_plans` add constraint `price_plans_space_id_foreign` foreign key (`space_id`) references `spaces` (`id`) on delete restrict 
+ ⇂ alter table `price_plans` add constraint `price_plans_created_by_foreign` foreign key (`created_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `price_plans` add constraint `price_plans_submitted_by_foreign` foreign key (`submitted_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `price_plans` add constraint `price_plans_approved_by_foreign` foreign key (`approved_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `price_plans` add constraint `price_plans_retired_by_foreign` foreign key (`retired_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `price_plans` add index `price_plans_offering_id_space_id_unit_status_index`(`offering_id`, `space_id`, `unit`, `status`) 
+ 2026_10_28_193822_create_offers_table .. 
+ ⇂ create table `offers` (`id` bigint unsigned not null auto_increment primary key, `name` varchar(120) not null, `code` varchar(40) null, `discount_type` varchar(20) not null, `percent_bps` smallint unsigned null, `amount_minor` bigint unsigned null, `free_period_quantity` smallint unsigned null, `free_period_unit` varchar(10) null, `starts_at` timestamp not null, `ends_at` timestamp not null, `max_redemptions` int unsigned null, `terms` text not null, `status` varchar(20) not null default 'draft', `editor_ids` json not null, `created_by` bigint unsigned not null, `submitted_by` bigint unsigned null, `submitted_at` timestamp null, `approved_by` bigint unsigned null, `approved_at` timestamp null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `offers` add constraint `offers_created_by_foreign` foreign key (`created_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `offers` add constraint `offers_submitted_by_foreign` foreign key (`submitted_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `offers` add constraint `offers_approved_by_foreign` foreign key (`approved_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `offers` add index `offers_status_starts_at_ends_at_index`(`status`, `starts_at`, `ends_at`) 
+ ⇂ alter table `offers` add unique `offers_code_unique`(`code`) 
+ 2026_10_28_193823_create_offer_offering_table .. 
+ ⇂ create table `offer_offering` (`offer_id` bigint unsigned not null, `offering_id` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null, primary key (`offer_id`, `offering_id`)) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `offer_offering` add constraint `offer_offering_offer_id_foreign` foreign key (`offer_id`) references `offers` (`id`) on delete cascade 
+ ⇂ alter table `offer_offering` add constraint `offer_offering_offering_id_foreign` foreign key (`offering_id`) references `offerings` (`id`) on delete restrict 
+ ⇂ alter table `offer_offering` add index `offer_offering_offering_id_index`(`offering_id`) 
+ 2026_10_28_193825_create_inventory_imports_table .. 
+ ⇂ create table `inventory_imports` (`id` bigint unsigned not null auto_increment primary key, `uploaded_by` bigint unsigned not null, `original_name` varchar(190) not null, `file_path` varchar(255) not null, `file_sha256` char(64) not null, `template_id` varchar(20) null, `status` varchar(20) not null, `summary` json null, `plan_fingerprint` char(64) null, `warnings_acknowledged_by` bigint unsigned null, `warnings_acknowledged_at` timestamp null, `submitted_at` timestamp null, `approved_by` bigint unsigned null, `approved_at` timestamp null, `committed_at` timestamp null, `environment` varchar(20) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `inventory_imports` add constraint `inventory_imports_uploaded_by_foreign` foreign key (`uploaded_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `inventory_imports` add constraint `inventory_imports_warnings_acknowledged_by_foreign` foreign key (`warnings_acknowledged_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `inventory_imports` add constraint `inventory_imports_approved_by_foreign` foreign key (`approved_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `inventory_imports` add index `inventory_imports_status_created_at_index`(`status`, `created_at`) 
+ ⇂ alter table `inventory_imports` add index `inventory_imports_file_sha256_index`(`file_sha256`) 
+ 2026_10_28_193826_create_inventory_import_issues_table .. 
+ ⇂ create table `inventory_import_issues` (`id` bigint unsigned not null auto_increment primary key, `inventory_import_id` bigint unsigned not null, `sheet` varchar(40) not null, `row` int unsigned null, `column` varchar(60) null, `rule` varchar(10) not null, `severity` varchar(10) not null, `message` varchar(500) not null, `value_excerpt` varchar(80) null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `inventory_import_issues` add constraint `inventory_import_issues_inventory_import_id_foreign` foreign key (`inventory_import_id`) references `inventory_imports` (`id`) on delete cascade 
+ ⇂ alter table `inventory_import_issues` add index `inventory_import_issues_inventory_import_id_severity_index`(`inventory_import_id`, `severity`) 
+ 2026_10_28_195325_create_amenities_table .. 
+ ⇂ create table `amenities` (`id` bigint unsigned not null auto_increment primary key, `name` varchar(120) not null, `slug` varchar(140) not null, `category` varchar(40) not null, `applies_to` varchar(20) not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `amenities` add unique `amenities_name_unique`(`name`) 
+ ⇂ alter table `amenities` add unique `amenities_slug_unique`(`slug`) 
+ 2026_10_28_195327_create_amenity_space_table .. 
+ ⇂ create table `amenity_space` (`amenity_id` bigint unsigned not null, `space_id` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null, primary key (`amenity_id`, `space_id`)) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `amenity_space` add constraint `amenity_space_amenity_id_foreign` foreign key (`amenity_id`) references `amenities` (`id`) on delete restrict 
+ ⇂ alter table `amenity_space` add constraint `amenity_space_space_id_foreign` foreign key (`space_id`) references `spaces` (`id`) on delete cascade 
+ ⇂ alter table `amenity_space` add index `amenity_space_space_id_index`(`space_id`) 
+ 2026_10_29_033934_create_tour_availability_rules_table .. 
+ ⇂ create table `tour_availability_rules` (`id` bigint unsigned not null auto_increment primary key, `property_id` bigint unsigned not null, `weekday` tinyint unsigned not null, `start_time` time not null, `end_time` time not null, `slot_minutes` smallint unsigned not null, `max_concurrent_tours` smallint unsigned not null, `created_by` bigint unsigned not null, `updated_by` bigint unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `tour_availability_rules` add constraint `tour_availability_rules_property_id_foreign` foreign key (`property_id`) references `properties` (`id`) on delete restrict 
+ ⇂ alter table `tour_availability_rules` add constraint `tour_availability_rules_created_by_foreign` foreign key (`created_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `tour_availability_rules` add constraint `tour_availability_rules_updated_by_foreign` foreign key (`updated_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `tour_availability_rules` add index `tour_availability_rules_property_id_weekday_index`(`property_id`, `weekday`) 
+ 2026_10_29_033935_create_property_closures_table .. 
+ ⇂ create table `property_closures` (`id` bigint unsigned not null auto_increment primary key, `property_id` bigint unsigned not null, `starts_at` datetime not null, `ends_at` datetime not null, `reason` varchar(200) not null, `is_public` tinyint(1) not null default '0', `created_by` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `property_closures` add constraint `property_closures_property_id_foreign` foreign key (`property_id`) references `properties` (`id`) on delete restrict 
+ ⇂ alter table `property_closures` add constraint `property_closures_created_by_foreign` foreign key (`created_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `property_closures` add index `property_closures_property_id_starts_at_index`(`property_id`, `starts_at`) 
+ 2026_10_29_033937_create_tour_requests_table .. 
+ ⇂ create table `tour_requests` (`id` bigint unsigned not null auto_increment primary key, `reference` varchar(20) not null, `lead_id` bigint unsigned not null, `property_id` bigint unsigned not null, `scheduled_start_at` datetime not null, `duration_minutes` smallint unsigned not null, `status` varchar(20) not null, `channel` varchar(20) not null, `visitor_count` tinyint unsigned not null, `notes` text null, `host_user_id` bigint unsigned null, `created_by` bigint unsigned null, `confirmed_at` datetime null, `confirmed_by` bigint unsigned null, `cancelled_at` datetime null, `cancellation_reason` varchar(300) null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `tour_requests` add constraint `tour_requests_lead_id_foreign` foreign key (`lead_id`) references `leads` (`id`) on delete restrict 
+ ⇂ alter table `tour_requests` add constraint `tour_requests_property_id_foreign` foreign key (`property_id`) references `properties` (`id`) on delete restrict 
+ ⇂ alter table `tour_requests` add constraint `tour_requests_host_user_id_foreign` foreign key (`host_user_id`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `tour_requests` add constraint `tour_requests_created_by_foreign` foreign key (`created_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `tour_requests` add constraint `tour_requests_confirmed_by_foreign` foreign key (`confirmed_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `tour_requests` add index `tour_requests_property_id_scheduled_start_at_index`(`property_id`, `scheduled_start_at`) 
+ ⇂ alter table `tour_requests` add index `tour_requests_status_scheduled_start_at_index`(`status`, `scheduled_start_at`) 
+ ⇂ alter table `tour_requests` add unique `tour_requests_reference_unique`(`reference`) 
+ 2026_10_29_072209_create_missing_pages_table .. 
+ ⇂ create table `missing_pages` (`id` bigint unsigned not null auto_increment primary key, `path` varchar(255) not null, `hits` int unsigned not null default '1', `first_seen_at` datetime not null, `last_seen_at` datetime not null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `missing_pages` add unique `missing_pages_path_unique`(`path`) 
+ ⇂ alter table `missing_pages` add index `missing_pages_last_seen_at_index`(`last_seen_at`) 
+ 2026_10_30_201616_add_details_to_navigation_items_table .. 
+ ⇂ alter table `navigation_items` add `description` varchar(160) null after `label` 
+ ⇂ alter table `navigation_items` add `icon` varchar(40) null after `description` 
+

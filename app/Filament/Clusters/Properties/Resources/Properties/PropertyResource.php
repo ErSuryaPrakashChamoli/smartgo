@@ -6,6 +6,10 @@ use App\Filament\Clusters\Properties\PropertiesCluster;
 use App\Filament\Clusters\Properties\Resources\Properties\Pages\CreateProperty;
 use App\Filament\Clusters\Properties\Resources\Properties\Pages\EditProperty;
 use App\Filament\Clusters\Properties\Resources\Properties\Pages\ListProperties;
+use App\Filament\Clusters\Properties\Resources\Properties\RelationManagers\ClosuresRelationManager;
+use App\Filament\Clusters\Properties\Resources\Properties\RelationManagers\FloorsRelationManager;
+use App\Filament\Clusters\Properties\Resources\Properties\RelationManagers\SpacesRelationManager;
+use App\Filament\Clusters\Properties\Resources\Properties\RelationManagers\TourHoursRelationManager;
 use App\Filament\Clusters\Properties\Resources\Properties\Schemas\PropertyForm;
 use App\Filament\Clusters\Properties\Resources\Properties\Tables\PropertiesTable;
 use App\Models\Property;
@@ -19,7 +23,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Properties with their address, status, operating model and the workspace categories they offer
- * (OD-08, SECURITY_MODEL §3.1). Open properties appear on the website.
+ * (OD-08, SECURITY_MODEL §3.1), and below them their floors and spaces (FR-INV-1). Open properties
+ * appear on the website.
  */
 class PropertyResource extends Resource
 {
@@ -58,6 +63,16 @@ class PropertyResource extends Resource
     public static function table(Table $table): Table
     {
         return PropertiesTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            FloorsRelationManager::class,
+            SpacesRelationManager::class,
+            TourHoursRelationManager::class,
+            ClosuresRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

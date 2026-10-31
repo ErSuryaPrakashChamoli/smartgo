@@ -1,0 +1,492 @@
+{
+  "keyboard": [
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Skip to content",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro home",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Workspaces",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Locations",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "About",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Contact",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Enquire",
+      "outline": "3px rgb(255, 255, 255)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Find your workspace",
+      "outline": "3px rgb(255, 255, 255)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Explore locations",
+      "outline": "3px rgb(11, 44, 27)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro A-70 Sector 2, Noida",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro A-71 Sector 2, Noida",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro H-105 Sector 62, Noida",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "input",
+      "type": "radio",
+      "text": "",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": "3px rgb(12, 47, 27)",
+      "inViewport": true,
+      "srOnlyControl": true
+    },
+    {
+      "tag": "select",
+      "type": null,
+      "text": "Any location SmartGro A-70 · Sector 2, Noida SmartGro A-71 ·",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "button",
+      "type": "submit",
+      "text": "Find your workspace",
+      "outline": "3px rgb(255, 255, 255)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Enquire",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Request a tour",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Call SmartGro",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "View all locations",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro A-70",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro A-71",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro H-105",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Explore all workspaces",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Private offices and cabins",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro A-70",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Ask SmartGro about private offices and cabins",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Dedicated desks",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro A-71",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Hot desks",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro A-70",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro H-105",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Ask SmartGro about dedicated and hot desks",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Meeting rooms",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro A-70",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "SmartGro H-105",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Ask SmartGro about meeting and conference rooms",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Ask SmartGro about virtual office",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Ask SmartGro about managed offices",
+      "outline": "3px rgb(40, 122, 21)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Request a tour",
+      "outline": "3px rgb(11, 44, 27)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Explore locations",
+      "outline": "3px rgb(247, 247, 242)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Send an enquiry",
+      "outline": "3px rgb(255, 255, 255)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "Request a tour",
+      "outline": "3px rgb(11, 44, 27)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "+91 0000 000 001",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "+910000000001",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "hello@fixture.test",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "+91 0000 000 001",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "WhatsApp +910000000001",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    },
+    {
+      "tag": "a",
+      "type": null,
+      "text": "hello@fixture.test",
+      "outline": "3px rgb(132, 189, 83)",
+      "labelOutline": null,
+      "inViewport": true,
+      "srOnlyControl": false
+    }
+  ],
+  "finder": [
+    {
+      "javaScriptEnabled": true,
+      "type": "Meeting rooms",
+      "location": "SmartGro A-70",
+      "landedOn": "/locations/noida/a-70/meeting-rooms",
+      "h1": "Meeting rooms at SmartGro A-70"
+    },
+    {
+      "javaScriptEnabled": true,
+      "type": "Private offices and cabins",
+      "location": "SmartGro H-105",
+      "landedOn": "/workspaces/private-cabins",
+      "h1": "Private offices and cabins"
+    },
+    {
+      "javaScriptEnabled": true,
+      "type": "Any type",
+      "location": null,
+      "landedOn": "/workspaces",
+      "h1": "Space for every way of working"
+    },
+    {
+      "javaScriptEnabled": false,
+      "type": "Meeting rooms",
+      "location": "SmartGro A-70",
+      "landedOn": "/locations/noida/a-70/meeting-rooms",
+      "h1": "Meeting rooms at SmartGro A-70"
+    },
+    {
+      "javaScriptEnabled": false,
+      "type": "Private offices and cabins",
+      "location": "SmartGro H-105",
+      "landedOn": "/workspaces/private-cabins",
+      "h1": "Private offices and cabins"
+    },
+    {
+      "javaScriptEnabled": false,
+      "type": "Any type",
+      "location": null,
+      "landedOn": "/workspaces",
+      "h1": "Space for every way of working"
+    }
+  ],
+  "phoneMenu": {
+    "opened": true,
+    "links": [
+      "Workspaces",
+      "Locations",
+      "About",
+      "Contact",
+      "Enquire"
+    ],
+    "closedWithEscape": true
+  },
+  "radioArrow": "private-cabins"
+}

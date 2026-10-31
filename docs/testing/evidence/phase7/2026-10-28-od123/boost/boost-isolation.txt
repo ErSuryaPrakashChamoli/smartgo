@@ -1,0 +1,58 @@
+# Boost MCP isolation check, 2026-10-28 18:03:27 IST; register OD-123 (a)
+## This session's Boost process (not restarted, not used)
+  11615 Wed Oct 28 13:47:03 2026 php artisan boost:mcp
+cwd: /home/administrator/Documents/website/smartGrow
+env: neither CACHE_STORE nor APP_CONFIG_CACHE set
+## Settings from exactly .mcp.json (database port 1, so nothing can reach smart_go)
+{
+    "cache.default": "array",
+    "cache_driver": "array",
+    "cached_config_path": "bootstrap\/cache\/boost-mcp-never-uses-a-cached-config.php",
+    "configuration_is_cached": false,
+    "database.default": "mysql",
+    "database_name": "smart_go",
+    "connections_opened_by_boot": []
+}
+## smartgro_testing and smart_go cache before
+{"database":"smartgro_testing","cache_rows":[],"cache_update_time":null}
+{"database":"smart_go","cache_rows":["laravel-cache-boost:mcp:database-schema:mysql:buildings:0:0:0:0","laravel-cache-boost:mcp:database-schema:mysql:products:0:0:0:1","laravel-cache-livewire-rate-limiter:056fc329aaaa757d31db450f525da23fde4d1b36","laravel-cache-livewire-rate-limiter:056fc329aaaa757d31db450f525da23fde4d1b36:timer","laravel-cache-roster:project:v3:a9bea5518dd66d7330c37e122340eac7","laravel-cache-roster:project:v3:cb8c8b3a48bc09e10c7c8509cd356fc4","laravel-cache-spatie.permission.cache"],"cache_update_time":"2026-10-28 13:47:10"}
+## Fresh boost:mcp from .mcp.json, DB_DATABASE=smartgro_testing
+effective settings before start: {"cache.default": "array", "cache_driver": "array", "cached_config_path": "bootstrap/cache/boost-mcp-never-uses-a-cached-config.php", "configuration_is_cached": false, "database.default": "mysql", "database_name": "smartgro_testing", "connections_opened_by_boot": []}
+started pid 217368 as php artisan boost:mcp
+process env: {'CACHE_STORE': 'array', 'APP_CONFIG_CACHE': 'bootstrap/cache/boost-mcp-never-uses-a-cached-config.php', 'DB_DATABASE': 'smartgro_testing'}
+initialize: ok
+connected database: smartgro_testing
+prompts/list: ok
+tools/list: ok
+tools/call application-info: ok
+tools/call database-connections: ok
+tools/call database-schema: ok
+tools/call last-error: ok
+exit code 0
+## after
+{"database":"smartgro_testing","cache_rows":[],"cache_update_time":null}
+{"database":"smart_go","cache_rows":["laravel-cache-boost:mcp:database-schema:mysql:buildings:0:0:0:0","laravel-cache-boost:mcp:database-schema:mysql:products:0:0:0:1","laravel-cache-livewire-rate-limiter:056fc329aaaa757d31db450f525da23fde4d1b36","laravel-cache-livewire-rate-limiter:056fc329aaaa757d31db450f525da23fde4d1b36:timer","laravel-cache-roster:project:v3:a9bea5518dd66d7330c37e122340eac7","laravel-cache-roster:project:v3:cb8c8b3a48bc09e10c7c8509cd356fc4","laravel-cache-spatie.permission.cache"],"cache_update_time":"2026-10-28 13:47:10"}
+## Control: same calls without .mcp.json's variables
+effective settings before start: {"cache.default": "database", "cache_driver": "database", "cached_config_path": "bootstrap/cache/config.php", "configuration_is_cached": false, "database.default": "mysql", "database_name": "smartgro_testing", "connections_opened_by_boot": ["mysql"]}
+started pid 217447 as php artisan boost:mcp
+process env: {'CACHE_STORE': None, 'APP_CONFIG_CACHE': None, 'DB_DATABASE': 'smartgro_testing'}
+initialize: ok
+connected database: smartgro_testing
+prompts/list: ok
+tools/list: ok
+tools/call application-info: ok
+tools/call database-connections: ok
+tools/call database-schema: ok
+tools/call last-error: ok
+exit code 0
+## after control
+{"database":"smartgro_testing","cache_rows":["laravel-cache-boost:mcp:database-schema:mysql:cities:0:0:0:0","laravel-cache-roster:project:v3:a9bea5518dd66d7330c37e122340eac7"],"cache_update_time":"2026-10-28 18:03:36"}
+{"database":"smart_go","cache_rows":["laravel-cache-boost:mcp:database-schema:mysql:buildings:0:0:0:0","laravel-cache-boost:mcp:database-schema:mysql:products:0:0:0:1","laravel-cache-livewire-rate-limiter:056fc329aaaa757d31db450f525da23fde4d1b36","laravel-cache-livewire-rate-limiter:056fc329aaaa757d31db450f525da23fde4d1b36:timer","laravel-cache-roster:project:v3:a9bea5518dd66d7330c37e122340eac7","laravel-cache-roster:project:v3:cb8c8b3a48bc09e10c7c8509cd356fc4","laravel-cache-spatie.permission.cache"],"cache_update_time":"2026-10-28 13:47:10"}
+
+## Boost processes started by Claude Code itself (2026-10-28 18:05:26; read from /proc, nothing called)
+pid 11615 started Wed Oct 28 13:47:03 2026 session 11554 cwd /home/administrator/Documents/website/smartGrow | 
+pid 134003 started Wed Oct 28 16:24:54 2026 session 133954 cwd /home/administrator/Documents/hrms/hcms | 
+pid 206880 started Wed Oct 28 17:51:14 2026 session 206789 cwd /home/administrator/Documents/website/smartGrow | CACHE_STORE=array APP_CONFIG_CACHE=bootstrap/cache/boost-mcp-never-uses-a-cached-config.php 
+(11615: this session, started before .mcp.json changed at 15:41:56; 206880: a Claude Code session in this project started at 17:51:13, after the change; 134003: another project)
+## smart_go cache, read-only
+{"database":"smart_go","cache_rows":["laravel-cache-boost:mcp:database-schema:mysql:buildings:0:0:0:0","laravel-cache-boost:mcp:database-schema:mysql:products:0:0:0:1","laravel-cache-livewire-rate-limiter:056fc329aaaa757d31db450f525da23fde4d1b36","laravel-cache-livewire-rate-limiter:056fc329aaaa757d31db450f525da23fde4d1b36:timer","laravel-cache-roster:project:v3:a9bea5518dd66d7330c37e122340eac7","laravel-cache-roster:project:v3:cb8c8b3a48bc09e10c7c8509cd356fc4","laravel-cache-spatie.permission.cache"],"cache_update_time":"2026-10-28 13:47:10"}

@@ -1,0 +1,181 @@
+{
+    "database": "smartgro_testing",
+    "read_only": 1,
+    "public": {
+        "/": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/workspaces": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/locations": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/insights": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "noindex"
+            ]
+        },
+        "/faqs": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "noindex"
+            ]
+        },
+        "/search": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "noindex"
+            ]
+        },
+        "/enquire": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/book-a-tour": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "noindex"
+            ]
+        },
+        "/sitemap.xml": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/robots.txt": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/find-a-workspace": {
+            "status": 302,
+            "location": "http://localhost/workspaces",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/login": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        }
+    },
+    "backoffice": {
+        "/admin": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website": {
+            "status": 302,
+            "location": "http://localhost/admin/website/pages",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/navigation-menus": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/navigation-menus/1/edit": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Short description"
+            ]
+        },
+        "/admin/website/pages": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Sample content"
+            ]
+        },
+        "/admin/website/faqs": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/insights": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/insight-topics": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/missing-pages": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/settings": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/properties": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/workspace-categories": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/workspace-categories/1/edit": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Spaces it can be sold with"
+            ]
+        },
+        "/admin/settings/security": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Two-step login is optional"
+            ]
+        },
+        "/admin/settings/users": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/sales/enquiries": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/twin-models": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/spaces": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/space-types": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/price-plans": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/offers": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/inventory-imports": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/sales/tours": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/reports/enquiries-and-tours": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        }
+    },
+    "acting_as": 4,
+    "menu_rules_keep_details": true,
+    "still_read_only": 1
+}

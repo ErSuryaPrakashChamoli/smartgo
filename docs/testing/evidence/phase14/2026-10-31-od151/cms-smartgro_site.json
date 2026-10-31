@@ -1,0 +1,60 @@
+{
+    "page_editor": {
+        "status": 200,
+        "error": null,
+        "fields": {
+            "Page title": true,
+            "Page address": true,
+            "Layout": true,
+            "Sample content": true,
+            "Small heading above the title": true,
+            "Introduction": true,
+            "Button text": true,
+            "Goes to": true,
+            "A workspace type": true,
+            "Questions": true,
+            "Title in search results": true,
+            "Description in search results": true,
+            "Allow search engines to index this page": true,
+            "Start a new draft": true
+        },
+        "values": {
+            "Virtual Office": true,
+            "business-solutions/virtual-office": true,
+            "Virtual Office (sample) · SmartGro": false,
+            "How is a virtual office different from a business address?": true
+        }
+    },
+    "menu_editor": {
+        "status": 200,
+        "error": null,
+        "fields": {
+            "Label": true,
+            "Goes to": true,
+            "Short description": true,
+            "Icon": true,
+            "Workspace type": true,
+            "Start a new draft": true,
+            "· sample content": true
+        },
+        "values": {
+            "Solutions": true,
+            "Workspaces": true,
+            "Business Solutions": true,
+            "Virtual Office": true,
+            "A sample virtual-office concept for businesses that work remotely but want a professional presence.": true
+        }
+    },
+    "pages_list_sample_filter": {
+        "status": 200,
+        "error": null,
+        "shows": {
+            "Virtual Office": true,
+            "Dedicated Desks": false,
+            "Sample content": true
+        }
+    },
+    "database": "smartgro_site",
+    "acting_as_super_admin": 1,
+    "still_read_only": 1
+}

@@ -7,6 +7,7 @@ use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Auth\RequestPasswordReset;
 use App\Http\Controllers\Backoffice\RevisionPreviewController;
 use App\Http\Controllers\Backoffice\TwinModelFileController;
+use App\Http\Middleware\EnsureTwoStepLoginWhenRequired;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -48,10 +49,12 @@ class AdminPanelProvider extends PanelProvider
             ->login(Login::class)
             ->passwordReset(RequestPasswordReset::class)
             ->profile(isSimple: false)
+            // Registered as required so its routes and checks always exist; the middleware decides on each request whether it applies (OD-124).
             ->multiFactorAuthentication([
                 AppAuthentication::make()->recoverable(),
                 EmailAuthentication::make(),
             ], isRequired: true)
+            ->multiFactorAuthenticationRequiredMiddlewareName(EnsureTwoStepLoginWhenRequired::class)
             ->strictAuthorization()
             ->databaseTransactions()
             ->colors([

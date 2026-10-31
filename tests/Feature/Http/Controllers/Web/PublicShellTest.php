@@ -11,15 +11,20 @@ use App\Enums\Properties\PropertyStatus;
 use App\Models\NavigationItem;
 use App\Models\NavigationMenu;
 use App\Models\Page;
+use App\Models\Post;
+use App\Models\Product;
 use App\Models\Property;
 use App\Models\Revision;
 use App\Models\SiteSetting;
+use App\Models\TourAvailabilityRule;
 use App\Models\User;
+use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Vite;
 use Illuminate\Validation\ValidationException;
 
 use function Pest\Laravel\get;
+use function Pest\Laravel\seed;
 
 uses(RefreshDatabase::class);
 
@@ -140,6 +145,85 @@ it('shows links to parts of the website and to locations only while they have so
         ->not->toContain('FAQs');
 });
 
+it('links a workspace type to its page, or to the enquiry form while it has none and the form is open, never an inactive type, and opens a long group as a wide panel (OD-143, OD-145)', function () {
+    seed(ReferenceDataSeeder::class);
+    $products = Product::query()->orderBy('sort_order')->get();
+    publishShellMenu('main', [['label' => 'Spaces', 'type' => 'group', 'children' => [
+        ['label' => 'All workspace types', 'type' => 'section', 'section' => 'workspace_types'],
+        ...$products->map(fn (Product $product): array => ['label' => $product->name, 'type' => 'category', 'product_id' => $product->id])->all(),
+    ]]]);
+    $mainMenu = fn (): string => str(shellHtml('/welcome'))->after('<nav aria-label="Main" class="hidden lg:block">')->before('</nav>')->toString();
+
+    expect($mainMenu())->not->toContain('/workspaces/');
+
+    $this->privacy->forceDelete();
+    $a70 = publishPropertyProfileForTest(Property::query()->where('code', 'A-70')->sole());
+    offerForTest($a70, 'meeting_room');
+    offerForTest($a70, 'virtual_office', published: false);
+
+    expect($mainMenu())->toContain('href="/workspaces/meeting-rooms"')->not->toContain('href="/workspaces/virtual-office"')
+        ->not->toContain('workspace=virtual-office')->not->toContain('w-[min(36rem');
+
+    Page::factory()->published()->create(['slug' => 'legal/privacy', 'template' => 'legal']);
+
+    expect($mainMenu())->toContain('href="/enquire?workspace=virtual-office"')->toContain('href="/workspaces/meeting-rooms"')
+        ->and(fn () => Product::query()->where('key', 'virtual_office')->update(['is_active' => false]))->not->toThrow(Throwable::class)
+        ->and($mainMenu())->not->toContain('virtual-office');
+    Product::query()->where('key', 'virtual_office')->update(['is_active' => true]);
+
+    $products->reject(fn (Product $product): bool => $product->key === 'meeting_room')->each(fn (Product $product) => offerForTest($a70, $product->key));
+
+    expect($mainMenu())->toContain('href="/workspaces/virtual-office"')->toContain('w-[min(36rem,calc(100vw-2.5rem))]');
+});
+
+it('publishes a drop-down with sub-groups, shows each sub-group with its links on wide screens and phones, and hides an empty one (OD-145)', function () {
+    $draftOnly = Page::factory()->create(['title' => 'Coming soon', 'slug' => 'coming-soon']);
+    $items = [['label' => 'Spaces', 'type' => 'group', 'children' => [
+        shellPageLink('About us', $this->about),
+        ['label' => 'Coworking', 'type' => 'group', 'children' => [shellPageLink('Welcome desk', $this->home), shellPageLink('About desk', $this->about)]],
+        ['label' => 'Unpublished', 'type' => 'group', 'children' => [shellPageLink('Soon', $draftOnly)]],
+    ]]];
+    publishShellMenu('main', $items);
+
+    $html = shellHtml('/welcome');
+    $wide = str($html)->after('<nav aria-label="Main" class="hidden lg:block">')->before('</nav>')->toString();
+    $phone = str($html)->after('id="mobile-menu"')->before('</nav>')->toString();
+
+    expect($wide)->toContain('data-flyout')
+        ->toMatch('#<button type="button" data-flyout-tab aria-controls="nav-group-0-1"[^>]*>.*Coworking.*</button>#s')
+        ->toMatch('#<div id="nav-group-0-1"[^>]*data-flyout-pane> <ul aria-label="Coworking"[^>]*>.*href="/welcome"[^>]*>.*Welcome desk.*href="/about"[^>]*>.*About desk#s')
+        ->toMatch('#href="/about"[^>]*>About us</a>#')->not->toContain('Unpublished')->not->toContain('Soon')
+        ->and($phone)->toMatch('#<summary[^>]*>.*Coworking.*</summary>\s*<ul aria-label="Coworking"[^>]*>.*Welcome desk.*About desk#s')->not->toContain('Unpublished')
+        ->and(NavigationMenu::query()->where('handle', 'main')->sole()->toRevisionPayload()['items'][0]['children'][1])->toMatchArray(['label' => 'Coworking', 'type' => 'group'])
+        ->and(NavigationMenu::query()->where('handle', 'main')->sole()->toRevisionPayload()['items'][0]['children'][1]['children'])->toHaveCount(2);
+});
+
+it('shows each drop-down category\'s and link\'s description and chosen icon, read as descriptions, and notes a list of sample pages (OD-149)', function () {
+    $sample = Page::factory()->published()->create(['title' => 'Desks', 'slug' => 'workspace-solutions/desks', 'template' => 'sample']);
+    $iconPath = fn (string $name): string => (string) preg_replace('/\s+/', ' ', str(svg('heroicon-o-'.$name)->contents())->match('/ d="([^"]+)"/')->toString());
+    publishShellMenu('main', [['label' => 'Solutions', 'type' => 'group', 'children' => [
+        ['label' => 'Workspaces', 'type' => 'group', 'description' => 'Desks and offices.', 'icon' => 'building-office', 'children' => [
+            [...shellPageLink('Dedicated Desks', $sample), 'description' => 'A desk of your own.', 'icon' => 'computer-desktop'],
+        ]],
+        ['label' => 'Business Solutions', 'type' => 'group', 'children' => [shellPageLink('Careers', $this->careers)]],
+    ]]]);
+
+    $html = shellHtml('/welcome');
+    $wide = str($html)->after('<nav aria-label="Main" class="hidden lg:block">')->before('</nav>')->toString();
+    $phone = str($html)->after('id="mobile-menu"')->before('</nav>')->toString();
+
+    expect($wide)->toMatch('#data-flyout-tab aria-controls="nav-group-0-0" aria-describedby="nav-group-0-0-about"[^>]*>.*Workspaces <span id="nav-group-0-0-about" aria-hidden="true"[^>]*>Desks and offices.</span>#s')
+        ->toMatch('#<a href="/workspace-solutions/desks"[^>]*aria-describedby="nav-link-0-0-0"[^>]*>.*Dedicated Desks.*<span id="nav-link-0-0-0" aria-hidden="true"[^>]*>A desk of your own.</span>#s')
+        ->toContain($iconPath('computer-desktop'))->toContain($iconPath('building-office'))
+        ->and(str($wide)->after('id="nav-group-0-0"')->before('id="nav-group-0-1"')->toString())->toContain('Sample pages: example text, not yet confirmed by SmartGro.')
+        ->and(str($wide)->after('id="nav-group-0-1"')->toString())->toContain('href="/careers"')->not->toContain('Sample pages')->not->toContain('aria-describedby')
+        ->and($phone)->toContain('Desks and offices.')->toContain('A desk of your own.')->toContain('Sample pages: example text');
+
+    $sample->forceFill(['status' => 'draft'])->save();
+
+    expect(shellHtml('/welcome'))->not->toContain('Dedicated Desks')->not->toContain('Desks and offices.')->not->toContain('Sample pages');
+});
+
 it('shows a legal link in the footer only once its legal page has been reviewed, approved and published', function () {
     [$author, $approver, $publisher] = $this->staff;
     $terms = Page::factory()->create();
@@ -231,4 +315,45 @@ it('never asks Vite for the 3D viewer on a public page, so no 3D bytes load (Pha
 
     expect($vite->requested)->toContain('resources/js/app.js')
         ->and(array_unique($vite->requested))->not->toContain('resources/js/twin-viewer.js');
+});
+
+it('shows the owner\'s header in order, with Book a Tour as the main button only while a tour can be requested (OD-140)', function () {
+    $solutions = Page::factory()->published()->create(['title' => 'Solutions', 'slug' => 'solutions']);
+    $community = Page::factory()->published()->create(['title' => 'Community', 'slug' => 'community']);
+    Product::factory()->create(['is_active' => true]);
+    $listed = Property::factory()->listed()->create();
+    Post::factory()->published()->create();
+    publishShellMenu('main', [
+        ['label' => 'Spaces', 'type' => 'section', 'section' => 'workspace_types'],
+        ['label' => 'Locations', 'type' => 'section', 'section' => 'locations'],
+        shellPageLink('Solutions', $solutions),
+        shellPageLink('Community', $community),
+        shellPageLink('About', $this->about),
+        ['label' => 'Resources', 'type' => 'section', 'section' => 'insights'],
+    ]);
+    publishShellMenu('actions', [
+        ['label' => 'Enquire', 'type' => 'section', 'section' => 'enquire'],
+        ['label' => 'Book a Tour', 'type' => 'section', 'section' => 'book_a_tour'],
+    ]);
+    $order = '#href="/workspaces"[^>]*>Spaces</a>.*href="/locations"[^>]*>Locations</a>.*href="/solutions"[^>]*>Solutions</a>.*href="/community"[^>]*>Community</a>.*href="/about"[^>]*>About</a>.*href="/insights"[^>]*>Resources</a>#';
+
+    $html = shellHtml('/welcome');
+    expect(str($html)->after('<nav aria-label="Main" class="hidden lg:block">')->before('</nav>')->toString())->toMatch($order)
+        ->and(str($html)->after('id="mobile-menu"')->before('</nav>')->toString())->toMatch($order)
+        ->and($html)->toMatch('#<div class="hidden items-center gap-2 lg:flex"> <div class=""> <a href="/enquire"[^>]*> Enquire </a> </div> </div>#')
+        ->and($html)->not->toContain('Book a Tour');
+
+    TourAvailabilityRule::factory()->for($listed)->create();
+
+    $html = shellHtml('/welcome');
+    expect($html)->toMatch('#<div class="hidden items-center gap-2 lg:flex"> <div class="hidden xl:block"> <a href="/enquire"[^>]*> Enquire </a> </div> <div class=""> <a href="/book-a-tour"[^>]*class="[^"]*bg-leaf-700[^"]*"> Book a Tour </a>#')
+        ->and(str($html)->after('id="mobile-menu"')->toString())->toMatch('#href="/book-a-tour"[^>]*> Book a Tour </a>.*href="/enquire"[^>]*> Enquire </a>#')
+        ->and(str($html)->afterLast('fixed inset-x-0 bottom-0')->toString())->toMatch('#href="/book-a-tour"[^>]*> Book a Tour </a>#');
+
+    $solutions->forceFill(['status' => 'draft'])->save();
+    $this->privacy->forceFill(['status' => 'draft'])->save();
+
+    $html = shellHtml('/welcome');
+    expect(str($html)->after('<nav aria-label="Main" class="hidden lg:block">')->before('</nav>')->toString())->not->toContain('Solutions')->toContain('Community')
+        ->and($html)->not->toContain('Book a Tour')->not->toContain('href="/enquire"');
 });

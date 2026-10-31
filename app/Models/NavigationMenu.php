@@ -72,6 +72,15 @@ class NavigationMenu extends Model implements Revisionable
         return self::STRUCTURES[$this->handle];
     }
 
+    /**
+     * Whether the links and sub-groups inside this menu's groups may carry a description and an icon: only
+     * where they show, in a drop-down of a menu that allows groups (OD-149), and once the columns exist.
+     */
+    public function offersDetails(): bool
+    {
+        return $this->structure()['groups'] === 'allowed' && NavigationItem::hasDetails();
+    }
+
     public function revisionCapabilities(): array
     {
         return [
@@ -83,17 +92,21 @@ class NavigationMenu extends Model implements Revisionable
     }
 
     /**
-     * The live menu as a payload: top-level items in order, each group with its links.
+     * The live menu as a payload: top-level items in order, each group with its links and sub-groups (OD-145),
+     * those carrying their description and icon where the menu offers them (OD-149).
      */
     public function toRevisionPayload(): array
     {
         $items = $this->items()->get();
         $children = $items->whereNotNull('parent_id')->groupBy('parent_id');
+        $details = $this->offersDetails();
 
         return [
             'items' => $items->whereNull('parent_id')->values()->map(fn (NavigationItem $item): array => [
-                ...$this->itemPayload($item),
-                'children' => ($children->get($item->getKey()) ?? collect())->values()->map(fn (NavigationItem $child): array => $this->itemPayload($child))->all(),
+                ...$this->itemPayload($item, false),
+                'children' => ($children->get($item->getKey()) ?? collect())->values()->map(fn (NavigationItem $child): array => $child->link_type === NavigationItem::LINK_GROUP
+                    ? [...$this->itemPayload($child, $details), 'children' => ($children->get($child->getKey()) ?? collect())->values()->map(fn (NavigationItem $link): array => $this->itemPayload($link, $details))->all()]
+                    : $this->itemPayload($child, $details))->all(),
             ])->all(),
         ];
     }
@@ -115,7 +128,11 @@ class NavigationMenu extends Model implements Revisionable
             $parent = $this->createItem($item, $position, null);
 
             foreach (array_values($item['children'] ?? []) as $childPosition => $child) {
-                $this->createItem($child, $childPosition, $parent);
+                $group = $this->createItem($child, $childPosition, $parent);
+
+                foreach (array_values($child['children'] ?? []) as $linkPosition => $link) {
+                    $this->createItem($link, $linkPosition, $group);
+                }
             }
         }
 
@@ -130,6 +147,7 @@ class NavigationMenu extends Model implements Revisionable
         $linkType = match ($item['type']) {
             ContentLink::TO_PAGE => NavigationItem::LINK_PAGE,
             NavigationPayload::PROPERTY => NavigationItem::LINK_PROPERTY,
+            NavigationPayload::CATEGORY => NavigationItem::LINK_CATEGORY,
             NavigationPayload::SECTION => NavigationItem::LINK_SECTION,
             ContentLink::TO_URL => NavigationItem::LINK_EXTERNAL,
             default => NavigationItem::LINK_GROUP,
@@ -142,29 +160,33 @@ class NavigationMenu extends Model implements Revisionable
             'linkable_type' => match ($linkType) {
                 NavigationItem::LINK_PAGE => (new Page)->getMorphClass(),
                 NavigationItem::LINK_PROPERTY => (new Property)->getMorphClass(),
+                NavigationItem::LINK_CATEGORY => (new Product)->getMorphClass(),
                 default => null,
             },
             'linkable_id' => match ($linkType) {
                 NavigationItem::LINK_PAGE => $item['page_id'],
                 NavigationItem::LINK_PROPERTY => $item['property_id'],
+                NavigationItem::LINK_CATEGORY => $item['product_id'],
                 default => null,
             },
             'section' => $linkType === NavigationItem::LINK_SECTION ? $item['section'] : null,
             'url' => $linkType === NavigationItem::LINK_EXTERNAL ? $item['url'] : null,
+            ...($parent !== null && $this->offersDetails() ? ['description' => $item['description'] ?? null, 'icon' => $item['icon'] ?? null] : []),
             'sort_order' => $position,
         ]);
     }
 
     /**
-     * @return array{label: string, type: string, page_id: int|null, section: string|null, property_id: int|null, url: string|null}
+     * @return array{label: string, type: string, page_id: int|null, section: string|null, property_id: int|null, product_id: int|null, url: string|null, description?: string|null, icon?: string|null}
      */
-    private function itemPayload(NavigationItem $item): array
+    private function itemPayload(NavigationItem $item, bool $withDetails): array
     {
         return [
             'label' => $item->label,
             'type' => match ($item->link_type) {
                 NavigationItem::LINK_PAGE => ContentLink::TO_PAGE,
                 NavigationItem::LINK_PROPERTY => NavigationPayload::PROPERTY,
+                NavigationItem::LINK_CATEGORY => NavigationPayload::CATEGORY,
                 NavigationItem::LINK_SECTION => NavigationPayload::SECTION,
                 NavigationItem::LINK_EXTERNAL => ContentLink::TO_URL,
                 default => NavigationPayload::GROUP,
@@ -172,7 +194,9 @@ class NavigationMenu extends Model implements Revisionable
             'page_id' => $item->link_type === NavigationItem::LINK_PAGE ? $item->linkable_id : null,
             'section' => $item->section,
             'property_id' => $item->link_type === NavigationItem::LINK_PROPERTY ? $item->linkable_id : null,
+            'product_id' => $item->link_type === NavigationItem::LINK_CATEGORY ? $item->linkable_id : null,
             'url' => $item->url,
+            ...($withDetails ? ['description' => $item->description, 'icon' => $item->icon] : []),
         ];
     }
 }

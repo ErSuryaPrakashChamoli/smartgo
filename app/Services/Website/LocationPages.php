@@ -2,10 +2,12 @@
 
 namespace App\Services\Website;
 
+use App\Models\Faq;
 use App\Models\Offering;
 use App\Models\Property;
 use App\Services\Content\SiteNavigation;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 
 /**
  * Builds the property and offering pages, for visitors from published records and for staff as a
@@ -14,7 +16,7 @@ use Illuminate\Contracts\View\View;
  */
 class LocationPages
 {
-    public function __construct(private WorkspaceCatalogue $catalogue, private SiteNavigation $siteNavigation) {}
+    public function __construct(private WorkspaceCatalogue $catalogue, private SiteNavigation $siteNavigation, private TourForm $tourForm, private StructuredData $structuredData) {}
 
     /**
      * The property page, live or as a staff preview of a profile version.
@@ -27,6 +29,10 @@ class LocationPages
     {
         $navigation = $this->siteNavigation->present();
 
+        if ($preview === null) {
+            $this->structuredData->add('business', $this->businessData($property));
+        }
+
         return view('pages.locations.property', [
             'property' => $property,
             'profile' => $profile,
@@ -35,13 +41,14 @@ class LocationPages
                 'profile' => $this->catalogue->offeringProfile($offering->profile->toRevisionPayload(), $offering),
             ])->all(),
             'nearby' => $nearby,
+            'faqs' => $this->faqsFor($property),
             'enquiryHref' => route('enquiries.create', ['property' => $property->getKey()]),
+            'tourHref' => $preview === null && $this->tourForm->isOpenFor($property) ? route('tours.create', ['property' => $property->getKey()]) : null,
             'mapHref' => $this->mapHref($property),
             'preview' => $preview,
             'contact' => $this->contactFor($property, $profile, $navigation['contact']),
             'navigation' => $navigation,
             'canonical' => $preview === null ? $this->canonical((string) $property->path()) : null,
-            'structuredData' => $preview === null ? $this->structuredData($property) : null,
         ]);
     }
 
@@ -71,6 +78,17 @@ class LocationPages
     }
 
     /**
+     * The published questions about this location, then the general ones (IA §3.1, FR-CMS-7).
+     *
+     * @return Collection<int, Faq>
+     */
+    private function faqsFor(Property $property): Collection
+    {
+        return Faq::query()->published()->aboutProperty($property)->orderBy('sort_order')->orderBy('id')->get()
+            ->concat(Faq::query()->published()->general()->orderBy('sort_order')->orderBy('id')->get());
+    }
+
+    /**
      * The location's own phone, WhatsApp and email from the shown profile version, or SmartGro's main
      * published contact details when it has none.
      *
@@ -88,18 +106,18 @@ class LocationPages
     }
 
     /**
-     * Schema.org data for a live property page (FR-DISC-7): its name, address and, once recorded, the
-     * building's coordinates (GeoCoordinates). Only what the page itself shows or links to.
+     * Schema.org data for a live property page (FR-DISC-7, FR-SEO-2): its name, address and, once
+     * recorded, the building's coordinates (GeoCoordinates) and the opening hours the page shows. Only
+     * what the page itself shows or links to: no price, rating or availability.
      *
      * @return array<string, mixed>
      */
-    private function structuredData(Property $property): array
+    private function businessData(Property $property): array
     {
         $building = $property->primaryBuilding;
         $street = collect([$building?->address_line_1 ?? $property->name, $building?->address_line_2, $building?->locality ?? $property->microMarket?->name])->filter()->unique()->join(', ');
 
         return array_filter([
-            '@context' => 'https://schema.org',
             '@type' => 'LocalBusiness',
             'name' => 'SmartGro '.$property->name,
             'url' => $this->canonical((string) $property->path()),
@@ -113,7 +131,29 @@ class LocationPages
             'geo' => $building?->latitude !== null && $building?->longitude !== null
                 ? ['@type' => 'GeoCoordinates', 'latitude' => (float) $building->latitude, 'longitude' => (float) $building->longitude]
                 : null,
+            'parentOrganization' => ['@id' => rtrim((string) config('app.url'), '/').'/#organization'],
+            'openingHoursSpecification' => $this->openingHours($property) ?: null,
         ]);
+    }
+
+    /**
+     * The opening hours as the page's "Opening hours" section shows them, one entry per open day; none
+     * until any day is recorded.
+     *
+     * @return list<array<string, string>>
+     */
+    private function openingHours(Property $property): array
+    {
+        if ($property->openingHours() === []) {
+            return [];
+        }
+
+        $hours = $property->operating_hours ?? [];
+
+        return collect(Property::WEEKDAYS)
+            ->filter(fn (string $day, string $key): bool => filled($hours[$key]['opens'] ?? null) && filled($hours[$key]['closes'] ?? null))
+            ->map(fn (string $day, string $key): array => ['@type' => 'OpeningHoursSpecification', 'dayOfWeek' => 'https://schema.org/'.$day, 'opens' => $hours[$key]['opens'], 'closes' => $hours[$key]['closes']])
+            ->values()->all();
     }
 
     /**

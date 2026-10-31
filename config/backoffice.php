@@ -27,4 +27,18 @@ return [
 
     'timezone' => env('BACKOFFICE_TIMEZONE', 'Asia/Kolkata'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Sample Content
+    |--------------------------------------------------------------------------
+    |
+    | Whether pages with the sample layout and articles in the "Sample content"
+    | topic (example text, OD-143) may be submitted and published. Off in
+    | production unless turned on deliberately, so example content never
+    | reaches the live website by accident (OD-149).
+    |
+    */
+
+    'sample_content' => (bool) env('BACKOFFICE_SAMPLE_CONTENT', env('APP_ENV', 'production') !== 'production'),
+
 ];

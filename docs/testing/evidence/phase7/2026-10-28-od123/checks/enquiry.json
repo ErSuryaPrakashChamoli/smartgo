@@ -1,0 +1,57 @@
+{
+ "startedAt": "2026-10-28T12:21:55.348Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "156.0.8078.47",
+ "runs": [
+  {
+   "width": 360,
+   "javaScript": true,
+   "status": 200,
+   "formOpen": true,
+   "formAxe": [],
+   "received": {
+    "path": "/enquire/received",
+    "h1": [
+     "Thank you, we have your enquiry"
+    ],
+    "reference": "ENQ-EN8FMHX9",
+    "overflow": 0,
+    "axe": []
+   }
+  },
+  {
+   "width": 1440,
+   "javaScript": true,
+   "status": 200,
+   "formOpen": true,
+   "formAxe": [],
+   "received": {
+    "path": "/enquire/received",
+    "h1": [
+     "Thank you, we have your enquiry"
+    ],
+    "reference": "ENQ-K63DMZKX",
+    "overflow": 0,
+    "axe": []
+   }
+  },
+  {
+   "width": 360,
+   "javaScript": false,
+   "status": 200,
+   "formOpen": true,
+   "formAxe": null,
+   "received": {
+    "path": "/enquire/received",
+    "h1": [
+     "Thank you, we have your enquiry"
+    ],
+    "reference": "ENQ-SZ3377WE",
+    "overflow": 0,
+    "axe": null
+   }
+  }
+ ],
+ "failures": [],
+ "finishedAt": "2026-10-28T12:22:14.367Z"
+}

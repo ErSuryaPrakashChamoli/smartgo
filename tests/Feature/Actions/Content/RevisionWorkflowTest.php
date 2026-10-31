@@ -15,6 +15,8 @@ use App\Enums\Content\RevisionState;
 use App\Events\Content\ContentPublished;
 use App\Http\Controllers\Backoffice\RevisionPreviewController;
 use App\Models\Page;
+use App\Models\Post;
+use App\Models\PostTopic;
 use App\Models\Revision;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -71,6 +73,30 @@ it('publishes a version written by one person, approved by a second and publishe
         ->status->toBe('published')
         ->published_revision_id->toBe($revision->id);
     Event::assertDispatched(ContentPublished::class, fn (ContentPublished $event): bool => $event->revision->is($revision));
+});
+
+it('keeps sample pages and articles from being submitted, scheduled or published where sample content is switched off, by anyone, the Super Admin included (OD-149, OD-153)', function () {
+    $samplePage = [...pagePayload('Dedicated Desks', 'workspace-solutions/dedicated-desks'), 'template' => 'sample'];
+    $sampleTopic = PostTopic::factory()->create(['name' => 'Sample content', 'slug' => PostTopic::SAMPLE_SLUG]);
+    $sampleArticle = ['title' => 'Example', 'slug' => 'example', 'excerpt' => 'Example text.', 'topic_ids' => [$sampleTopic->id], 'blocks' => [['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Example.</p>']]]];
+    $approved = app(ApproveRevision::class)->handle(app(SubmitRevision::class)->handle(app(CreateDraft::class)->handle($this->page, $this->author, $samplePage), $this->author), $this->approver);
+    config(['backoffice.sample_content' => false]);
+
+    $pageDraft = app(CreateDraft::class)->handle(Page::factory()->create(), $this->author, $samplePage);
+    $articleDraft = app(CreateDraft::class)->handle(Post::factory()->create(), $this->author, $sampleArticle);
+    $superAdminDraft = app(CreateDraft::class)->handle(Page::factory()->create(), $this->publisher, $samplePage);
+
+    expect(fn () => app(SubmitRevision::class)->handle($pageDraft, $this->author))->toThrow(ValidationException::class, 'This website does not publish sample pages.')
+        ->and(fn () => app(SubmitRevision::class)->handle($superAdminDraft, $this->publisher))->toThrow(ValidationException::class, 'This website does not publish sample pages.')
+        ->and(fn () => app(PublishRevision::class)->handle($approved, $this->publisher))->toThrow(ValidationException::class, 'This website does not publish sample pages.')
+        ->and(fn () => app(ScheduleRevision::class)->handle($approved, $this->publisher, now()->addDay()))->toThrow(ValidationException::class, 'This website does not publish sample pages.')
+        ->and(fn () => app(SubmitRevision::class)->handle($articleDraft, $this->author))->toThrow(ValidationException::class, 'This website does not publish sample articles.')
+        ->and($this->page->fresh()->isPublished())->toBeFalse()
+        ->and($pageDraft->fresh()->state)->toBe(RevisionState::Draft);
+
+    $standard = app(UpdateDraft::class)->handle($pageDraft, $this->author, [...$samplePage, 'template' => 'standard']);
+
+    expect(app(SubmitRevision::class)->handle($standard, $this->author)->state)->toBe(RevisionState::Submitted);
 });
 
 it('lets the author publish a version someone else approved', function () {

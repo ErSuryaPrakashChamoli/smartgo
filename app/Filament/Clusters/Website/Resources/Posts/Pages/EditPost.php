@@ -53,6 +53,7 @@ class EditPost extends EditRecord
             'title' => $payload['title'] ?? null,
             'slug' => $payload['slug'] ?? null,
             'excerpt' => $payload['excerpt'] ?? null,
+            'topic_ids' => $payload['topic_ids'] ?? [],
             'blocks' => $payload['blocks'] ?? [],
         ];
     }

@@ -6,24 +6,28 @@
     'icon' => null,
     'loading' => false,
     'disabled' => false,
+    'pill' => false,
 ])
 
 @php
     $isInactive = $disabled || $loading;
 
     $classes = [
-        'inline-flex shrink-0 items-center justify-center gap-2 rounded-lg font-semibold whitespace-nowrap transition-colors duration-150',
+        'inline-flex shrink-0 items-center justify-center gap-2 font-semibold whitespace-nowrap transition-colors duration-150',
+        'rounded-full' => $pill,
+        'rounded-lg' => ! $pill,
         'h-9 px-3.5 text-sm' => $size === 'sm',
         'h-11 px-5 text-[0.9375rem]' => $size === 'md',
         'h-13 px-6 text-base' => $size === 'lg',
         'cursor-not-allowed' => $isInactive,
         'bg-leaf-700 text-white hover:bg-leaf-800 active:bg-leaf-900' => $variant === 'primary' && ! $isInactive,
         'bg-surface text-forest ring-1 ring-control ring-inset hover:bg-mist' => $variant === 'secondary' && ! $isInactive,
+        'text-leaf-700 ring-2 ring-leaf-700 ring-inset hover:bg-mist hover:text-leaf-800' => $variant === 'outline' && ! $isInactive,
         'text-leaf-700 hover:bg-mist hover:text-leaf-800' => $variant === 'ghost' && ! $isInactive,
         'bg-paper text-forest hover:bg-white' => $variant === 'inverse' && ! $isInactive,
         'text-paper ring-1 ring-paper/60 ring-inset hover:bg-white/10' => $variant === 'inverse-outline' && ! $isInactive,
         'bg-line text-muted' => $isInactive && in_array($variant, ['primary', 'inverse'], true),
-        'text-muted ring-1 ring-line ring-inset' => $isInactive && in_array($variant, ['secondary', 'inverse-outline'], true),
+        'text-muted ring-1 ring-line ring-inset' => $isInactive && in_array($variant, ['secondary', 'outline', 'inverse-outline'], true),
         'text-muted' => $isInactive && $variant === 'ghost',
     ];
 @endphp

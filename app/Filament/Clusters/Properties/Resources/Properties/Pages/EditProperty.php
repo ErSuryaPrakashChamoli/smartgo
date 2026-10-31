@@ -6,6 +6,7 @@ use App\Actions\Properties\SaveProperty;
 use App\Filament\Clusters\Properties\Resources\Properties\PropertyResource;
 use App\Filament\Clusters\Properties\Resources\PropertyProfiles\PropertyProfileResource;
 use App\Models\Property;
+use App\Models\Space;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
@@ -23,7 +24,10 @@ class EditProperty extends EditRecord
 
     public function getSubheading(): ?string
     {
-        return $this->record->isPubliclyListed() ? 'On the website at '.$this->record->path() : 'Not on the website: only open properties are listed.';
+        $gaps = Space::isAvailable() ? $this->record->inventoryPublicationGaps() : [];
+
+        return ($this->record->isPubliclyListed() ? 'On the website at '.$this->record->path() : 'Not on the website: only open properties are listed.')
+            .($gaps === [] ? '' : ' Before the floor rule (BR-PROP-3) applies: '.implode(' ', $gaps));
     }
 
     protected function getHeaderActions(): array

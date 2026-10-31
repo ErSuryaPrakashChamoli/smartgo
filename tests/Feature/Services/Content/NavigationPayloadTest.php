@@ -2,10 +2,14 @@
 
 use App\Models\NavigationMenu;
 use App\Models\Page;
+use App\Models\Product;
 use App\Models\Property;
 use App\Services\Content\NavigationPayload;
+use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
+
+use function Pest\Laravel\seed;
 
 uses(RefreshDatabase::class);
 
@@ -64,6 +68,60 @@ it('accepts links to parts of the website and to locations, keeping only the cho
 
     expect($payload['items'][0])->toMatchArray(['type' => 'section', 'section' => 'locations', 'property_id' => null, 'page_id' => null, 'url' => null])
         ->and($payload['items'][1]['children'][0])->toMatchArray(['type' => 'property', 'property_id' => $property->id, 'section' => null]);
+});
+
+it('accepts links to workspace types, keeping only the chosen destination, and requires the type (OD-143)', function () {
+    seed(ReferenceDataSeeder::class);
+    $product = Product::query()->firstOrFail();
+
+    $payload = app(NavigationPayload::class)->validate(menuNamed('main'), ['items' => [
+        ['label' => 'Spaces', 'type' => 'group', 'children' => [['label' => $product->name, 'type' => 'category', 'product_id' => $product->id, 'section' => 'faqs']]],
+    ]], forSubmission: true);
+
+    expect($payload['items'][0]['children'][0])->toMatchArray(['type' => 'category', 'product_id' => $product->id, 'section' => null, 'property_id' => null])
+        ->and(menuErrors('main', [['label' => 'Desks', 'type' => 'category', 'product_id' => null]]))->toHaveKey('items.0.product_id')
+        ->and(menuErrors('main', [['label' => 'Desks', 'type' => 'category', 'product_id' => 999999]]))->toHaveKey('items.0.product_id');
+});
+
+it('accepts sub-groups inside a main-menu group, one level deep and never empty, and nowhere else (OD-145)', function () {
+    $about = Page::factory()->published()->create();
+    $subGroup = ['label' => 'Coworking', 'type' => 'group', 'children' => [pageLink('About', $about)]];
+
+    $payload = app(NavigationPayload::class)->validate(menuNamed('main'), ['items' => [
+        ['label' => 'Spaces', 'type' => 'group', 'children' => [pageLink('All', $about), $subGroup]],
+    ]], forSubmission: true);
+
+    expect($payload['items'][0]['children'][1])->toMatchArray(['label' => 'Coworking', 'type' => 'group'])
+        ->and($payload['items'][0]['children'][1]['children'][0])->toMatchArray(['type' => 'page', 'page_id' => $about->id])
+        ->and($payload['items'][0]['children'][0])->not->toHaveKey('children')
+        ->and(menuErrors('main', [['label' => 'Spaces', 'type' => 'group', 'children' => [['label' => 'Empty', 'type' => 'group', 'children' => []]]]]))->toHaveKey('items.0.children')
+        ->and(menuErrors('main', [['label' => 'Spaces', 'type' => 'group', 'children' => [[...pageLink('About', $about), 'children' => [pageLink('About', $about)]]]]]))->toHaveKey('items.0.children')
+        ->and(menuErrors('main', [['label' => 'Spaces', 'type' => 'group', 'children' => [['label' => 'Deep', 'type' => 'group', 'children' => [$subGroup]]]]]))->toHaveKey('items.0.children.0.children.0.type')
+        ->and(menuErrors('footer', [['label' => 'Company', 'type' => 'group', 'children' => [$subGroup]]]))->toHaveKey('items.0.children.0.type');
+});
+
+it('keeps a description and an icon on drop-down links and categories only, and refuses an unknown icon or markup (OD-149)', function () {
+    $about = Page::factory()->published()->create();
+    $detailed = fn (array $item, ?string $description, ?string $icon): array => [...$item, 'description' => $description, 'icon' => $icon];
+    $inSolutions = fn (array $child): array => [['label' => 'Solutions', 'type' => 'group', 'children' => [$child]]];
+
+    $payload = app(NavigationPayload::class)->validate(menuNamed('main'), ['items' => [$detailed(['label' => 'Solutions', 'type' => 'group', 'children' => [
+        $detailed(['label' => 'Workspaces', 'type' => 'group', 'children' => [$detailed(pageLink('Desks', $about), '  A desk of your own.  ', 'computer-desktop')]], 'Desks and offices.', 'building-office'),
+        $detailed(pageLink('About', $about), null, null),
+    ]], 'Top level', 'briefcase')]], forSubmission: true);
+    $footer = app(NavigationPayload::class)->validate(menuNamed('footer'), ['items' => [
+        ['label' => 'Company', 'type' => 'group', 'children' => [$detailed(pageLink('About', $about), 'Who we are.', 'sparkles')]],
+    ]], forSubmission: true);
+
+    expect($payload['items'][0])->not->toHaveKey('description')->not->toHaveKey('icon')
+        ->and($payload['items'][0]['children'][0])->toMatchArray(['label' => 'Workspaces', 'description' => 'Desks and offices.', 'icon' => 'building-office'])
+        ->and($payload['items'][0]['children'][0]['children'][0])->toMatchArray(['label' => 'Desks', 'description' => 'A desk of your own.', 'icon' => 'computer-desktop'])
+        ->and($payload['items'][0]['children'][1])->toMatchArray(['description' => null, 'icon' => null])
+        ->and($footer['items'][0]['children'][0])->not->toHaveKey('description')->not->toHaveKey('icon')
+        ->and(menuErrors('main', $inSolutions($detailed(pageLink('About', $about), null, 'bomb')))['items.0.children.0.icon'])->toBe(['Choose an icon from the list.'])
+        ->and(menuErrors('main', $inSolutions($detailed(pageLink('About', $about), '<b>Hi</b>', null)))['items.0.children.0.description'])->toBe(['Use plain text: < and > are not allowed.'])
+        ->and(menuErrors('main', $inSolutions(['label' => 'W', 'type' => 'group', 'children' => [$detailed(pageLink('About', $about), str_repeat('a', 121), null)]])))
+        ->toHaveKey('items.0.children.0.children.0.description');
 });
 
 it('stores items as an ordered list and drops links under items that are not groups', function () {

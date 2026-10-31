@@ -14,7 +14,7 @@
     height="218"
     {{ $attributes->class([
         'w-auto',
-        'h-11 sm:h-12' => $size === 'md',
+        'h-11 sm:h-12 lg:h-14 xl:h-[4.5rem]' => $size === 'md',
         'h-16 sm:h-20' => $size === 'lg',
     ]) }}
 >

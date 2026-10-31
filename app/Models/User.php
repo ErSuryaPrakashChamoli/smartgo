@@ -90,22 +90,24 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
 
     /**
      * Whether a role the user holds grants the capability for every property, rather than only for
-     * assigned ones (SECURITY_MODEL §3.1 "Own properties").
+     * assigned ones (SECURITY_MODEL §3.1 "Own properties"). A deactivated account holds none, even
+     * where an action checks this directly rather than through a policy (OD-153).
      */
     public function hasCapabilityForEveryProperty(Capability $capability): bool
     {
-        return $this->can($capability) && $this->staffRoles()->contains(
+        return $this->is_active && $this->can($capability) && $this->staffRoles()->contains(
             fn (StaffRole $role): bool => ! $role->limitsToAssignedProperties($this) && in_array($capability, $role->capabilities(), true),
         );
     }
 
     /**
      * Whether the user has the capability for this property: for every property, or because they are
-     * assigned to it. Policies use this for anything that belongs to a property.
+     * assigned to it. Policies and actions use this for anything that belongs to a property; a
+     * deactivated account has it for none (OD-153).
      */
     public function hasCapabilityForProperty(Capability $capability, Property $property): bool
     {
-        return $this->can($capability)
+        return $this->is_active && $this->can($capability)
             && ($this->hasCapabilityForEveryProperty($capability) || $this->assignedProperties()->whereKey($property->getKey())->exists());
     }
 

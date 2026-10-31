@@ -55,6 +55,9 @@ class GlbValidator
 
     private const array MESHOPT_MODES = ['ATTRIBUTES', 'TRIANGLES', 'INDICES'];
 
+    /** The first byte of a Meshopt stream: version 0 or 1 of the codec its mode uses. */
+    private const array MESHOPT_HEADERS = ['ATTRIBUTES' => [0xA0, 0xA1], 'TRIANGLES' => [0xE0, 0xE1], 'INDICES' => [0xD0, 0xD1]];
+
     /** Texture slots of a glTF material. */
     private const array MATERIAL_TEXTURES = [['pbrMetallicRoughness', 'baseColorTexture'], ['pbrMetallicRoughness', 'metallicRoughnessTexture'], ['normalTexture'], ['occlusionTexture'], ['emissiveTexture']];
 
@@ -365,6 +368,12 @@ class GlbValidator
 
             if (! $this->fits($meshopt, $bufferSizes) || ! is_int($count) || $count < 1 || ! is_int($stride) || $stride < 1 || $stride > 256 || ! in_array($meshopt['mode'] ?? null, self::MESHOPT_MODES, true)) {
                 $damage[] = "the compressed data of buffer view {$index} is not described properly";
+
+                continue;
+            }
+
+            if (! $this->isMeshoptStream($document, $meshopt)) {
+                $damage[] = "the compressed data of buffer view {$index} is not a Meshopt stream the viewer can read";
 
                 continue;
             }
@@ -871,11 +880,45 @@ class GlbValidator
     private function viewBytes(array $document, mixed $index): ?string
     {
         $view = is_int($index) ? ($this->items($document, 'bufferViews')[$index] ?? null) : null;
-        $buffer = $view['buffer'] ?? null;
-        $offset = $view['byteOffset'] ?? 0;
-        $length = $view['byteLength'] ?? null;
 
-        if ($view === null || isset($view['extensions']['EXT_meshopt_compression']) || ! is_int($buffer) || ! is_int($offset) || ! is_int($length) || $offset < 0 || $length < 1) {
+        return $view === null || isset($view['extensions']['EXT_meshopt_compression']) ? null : $this->rangeBytes($document, $view);
+    }
+
+    /**
+     * What the Meshopt decoder itself requires before decoding (meshoptimizer's vertex and index codecs):
+     * the header byte of the codec for the stream's mode, and the length the stream must at least have.
+     * The stream is not decoded.
+     *
+     * @param  array<string, mixed>  $document
+     * @param  array<string, mixed>  $meshopt  the bufferView's EXT_meshopt_compression object, already checked
+     */
+    private function isMeshoptStream(array $document, array $meshopt): bool
+    {
+        ['mode' => $mode, 'count' => $count, 'byteStride' => $stride, 'byteLength' => $length] = $meshopt;
+        $header = $this->rangeBytes($document, [...$meshopt, 'byteLength' => 1]);
+        $shortest = match ($mode) {
+            'ATTRIBUTES' => 1 + max(32, $stride),
+            'TRIANGLES' => 1 + intdiv($count, 3) + 16,
+            default => 1 + $count + 4,
+        };
+
+        return $header !== null && in_array(ord($header), self::MESHOPT_HEADERS[$mode], true) && $length >= $shortest;
+    }
+
+    /**
+     * The bytes of a range (buffer, byteOffset, byteLength) from the binary chunk or an embedded buffer;
+     * null when they are not there.
+     *
+     * @param  array<string, mixed>  $document
+     * @param  array<string, mixed>  $range
+     */
+    private function rangeBytes(array $document, array $range): ?string
+    {
+        $buffer = $range['buffer'] ?? null;
+        $offset = $range['byteOffset'] ?? 0;
+        $length = $range['byteLength'] ?? null;
+
+        if (! is_int($buffer) || ! is_int($offset) || ! is_int($length) || $offset < 0 || $length < 1) {
             return null;
         }
 

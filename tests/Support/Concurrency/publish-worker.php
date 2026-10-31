@@ -5,11 +5,13 @@
  *
  * Boots the application, waits for the shared release instant, then publishes, submits, approves or
  * restores a revision, runs the scheduled publisher, takes a testimonial off the website, assigns an
- * enquiry, sends an enquiry or closes a property (Phase 5). After every read of a revision, enquiry,
- * contact or property it pauses briefly, which widens the race window so a missing lock would show up
- * as a double publication, assignment or enquiry. Prints one JSON line.
+ * enquiry, sends an enquiry or a tour request, or closes a property (Phases 5 and 8). After every read
+ * of a revision, enquiry, contact, property or tour it pauses briefly, which widens the race window so a
+ * missing lock would show up as a double publication, assignment, enquiry or tour. Prints one JSON line.
  */
 
+use App\Actions\Booking\RequestTour;
+use App\Actions\Booking\ScheduleTour;
 use App\Actions\Content\ApproveRevision;
 use App\Actions\Content\PublishRevision;
 use App\Actions\Content\PublishScheduledRevisions;
@@ -43,7 +45,7 @@ if (! str_ends_with((string) DB::connection()->getDatabaseName(), '_testing')) {
 DB::connection()->getPdo();
 
 DB::listen(function (QueryExecuted $query): void {
-    if (preg_match('/^\s*select\b.*\bfrom `(revisions|leads|contacts|properties)`/is', $query->sql)) {
+    if (preg_match('/^\s*select\b.*\bfrom `(revisions|leads|contacts|properties|tour_requests)`/is', $query->sql)) {
         usleep(150_000);
     }
 });
@@ -67,6 +69,10 @@ try {
         $outcome = 'assigned';
     } elseif (getenv('PUBLISH_MODE') === 'submit_enquiry') {
         $outcome = app(SubmitEnquiry::class)->handle(json_decode((string) getenv('PUBLISH_ENQUIRY'), true, flags: JSON_THROW_ON_ERROR), '127.0.0.1')?->reference ?? 'spam';
+    } elseif (getenv('PUBLISH_MODE') === 'request_tour') {
+        $outcome = app(RequestTour::class)->handle(json_decode((string) getenv('PUBLISH_ENQUIRY'), true, flags: JSON_THROW_ON_ERROR), '127.0.0.1')?->reference ?? 'spam';
+    } elseif (getenv('PUBLISH_MODE') === 'schedule_tour') {
+        $outcome = app(ScheduleTour::class)->handle(User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')), Lead::query()->findOrFail((int) getenv('PUBLISH_LEAD_ID')), json_decode((string) getenv('PUBLISH_ENQUIRY'), true, flags: JSON_THROW_ON_ERROR))->reference;
     } elseif (getenv('PUBLISH_MODE') === 'close_property') {
         $property = Property::query()->with('primaryBuilding')->findOrFail((int) getenv('PUBLISH_PROPERTY_ID'));
         app(SaveProperty::class)->handle(User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')), $property, [

@@ -16,8 +16,10 @@ out="${2:?}"
 shift 2
 lighthouse="${LIGHTHOUSE_CLI:-/home/administrator/.npm/_npx/8003d8991b0d346b/node_modules/lighthouse/cli/index.js}"
 export CHROME_PATH="${CHROME_PATH:-$(ls -d /home/administrator/.cache/ms-playwright/chromium-*/chrome-linux*/chrome 2>/dev/null | head -1)}"
-work="$(mktemp -d)"
-trap '[[ -n "$work" && -d "$work" && "$work" == /tmp/* ]] && rm -rf "$work"' EXIT
+tmp_root="${TMPDIR:-/tmp}"
+tmp_root="${tmp_root%/}"
+work="$(mktemp -d "${tmp_root}/smartgro-lighthouse.XXXXXXXXXX")"
+trap '[[ -n "$work" && -d "$work" && "$work" == "${tmp_root}"/smartgro-lighthouse.* ]] && rm -rf "$work"' EXIT
 
 echo "[" > "$out/lighthouse.json"
 first=1

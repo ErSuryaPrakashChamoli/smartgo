@@ -1,0 +1,13 @@
+A-27 backup destination check (2026-10-31 12:09:48 IST), read-only
+NAME          SIZE TYPE MOUNTPOINTS                         RM FSTYPE
+nvme0n1     476.9G disk                                      0 
+|-nvme0n1p1     1G part /boot/efi                            0 vfat
+`-nvme0n1p2 475.9G part /                                    0 ext4
+
+/media/administrator: ls: cannot access '/media/administrator': No such file or directory
+/mnt: 0 entries
+rclone config: ls: cannot access '/home/administrator/.config/rclone': No such file or directory
+Deja Dup config: ls: cannot access '/home/administrator/.config/deja-dup': No such file or directory
+GVFS mounts: 0
+
+Result: one internal disk only; no second destination exists. No copy made.

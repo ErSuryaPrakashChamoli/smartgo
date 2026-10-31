@@ -1,0 +1,4 @@
+create table `product_space_type` (`product_id` bigint unsigned not null, `space_type_id` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null, primary key (`product_id`, `space_type_id`)) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+alter table `product_space_type` add constraint `product_space_type_product_id_foreign` foreign key (`product_id`) references `products` (`id`) on delete cascade 
+alter table `product_space_type` add constraint `product_space_type_space_type_id_foreign` foreign key (`space_type_id`) references `space_types` (`id`) on delete cascade 
+alter table `product_space_type` add index `product_space_type_space_type_id_index`(`space_type_id`) 

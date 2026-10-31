@@ -11,7 +11,7 @@ class TestimonialsTable
 {
     public static function configure(Table $table): Table
     {
-        return RevisionedContentTable::configure($table, 'person_name', 'From', 'Unnamed',
+        return RevisionedContentTable::configure($table->emptyStateHeading('No testimonials yet')->emptyStateDescription('Add a testimonial only with the person\'s consent on file. It reaches the website once someone else has approved it and it is published.'), 'person_name', 'From', 'Unnamed',
             description: fn (Testimonial $record): ?string => ($quote = $record->quote ?? $record->workingRevision?->payload['quote'] ?? null) === null ? null : Str::limit($quote, 90));
     }
 }

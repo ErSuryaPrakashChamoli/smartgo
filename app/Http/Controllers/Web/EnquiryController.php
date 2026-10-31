@@ -12,6 +12,7 @@ use App\Services\Website\WorkspaceCatalogue;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 /**
  * The enquiry form (FR-BK-1, the approved enquiry journey): opened from a property, offering or
@@ -52,9 +53,16 @@ class EnquiryController extends Controller
         ]);
     }
 
+    /**
+     * @throws ValidationException back to the form, at the form itself when it is a section further down a page
+     */
     public function store(Request $request, SubmitEnquiry $submitEnquiry): RedirectResponse
     {
-        $lead = $submitEnquiry->handle($request->except(['_token']), $request->ip());
+        try {
+            $lead = $submitEnquiry->handle($request->except(['_token', 'return_to_form']), $request->ip());
+        } catch (ValidationException $exception) {
+            throw $request->boolean('return_to_form') ? $exception->redirectTo(url()->previous().'#enquiry-form') : $exception;
+        }
 
         return redirect()->route('enquiries.received')->with(['enquiry_received' => true, 'enquiry_reference' => $lead?->reference]);
     }

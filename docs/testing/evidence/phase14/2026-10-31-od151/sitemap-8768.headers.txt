@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8768
+Connection: close
+X-Powered-By: PHP/8.5.4
+Content-Type: application/xml; charset=UTF-8
+Cache-Control: no-cache, private
+Date: Sat, 31 Oct 2026 05:13:38 GMT
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+X-Frame-Options: SAMEORIGIN
+Cross-Origin-Opener-Policy: same-origin
+Permissions-Policy: camera=(), microphone=(), payment=(), usb=()
+X-Robots-Tag: noindex, nofollow
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IjhRaDg5K0kvem9VZ2g4WDJQU1BqQUE9PSIsInZhbHVlIjoiWVJ2K1dyeC9oR2xTR2REM3V4c1BsNlhoc0Vtbmk0Mk1KdEdxajRvK29BdUp6ajlydmlJa2crK0pROUNtYVczeEtVTGVmbkpCWVNKcmdUQ00wdmlYREl2NlZ4S0pGVWQyNE5HdUxVN3NmQk9vbk1LTC9KSUVKaXhWVjlhZ0JIU0IiLCJtYWMiOiIwZmUzY2E5MTg4MDQ0NmVmY2EzNDczOTcxYWE3ZjM3ZDc0ZmViYzM3MWUxOWJlZDJiNmRmZjcwODY2YmY3NmQzIiwidGFnIjoiIn0%3D; expires=Sat, 31 Oct 2026 07:13:38 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6Ii9aNkg2c29VbGJBWTRkaDMzUExoRlE9PSIsInZhbHVlIjoiWDF2VEQxbktQdmhMYkFaQVYyMDBGMXdSUDNySm1qeXplb1gvRmpHWFV1WUFBT25mWGJHNXp0cElQdWpnWkNNTHZGc00wcjJFQUdyQk9SczlYajVKbnpnaGxGMlJsREVTMS9ucWtZTlUxMGl1SkNkb1pmV0t5dkhlVjFxMFBaWE8iLCJtYWMiOiJlYmM4NjA1NGJmNmQ1YTg2NWE3M2Y2ODA5ZTZiOWU4ODdlMTk4NzVhMGFlNGUxMmQ5ZmE1NTRlMGUxNzdiMWYwIiwidGFnIjoiIn0%3D; expires=Sat, 31 Oct 2026 07:13:38 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+

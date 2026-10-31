@@ -22,7 +22,13 @@ class PagePayload
      *
      * @var list<string>
      */
-    public const array TEMPLATES = ['standard', 'legal'];
+    public const array TEMPLATES = ['standard', 'legal', self::SAMPLE_TEMPLATE];
+
+    /**
+     * A standard page whose text is example content for the team to replace (OD-143): shown with a visible
+     * notice, never indexed and left out of the sitemap, until a version with the standard layout is published.
+     */
+    public const string SAMPLE_TEMPLATE = 'sample';
 
     /**
      * Lowercase words joined by hyphens, with / between parts, e.g. `about` or `legal/privacy`.
@@ -35,7 +41,7 @@ class PagePayload
      *
      * @var list<string>
      */
-    private const RESERVED_SEGMENTS = ['workspaces', 'locations', 'insights', 'customers', 'booking', 'book-a-tour', 'enquire', 'offers', 'sitemap.xml', 'robots.txt'];
+    private const RESERVED_SEGMENTS = ['workspaces', 'find-a-workspace', 'search', 'locations', 'insights', 'customers', 'booking', 'book-a-tour', 'enquire', 'offers', 'sitemap.xml', 'robots.txt'];
 
     public function __construct(private BlockLibrary $blockLibrary) {}
 
@@ -59,7 +65,7 @@ class PagePayload
         $validated = Validator::make($payload, [
             'title' => [$required, 'string', 'max:120'],
             'slug' => [$required, 'string', 'max:150', 'regex:'.self::SLUG_PATTERN, $this->notReservedRule(), Rule::unique('pages', 'slug')->ignore($page->getKey())],
-            'template' => ['required', Rule::in(self::TEMPLATES)],
+            'template' => ['required', Rule::in(self::TEMPLATES), ...($forSubmission ? [$this->sampleAllowedRule()] : [])],
             'legal_review_reference' => [$forSubmission && $isLegal ? 'required' : 'nullable', 'string', 'max:120', 'not_regex:/[<>]/'],
             'seo' => ['nullable', 'array:title,description,indexable,image_asset_id'],
             'seo.title' => ['nullable', 'string', 'max:60', 'not_regex:/[<>]/'],
@@ -108,6 +114,19 @@ class PagePayload
         $segment = strtolower(explode('/', $slug)[0]);
 
         return in_array($segment, self::RESERVED_SEGMENTS, true) || in_array($segment, $this->routedSegments(), true);
+    }
+
+    /**
+     * Sample pages can be submitted and published only where sample content is allowed (OD-149): never in
+     * production unless it was turned on deliberately. Drafts keep the layout, so they can be finished.
+     */
+    private function sampleAllowedRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail): void {
+            if ($value === self::SAMPLE_TEMPLATE && ! config('backoffice.sample_content')) {
+                $fail('This website does not publish sample pages. Replace the example text and choose "Standard page" first.');
+            }
+        };
     }
 
     private function notReservedRule(): Closure

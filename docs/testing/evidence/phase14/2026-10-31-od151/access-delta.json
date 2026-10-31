@@ -1,0 +1,123 @@
+{
+    "permissions_to_create": [
+        "inventory.manage",
+        "allocations.view",
+        "allocations.manage",
+        "inventory.import",
+        "inventory.import.approve",
+        "pricing.view",
+        "pricing.manage",
+        "pricing.approve",
+        "offers.manage",
+        "leads.reports.view",
+        "tours.view",
+        "tours.manage",
+        "twin_models.view",
+        "twin_models.manage"
+    ],
+    "permissions_only_in_database": [],
+    "roles_to_create": [],
+    "roles": {
+        "super_admin": {
+            "now": 34,
+            "after": 48,
+            "add": [
+                "inventory.manage",
+                "allocations.view",
+                "allocations.manage",
+                "inventory.import",
+                "inventory.import.approve",
+                "pricing.view",
+                "pricing.manage",
+                "pricing.approve",
+                "offers.manage",
+                "tours.view",
+                "tours.manage",
+                "leads.reports.view",
+                "twin_models.view",
+                "twin_models.manage"
+            ],
+            "remove": []
+        },
+        "operations_manager": {
+            "now": 5,
+            "after": 14,
+            "add": [
+                "inventory.manage",
+                "allocations.view",
+                "allocations.manage",
+                "inventory.import",
+                "inventory.import.approve",
+                "pricing.view",
+                "twin_models.view",
+                "tours.view",
+                "leads.reports.view"
+            ],
+            "remove": []
+        },
+        "property_manager": {
+            "now": 7,
+            "after": 15,
+            "add": [
+                "inventory.manage",
+                "allocations.view",
+                "allocations.manage",
+                "inventory.import",
+                "pricing.view",
+                "leads.reports.view",
+                "tours.view",
+                "tours.manage"
+            ],
+            "remove": []
+        },
+        "sales_crm_executive": {
+            "now": 6,
+            "after": 11,
+            "add": [
+                "allocations.view",
+                "pricing.view",
+                "leads.reports.view",
+                "tours.view",
+                "tours.manage"
+            ],
+            "remove": []
+        },
+        "marketing_manager": {
+            "now": 22,
+            "after": 27,
+            "add": [
+                "pricing.view",
+                "offers.manage",
+                "twin_models.view",
+                "twin_models.manage",
+                "leads.reports.view"
+            ],
+            "remove": []
+        },
+        "finance": {
+            "now": 5,
+            "after": 10,
+            "add": [
+                "allocations.view",
+                "pricing.view",
+                "pricing.manage",
+                "pricing.approve",
+                "offers.manage"
+            ],
+            "remove": []
+        }
+    },
+    "users_holding_each_role": [
+        {
+            "name": "marketing_manager",
+            "users": 2,
+            "active": "0"
+        },
+        {
+            "name": "super_admin",
+            "users": 2,
+            "active": "1"
+        }
+    ],
+    "read_only": 1
+}

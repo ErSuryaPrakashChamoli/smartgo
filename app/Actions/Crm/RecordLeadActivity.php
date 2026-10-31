@@ -6,6 +6,7 @@ use App\Enums\Crm\LeadActivityType;
 use App\Models\Lead;
 use App\Models\LeadActivity;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,8 @@ use Illuminate\Validation\ValidationException;
 /**
  * Records an internal note, a contact made (call, email, WhatsApp, meeting) or a follow-up with its
  * due date on an enquiry. Recording a contact counts as the first response. Notes are staff-only and
- * never edited or deleted; the audit log records that one was added, not its text.
+ * never edited or deleted; the audit log records that one was added, not its text. A due time given in
+ * any time zone is stored as the same instant in UTC.
  */
 class RecordLeadActivity
 {
@@ -46,7 +48,7 @@ class RecordLeadActivity
                 'user_id' => $actor->getKey(),
                 'type' => $type,
                 'body' => $body,
-                'due_at' => $type === LeadActivityType::FollowUp ? $dueAt : null,
+                'due_at' => $type === LeadActivityType::FollowUp && $dueAt !== null ? CarbonImmutable::instance($dueAt)->utc() : null,
             ]);
             $activity->save();
 

@@ -1,0 +1,163 @@
+{
+  "stopWhileDecoding": {
+    "fileDownloadedBeforeStop": true,
+    "beforeStop": {
+      "status": "Loading the viewer and the model…",
+      "stageHidden": true,
+      "canvases": 0,
+      "showVisible": true,
+      "controlsHidden": true
+    },
+    "afterStop": {
+      "status": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below.",
+      "stageHidden": true,
+      "canvases": 0,
+      "showVisible": true,
+      "controlsHidden": true
+    },
+    "afterDecoderArrived": {
+      "status": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below.",
+      "stageHidden": true,
+      "canvases": 0,
+      "showVisible": true,
+      "controlsHidden": true
+    },
+    "consoleErrors": []
+  },
+  "showStopCycles": {
+    "log": [
+      {
+        "round": 0,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 1,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 2,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 3,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 4,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 5,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 6,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 7,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 8,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 9,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 10,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 11,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 12,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 13,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 14,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 15,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 16,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 17,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 18,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      },
+      {
+        "round": 19,
+        "during": "Loading the viewer and the model…",
+        "stopVisible": true,
+        "after": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below."
+      }
+    ],
+    "contextLimitWarnings": 0,
+    "graphicsMemoryMessages": 0,
+    "final": {
+      "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+      "stageHidden": false,
+      "canvases": 1,
+      "showVisible": false,
+      "controlsHidden": false
+    },
+    "sampleConsole": [
+      "warning: [.WebGL-0xb4c00d08800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels"
+    ]
+  }
+}

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -42,6 +43,16 @@ class Offering extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * The spaces that can be sold as this category at this property (BR-PRODCFG-2).
+     *
+     * @return BelongsToMany<Space, $this>
+     */
+    public function spaces(): BelongsToMany
+    {
+        return $this->belongsToMany(Space::class)->withTimestamps();
     }
 
     /**

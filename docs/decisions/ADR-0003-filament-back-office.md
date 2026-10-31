@@ -12,7 +12,7 @@ Filament 5.10.3 is installed, but no panel is configured yet. The brief requires
 * Navigation by **clusters** named after jobs: Website, Workspaces, Sales, Marketing, Insights, Settings.
 * Role-specific dashboards (Today's tours, New leads, Spaces needing attention, Awaiting approval).
 * Guided wizards for multi-step tasks (Create location → Floors → Spaces → Media → Preview → Submit).
-* Required MFA.
+* Required MFA. **Amended 2026-10-28 (OD-124):** always required outside local development and the tests; in local development a Super Admin switch under Settings → Security, optional to start.
 
 ## Consequences
 * (+) Fast delivery on proven components; MFA, authorisation re-checks on Livewire requests and Builder blocks come built in.

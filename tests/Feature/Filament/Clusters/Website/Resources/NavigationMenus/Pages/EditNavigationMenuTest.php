@@ -13,6 +13,7 @@ use App\Models\Page;
 use App\Models\Property;
 use App\Models\User;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
@@ -86,6 +87,73 @@ it('links items to a part of the website and to a location picked from lists', f
             fn ($item) => $item->toMatchArray(['type' => 'section', 'section' => 'locations']),
             fn ($item) => $item->toMatchArray(['type' => 'property', 'property_id' => $property->id]),
         );
+});
+
+it('saves a drop-down holding a sub-group with its own links (OD-145)', function () {
+    actingAs($this->author);
+    $undoRepeaterFake = Repeater::fake();
+
+    Livewire::test(EditNavigationMenu::class, ['record' => $this->menu->getRouteKey()])
+        ->callAction('startDraft')
+        ->fillForm(['items' => [
+            ['label' => 'Solutions', 'type' => 'group', 'children' => [
+                ['label' => 'Workspaces', 'type' => 'group', 'children' => [
+                    ['label' => 'About us', 'type' => 'page', 'page_id' => $this->about->id],
+                ]],
+            ]],
+        ]])
+        ->call('save')
+        ->assertHasNoFormErrors();
+    $undoRepeaterFake();
+
+    expect($this->menu->fresh()->workingRevision->payload['items'][0]['children'][0])->toMatchArray(['label' => 'Workspaces', 'type' => 'group'])
+        ->and($this->menu->fresh()->workingRevision->payload['items'][0]['children'][0]['children'][0])->toMatchArray(['type' => 'page', 'page_id' => $this->about->id]);
+});
+
+it('saves a description and an icon for a drop-down category and its links, and offers neither in the footer (OD-149)', function () {
+    actingAs($this->author);
+    $undoRepeaterFake = Repeater::fake();
+
+    Livewire::test(EditNavigationMenu::class, ['record' => $this->menu->getRouteKey()])
+        ->callAction('startDraft')
+        ->fillForm(['items' => [
+            ['label' => 'Solutions', 'type' => 'group', 'children' => [
+                ['label' => 'Workspaces', 'type' => 'group', 'description' => 'Desks and offices.', 'icon' => 'building-office', 'children' => [
+                    ['label' => 'About us', 'type' => 'page', 'page_id' => $this->about->id, 'description' => 'Who we are.', 'icon' => 'sparkles'],
+                ]],
+            ]],
+        ]])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    Livewire::test(EditNavigationMenu::class, ['record' => NavigationMenu::query()->where('handle', 'footer')->sole()->getRouteKey()])
+        ->callAction('startDraft')
+        ->fillForm(['items' => [['label' => 'Company', 'type' => 'group', 'children' => [['label' => 'About us', 'type' => 'page', 'page_id' => $this->about->id]]]]])
+        ->assertFormFieldExists('items.0.children.0.label')
+        ->assertFormFieldDoesNotExist('items.0.children.0.description')
+        ->assertFormFieldDoesNotExist('items.0.children.0.icon');
+    $undoRepeaterFake();
+
+    expect($this->menu->fresh()->workingRevision->payload['items'][0]['children'][0])->toMatchArray(['label' => 'Workspaces', 'description' => 'Desks and offices.', 'icon' => 'building-office'])
+        ->and($this->menu->fresh()->workingRevision->payload['items'][0]['children'][0]['children'][0])->toMatchArray(['label' => 'About us', 'description' => 'Who we are.', 'icon' => 'sparkles']);
+});
+
+it('marks sample pages in the list of pages a link can go to, live or still in draft (OD-150)', function () {
+    $liveSample = Page::factory()->published()->create(['title' => 'Day Pass', 'slug' => 'business-solutions/day-pass', 'template' => 'sample']);
+    $draftSample = Page::factory()->create();
+    app(CreateDraft::class)->handle($draftSample, $this->author, ['title' => 'Virtual Office', 'slug' => 'business-solutions/virtual-office', 'template' => 'sample', 'blocks' => []]);
+    actingAs($this->author);
+    $undoRepeaterFake = Repeater::fake();
+
+    Livewire::test(EditNavigationMenu::class, ['record' => $this->menu->getRouteKey()])
+        ->callAction('startDraft')
+        ->fillForm(['items' => [['label' => 'Day Pass', 'type' => 'page', 'page_id' => $liveSample->id]]])
+        ->assertFormFieldExists('items.0.page_id', fn (Select $field): bool => $field->getOptions() === [
+            $this->about->id => 'About SmartGro (/about)',
+            $liveSample->id => 'Day Pass (/business-solutions/day-pass) · sample content',
+            $draftSample->id => 'Virtual Office (not published) · sample content',
+        ]);
+    $undoRepeaterFake();
 });
 
 it('shows a refused destination on the item it belongs to', function () {

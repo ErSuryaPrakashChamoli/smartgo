@@ -1,6 +1,7 @@
 @props(['items' => []])
 
-{{-- $items: list of ['label' => string, 'href' => ?string]; the last item is the current page. --}}
+{{-- $items: list of ['label' => string, 'href' => ?string]; the last item is the current page. The same trail is described to search engines (BreadcrumbList, StructuredData). --}}
+@php(app(\App\Services\Website\StructuredData::class)->breadcrumbs($items))
 <nav aria-label="Breadcrumb" {{ $attributes }}>
     <ol class="flex flex-wrap items-center gap-1.5 text-sm text-muted">
         @foreach ($items as $item)

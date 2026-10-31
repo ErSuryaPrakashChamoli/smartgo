@@ -1,0 +1,101 @@
+{
+ "startedAt": "2026-10-29T04:23:22.869Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "156.0.8078.47",
+ "pages": [
+  {
+   "label": "picker @1440",
+   "path": "/book-a-tour",
+   "h1": [
+    "Visit a SmartGro location"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "requested @1440",
+   "path": "/book-a-tour/requested",
+   "h1": [
+    "We have your tour request"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "tour page @1440 (requested)",
+   "path": "/tours/TOUR-Y4WAYW39",
+   "h1": [
+    "Your tour of SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "staff tour page @1440",
+   "path": "/admin/sales/tours/2",
+   "h1": [
+    "View TOUR-Y4WAYW39: SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "tour page @1440 (confirmed)",
+   "path": "/tours/TOUR-Y4WAYW39",
+   "h1": [
+    "Your tour of SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "picker @360",
+   "path": "/book-a-tour",
+   "h1": [
+    "Visit a SmartGro location"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "tour page @360",
+   "path": "/tours/TOUR-Y4WAYW39",
+   "h1": [
+    "Your tour of SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  }
+ ],
+ "steps": [
+  {
+   "step": "requested @1440",
+   "at": "/book-a-tour/requested",
+   "reference": "TOUR-Y4WAYW39",
+   "waiting": true
+  },
+  {
+   "step": "confirmed by the Super Admin",
+   "notices": "Tour confirmed"
+  },
+  {
+   "step": "confirmed, seen by the visitor",
+   "confirmed": true,
+   "calendar": 200,
+   "type": "text/calendar; charset=utf-8",
+   "dtstart": "DTSTART:20261029T043000Z",
+   "visitorDetailsInFile": false
+  },
+  {
+   "step": "moved by the visitor",
+   "message": true,
+   "waitingAgain": true
+  }
+ ],
+ "failures": [
+  "journey: TimeoutError: page.check: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#tour-consent')\u001b[22m\n\u001b[2m    - locator resolved to <input value=\"1\" name=\"consent\" type=\"checkbox\" id=\"tour-consent\" class=\"mt-0.5 size-5 shrink-0 cursor-pointer rounded border-control accent-leaf-700 disabled:cursor-not-allowed\"/>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click ",
+  "not requested without JavaScript: undefined"
+ ],
+ "error": "TimeoutError: page.check: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#tour-consent')\u001b[22m\n\u001b[2m    - locator resolved to <input value=\"1\" name=\"consent\" type=\"checkbox\" id=\"tour-consent\" class=\"mt-0.5 size-5 shrink-0 cursor-pointer rounded border-control accent-leaf-700 disabled:cursor-not-allowed\"/>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not stable\u001b[22m\n\u001b[2m    - retrying click ",
+ "finishedAt": "2026-10-29T04:25:22.281Z"
+}

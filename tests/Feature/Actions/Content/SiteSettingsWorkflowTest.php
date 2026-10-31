@@ -115,5 +115,8 @@ it('never adds tracking IDs or provider scripts to the website, even once publis
         ->and($html)->not->toContain('G-ABC1234567')->not->toContain('GTM-ABC1234')->not->toContain('1234567890')
         ->and(strtolower($html))->not->toContain('googletagmanager')->not->toContain('google-analytics')->not->toContain('gtag(')
         ->not->toContain('datalayer')->not->toContain('fbq(')->not->toContain('connect.facebook.net')
-        ->and($scriptTags[0])->each->toMatch('#\\ssrc="'.preg_quote(rtrim(config('app.url'), '/'), '#').'/build/assets/[^"]+\\.js"#');
+        // Every script that runs is the website's own bundle; the only other script tag allowed is the
+        // schema.org data block (FR-SEO-2, OD-131), which never runs and is checked above for tracking IDs.
+        ->and(collect($scriptTags[0])->reject(fn (string $tag): bool => $tag === '<script type="application/ld+json">')->values()->all())
+        ->each->toMatch('#\\ssrc="'.preg_quote(rtrim(config('app.url'), '/'), '#').'/build/assets/[^"]+\\.js"#');
 })->with(['/about', '/insights', '/customers', '/faqs']);

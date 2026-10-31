@@ -7,12 +7,20 @@ use App\Http\Controllers\Web\LocationController;
 use App\Http\Controllers\Web\MediaController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\PublishedContentController;
+use App\Http\Controllers\Web\SearchController;
+use App\Http\Controllers\Web\SearchEngineController;
+use App\Http\Controllers\Web\TourController;
 use App\Http\Controllers\Web\WorkspaceController;
+use App\Http\Controllers\Web\WorkspaceFinderController;
 use App\Http\Middleware\EnsureDesignPreviewIsAvailable;
 use App\Models\MediaAsset;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+// Crawler rules and the XML sitemap (FR-SEO-3), from the published records at each request.
+Route::get('/robots.txt', [SearchEngineController::class, 'robots'])->name('robots');
+Route::get('/sitemap.xml', [SearchEngineController::class, 'sitemap'])->name('sitemap');
 
 // Locations (OD-17): cities, their sectors, the properties on the website, a page per property and per
 // published workspace offering at it, and a comparison of two or three of them (FR-DISC-4). Anything not
@@ -28,6 +36,9 @@ Route::controller(LocationController::class)->prefix('locations')->name('locatio
 });
 
 // Workspace categories (IA §2): a page exists only while a published offering does (BR-PRODCFG-4).
+Route::get('/find-a-workspace', WorkspaceFinderController::class)->name('workspaces.find');
+Route::get('/search', SearchController::class)->middleware('throttle:60,1')->name('search');
+
 Route::controller(WorkspaceController::class)->prefix('workspaces')->name('workspaces.')->group(function (): void {
     Route::get('/', 'index')->name('index');
     Route::get('/{workspace}', 'category')->where('workspace', '[a-z0-9-]+')->name('category');
@@ -39,6 +50,20 @@ Route::controller(EnquiryController::class)->prefix('enquire')->name('enquiries.
     Route::get('/', 'create')->name('create');
     Route::post('/', 'store')->middleware('throttle:enquiries')->name('store');
     Route::get('/received', 'received')->name('received');
+});
+
+// Tour requests (FR-BK-2): a visit, never a booking. Sending is rate limited like enquiries; a visitor's
+// own tour is reached only through its signed link.
+Route::controller(TourController::class)->group(function (): void {
+    Route::get('/book-a-tour', 'create')->name('tours.create');
+    Route::post('/book-a-tour', 'store')->middleware('throttle:enquiries')->name('tours.store');
+    Route::get('/book-a-tour/requested', 'requested')->name('tours.requested');
+    Route::middleware('signed')->prefix('tours/{reference}')->where(['reference' => 'TOUR-[A-Z0-9]{8}'])->group(function (): void {
+        Route::get('/', 'show')->name('tours.show');
+        Route::post('/cancel', 'cancel')->middleware('throttle:enquiries')->name('tours.cancel');
+        Route::post('/move', 'move')->middleware('throttle:enquiries')->name('tours.move');
+        Route::get('/calendar.ics', 'calendar')->name('tours.calendar');
+    });
 });
 
 Route::middleware(EnsureDesignPreviewIsAvailable::class)
@@ -63,6 +88,7 @@ Route::middleware(EnsureDesignPreviewIsAvailable::class)
 // Insights, customer stories and FAQs (FR-CMS-7): published items only.
 Route::controller(PublishedContentController::class)->group(function (): void {
     Route::get('/insights', 'insights')->name('insights.index');
+    Route::get('/insights/topic/{slug}', 'insightTopic')->where('slug', '[a-z0-9-]+')->name('insights.topic');
     Route::get('/insights/{slug}', 'insight')->where('slug', '[a-z0-9-]+')->name('insights.show');
     Route::get('/customers', 'customers')->name('customers.index');
     Route::get('/customers/{slug}', 'customer')->where('slug', '[a-z0-9-]+')->name('customers.show');

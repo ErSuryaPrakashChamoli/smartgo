@@ -9,13 +9,15 @@
     'from' => null,
     'utm' => [],
     'cityName' => null,
+    'returnToForm' => false,
 ])
 
 {{--
     The enquiry form (FR-BK-1, the approved enquiry journey): at most eight visible fields, the context
     carried in, errors listed at the top and next to each field, and a clear "nothing is reserved". The
     hidden "website" field is a trap for bots; "started" notes when the form was shown. With a city, it
-    registers interest in a city where SmartGro has no location yet (OD-22).
+    registers interest in a city where SmartGro has no location yet (OD-22). On a page section further
+    down a page, "return_to_form" brings a visitor whose details need correcting back to the form.
 --}}
 @php
     $value = fn (string $field): mixed => old($field, $selected[$field] ?? null);
@@ -31,6 +33,9 @@
     @endforeach
     @if ($isWaitlist)
         <input type="hidden" name="city" value="{{ $selected['city'] ?? '' }}">
+    @endif
+    @if ($returnToForm)
+        <input type="hidden" name="return_to_form" value="1">
     @endif
     <div class="hidden" aria-hidden="true">
         <label for="enquiry-website">Leave this empty</label>

@@ -190,6 +190,29 @@ it('narrows a city to the locations offering one workspace type, with plain link
     get('/locations/noida?workspace=%3Cscript%3E')->assertOk()->assertDontSee('<script>', false);
 });
 
+it('narrows all locations to those offering one workspace type, with plain links (FR-DISC-2, OD-143)', function () {
+    get('/locations')->assertDontSee('All workspace types');
+
+    offerForTest(Property::query()->where('code', 'A-70')->sole(), 'hot_desk');
+    offerForTest(Property::query()->where('code', 'H-105')->sole(), 'hot_desk');
+    offerForTest(Property::query()->where('code', 'A-23')->sole(), 'meeting_room');
+    offerForTest(Property::query()->where('code', 'A-71')->sole(), 'meeting_room', published: false);
+
+    get('/locations')->assertSeeInOrder(['All workspace types', 'Hot desks', 'Meeting rooms', 'SmartGro A-23', 'SmartGro A-71']);
+
+    get('/locations?workspace=meeting-rooms')
+        ->assertOk()
+        ->assertSee('/locations?workspace=meeting-rooms" aria-current="page"', false)
+        ->assertSee('1 SmartGro location offers meeting rooms.')
+        ->assertSee('href="/workspaces/meeting-rooms"', false)
+        ->assertSee('SmartGro A-23')
+        ->assertDontSee('SmartGro A-70')
+        ->assertDontSee('SmartGro A-71')
+        ->assertSee('<link rel="canonical" href="'.rtrim(config('app.url'), '/').'/locations">', false);
+
+    get('/locations?workspace=virtual-office')->assertOk()->assertSee('SmartGro A-71')->assertSee('href="/locations" aria-current="page"', false);
+});
+
 it('compares two locations side by side from their published records, at an address that can be shared (FR-DISC-4)', function () {
     $a70 = Property::query()->where('code', 'A-70')->sole();
     offerForTest($a70, 'hot_desk');

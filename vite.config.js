@@ -24,6 +24,14 @@ export default defineConfig({
                     preload: [{ weight: 600 }],
                     optimizedFallbacks: false,
                 }),
+                // Editorial headings of the home page, after the owner's design reference (OD-139).
+                bunny('Playfair Display', {
+                    alias: 'playfair',
+                    weights: [500, 600],
+                    subsets: ['latin', 'latin-ext'],
+                    preload: [{ weight: 600 }],
+                    optimizedFallbacks: false,
+                }),
             ],
         }),
         tailwindcss(),

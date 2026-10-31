@@ -3,13 +3,14 @@
 //   node docs/operations/scripts/browser/verify-public.mjs <baseUrl> <outDir> [errorPagesDir]
 //
 // Uses Playwright and axe-core already in the local npx cache (no project dependency). Override their
-// paths with PLAYWRIGHT_MODULE and AXE_CORE. For every address at 360, 768, 1024 and 1440 px it records
+// paths with PLAYWRIGHT_MODULE and AXE_CORE, and use an installed Chromium instead of Playwright's with CHROMIUM_EXECUTABLE (every script here). For every address at 360, 768, 1024 and 1440 px it records
 // the status, horizontal overflow, external requests, failed requests and console errors; at 360 and
 // 1440 px axe-core (WCAG 2.0, 2.1 and 2.2, A and AA rules); and with JavaScript off, the heading and
 // main content. It then checks, without JavaScript, the phone menu, the workspace-type filter and the
 // comparison form; walks the keyboard focus through a location page on a phone; checks the 404, 410
 // and 419 answers; and, from errorPagesDir, the rendered 403, 419, 429, 500 and 503 pages. On every
-// address it also records any 3D request (three-d-files.mjs): none is allowed (Phase 7 AC 3). Writes
+// address it also records any 3D request (three-d-files.mjs): none is allowed (Phase 7 AC 3). It reads
+// robots.txt and the sitemap, and loads every address the sitemap lists (FR-SEO-3). Writes
 // <outDir>/public.json and prints a summary; exits non-zero when a check fails.
 import fs from 'node:fs';
 import { isThreeDRequest, threeDFiles } from './three-d-files.mjs';
@@ -31,12 +32,12 @@ const PAGES = [
     ['/locations/noida/a-70/hot-desks', 200], ['/locations/noida/h-105', 200], ['/workspaces', 200], ['/workspaces/hot-desks', 200],
     ['/workspaces/hot-desks/noida', 200], ['/locations/compare', 200],
     ['/locations/compare?locations[]=noida/a-70&locations[]=noida/a-71&locations[]=noida/h-105', 200],
-    ['/enquire', 200], ['/contact', 200], ['/about', 200], ['/test-fixture-sections', 200], ['/legal/terms', 200],
-    ['/faqs', 200], ['/insights', 200], ['/insights/test-fixture-insight', 200], ['/customers', 200],
+    ['/enquire', 200], ['/book-a-tour', 200], ['/contact', 200], ['/about', 200], ['/test-fixture-sections', 200], ['/test-fixture-media', 200], ['/legal/terms', 200],
+    ['/faqs', 200], ['/insights', 200], ['/insights/test-fixture-insight', 200], ['/insights/topic/test-fixture-topic', 200], ['/customers', 200],
     ['/customers/test-fixture-customer-story', 200], ['/no-such-page', 404], ['/pin/old-page', 410],
 ];
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(process.env.CHROMIUM_EXECUTABLE ? { executablePath: process.env.CHROMIUM_EXECUTABLE } : {});
 const report = { startedAt: new Date().toISOString(), base, chromium: browser.version(), axeCore: axeVersion, axeTags: AXE_TAGS, widths: WIDTHS, threeDFiles: viewerFiles, pages: [], noJs: [], flows: [], keyboard: null, statuses: [], errorPages: [], failures: [] };
 const fail = (what) => report.failures.push(what);
 
@@ -52,7 +53,9 @@ async function runAxe(page) {
 
 for (const [path, expected] of PAGES) {
     for (const width of WIDTHS) {
-        const context = await browser.newContext({ viewport: { width, height: 900 } });
+        // Reduced motion: axe audits the page as it settles; entrances and scroll reveals pass through
+        // partial opacity on purpose (OD-144) and stop entirely under this setting.
+        const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
         const page = await context.newPage();
         const external = [];
         const failed = [];
@@ -191,13 +194,61 @@ for (const [path, expected] of PAGES) {
 // Real answers: unknown address, removed address, and a form post without a CSRF token.
 {
     const context = await browser.newContext();
-    for (const [method, path, expected, title] of [['GET', '/no-such-page?token=fixture-secret', 404, 'Page not found'], ['GET', '/pin/old-page', 410, 'This page has been removed'], ['POST', '/enquire', 419, 'This page has expired']]) {
+    for (const [method, path, expected, title] of [['GET', '/no-such-page?token=fixture-secret', 404, 'Page not found'], ['GET', '/pin/old-page', 410, 'This page has been removed'], ['POST', '/enquire', 419, 'This page has expired'], ['POST', '/book-a-tour', 419, 'This page has expired']]) {
         const response = method === 'GET' ? await context.request.get(base + path) : await context.request.post(base + path, { form: { name: 'x' }, maxRedirects: 0 });
         const body = await response.text();
         const entry = { method, path, status: response.status(), branded: body.includes(`${title}</h1>`), noindex: body.includes('noindex, nofollow'), echoesQuery: body.includes('fixture-secret') };
         report.statuses.push(entry);
         if (entry.status !== expected || !entry.branded || !entry.noindex || entry.echoesQuery) fail(`${method} ${path}: ${JSON.stringify(entry)}`);
     }
+    await context.close();
+}
+
+// Search engines (FR-SEO-3, OD-130): robots.txt and the sitemap as served, then every address the
+// sitemap lists, fetched as a crawler would: each must answer 200, give exactly that address as its
+// canonical URL and not say "noindex". This server is not production, so robots.txt must forbid crawling
+// and every answer must carry "noindex" in its X-Robots-Tag header. Addresses that must never be listed
+// are checked too.
+{
+    const context = await browser.newContext();
+    const robots = await context.request.get(`${base}/robots.txt`);
+    const sitemap = await context.request.get(`${base}/sitemap.xml`);
+    const xml = await sitemap.text();
+    const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].replaceAll('&amp;', '&'));
+    report.seo = {
+        robots: { status: robots.status(), body: await robots.text(), xRobotsTag: robots.headers()['x-robots-tag'] ?? null },
+        sitemap: { status: sitemap.status(), type: sitemap.headers()['content-type'], urls: locs.length, wellFormed: /^<\?xml version="1\.0" encoding="UTF-8"\?>\s*<urlset xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9">/.test(xml) && xml.trim().endsWith('</urlset>') },
+        listed: [],
+        neverListed: ['/locations/compare', '/enquire/received', '/book-a-tour/requested', '/design', '/test-fixture-draft', '/admin', '/admin/login'].filter((path) => locs.includes(base + path)),
+    };
+    for (const loc of locs) {
+        // An address on another website is reported below and never fetched.
+        if (!loc.startsWith(base)) continue;
+        const response = await context.request.get(loc, { maxRedirects: 0 });
+        const html = await response.text();
+        const canonical = html.match(/<link rel="canonical" href="([^"]+)">/)?.[1]?.replaceAll('&amp;', '&') ?? null;
+        // Structured data (FR-SEO-2, OD-131): one JSON-LD script with one schema.org graph, no type twice,
+        // the breadcrumb's last step this address, and no rating, review, offer, price or availability.
+        const scripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+        let graph = null;
+        try { graph = JSON.parse(scripts[0] ?? 'null')?.['@graph'] ?? null; } catch { graph = null; }
+        const types = (graph ?? []).map((node) => node['@type']);
+        const breadcrumb = (graph ?? []).find((node) => node['@type'] === 'BreadcrumbList');
+        const forbidden = /"(aggregateRating|review|reviews|offers|price|priceRange|availability|rating)"\s*:/.test(scripts[0] ?? '');
+        const entry = {
+            path: loc.slice(base.length) || '/', status: response.status(), canonical: canonical === loc, noindexMeta: /<meta name="robots" content="noindex/.test(html), xRobotsTag: response.headers()['x-robots-tag'] ?? null,
+            jsonLd: { scripts: scripts.length, parsed: Array.isArray(graph), types, uniqueTypes: new Set(types).size === types.length, breadcrumbEndsHere: breadcrumb ? breadcrumb.itemListElement.at(-1).item === loc : null, forbidden },
+        };
+        report.seo.listed.push(entry);
+        if (entry.status !== 200 || !entry.canonical || entry.noindexMeta) fail(`sitemap address ${entry.path}: ${JSON.stringify({ ...entry, canonicalFound: canonical })}`);
+        if (entry.jsonLd.scripts !== 1 || !entry.jsonLd.parsed || !entry.jsonLd.uniqueTypes || entry.jsonLd.breadcrumbEndsHere === false || forbidden || !types.includes('Organization')) fail(`structured data on ${entry.path}: ${JSON.stringify(entry.jsonLd)}`);
+        if (entry.xRobotsTag !== 'noindex, nofollow') fail(`sitemap address ${entry.path}: no "noindex" header outside production`);
+    }
+    if (report.seo.robots.status !== 200 || report.seo.robots.body !== 'User-agent: *\nDisallow: /\n' || report.seo.robots.body.includes('admin')) fail(`robots.txt: ${JSON.stringify(report.seo.robots)}`);
+    if (report.seo.sitemap.status !== 200 || !/^application\/xml/.test(report.seo.sitemap.type ?? '') || !report.seo.sitemap.wellFormed || locs.length === 0) fail(`sitemap.xml: ${JSON.stringify(report.seo.sitemap)}`);
+    if (new Set(locs).size !== locs.length) fail('sitemap.xml: an address is listed twice');
+    if (locs.some((loc) => !loc.startsWith(base))) fail('sitemap.xml: an address is not on this website');
+    if (report.seo.neverListed.length) fail(`sitemap.xml lists private or unpublished addresses: ${report.seo.neverListed.join(', ')}`);
     await context.close();
 }
 
@@ -228,6 +279,8 @@ console.log(JSON.stringify({
     axeViolations: report.pages.reduce((n, p) => n + (p.axe?.violations.length ?? 0), 0) + report.errorPages.reduce((n, p) => n + p.axe.length, 0),
     noJsPages: report.noJs.length, flows: report.flows.length, keyboardStops: report.keyboard.stops, statuses: report.statuses.length,
     threeDRequests: report.pages.reduce((n, p) => n + p.threeD.length, 0),
+    sitemapUrls: report.seo?.sitemap.urls, sitemapChecked: report.seo?.listed.length,
+    jsonLdTypes: [...new Set((report.seo?.listed ?? []).flatMap((entry) => entry.jsonLd.types))],
     failures: report.failures,
 }, null, 1));
 process.exit(report.failures.length ? 1 : 0);

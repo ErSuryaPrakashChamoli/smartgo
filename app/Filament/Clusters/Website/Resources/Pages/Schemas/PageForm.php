@@ -42,12 +42,12 @@ class PageForm
                             ->helperText('If a published page gets a new address, the old address redirects to it automatically once the change is published (BR-CMS-6).'),
                         Select::make('template')
                             ->label('Layout')
-                            ->options(['standard' => 'Standard page', 'legal' => 'Legal page'])
+                            ->options(['standard' => 'Standard page', 'legal' => 'Legal page', 'sample' => 'Sample page (example content)'])
                             ->default('standard')
                             ->selectablePlaceholder(false)
                             ->required()
                             ->live()
-                            ->helperText('Legal pages hold text sections only and show the date they were last updated.'),
+                            ->helperText('Legal pages hold text sections only and show the date they were last updated. Sample pages show a "Sample content" notice and are never indexed: switch to Standard page once the text is approved SmartGro content.'),
                         TextInput::make('legal_review_reference')
                             ->label('Legal review reference')
                             ->maxLength(120)

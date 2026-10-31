@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\RecordMissingPage;
 use App\Http\Middleware\SetSecurityHeaders;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(SetSecurityHeaders::class);
+        $middleware->web(append: [RecordMissingPage::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

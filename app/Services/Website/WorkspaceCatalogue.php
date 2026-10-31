@@ -63,7 +63,7 @@ class WorkspaceCatalogue
         return Property::query()
             ->publiclyListed()
             ->when($city !== null, fn ($query) => $query->whereBelongsTo($city))
-            ->with(['city', 'microMarket', 'primaryBuilding', 'profile', 'publishedOfferings.product', 'publishedOfferings.profile'])
+            ->with(['city', 'microMarket.city', 'primaryBuilding', 'profile.seo', 'publishedOfferings.product', 'publishedOfferings.profile.seo'])
             ->orderBy('city_id')
             ->orderBy('code')
             ->get();
@@ -81,7 +81,7 @@ class WorkspaceCatalogue
             ->when($property !== null, fn (Builder $query) => $query->where('property_id', $property?->getKey()))
             ->when($product !== null, fn (Builder $query) => $query->where('product_id', $product?->getKey()))
             ->when($city !== null, fn (Builder $query) => $query->whereHas('property', fn (Builder $query) => $query->where('city_id', $city?->getKey())))
-            ->with(['product', 'profile', 'property.city', 'property.microMarket', 'property.profile'])
+            ->with(['product', 'profile.seo', 'property.city', 'property.microMarket.city', 'property.primaryBuilding', 'property.profile'])
             ->get()
             ->sortBy(fn (Offering $offering): string => sprintf('%05d-%s-%05d', $offering->product->sort_order, $offering->property->code, $offering->getKey()))
             ->values();
@@ -122,6 +122,18 @@ class WorkspaceCatalogue
         return Product::query()->shown()->where('slug', $slug)
             ->whereHas('offerings', fn (Builder $query) => $query->publiclyListed())
             ->first();
+    }
+
+    /**
+     * The address of a category's page while it has one (as categoryWithPage), for links to it.
+     */
+    public function categoryPath(int $productId): ?string
+    {
+        $slug = Product::query()->shown()->whereKey($productId)
+            ->whereHas('offerings', fn (Builder $query) => $query->publiclyListed())
+            ->value('slug');
+
+        return $slug === null ? null : '/workspaces/'.$slug;
     }
 
     /**
@@ -237,6 +249,11 @@ class WorkspaceCatalogue
     public function photos(array $payload, Property $property): array
     {
         $assetIds = array_values(array_unique(array_filter([$payload['hero_asset_id'] ?? null, ...($payload['gallery_asset_ids'] ?? [])], is_numeric(...))));
+
+        if ($assetIds === []) {
+            return [];
+        }
+
         $assets = MediaAsset::query()->with('media')->whereKey($assetIds)
             ->whereIn('origin', PropertyProfile::PHOTO_ORIGINS)
             ->where('depicts_property_id', $property->getKey())
@@ -244,16 +261,66 @@ class WorkspaceCatalogue
 
         return collect($assetIds)
             ->map(fn (int|string $id): ?MediaAsset => $assets->get((int) $id))
-            ->filter(fn (?MediaAsset $asset): bool => $asset !== null && ! $asset->isLicenceExpired() && $asset->file() !== null)
-            ->map(fn (MediaAsset $asset): array => [
-                'src' => $asset->renditionPath('w960'),
-                'srcset' => collect(MediaAsset::RENDITIONS)->map(fn (int $width, string $name): string => $asset->renditionPath($name).' '.$width.'w')->join(', '),
-                'alt' => $asset->is_decorative ? '' : (string) $asset->alt_text,
-                'credit' => $asset->credit_line,
-                'dimensions' => $asset->dimensions(),
-            ])
+            ->filter(fn (?MediaAsset $asset): bool => $asset !== null && $this->isShowablePhoto($asset, $property))
+            ->map(fn (MediaAsset $asset): array => $this->presentPhoto($asset))
             ->values()
             ->all();
+    }
+
+    /**
+     * The published main photo of each listed property and of each of their published workspace
+     * offerings, found in one query whatever their number, checked as photos() checks them.
+     *
+     * @param  Collection<int, Property>  $properties  listed properties, loaded by listedProperties()
+     * @return array{properties: array<int, array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null}>, offerings: array<int, array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null}>}
+     */
+    public function mainPhotos(Collection $properties): array
+    {
+        $wanted = ['properties' => [], 'offerings' => []];
+
+        foreach ($properties as $property) {
+            $wanted['properties'][$property->getKey()] = [$property, $property->profile?->toRevisionPayload()['hero_asset_id'] ?? null];
+
+            foreach ($property->publishedOfferings as $offering) {
+                $wanted['offerings'][$offering->getKey()] = [$property, $offering->profile?->toRevisionPayload()['hero_asset_id'] ?? null];
+            }
+        }
+
+        $assetIds = collect($wanted)->flatten(1)->pluck(1)->filter(fn (mixed $id): bool => is_numeric($id))->map(fn (mixed $id): int => (int) $id)->unique()->values()->all();
+
+        if ($assetIds === []) {
+            return ['properties' => [], 'offerings' => []];
+        }
+
+        $assets = MediaAsset::query()->with('media')->whereKey($assetIds)->whereIn('origin', PropertyProfile::PHOTO_ORIGINS)->get()->keyBy('id');
+
+        return array_map(fn (array $items): array => collect($items)
+            ->map(fn (array $item): ?MediaAsset => is_numeric($item[1]) ? $assets->get((int) $item[1]) : null)
+            ->filter(fn (?MediaAsset $asset, int $key): bool => $asset !== null && $this->isShowablePhoto($asset, $items[$key][0]))
+            ->map(fn (MediaAsset $asset): array => $this->presentPhoto($asset))
+            ->all(), $wanted);
+    }
+
+    /**
+     * Real photography of this property whose licence holds and whose file exists (BR-MED-2, BR-MED-3).
+     */
+    private function isShowablePhoto(MediaAsset $asset, Property $property): bool
+    {
+        return (int) $asset->depicts_property_id === (int) $property->getKey() && ! $asset->isLicenceExpired() && $asset->file() !== null;
+    }
+
+    /**
+     * @return array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null}
+     */
+    private function presentPhoto(MediaAsset $asset): array
+    {
+        return [
+            'src' => $asset->renditionPath('w960'),
+            'srcset' => collect(MediaAsset::RENDITIONS)->map(fn (int $width, string $name): string => $asset->renditionPath($name).' '.$width.'w')->join(', '),
+            'alt' => $asset->is_decorative ? '' : (string) $asset->alt_text,
+            'credit' => $asset->credit_line,
+            'dimensions' => $asset->dimensions(),
+        ];
     }
 
     /**

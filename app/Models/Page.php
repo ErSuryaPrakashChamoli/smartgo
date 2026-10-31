@@ -98,7 +98,8 @@ class Page extends Model implements Revisionable
      */
     public function toRevisionPayload(): array
     {
-        $seo = $this->seo()->first();
+        // The search fields as loaded with the page when a list loaded them, otherwise read now.
+        $seo = $this->relationLoaded('seo') ? $this->seo : $this->seo()->first();
 
         return [
             ...$this->only(self::CONTENT_FIELDS),

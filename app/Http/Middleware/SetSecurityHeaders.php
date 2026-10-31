@@ -9,6 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Baseline browser security headers (SECURITY_MODEL §5). A full Content Security Policy
  * is introduced once the public site's scripts are known (Phase 14 hardening).
+ *
+ * Search engines are told not to index anything outside production (DEPLOYMENT_RUNBOOK: staging is
+ * "noindex"), nor the back office anywhere, by a response header rather than robots.txt, so the back
+ * office's address is never advertised (D-30, FR-SEO-3). A page's own stricter setting is kept.
  */
 class SetSecurityHeaders
 {
@@ -38,10 +42,21 @@ class SetSecurityHeaders
             }
         }
 
+        if ((! app()->isProduction() || $this->isBackoffice($request)) && ! $response->headers->has('X-Robots-Tag')) {
+            $response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
         if ($request->isSecure() && app()->isProduction()) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
         return $response;
+    }
+
+    private function isBackoffice(Request $request): bool
+    {
+        $path = trim((string) config('backoffice.path'), '/');
+
+        return $request->is($path, $path.'/*');
     }
 }

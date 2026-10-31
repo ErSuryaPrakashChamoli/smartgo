@@ -89,6 +89,33 @@ enum Capability: string
     /** Adding and editing workspace categories and which properties offer them (§3.1, ADR-0013). */
     case ManageProducts = 'products.manage';
 
+    /** Adding and changing spaces and seats: capacity, status with a reason, the categories they can be sold as, website visibility (§3.1 "Spaces and seats", BR-INV-1). */
+    case ManageInventory = 'inventory.manage';
+
+    /** Seeing allocations, the long-term occupancy of spaces and seats (§3.1 "Allocations"). */
+    case ViewAllocations = 'allocations.view';
+
+    /** Recording allocations, notice, ends and cancellations, each checked under the space's lock (§3.1 "Allocations", FR-INV-3, ADR-0004). */
+    case ManageAllocations = 'allocations.manage';
+
+    /** Uploading an SG-INV inventory workbook, seeing its checks and preview, and submitting it (§3.1 "Inventory import: upload, validate, preview"; Property Managers for their own properties). */
+    case ImportInventory = 'inventory.import';
+
+    /** Approving and committing someone else's inventory import (§3.1 "Inventory import: approve and commit", not own). */
+    case ApproveInventoryImport = 'inventory.import.approve';
+
+    /** Seeing price plans and offers (§3.1 "View prices": every back-office role that sees offerings; Property Managers for their properties). */
+    case ViewPrices = 'pricing.view';
+
+    /** Entering and changing draft price plans, submitting them, and ending or retiring active ones (§11 `pricing.manage`, BR-PR-2). */
+    case ManagePrices = 'pricing.manage';
+
+    /** Activating someone else's price plan or approving someone else's offer, never one's own (§3.1 "Price plan / offer activation", BR-PR-2, BR-PR-5). */
+    case ApprovePrices = 'pricing.approve';
+
+    /** Drafting offers and submitting them for approval (§3.1 "Offers (create)"). */
+    case ManageOffers = 'offers.manage';
+
     /** Reading property profiles in the back office: drafts, their history and previews (FR-CMS-6; the "Profiles" cells of `content.view`). */
     case ViewProfiles = 'profiles.view';
 
@@ -106,6 +133,15 @@ enum Capability: string
 
     /** Exporting enquiries, audited; Super Admin only (FR-CRM-6, OD-36). */
     case ExportLeads = 'leads.export';
+
+    /** Seeing enquiry and tour totals in Reports, never an enquiry itself (§3.1 "Leads, contacts, deals": the "aggregates" and "Totals" cells, OD-132). */
+    case ViewLeadReports = 'leads.reports.view';
+
+    /** Seeing tours and the tour hours of the properties in scope (§3.1 "Tours", §11 `tours.view`). */
+    case ViewTours = 'tours.view';
+
+    /** Confirming, scheduling, moving and cancelling tours and setting a property's tour hours (§3.1 "Tours" M cells, §11 `tours.manage`). */
+    case ManageTours = 'tours.manage';
 
     /** Managing the lists used on enquiries, such as the reasons for closing one (BR-CRM-5); Super Admin only, like assignment rules and pipeline stages (SECURITY_MODEL §3.1). */
     case ManageLeadSettings = 'leads.settings.manage';

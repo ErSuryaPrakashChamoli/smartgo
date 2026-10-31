@@ -2,17 +2,24 @@
 
 namespace App\Services\Content;
 
+use App\Models\NavigationItem;
 use App\Models\NavigationMenu;
+use App\Models\Page;
+use App\Models\Product;
 use App\Models\Property;
 use App\Models\SiteSetting;
+use App\Services\Website\EnquiryForm;
 use App\Services\Website\SiteSections;
+use App\Services\Website\WorkspaceCatalogue;
 
 /**
  * The website's published menus, contact details and social links, ready for the header and footer.
  * A link to a page appears only while that page is published, a link to a property only while it is
- * listed, and a link to a part of the website only while it has something to show, always at the
+ * listed, a link to a workspace type while it is shown (to its page, or to the enquiry form while it has
+ * none), and a link to a part of the website only while it has something to show, always at the
  * current address; groups without a visible link, and menus and settings that were never published,
- * are left out, so nothing unapproved or placeholder is shown (BR-CMS-9).
+ * are left out, so nothing unapproved or placeholder is shown (BR-CMS-9). Drop-down links and categories
+ * carry their description and icon (OD-149), and a link to a sample page says so, for the "example pages" note.
  */
 class SiteNavigation
 {
@@ -20,7 +27,7 @@ class SiteNavigation
 
     /**
      * @param  array<string, array<string, mixed>>  $draftPayloads  menu handle => payload shown instead of the live menu (staff preview only)
-     * @return array<string, mixed> each menu handle => list<array{label: string, href: string|null, external: bool, children: list<array{label: string, href: string, external: bool}>}>, plus `contact` and `social`
+     * @return array<string, mixed> each menu handle => list<array{label: string, href: string|null, external: bool, description: string|null, icon: string|null, sample: bool, children: list<array<string, mixed>>}>, plus `contact` and `social`
      */
     public function present(array $draftPayloads = []): array
     {
@@ -31,11 +38,17 @@ class SiteNavigation
             $payloads[$handle] = $draftPayloads[$handle]['items'] ?? $menus->get($handle)?->toRevisionPayload()['items'] ?? [];
         }
 
+        $pageIds = $this->linkIds($payloads, 'page_id');
+        $pages = $pageIds === [] ? collect() : Page::query()->whereKey(array_unique($pageIds))->published()->get(['id', 'slug', 'template']);
         $paths = [
-            ContentLink::TO_PAGE => $this->contentLink->publishedPagePaths($this->linkIds($payloads, 'page_id')),
+            ContentLink::TO_PAGE => $pages->mapWithKeys(fn (Page $page): array => [$page->getKey() => '/'.$page->slug])->all(),
+            'samples' => $pages->where('template', PagePayload::SAMPLE_TEMPLATE)->pluck('id')->all(),
             NavigationPayload::SECTION => $this->siteSections->availablePaths(array_values(array_filter($this->linkTargets($payloads, 'section'), is_string(...)))),
             NavigationPayload::PROPERTY => $this->listedPropertyPaths($this->linkIds($payloads, 'property_id')),
+            NavigationPayload::CATEGORY => $this->categoryPaths($this->linkIds($payloads, 'product_id')),
         ];
+        $paths['icons'] = $paths[NavigationPayload::CATEGORY] === [] ? [] : Product::query()->whereKey(array_keys($paths[NavigationPayload::CATEGORY]))->get(['id', 'key'])
+            ->mapWithKeys(fn (Product $product): array => [$product->getKey() => app(WorkspaceCatalogue::class)->categoryCopy($product)['icon']])->all();
 
         $settings = SiteSetting::query()->whereIn('handle', ['contact', 'social'])->get()->keyBy('handle');
 
@@ -129,7 +142,7 @@ class SiteNavigation
     /**
      * @param  list<array<string, mixed>>  $items
      * @param  array<string, array<int|string, string>>  $paths  link type => target => address, for the targets that may be shown
-     * @return list<array{label: string, href: string|null, external: bool, children: list<array<string, mixed>>}>
+     * @return list<array{label: string, href: string|null, external: bool, description: string|null, icon: string|null, sample: bool, children: list<array<string, mixed>>}>
      */
     private function resolve(array $items, array $paths): array
     {
@@ -140,7 +153,15 @@ class SiteNavigation
                 $children = $this->resolve($item['children'] ?? [], $paths);
 
                 if ($children !== [] && filled($item['label'] ?? null)) {
-                    $resolved[] = ['label' => (string) $item['label'], 'href' => null, 'external' => false, 'children' => $children];
+                    $resolved[] = [
+                        'label' => (string) $item['label'],
+                        'href' => null,
+                        'external' => false,
+                        'description' => $this->description($item),
+                        'icon' => $this->chosenIcon($item) ?? collect($children)->pluck('icon')->filter()->first(),
+                        'sample' => collect($children)->contains('sample', true),
+                        'children' => $children,
+                    ];
                 }
 
                 continue;
@@ -150,12 +171,21 @@ class SiteNavigation
                 ContentLink::TO_PAGE => $paths[ContentLink::TO_PAGE][(int) ($item['page_id'] ?? 0)] ?? null,
                 NavigationPayload::SECTION => $paths[NavigationPayload::SECTION][(string) ($item['section'] ?? '')] ?? null,
                 NavigationPayload::PROPERTY => $paths[NavigationPayload::PROPERTY][(int) ($item['property_id'] ?? 0)] ?? null,
+                NavigationPayload::CATEGORY => $paths[NavigationPayload::CATEGORY][(int) ($item['product_id'] ?? 0)] ?? null,
                 ContentLink::TO_URL => is_string($item['url'] ?? null) && $this->contentLink->isSafeExternalUrl($item['url']) ? $item['url'] : null,
                 default => null,
             };
 
             if ($href !== null && filled($item['label'] ?? null)) {
-                $resolved[] = ['label' => (string) $item['label'], 'href' => $href, 'external' => $item['type'] === ContentLink::TO_URL, 'children' => []];
+                $resolved[] = [
+                    'label' => (string) $item['label'],
+                    'href' => $href,
+                    'external' => $item['type'] === ContentLink::TO_URL,
+                    'description' => $this->description($item),
+                    'icon' => $this->chosenIcon($item) ?? $this->icon($item, $paths['icons']),
+                    'sample' => $item['type'] === ContentLink::TO_PAGE && in_array((int) ($item['page_id'] ?? 0), $paths['samples'], true),
+                    'children' => [],
+                ];
             }
         }
 
@@ -172,6 +202,68 @@ class SiteNavigation
     {
         return $propertyIds === [] ? [] : Property::query()->whereKey(array_unique($propertyIds))->publiclyListed()->with('city')->get()
             ->mapWithKeys(fn (Property $property): array => [$property->getKey() => (string) $property->path()])
+            ->all();
+    }
+
+    /**
+     * The icon an editor chose for the item (OD-149), if it is still one the website offers.
+     *
+     * @param  array<string, mixed>  $item
+     */
+    private function chosenIcon(array $item): ?string
+    {
+        $icon = $item['icon'] ?? null;
+
+        return is_string($icon) && array_key_exists($icon, NavigationItem::ICONS) ? $icon : null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $item
+     */
+    private function description(array $item): ?string
+    {
+        return is_string($item['description'] ?? null) && filled($item['description']) ? $item['description'] : null;
+    }
+
+    /**
+     * A small picture for a link where its destination has one (OD-145): a workspace type's own icon, a pin
+     * for a location, a speech bubble for the enquiry form.
+     *
+     * @param  array<string, mixed>  $item
+     * @param  array<int, string|null>  $categoryIcons
+     */
+    private function icon(array $item, array $categoryIcons): ?string
+    {
+        return match ($item['type'] ?? null) {
+            NavigationPayload::CATEGORY => $categoryIcons[(int) ($item['product_id'] ?? 0)] ?? null,
+            NavigationPayload::PROPERTY => 'map-pin',
+            NavigationPayload::SECTION => ($item['section'] ?? null) === 'enquire' ? 'chat-bubble-left-right' : null,
+            default => null,
+        };
+    }
+
+    /**
+     * Where each of the given workspace types leads: its page while it is shown with an offering on the
+     * website (as WorkspaceCatalogue::categoryWithPage); otherwise, while it is shown and the enquiry form is
+     * open, the form with the type chosen, as the workspaces page does (OD-145); otherwise nowhere.
+     *
+     * @param  list<int>  $productIds
+     * @return array<int, string>
+     */
+    private function categoryPaths(array $productIds): array
+    {
+        if ($productIds === []) {
+            return [];
+        }
+
+        $products = Product::query()->whereKey(array_unique($productIds))->shown()
+            ->withExists(['offerings as has_page' => fn ($query) => $query->publiclyListed()])
+            ->get(['id', 'slug']);
+        $enquiryOpen = $products->contains('has_page', false) && app(EnquiryForm::class)->isOpen();
+
+        return $products
+            ->filter(fn (Product $product): bool => $product->has_page || $enquiryOpen)
+            ->mapWithKeys(fn (Product $product): array => [$product->getKey() => $product->has_page ? '/workspaces/'.$product->slug : '/enquire?workspace='.$product->slug])
             ->all();
     }
 

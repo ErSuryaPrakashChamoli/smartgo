@@ -27,3 +27,14 @@ arch('actions expose a single handle method')
 arch('application code does not use eval, extract or unserialize')
     ->expect('App')
     ->not->toUse(['eval', 'extract', 'unserialize']);
+
+arch('only the availability service and the inventory actions read allocations, so no surface computes availability on its own (FR-INV-6)')
+    ->expect('App\\Models\\SpaceAllocation')
+    ->toOnlyBeUsedIn([
+        'App\\Models',
+        'App\\Services\\Inventory',
+        'App\\Actions\\Inventory',
+        'App\\Policies\\SpaceAllocationPolicy',
+        'Database\\Factories\\SpaceAllocationFactory',
+        'App\\Filament\\Clusters\\Properties\\Resources\\Spaces\\RelationManagers\\AllocationsRelationManager',
+    ]);

@@ -3,11 +3,15 @@
 use App\Enums\Content\RedirectMatch;
 use App\Enums\Content\RevisionState;
 use App\Models\Page;
+use App\Models\Product;
+use App\Models\Property;
 use App\Models\Redirect;
 use App\Models\User;
+use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use function Pest\Laravel\get;
+use function Pest\Laravel\seed;
 
 uses(RefreshDatabase::class);
 
@@ -105,4 +109,53 @@ it('leaves existing routes and unknown paths alone', function () {
     get('/design')->assertOk();
     get('/admin/login')->assertOk();
     get('/no-such-page')->assertNotFound();
+});
+
+it('shows cards with live links only, and links to parts of the website only while they have something to show (OD-143)', function () {
+    $live = Page::factory()->published()->create(['title' => 'Startups', 'slug' => 'solutions/startups']);
+    $draft = Page::factory()->create(['title' => 'Draft solution']);
+    $link = fn (string $label, string $type, ?int $pageId = null, ?string $section = null): array => ['label' => $label, 'type' => $type, 'page_id' => $pageId, 'section' => $section, 'url' => null];
+    Page::factory()->published()->create(['slug' => 'solutions', 'blocks' => [['type' => 'cards', 'data' => ['heading' => 'Who we work with', 'intro' => 'Pick yours.', 'items' => [
+        ['title' => 'Startups', 'text' => 'Room to grow.', 'link' => $link('Read about startups', 'page', $live->id)],
+        ['title' => 'Enterprises', 'text' => 'Whole floors.', 'link' => $link('Read about enterprises', 'page', $draft->id)],
+        ['title' => 'Ask us', 'text' => null, 'link' => $link('Send an enquiry', 'section', section: 'enquire')],
+    ]]]]]);
+
+    get('/solutions')->assertOk()
+        ->assertSeeInOrder(['Who we work with', 'Startups', 'Read about startups', 'Enterprises', 'Ask us'])
+        ->assertSee('href="/solutions/startups"', false)
+        ->assertDontSee('Read about enterprises')
+        ->assertDontSee('href="/enquire"', false);
+
+    Page::factory()->published()->create(['slug' => 'legal/privacy', 'template' => 'legal']);
+
+    get('/solutions')->assertSee('href="/enquire"', false)->assertSee('Send an enquiry');
+});
+
+it('links to a workspace type\'s page only while the type has one on the website (OD-150)', function () {
+    seed(ReferenceDataSeeder::class);
+    $meetingRooms = Product::query()->where('key', 'meeting_room')->sole();
+    Page::factory()->published()->create(['slug' => 'business-solutions/meeting-rooms', 'blocks' => [['type' => 'hero', 'data' => ['eyebrow' => null, 'heading' => 'Meeting Rooms', 'intro' => null,
+        'link' => ['label' => 'See locations with meeting rooms', 'type' => 'category', 'page_id' => null, 'section' => null, 'product_id' => $meetingRooms->id, 'url' => null]]]]]);
+
+    get('/business-solutions/meeting-rooms')->assertOk()->assertDontSee('See locations with meeting rooms');
+
+    offerForTest(publishPropertyProfileForTest(Property::query()->where('code', 'A-70')->sole()), 'meeting_room');
+
+    get('/business-solutions/meeting-rooms')->assertSee('href="/workspaces/meeting-rooms"', false)->assertSee('See locations with meeting rooms');
+
+    $meetingRooms->update(['is_active' => false]);
+
+    get('/business-solutions/meeting-rooms')->assertOk()->assertDontSee('See locations with meeting rooms');
+});
+
+it('marks a page with the sample layout as sample content, never indexes it and leaves it out of the sitemap (OD-143)', function () {
+    Page::factory()->published()->create(['title' => 'Community', 'slug' => 'community', 'template' => 'sample', 'blocks' => [['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Example text.</p>']]]]);
+    Page::factory()->published()->create(['title' => 'Real page', 'slug' => 'real-page']);
+
+    get('/community')->assertOk()
+        ->assertSee('<strong class="font-semibold">Sample content.</strong>', false)
+        ->assertSee('<meta name="robots" content="noindex, follow">', false);
+    get('/real-page')->assertDontSee('Sample content.')->assertDontSee('noindex', false);
+    get('/sitemap.xml')->assertSee('/real-page')->assertDontSee('/community');
 });

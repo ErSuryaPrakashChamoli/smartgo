@@ -1,0 +1,8 @@
+{
+    "database": "smart_go",
+    "read_only": 1,
+    "switch": false,
+    "sample page, saved as a draft": "accepted",
+    "sample page, submitted": "refused: This website does not publish sample pages. Replace the example text and choose \"Standard page\" first.",
+    "standard page, submitted": "accepted"
+}

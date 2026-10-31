@@ -1,0 +1,126 @@
+{
+ "startedAt": "2026-10-30T13:20:10.606Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "156.0.8078.47",
+ "pages": [
+  {
+   "label": "picker @1440",
+   "path": "/book-a-tour",
+   "h1": [
+    "Visit a SmartGro location"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "requested @1440",
+   "path": "/book-a-tour/requested",
+   "h1": [
+    "We have your tour request"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "tour page @1440 (requested)",
+   "path": "/tours/TOUR-H2D8VPS7",
+   "h1": [
+    "Your tour of SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "staff tour page @1440",
+   "path": "/admin/sales/tours/2",
+   "h1": [
+    "View TOUR-H2D8VPS7: SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "tour page @1440 (confirmed)",
+   "path": "/tours/TOUR-H2D8VPS7",
+   "h1": [
+    "Your tour of SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "tour page @1440 (cancelled)",
+   "path": "/tours/TOUR-H2D8VPS7",
+   "h1": [
+    "Your tour of SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "picker @360",
+   "path": "/book-a-tour",
+   "h1": [
+    "Visit a SmartGro location"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "tour page @360",
+   "path": "/tours/TOUR-H2D8VPS7",
+   "h1": [
+    "Your tour of SmartGro A-70"
+   ],
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "label": "requested @360, JavaScript off",
+   "path": "/book-a-tour/requested",
+   "h1": [
+    "We have your tour request"
+   ],
+   "overflow": 0,
+   "axe": null
+  }
+ ],
+ "steps": [
+  {
+   "step": "requested @1440",
+   "at": "/book-a-tour/requested",
+   "reference": "TOUR-H2D8VPS7",
+   "waiting": true
+  },
+  {
+   "step": "confirmed by the Super Admin",
+   "notices": "Tour confirmed"
+  },
+  {
+   "step": "confirmed, seen by the visitor",
+   "confirmed": true,
+   "calendar": 200,
+   "type": "text/calendar; charset=utf-8",
+   "dtstart": "DTSTART:20261101T033000Z",
+   "visitorDetailsInFile": false
+  },
+  {
+   "step": "moved by the visitor",
+   "message": true,
+   "waitingAgain": true
+  },
+  {
+   "step": "cancelled by the visitor",
+   "message": true,
+   "status": true,
+   "changesOffered": 0
+  },
+  {
+   "step": "requested @360 without JavaScript",
+   "at": "/book-a-tour/requested",
+   "reference": "TOUR-BF29SQS8"
+  }
+ ],
+ "failures": [],
+ "finishedAt": "2026-10-30T13:22:40.720Z"
+}

@@ -9,6 +9,7 @@
         'photos' => count($photos) > 1 ? 'Photos' : null,
         'getting-here' => $hasGettingHere ? 'Getting here' : null,
         'hours' => $openingHours !== [] ? 'Opening hours' : null,
+        'faqs' => $faqs->isNotEmpty() ? 'Questions' : null,
         'nearby' => count($nearby) > 0 ? 'Nearby' : null,
     ]);
 @endphp
@@ -22,12 +23,6 @@
     :mobile-actions="[['label' => 'Enquire', 'href' => $enquiryHref, 'external' => false]]"
     :mobile-contact="$contact['details']"
 >
-    @if ($structuredData !== null)
-        <x-slot:head>
-            <script type="application/ld+json">@json($structuredData)</script>
-        </x-slot:head>
-    @endif
-
     @if ($preview !== null)
         <x-slot:banner>
             <x-site.revision-preview-banner :number="$preview['number']" :state="$preview['state']" :expires-at="$preview['expires_at']" />
@@ -85,6 +80,9 @@
                 </dl>
                 <div class="flex flex-col gap-3 sm:flex-row">
                     <x-ui.button size="lg" :href="$enquiryHref" icon="chat-bubble-left-right">Enquire about this location</x-ui.button>
+                    @if ($tourHref)
+                        <x-ui.button size="lg" variant="secondary" :href="$tourHref" icon="calendar-days">Book a tour</x-ui.button>
+                    @endif
                     @if ($mapHref)
                         <x-ui.button size="lg" variant="secondary" :href="$mapHref" icon="map" rel="noopener">Open map</x-ui.button>
                     @endif
@@ -187,6 +185,10 @@
                     </section>
                 @endif
             </div>
+        @endif
+
+        @if ($faqs->isNotEmpty())
+            <x-site.faq-section :faqs="$faqs" :title="'Questions about SmartGro '.$property->name" />
         @endif
 
         @if (count($nearby) > 0)

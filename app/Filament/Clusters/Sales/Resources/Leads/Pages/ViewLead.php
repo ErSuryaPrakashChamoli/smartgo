@@ -4,6 +4,8 @@ namespace App\Filament\Clusters\Sales\Resources\Leads\Pages;
 
 use App\Actions\Crm\AssignLead;
 use App\Actions\Crm\ChangeLeadStatus;
+use App\Actions\Crm\RecordLeadActivity;
+use App\Enums\Crm\LeadActivityType;
 use App\Enums\Crm\LeadStatus;
 use App\Filament\Clusters\Sales\Resources\Leads\LeadResource;
 use App\Models\Lead;
@@ -26,7 +28,10 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * One enquiry with its actions. Each action runs a server-side step that locks the enquiry and checks
- * permission, scope and the state the user saw again, so hiding a button is only a convenience.
+ * permission, scope and the state the user saw again, so hiding a button is only a convenience. "Call"
+ * and "Email" open the user's own phone or mail program in one tap and record the contact on the
+ * enquiry at the same moment (FR-CRM-3, UJ-10), on the channels the visitor agreed to ("by email or
+ * phone"). WhatsApp is not offered: the visitor did not agree to it and the channel is not decided (D-10).
  *
  * @property Lead $record
  */
@@ -42,6 +47,20 @@ class ViewLead extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('call')
+                ->label('Call')
+                ->icon(Heroicon::OutlinedPhone)
+                ->color('gray')
+                ->visible(fn (): bool => filled($this->record->submitted_phone) && Gate::allows('update', $this->record))
+                ->url(fn (): string => 'tel:'.$this->record->submitted_phone)
+                ->extraAttributes(['wire:click' => "recordContactStarted('call')"]),
+            Action::make('email')
+                ->label('Email')
+                ->icon(Heroicon::OutlinedEnvelope)
+                ->color('gray')
+                ->visible(fn (): bool => filled($this->record->submitted_email) && Gate::allows('update', $this->record))
+                ->url(fn (): string => 'mailto:'.$this->record->submitted_email)
+                ->extraAttributes(['wire:click' => "recordContactStarted('email')"]),
             Action::make('assign')
                 ->label(fn (): string => $this->record->owner_user_id === null ? 'Assign' : 'Reassign')
                 ->icon(Heroicon::OutlinedUserPlus)
@@ -96,6 +115,39 @@ class ViewLead extends ViewRecord
                     $data['details'] ?? null,
                 ), 'Status updated')),
         ];
+    }
+
+    /**
+     * Records that the user started a call or an email from this page (FR-CRM-3); the outcome is added
+     * as a note. Checked like any other note: permission and scope, under the enquiry's lock.
+     */
+    public function recordContactStarted(string $channel): void
+    {
+        $type = match ($channel) {
+            'call' => LeadActivityType::Call,
+            'email' => LeadActivityType::Email,
+            default => null,
+        };
+
+        if ($type === null) {
+            return;
+        }
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        try {
+            app(RecordLeadActivity::class)->handle($this->record, $user, $type, $type === LeadActivityType::Call ? 'Call started from the enquiry page.' : 'Email started from the enquiry page.');
+        } catch (AuthorizationException|ValidationException $exception) {
+            // Called from the link itself, not from an action, so the refusal is shown rather than halted.
+            Notification::make()->danger()->title('Not allowed')->body($exception instanceof ValidationException ? collect($exception->errors())->flatten()->first() : $exception->getMessage())->send();
+
+            return;
+        }
+
+        Notification::make()->success()->title($type->label().' recorded')->send();
+        $this->record->refresh();
+        $this->dispatch('lead-changed');
     }
 
     /**

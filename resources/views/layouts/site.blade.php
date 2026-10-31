@@ -56,6 +56,7 @@
         @endif
 
         {{ $head ?? '' }}
+        {!! app(\App\Services\Website\StructuredData::class)->script($canonical, ! $noindex && $robots !== \App\Models\SeoMetadata::NOINDEX, $navigation) !!}
 
         @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])

@@ -169,7 +169,7 @@ Uploads are checked by content (JPEG, PNG or WebP, up to 10 MB and 200–8,000 p
 | Mutation checks (round 42) | each log protection removed in turn: value masking, the database-error reporting rule, the trace setting | the matching test fails each time; restored |
 | Formatting | `vendor/bin/pint --dirty --format agent` | passed |
 | Front-end build | `npm run build` | succeeded |
-| Dependencies | `composer audit`; `npm audit` | **Temporary security exception, open; not resolved.** Recorded on the owner's instruction (round 44) until an upstream-compatible fix exists; register item D-1. Round 42: **1 advisory**, published 2026-10-27 03:15 UTC: `phpunit/phpunit` 13.4.3 (test-only, installed through Pest), local code execution through a shared temporary folder in PHPT coverage handling (GHSA-9vw2-f4vp-x7gf). The project has no PHPT tests and runs no coverage. The fix is PHPUnit 13.4.4. **Update approved by the owner but not possible yet (round 43):** the newest stable Pest, v5.3.3, conflicts with PHPUnit above 13.4.3, and every stable Pest 5.3.x release has the same limit. Composer dry runs refused 13.4.4 alone, with `-W`, and with Pest and its Laravel plugin allowed to update; no file was changed. Exposure here: the vulnerable path is the fixed shared folder `<temp>/phpunit-phpt` used only when PHPT tests run with code coverage; the project has no PHPT tests and no coverage driver (Xdebug or PCOV) is loaded. **Re-checked in round 44:** Pest v5.3.3 is still the newest stable release and still conflicts with PHPUnit 13.4.4; `composer install --dry-run` reports nothing to change, so `vendor/` matches the lock file; `composer audit` still reports the advisory. Not allowed as workarounds (owner, round 44): forcing PHPUnit 13.4.4 or later, a Pest development branch, or editing `composer.json`, `composer.lock` or `vendor/`. `npm audit`: 0 vulnerabilities. Round 41: no advisories. |
+| Dependencies | `composer audit`; `npm audit` | **Resolved 2026-10-30 (OD-137):** Pest v5.3.4 accepts the fixed PHPUnit; Pest 5.3.4 and PHPUnit 13.4.5 were installed with the owner's approval, the suite passes and `composer audit` reports no advisories (`PHASE_14_ACCEPTANCE_PACK.md` §3, P14-2). Earlier record: **Temporary security exception, open; not resolved.** Recorded on the owner's instruction (round 44) until an upstream-compatible fix exists; register item D-1. Round 42: **1 advisory**, published 2026-10-27 03:15 UTC: `phpunit/phpunit` 13.4.3 (test-only, installed through Pest), local code execution through a shared temporary folder in PHPT coverage handling (GHSA-9vw2-f4vp-x7gf). The project has no PHPT tests and runs no coverage. The fix is PHPUnit 13.4.4. **Update approved by the owner but not possible yet (round 43):** the newest stable Pest, v5.3.3, conflicts with PHPUnit above 13.4.3, and every stable Pest 5.3.x release has the same limit. Composer dry runs refused 13.4.4 alone, with `-W`, and with Pest and its Laravel plugin allowed to update; no file was changed. Exposure here: the vulnerable path is the fixed shared folder `<temp>/phpunit-phpt` used only when PHPT tests run with code coverage; the project has no PHPT tests and no coverage driver (Xdebug or PCOV) is loaded. **Re-checked in round 44:** Pest v5.3.3 is still the newest stable release and still conflicts with PHPUnit 13.4.4; `composer install --dry-run` reports nothing to change, so `vendor/` matches the lock file; `composer audit` still reports the advisory. Not allowed as workarounds (owner, round 44): forcing PHPUnit 13.4.4 or later, a Pest development branch, or editing `composer.json`, `composer.lock` or `vendor/`. `npm audit`: 0 vulnerabilities. Round 41: no advisories. |
 | Migrations | rollback of the 10 newest and re-apply on `smartgro_testing`; round 41: rollback of the 3 new ones and re-apply | all down and up |
 | Routes | `php artisan route:list` | no API routes; only `POST /enquire` writes publicly, throttled |
 | Logs | isolated preview and test logs after the browser runs | no errors; round 42: both isolated log folders empty, no 500 responses |
@@ -238,7 +238,7 @@ Decided in round 42 (OD-111): Property Manager status and publication, the Sales
 | Pricing | O-3 | Pricing decisions PR-1 to PR-11 and price values (OD-35; pricing sheets of SG-INP-1.0; GST and SAC from the tax adviser) | Owner, Finance | AC-5.1, AC-5.2 |
 | Business decision | O-4 | Confirm or change the Phase 5 default values BR-SOT-4, BR-AV-2 (inventory) and BR-PR-2, BR-PR-4 (pricing) | Owner | Entry gate |
 | Business decision | O-9 | Online booking and payment scope (D-07, D-08) | Owner | Payment rules (PR-9), Phase 8 |
-| Security exception | D-1 | PHPUnit 13.4.3 advisory PKSA-qhjm-rpqc-qkn6 / GHSA-9vw2-f4vp-x7gf (test-only). Pending an upstream fix: when a stable Pest release accepts PHPUnit 13.4.4 or later, approve updating Pest and PHPUnit together, then re-run the suite and `composer audit`. Until then, no PHPT tests and no code coverage on shared machines or CI | Owner (approval), developer | A clean `composer audit` |
+| Security exception | D-1 | **Done 2026-10-30 (OD-137):** Pest v5.3.4 and PHPUnit 13.4.5 installed with the owner's approval; suite passes; `composer audit` clean. PHPUnit 13.4.3 advisory PKSA-qhjm-rpqc-qkn6 / GHSA-9vw2-f4vp-x7gf (test-only). Pending an upstream fix: when a stable Pest release accepts PHPUnit 13.4.4 or later, approve updating Pest and PHPUnit together, then re-run the suite and `composer audit`. Until then, no PHPT tests and no code coverage on shared machines or CI | Owner (approval), developer | A clean `composer audit` |
 | Acceptance | A-1 | ~~Review this pack and record an acceptance decision.~~ **Recorded 2026-10-27: partially accepted** (§13) | Owner | Done |
 | Acceptance | A-2 | Once the excluded items are resolved (O-2, O-3, O-4, L-1 with re-verification, O-1, D-1), a further owner decision on the rest of Phase 5. Phase 6 does not start until the remaining Phase 5 requirements and this decision are addressed (owner, 2026-10-27). | Owner | Rest of Phase 5; Phase 6 start |
 
@@ -285,7 +285,7 @@ The session cannot:
 * pass AC-5.1 to AC-5.4;
 * open the enquiry form (L-1);
 * turn on notifications (O-1);
-* clear the PHPUnit exception (D-1).
+* clear the PHPUnit exception (D-1; done 2026-10-30, OD-137).
 
 ## 13. Owner decision (2026-10-27)
 
@@ -318,3 +318,91 @@ The session cannot:
 >
 > Phase 5 is partially accepted, not fully accepted. Phase 6 must not begin until the remaining Phase 5 requirements and the required owner decision are addressed in accordance with the project acceptance process.
 
+
+---
+
+## 14. Inventory structure (2026-10-28, OD-127): built locally, not accepted
+
+**What changed.** The owner's instruction of 2026-10-28 (OD-127) asked for the configurable inventory structures, with missing business inputs marked. The structure is built and tested locally; **no status in §1 changes**. The master plan's entry gate still holds (OD-30: merging waits for the first property's real inventory through SG-INV-1.3), so the code is uncommitted, and nothing was entered on `smart_go` or `smartgro_preview`.
+
+### 14.1 Requirements addressed
+
+| ID | Before | Now (local, not accepted) | Still needed |
+|---|---|---|---|
+| D4.1 / FR-PROP-1 (floors) | Floors not built | Floors per building on the property's page (level, name, reason); unique level per building; a Property Manager edits but does not add or remove (§3.1) | The owner's floors per property (O-2; never assumed, OD-32) |
+| D6 / FR-PROP-2, FR-PROP-3 | Capacity and configuration not built | Spaces per floor with type, how they are counted (whole space, individual seats, shared pool, hybrid zone), capacity, area, status and whether they may be shown to customers; seats for per-seat and hybrid zones; the categories a space can be sold as, checked against BR-PRODCFG-2 | Real inventory (SG-INV-1.3); prices (FR-INV-4) |
+| FR-INV-1 | Not built | Manual set-up: floors, single spaces and numbered runs of up to 100 spaces in one step, all or none | The SG-INV-1.3 import (ADR-0012; built under OD-128 e; `openspout` declared under OD-129 c) |
+| FR-INV-2 | Not built | Status changes with a reason, audited with both statuses, `SpaceAvailabilityChanged` after commit | — |
+| FR-INV-3 | Not built | Allocations: space, seat or seats, dates, notice, end date, cancellation; never deleted; lock-first | Seat-level desk zones are supported (D-05); company and deal links with the CRM (Phase 9) |
+| FR-INV-4, FR-INV-5 | Not built | **Not built**: price plans and offers are the next package (structure approved, OD-35; values PR-1 to PR-11 open) | Pricing decisions |
+| FR-INV-6 | Not built | One availability service, the only reader of allocations (architecture test) | Bookings and closures join it in Phase 8 |
+| AC-5.2 | BR-AV-6 only | BR-AV-1, BR-AV-2, BR-AV-3, BR-AV-3a, BR-AV-3c, BR-AV-3d and BR-AV-4 tested; BR-INV-2 to BR-INV-4 tested | BR-AV-5 (closures, Phase 8) and BR-PR-1 to BR-PR-6 (pricing) |
+| AC-5.1, AC-5.3, AC-5.4 | BLOCKED | **Still BLOCKED** (entry gate: real inventory and pricing inputs) | SG-INV-1.3 for one property; pricing values; a surface showing availability for AC-5.4 |
+
+### 14.2 Business inputs still missing (marked, not invented)
+
+* Floors per property and each property's spaces (O-2, SG-INV-1.3): no floor or space exists on any shared database.
+* Pricing values PR-1 to PR-11 and whether prices are shown (D-04): no price exists.
+* BR-AV-2's 90-day horizon is an unconfirmed [DEFAULT] (D-36), used only for the staff view (`config/inventory.php`); BR-AV-1 gives no threshold for "Limited availability", so it is never shown.
+* Amenities, floor plans (C-6.4), the company and deal behind an allocation (Phase 9).
+
+### 14.3 Evidence
+
+* **Automated:** full suite **1,172 passed, 0 failed, 0 skipped (4,530 assertions, exit code 0)**, 609 s, on the final code (an earlier run during the work: 1,171 passed, exit code 0). `tests/Feature/Services/Inventory/SpaceAvailabilityTest.php` (BR-AV-1, 2, 3, 3a, 3c, 3d, 4; seats refused where not tracked), `tests/Feature/Actions/Inventory/InventoryActionsTest.php` (permissions per SECURITY_MODEL §3.1, reasons audited, BR-INV-2 to 4, BR-PRODCFG-2, floors), `tests/Feature/Filament/Clusters/Properties/InventoryScreensTest.php` (set-up from the property page, refusals shown, allocations, seats, scope, categories and types, and no inventory query on a database without the tables), `tests/Feature/Infrastructure/InventoryConcurrencyTest.php` (four races in parallel processes), `tests/Arch/ArchitectureTest.php` (only the availability service and the inventory actions read allocations).
+* **Mutation check:** removing the space lock from `RecordAllocation` made both allocation races fail; restored and verified by checksum.
+* **Browser** (`evidence/phase5/2026-10-28-od127/`): public and enquiry checks exit code 0; back-office checks exit code 0 with the inventory screens at 360 and 1440 px (0 axe violations, 0 overflow) and the location set-up journey: three floors, 40 cabins, an allocation, a double allocation and a status change refused with their reasons, in 7.5 s.
+* **Databases:** only `smartgro_testing` was written. `smart_go` and `smartgro_preview` were checked read-only and have no inventory tables.
+
+---
+
+## 15. Price plans, offers and the inventory import (2026-10-29, OD-128): built locally, not accepted
+
+No status in §1 changes. All of this is uncommitted and stays so until the entry gate passes (OD-128 a 3). Nothing was written to `smart_go` or `smartgro_preview`; nothing is shown on the website.
+
+### 15.1 Requirements addressed
+
+| ID | Now (local, not accepted) | Still needed |
+|---|---|---|
+| FR-INV-4 / BR-PR-1, BR-PR-2 | Price plans per offering or space, unit and dates; Finance enters, another authorised person activates under the offering's lock; one active plan per scope and unit on any day; active plans never change (end or retire with a reason); history on each plan | Prices (PR-1 to PR-11); add-ons, GST, price floor, discount limits; price display (D-04) |
+| FR-INV-5 / BR-PR-5 | Offers with discount, dates, eligible offerings, terms, code and limit; approval by another person; automatic expiry | Real offers; redemptions are counted once bookings exist (Phase 8) |
+| FR-INV-1 (import), BR-INV-5, ADR-0012 | SG-INV-1.3 upload, row-level checks, dry-run preview, second-person approval, all-or-nothing commit with re-checks under lock, audit and summary | The first property's real inventory (the entry gate, AC-5.3) |
+| BR-PROP-3 (floors and spaces) | Checked at publication only when switched on (off); readiness shown per property | The owner's acceptance of the plan in §15.2 |
+
+### 15.2 Transition plan for the floor rule (BR-PROP-3): accepted by the owner, not activated
+
+**Status (OD-129 b, 2026-10-29):** the owner accepted this plan subject to confirming that it preserves published properties and includes a safe rollout and rollback. Both were confirmed (below), and steps 3, 4 and 6 were made concrete to meet the condition. **Accepting the plan is not switching the rule on:** activation is a separate owner decision per environment (A-18 item 2). The switch is off everywhere.
+
+1. **Now:** the switch is off (`INVENTORY_ENFORCE_FLOOR_RULE` unset or `false`). Publication works as before; each property's page lists what the rule would still need ("Record at least one floor…").
+2. **Enter real inventory** for each published property through the import (§15.4), approved by a second person.
+3. **Check readiness** in the environment concerned: `php artisan inventory:floor-rule-readiness` must pass. It only reads: it lists every property on the website or with a version waiting, and what the rule would refuse; it fails while anything would be refused, or when the database has no floor tables.
+4. **Owner decides** (A-18 item 2) to switch the rule on in that environment: set `INVENTORY_ENFORCE_FLOOR_RULE=true` and refresh the configuration cache (`php artisan config:cache` where the cache is used). From then on, a property version is refused at submission, scheduling and publication when the property lacks a floor or a listable space or offering. **No published property is taken off the website**; only later publications are checked. A version scheduled earlier is refused at its time, stays approved with its schedule cleared, and the failure is audited (`revision_schedule_failed`).
+5. **On the owner's server and the preview**, the switch stays off until their databases hold the inventory tables (OD-120, OD-128 a 1, OD-129 a).
+6. **Rollback:** set `INVENTORY_ENFORCE_FLOOR_RULE=false` (or remove it) and refresh the configuration cache. The rule writes nothing, so nothing else has to be undone; versions refused meanwhile can be published or scheduled again.
+
+**Confirmation evidence:** the rule is evaluated only in `PropertyProfile::publicationBlockers()`, reached only through `prepareRevisionPayload(forSubmission: true)`. `MakeRevisionLive` checks before superseding the live version. The website's listing (`Property::scopePubliclyListed()`) never reads the rule. Tests in `InventoryActionsTest` cover four cases:
+* the rule refuses only new versions, never drafts or the live page;
+* a refused scheduled version leaves the live page answering with its live text, and switching off publishes the same version (rollback);
+* the readiness check reports and fails, then passes once a floor exists, and writes nothing;
+* without floor tables, the check fails and says why.
+
+### 15.3 Inputs Finance must provide (nothing is assumed)
+
+| Input | Where it goes | Decision |
+|---|---|---|
+| Which units each category uses (per cabin or seat per month, per hour, half day, day, day bundles, service plans) | Each price plan's unit | PR-1 |
+| The price for each offering (and any space priced on its own) and from which date | Price plans | PR-1, pricing brief §9 |
+| Security deposit rule and value, set-up fee, minimum term per category or offering | Price plans | PR-3, PR-4, PR-5 |
+| Add-ons, GST rates and SAC codes, price floors, sales discount limit | Not built until decided | PR-6, PR-7, PR-8 |
+| Whether and how prices are shown publicly | Not built until decided | PR-2, D-04 |
+| Offers: discount, dates, eligible offerings, terms, any code and limit | Offers | PRICING_CONFIGURATION_PROPOSAL §7 |
+| Who in Finance activates, and who enters (two different people) | Staff roles | BR-PR-2 |
+
+### 15.4 Inputs the property team must provide
+
+The first property's real inventory in `../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.3.xlsx`: the property and its buildings (with PIN code), opening hours (7 rows), the floors SmartGro operates (O-2, never assumed), every space with type, counting mode, capacity, area, status, whether customers may see it and the categories it is sold as, seats for per-seat and hybrid zones, current agreements by internal reference only (no names, phones or emails), and the amenity list. The city must already exist in SmartGro.
+
+### 15.5 Evidence
+
+* **Automated:** full suite 1,197 passed, 0 failed, 0 skipped (4,725 assertions, exit code 0) on the final code. `tests/Feature/Actions/Pricing/PricePlanAndOfferTest.php`, `tests/Feature/Filament/Clusters/Properties/PricingScreensTest.php`, `tests/Feature/Services/Inventory/InventoryWorkbookTest.php` (fixture conformance), `tests/Feature/Actions/Inventory/InventoryImportWorkflowTest.php`, the floor-rule test in `InventoryActionsTest.php`, and two activation races in `tests/Feature/Infrastructure/InventoryConcurrencyTest.php` (a mutation check shows the race test fails without the offering lock).
+* **Browser:** `evidence/phase5/2026-10-29-od128/checks-admin/`, exit code 0: the price-plan, offer and import screens at 360 and 1440 px with 0 axe violations and no overflow.
+* **Not verified:** an import of real inventory (none supplied: the entry gate has not passed); uploading through the browser form (the upload is tested at action level, the page renders cleanly); pricing journeys in the browser beyond the screens' rendering.

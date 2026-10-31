@@ -1,0 +1,77 @@
+OD-152 commit verification (2026-10-31 12:09:48 IST)
+commit ee9083c83241bf212d04f4c24e1539bbeafd6c97
+parent 8a45ae6896077ad78058518b71720a18c0e474b3
+author surya prakash chamoli <suryaprakashchamoli@gmail.com>
+date Sat Oct 31 11:38:26 2026 +0530
+
+chore: commit the 23 migrations already applied to smart_go (OD-152)
+
+These migrations ran on smart_go, the database of the owner's own local
+server, on 2026-10-31 (OD-150, batch 11, migration ids 47 to 69; ids 45
+and 46, twin_models and twin_anchors, were already committed), but they
+existed only as untracked files (OD-151 finding, owner action A-26).
+Committing them preserves the source of the schema that database now has.
+
+All additive: 19 new tables, and 6 nullable columns on faqs,
+navigation_items, posts and products. The only data written is one row in
+the new security_settings table and the new products column filled for
+the seven categories. Each file imports only framework classes and is
+unchanged since it was applied (hashes in the OD-151 evidence).
+
+No application, test, configuration or documentation change is included.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+
+ .../2026_10_28_101824_create_post_topics_table.php | 32 ++++++++++++
+ ...6_10_28_101825_add_topic_ids_to_posts_table.php | 32 ++++++++++++
+ ...10_28_123721_create_security_settings_table.php | 34 +++++++++++++
+ .../2026_10_28_133128_add_scope_to_faqs_table.php  | 35 +++++++++++++
+ .../2026_10_28_173942_create_space_types_table.php | 36 ++++++++++++++
+ .../2026_10_28_173943_create_floors_table.php      | 38 +++++++++++++++
+ .../2026_10_28_173945_create_spaces_table.php      | 47 ++++++++++++++++++
+ .../2026_10_28_173946_create_space_seats_table.php | 35 +++++++++++++
+ ...26_10_28_173948_create_offering_space_table.php | 35 +++++++++++++
+ ...10_28_173949_create_space_allocations_table.php | 44 +++++++++++++++++
+ ...d_allowed_inventory_modes_to_products_table.php | 53 ++++++++++++++++++++
+ .../2026_10_28_193821_create_price_plans_table.php | 57 ++++++++++++++++++++++
+ .../2026_10_28_193822_create_offers_table.php      | 52 ++++++++++++++++++++
+ ...26_10_28_193823_create_offer_offering_table.php | 33 +++++++++++++
+ ...10_28_193825_create_inventory_imports_table.php | 49 +++++++++++++++++++
+ ...193826_create_inventory_import_issues_table.php | 40 +++++++++++++++
+ .../2026_10_28_195325_create_amenities_table.php   | 35 +++++++++++++
+ ...026_10_28_195327_create_amenity_space_table.php | 34 +++++++++++++
+ ...033934_create_tour_availability_rules_table.php | 41 ++++++++++++++++
+ ...10_29_033935_create_property_closures_table.php | 38 +++++++++++++++
+ ...026_10_29_033937_create_tour_requests_table.php | 49 +++++++++++++++++++
+ ...026_10_29_072209_create_missing_pages_table.php | 34 +++++++++++++
+ ...01616_add_details_to_navigation_items_table.php | 32 ++++++++++++
+ 23 files changed, 915 insertions(+)
+
+Blob check: every committed file equals the working file (git rev-parse HEAD:<file> = git hash-object <file>)
+same database/migrations/2026_10_28_101824_create_post_topics_table.php
+same database/migrations/2026_10_28_101825_add_topic_ids_to_posts_table.php
+same database/migrations/2026_10_28_123721_create_security_settings_table.php
+same database/migrations/2026_10_28_133128_add_scope_to_faqs_table.php
+same database/migrations/2026_10_28_173942_create_space_types_table.php
+same database/migrations/2026_10_28_173943_create_floors_table.php
+same database/migrations/2026_10_28_173945_create_spaces_table.php
+same database/migrations/2026_10_28_173946_create_space_seats_table.php
+same database/migrations/2026_10_28_173948_create_offering_space_table.php
+same database/migrations/2026_10_28_173949_create_space_allocations_table.php
+same database/migrations/2026_10_28_173951_add_allowed_inventory_modes_to_products_table.php
+same database/migrations/2026_10_28_193821_create_price_plans_table.php
+same database/migrations/2026_10_28_193822_create_offers_table.php
+same database/migrations/2026_10_28_193823_create_offer_offering_table.php
+same database/migrations/2026_10_28_193825_create_inventory_imports_table.php
+same database/migrations/2026_10_28_193826_create_inventory_import_issues_table.php
+same database/migrations/2026_10_28_195325_create_amenities_table.php
+same database/migrations/2026_10_28_195327_create_amenity_space_table.php
+same database/migrations/2026_10_29_033934_create_tour_availability_rules_table.php
+same database/migrations/2026_10_29_033935_create_property_closures_table.php
+same database/migrations/2026_10_29_033937_create_tour_requests_table.php
+same database/migrations/2026_10_29_072209_create_missing_pages_table.php
+same database/migrations/2026_10_30_201616_add_details_to_navigation_items_table.php
+
+Migration files tracked at ee9083c: 69 of 69
+Pushed: no (main is ahead of origin/main by 1)

@@ -32,3 +32,21 @@
 * `GlbValidator` reads the size from the file system first and measures the JSON description before decoding it. It checks every reference and byte range, the node trees and the scene; it reads each texture's format and pixel size from the image's own header (`ImageDimensions`: PNG, JPEG, WebP, KTX2), and the triangles inside each Draco stream from the stream's header (`DracoStream`, bitstream 2.0 to 2.2), because the viewer draws the decoded mesh whatever the description declares. Nothing is decompressed: a Meshopt stream that does not match its description fails only in the viewer.
 * The viewer draws once to show a model and once per change of view. Before 2026-10-28 it drew every view twice, and at mount once more at the wrong size; the browser checks found it by counting the triangles drawn (twice those counted at upload) and now fail if showing a model takes other than one render.
 * Draco's sequential layout is checked against the real decoder (the browser checks load a Draco test model); the Edgebreaker layout follows the decoder's source and has not met a real Edgebreaker file yet. The first supplier file with Draco confirms it.
+
+## Implementation notes (2026-10-28, time to a usable viewer, OD-121)
+* Measured stage by stage before changing anything (performance marks `twin:…` in the viewer and the page, plus resource timing; `../operations/scripts/browser/verify-twin-performance.mjs`). On a throttled phone profile, the 2 kB test model needed 5.2 s, 85% of it downloading the 725 kB viewer module uncompressed; the model's request waited for the module, and a Draco model's decoder waited for the model.
+* The press now starts the model's download, the viewer module and the module's own imports (`modulepreload`) together. The viewer creates the renderer while the model downloads, and parses the downloaded bytes (`GLTFLoader.parseAsync`).
+* The Draco, Meshopt and KTX2 decoders are each a separate file (dynamic `import()`), loaded only for a model that needs them: the upload's checks name them (`data-decoders`), and anything else the file turns out to use is loaded after the download. three.js core became a shared chunk (`three.core-*.js`), fetched with the module.
+* The page shows the download's progress (`<progress>`), can stop it ("Stop loading", `AbortController`), and says plainly when the download fails, when 3D is unavailable and when the browser loses the graphics context.
+* Still nothing 3D loads before the press (Phase 7 AC 3): the files are requested from the click handler only.
+
+## Implementation notes (2026-10-28, OD-122)
+* Meshopt streams are now checked without decoding, against what the Meshopt decoder itself requires first: the header byte of the codec for the stream's mode (attributes 0xA0/0xA1, triangles 0xE0/0xE1, indices 0xD0/0xD1) and its minimum length. A stream that fails cannot be decoded; one that passes may still be wrong inside, which only the viewer finds.
+* Uploading through the back-office form is now part of the browser checks: a 14.85 MB model at the limits is stored and opens; a file 4 bytes over 15 MB is refused with the plain-language reason (Livewire's temporary upload, the checks and the media library together).
+* The public viewer stays unbuilt and off the website until NFR-PERF-4's conditions are settled (A-13, register OD-122 b).
+
+## Implementation notes (2026-10-28, audit, OD-123)
+* `mountTwinViewer` takes the press's abort signal: once aborted, it never touches the stage, so "Stop loading" pressed after the download (while a decoder loads or the model is parsed) leaves nothing on the page. Before, the stopped viewer put its canvas on the page once the decoder arrived.
+* The viewer gives its graphics context back (`forceContextLoss`) when it stops, fails or is disposed, after removing its context-lost handler. Before, every press kept a context alive; Chromium keeps 16 and drops the oldest, whose handler then stopped the viewer on screen with a false "ran out of graphics memory". The page's reset also stops any download still running.
+* The browser checks now cover stopping while a decoder loads, 20 rounds of "Show" and "Stop loading" (no dropped context), a decoder module or WebAssembly file that cannot load, and a browser without WebGL.
+

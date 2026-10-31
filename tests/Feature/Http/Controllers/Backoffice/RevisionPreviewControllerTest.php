@@ -10,7 +10,9 @@ use App\Models\CaseStudy;
 use App\Models\Faq;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\PostTopic;
 use App\Models\Revision;
+use App\Models\SecuritySetting;
 use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -86,7 +88,8 @@ it('refuses a deactivated account', function () {
     actingAs($this->editor)->get(RevisionPreviewController::url($this->revision))->assertForbidden();
 });
 
-it('requires two-step login to be set up first', function () {
+it('requires two-step login to be set up first, once it is required', function () {
+    SecuritySetting::query()->update(['two_step_login_required' => true]);
     $withoutTwoStep = User::factory()->withRole(StaffRole::MarketingManager)->create();
 
     actingAs($withoutTwoStep)->get(RevisionPreviewController::url($this->revision))->assertRedirect();
@@ -123,3 +126,15 @@ it('previews articles, customer stories, FAQs and testimonials as they would app
     'FAQ' => [Faq::class, ['question' => 'Draft question?', 'answer' => 'Draft answer.'], 'Draft answer.'],
     'testimonial' => [Testimonial::class, ['quote' => 'Draft statement.', 'person_name' => 'Asha Rao'], 'Draft statement.'],
 ]);
+
+it('shows an article draft\'s topics in the order chosen, as plain text with no links to topic pages', function () {
+    $zoning = PostTopic::factory()->create(['name' => 'Zoning', 'slug' => 'zoning']);
+    $access = PostTopic::factory()->create(['name' => 'Access', 'slug' => 'access']);
+    $revision = app(CreateDraft::class)->handle(Post::factory()->create(), $this->editor, ['title' => 'Draft article', 'topic_ids' => [$zoning->id, $access->id], 'blocks' => []]);
+
+    actingAs($this->editor)
+        ->get(RevisionPreviewController::url($revision))
+        ->assertOk()
+        ->assertSeeInOrder(['Zoning', 'Access'])
+        ->assertDontSee('/insights/topic/', false);
+});

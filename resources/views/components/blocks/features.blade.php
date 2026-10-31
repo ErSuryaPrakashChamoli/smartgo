@@ -7,7 +7,7 @@
 <section class="container-page py-10 sm:py-14">
     <div class="flex flex-col gap-8">
         @if ($hasHeading || filled($data['intro']))
-            <div class="flex max-w-3xl flex-col gap-3">
+            <div class="flex max-w-3xl flex-col gap-3" data-reveal>
                 @if ($hasHeading)
                     <h2 class="font-display text-display-lg font-semibold text-balance text-forest">{{ $data['heading'] }}</h2>
                 @endif
@@ -16,9 +16,9 @@
                 @endif
             </div>
         @endif
-        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
             @foreach ($data['items'] as $item)
-                <li class="flex flex-col gap-2 rounded-2xl bg-surface p-6 shadow-card ring-1 ring-line">
+                <li class="flex flex-col gap-2 rounded-2xl bg-surface p-6 shadow-card ring-1 ring-line transition duration-300 hover:-translate-y-1 hover:shadow-raised">
                     <{{ $hasHeading ? 'h3' : 'h2' }} class="font-display text-subheading font-semibold text-forest">{{ $item['title'] }}</{{ $hasHeading ? 'h3' : 'h2' }}>
                     <p class="text-muted">{{ $item['text'] }}</p>
                 </li>

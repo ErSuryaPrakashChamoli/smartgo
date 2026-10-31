@@ -1,0 +1,238 @@
+{
+    "database": "smartgro_restore_check",
+    "offers_details": true,
+    "has_details": true,
+    "payload_before": {
+        "items": [
+            {
+                "label": "Workspaces",
+                "type": "section",
+                "page_id": null,
+                "section": "workspace_types",
+                "property_id": null,
+                "product_id": null,
+                "url": null,
+                "children": []
+            },
+            {
+                "label": "Locations",
+                "type": "group",
+                "page_id": null,
+                "section": null,
+                "property_id": null,
+                "product_id": null,
+                "url": null,
+                "children": [
+                    {
+                        "label": "All locations",
+                        "type": "section",
+                        "page_id": null,
+                        "section": "locations",
+                        "property_id": null,
+                        "product_id": null,
+                        "url": null,
+                        "description": "Rehearsal description 0.",
+                        "icon": "map-pin"
+                    },
+                    {
+                        "label": "SmartGro A-23",
+                        "type": "property",
+                        "page_id": null,
+                        "section": null,
+                        "property_id": 3,
+                        "product_id": null,
+                        "url": null,
+                        "description": "Rehearsal description 1.",
+                        "icon": "map-pin"
+                    },
+                    {
+                        "label": "SmartGro A-70",
+                        "type": "property",
+                        "page_id": null,
+                        "section": null,
+                        "property_id": 1,
+                        "product_id": null,
+                        "url": null,
+                        "description": "Rehearsal description 2.",
+                        "icon": "map-pin"
+                    },
+                    {
+                        "label": "SmartGro A-71",
+                        "type": "property",
+                        "page_id": null,
+                        "section": null,
+                        "property_id": 2,
+                        "product_id": null,
+                        "url": null,
+                        "description": "Rehearsal description 3.",
+                        "icon": "map-pin"
+                    },
+                    {
+                        "label": "SmartGro H-105",
+                        "type": "property",
+                        "page_id": null,
+                        "section": null,
+                        "property_id": 4,
+                        "product_id": null,
+                        "url": null,
+                        "description": "Rehearsal description 4.",
+                        "icon": "map-pin"
+                    }
+                ]
+            },
+            {
+                "label": "Contact",
+                "type": "section",
+                "page_id": null,
+                "section": "contact",
+                "property_id": null,
+                "product_id": null,
+                "url": null,
+                "children": []
+            },
+            {
+                "label": "Rehearsal group",
+                "type": "group",
+                "page_id": null,
+                "section": null,
+                "property_id": null,
+                "product_id": null,
+                "url": null,
+                "children": [
+                    {
+                        "label": "All workspace types",
+                        "type": "section",
+                        "page_id": null,
+                        "section": "workspace_types",
+                        "property_id": null,
+                        "product_id": null,
+                        "url": null,
+                        "description": "Rehearsal description shown.",
+                        "icon": "squares-2x2"
+                    }
+                ]
+            }
+        ]
+    },
+    "stored": [
+        {
+            "id": 29,
+            "parent_id": null,
+            "label": "Workspaces",
+            "description": null,
+            "icon": null
+        },
+        {
+            "id": 30,
+            "parent_id": null,
+            "label": "Locations",
+            "description": null,
+            "icon": null
+        },
+        {
+            "id": 36,
+            "parent_id": null,
+            "label": "Contact",
+            "description": null,
+            "icon": null
+        },
+        {
+            "id": 37,
+            "parent_id": null,
+            "label": "Rehearsal group",
+            "description": null,
+            "icon": null
+        },
+        {
+            "id": 31,
+            "parent_id": 30,
+            "label": "All locations",
+            "description": "Rehearsal description 0.",
+            "icon": "map-pin"
+        },
+        {
+            "id": 32,
+            "parent_id": 30,
+            "label": "SmartGro A-23",
+            "description": "Rehearsal description 1.",
+            "icon": "map-pin"
+        },
+        {
+            "id": 33,
+            "parent_id": 30,
+            "label": "SmartGro A-70",
+            "description": "Rehearsal description 2.",
+            "icon": "map-pin"
+        },
+        {
+            "id": 34,
+            "parent_id": 30,
+            "label": "SmartGro A-71",
+            "description": "Rehearsal description 3.",
+            "icon": "map-pin"
+        },
+        {
+            "id": 35,
+            "parent_id": 30,
+            "label": "SmartGro H-105",
+            "description": "Rehearsal description 4.",
+            "icon": "map-pin"
+        },
+        {
+            "id": 38,
+            "parent_id": 37,
+            "label": "Rehearsal category",
+            "description": "Rehearsal category description.",
+            "icon": "briefcase"
+        },
+        {
+            "id": 39,
+            "parent_id": 38,
+            "label": "All workspace types",
+            "description": "Rehearsal description shown.",
+            "icon": "squares-2x2"
+        }
+    ],
+    "next_draft_payload_keeps_details": {
+        "label": "All locations",
+        "type": "section",
+        "page_id": null,
+        "section": "locations",
+        "property_id": null,
+        "product_id": null,
+        "url": null,
+        "description": "Rehearsal description 0.",
+        "icon": "map-pin"
+    },
+    "presented_children": [
+        {
+            "label": "Rehearsal category",
+            "description": "Rehearsal category description.",
+            "icon": "briefcase",
+            "links": [
+                [
+                    "All workspace types",
+                    "Rehearsal description shown.",
+                    "squares-2x2"
+                ]
+            ]
+        }
+    ],
+    "rendered_has_description": true,
+    "main_labels": [
+        "Workspaces",
+        "Contact",
+        "Rehearsal group"
+    ],
+    "validated_child": {
+        "label": "All locations",
+        "type": "section",
+        "page_id": null,
+        "section": "locations",
+        "property_id": null,
+        "product_id": null,
+        "url": null,
+        "description": "Rehearsal description 0.",
+        "icon": "map-pin"
+    }
+}

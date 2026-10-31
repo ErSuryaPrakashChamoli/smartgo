@@ -4,6 +4,7 @@ use App\Actions\Access\SyncAccessControl;
 use App\Enums\Access\StaffRole;
 use App\Http\Controllers\Backoffice\TwinModelFileController;
 use App\Models\Property;
+use App\Models\SecuritySetting;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -38,11 +39,17 @@ it('refuses staff who may not see models', function (StaffRole $role) {
     actingAs(User::factory()->withEmailAuthentication()->withRole($role)->create())->get($this->url)->assertForbidden();
 })->with([StaffRole::PropertyManager, StaffRole::SalesCrmExecutive, StaffRole::Finance]);
 
+it('refuses a deactivated account', function () {
+    actingAs(User::factory()->withEmailAuthentication()->withRole(StaffRole::MarketingManager)->inactive()->create())->get($this->url)->assertForbidden();
+});
+
 it('sends visitors who are not signed in to the staff sign-in page', function () {
     get($this->url)->assertRedirect(route('filament.admin.auth.login'));
 });
 
-it('requires two-step login first', function () {
+it('requires two-step login first, once it is required', function () {
+    SecuritySetting::query()->update(['two_step_login_required' => true]);
+
     actingAs(User::factory()->withRole(StaffRole::MarketingManager)->create())
         ->get($this->url)
         ->assertRedirect(Filament::getSetUpRequiredMultiFactorAuthenticationUrl());

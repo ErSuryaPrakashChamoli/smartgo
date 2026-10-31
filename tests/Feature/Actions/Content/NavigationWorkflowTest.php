@@ -17,8 +17,12 @@ use App\Models\Revision;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Spatie\Activitylog\Models\Activity;
+
+use function Pest\Laravel\get;
 
 uses(RefreshDatabase::class);
 
@@ -40,6 +44,20 @@ function approvedMenu(NavigationMenu $menu, User $author, User $approver, array 
     $draft = app(CreateDraft::class)->handle($menu, $author, ['items' => $items]);
 
     return app(ApproveRevision::class)->handle(app(SubmitRevision::class)->handle($draft, $author), $approver);
+}
+
+/**
+ * A Solutions drop-down with one category and one link, each with a description and an icon (OD-149).
+ *
+ * @return list<array<string, mixed>>
+ */
+function detailedMenuItems(Page $page): array
+{
+    return [['label' => 'Solutions', 'type' => 'group', 'children' => [
+        ['label' => 'Workspaces', 'type' => 'group', 'description' => 'Desks and offices.', 'icon' => 'building-office', 'children' => [
+            ['label' => 'Desks', 'type' => 'page', 'page_id' => $page->id, 'description' => 'A desk of your own.', 'icon' => 'computer-desktop'],
+        ]],
+    ]]];
 }
 
 /**
@@ -109,6 +127,36 @@ it('replaces the whole live menu when a new version is published', function () {
     ]), $this->publisher);
 
     expect(NavigationItem::query()->where('navigation_menu_id', $this->menu->id)->pluck('label')->all())->toBe(['Only link']);
+});
+
+it('publishes a drop-down\'s descriptions and icons with the live menu, so the next version starts from them (OD-149)', function () {
+    app(PublishRevision::class)->handle(approvedMenu($this->menu, $this->author, $this->approver, detailedMenuItems($this->about)), $this->publisher);
+
+    $next = app(CreateDraft::class)->handle($this->menu->fresh(), $this->author);
+
+    expect(NavigationItem::query()->where('label', 'Desks')->sole()->only(['description', 'icon']))->toBe(['description' => 'A desk of your own.', 'icon' => 'computer-desktop'])
+        ->and($next->payload['items'][0]['children'][0])->toMatchArray(['label' => 'Workspaces', 'description' => 'Desks and offices.', 'icon' => 'building-office'])
+        ->and($next->payload['items'][0]['children'][0]['children'][0])->toMatchArray(['label' => 'Desks', 'description' => 'A desk of your own.', 'icon' => 'computer-desktop']);
+});
+
+it('publishes and shows menus without descriptions or icons where the database has no columns for them yet (OD-149)', function () {
+    $schema = Schema::getFacadeRoot();
+    Schema::shouldReceive('hasColumns')->andReturnUsing(fn (string $table, array $columns): bool => $table !== 'navigation_items' && $schema->hasColumns($table, $columns));
+    Schema::shouldReceive('hasColumn')->andReturnUsing(fn (string $table, string $column): bool => $schema->hasColumn($table, $column));
+    Schema::shouldReceive('hasTable')->andReturnUsing(fn (string $table): bool => $schema->hasTable($table));
+    $detailQueries = [];
+    DB::listen(function ($query) use (&$detailQueries): void {
+        if (str_contains($query->sql, 'navigation_items') && preg_match('/`description`|`icon`/', $query->sql)) {
+            $detailQueries[] = $query->sql;
+        }
+    });
+
+    $revision = approvedMenu($this->menu, $this->author, $this->approver, detailedMenuItems($this->about));
+    app(PublishRevision::class)->handle($revision, $this->publisher);
+
+    get('/about')->assertOk()->assertSee('Desks')->assertDontSee('A desk of your own.');
+    expect($revision->payload['items'][0]['children'][0])->not->toHaveKey('description')->not->toHaveKey('icon')
+        ->and($detailQueries)->toBe([]);
 });
 
 it('refuses to submit a menu that breaks its rules', function () {

@@ -117,9 +117,10 @@ it('refuses a file that is not a readable binary glTF 2.0 file, whatever its nam
 
 it('refuses a file over the size limit and still runs every other check', function () {
     $document = TestGlb::document(['nodes' => [['name' => 'Floor', 'mesh' => 0, 'scale' => [10, 0.2, 8]]]]);
-    $padding = str_repeat("\0", twinLimits()->bytes);
+    $oversized = TestGlb::modelOfSize(twinLimits()->bytes + 4096);
+    $binary = substr($oversized, 28 + unpack('V', $oversized, 12)[1]);
 
-    expect(validateGlb(TestGlb::bytes($document, $padding))['problems'])->toBe([
+    expect(validateGlb(TestGlb::bytes($document, $binary))['problems'])->toBe([
         'The file is 15.1 MB; the limit is 15.0 MB per model. Ask the 3D-modelling supplier to compress it further or reduce the detail.',
         'No anchors were found. The supplier names nodes SG_SPACE_…, SG_AMENITY_… and SG_CAM_… so that spaces, amenities and camera positions can be linked; ask them to add the names.',
     ]);
@@ -200,6 +201,24 @@ it('holds Draco geometry to what its stream holds, not to what the description d
     expect(validateGlb(TestGlb::bytes($document, $binary))['problems'])
         ->toContain('The compressed geometry of mesh “Floor”, mesh “Test space”, mesh “Test lounge” cannot be read. Ask the supplier for a new export with a current Draco encoder.');
 });
+
+it('refuses Meshopt data the decoder would reject before decoding', function (Closure $damage) {
+    expect(implode(' ', validateGlb($damage())['problems']))
+        ->toContain('the compressed data of buffer view 0 is not a Meshopt stream the viewer can read');
+})->with([
+    'a wrong header byte' => [function (): string {
+        $bytes = TestGlb::model();
+        $bytes[28 + unpack('V', $bytes, 12)[1]] = "\x00";
+
+        return $bytes;
+    }],
+    'shorter than its tail' => [function (): string {
+        $document = TestGlb::document();
+        $document['bufferViews'][0]['extensions']['EXT_meshopt_compression']['byteLength'] = 20;
+
+        return TestGlb::withDocument($document);
+    }],
+]);
 
 it('refuses references to outside files but accepts embedded data', function () {
     $document = TestGlb::document(['images' => [['uri' => 'textures/wall.png'], ['uri' => 'data:image/png;base64,'.base64_encode(pngHeader(4, 4))]]]);

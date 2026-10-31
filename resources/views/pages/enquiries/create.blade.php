@@ -15,12 +15,7 @@
                         :selected="$selected" :started="$started" :notice="$notice" :from="$from" :utm="$utm" />
                 </div>
             @else
-                <x-ui.alert type="info" title="Online enquiries open soon">
-                    The enquiry form opens once SmartGro publishes its privacy notice, so you know how your details are used before you send them.
-                    @if ($contact !== [])
-                        In the meantime, contact SmartGro using the details below.
-                    @endif
-                </x-ui.alert>
+                <x-site.enquiry-closed-notice :contact="$contact" />
             @endif
         </div>
     </div>

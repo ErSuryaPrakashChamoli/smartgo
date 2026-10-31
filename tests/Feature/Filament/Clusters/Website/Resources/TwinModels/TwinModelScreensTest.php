@@ -102,7 +102,10 @@ it('shows a model with its notice, checks and anchors, and loads nothing 3D unti
         ->toContain('3 (limit 500)')
         ->toContain('10 × 1.2 × 8 m')
         ->not->toContain('<script src="'.$viewerUrl)
-        ->not->toContain('modulepreload')
+        ->not->toMatch('/<link[^>]+modulepreload/')
+        ->toContain('data-decoders="meshopt"')
+        ->toMatch('#data-module-imports="[^"]*/build/assets/three\.core-[^"]+\.js [^"]*/build/assets/meshopt_decoder\.module-[^"]+\.js"#')
+        ->toContain('data-decoder-files=""')
         ->and(substr_count($html, $viewerUrl))->toBe(1)
         ->and(substr_count($html, 'data-module="'.$viewerUrl.'"'))->toBe(1)
         ->and(substr_count($html, $fileUrl))->toBe(1)
@@ -115,6 +118,18 @@ it('lets uploads in progress be larger than the model size limit, so an oversize
     expect($transferLimitKilobytes * 1024)->toBeGreaterThan(config('twin.limits.bytes'))
         ->and(TwinModelForm::UPLOAD_LIMIT_KILOBYTES)->toBeLessThanOrEqual($transferLimitKilobytes)
         ->and(TwinModelForm::UPLOAD_LIMIT_KILOBYTES * 1024)->toBeGreaterThan(config('twin.limits.bytes'));
+});
+
+it('names only the decoders a model needs, for the viewer to fetch when asked', function () {
+    $draco = uploadTwinModelForTest($this->marketing, $this->property, bytes: TestGlb::dracoModel());
+
+    expect(actingAs($this->operations)->get(TwinModelResource::getUrl('view', ['record' => $draco]))->assertOk()->getContent())
+        ->toContain('data-decoders="draco"')
+        ->toMatch('#data-module-imports="[^"]*/build/assets/DRACOLoader-[^"]+\.js"#')
+        ->toMatch('#data-decoder-files="[^"]*/build/assets/draco_wasm_wrapper-[^"]+\.js [^"]*/build/assets/draco_decoder-[^"]+\.wasm"#')
+        ->not->toContain('meshopt_decoder')
+        ->not->toContain('basis_transcoder')
+        ->not->toMatch('/<link[^>]+(modulepreload|preload)[^>]+(draco|basis|meshopt)/i');
 });
 
 it('calls only a measured scan a scan, without a notice', function () {

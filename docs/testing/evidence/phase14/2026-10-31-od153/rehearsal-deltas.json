@@ -1,0 +1,132 @@
+{
+ "database": "smartgro_testing",
+ "start": "OD-150 backup of smart_go + the 25 OD-150 migrations (equal to live smart_go except security_settings timestamps and one later guest session)",
+ "steps": [
+  {
+   "step": "reference data, run 1",
+   "from": "S0",
+   "to": "S1",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 58,
+     "rows_after": 64,
+     "schema_changed": false
+    },
+    "space_types": {
+     "rows_before": 0,
+     "rows_after": 6,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "reference data, run 2 (idempotency)",
+   "from": "S1",
+   "to": "S2",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {}
+  },
+  {
+   "step": "access:sync, run 1 (database cache store)",
+   "from": "S2",
+   "to": "S3",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 64,
+     "rows_after": 70,
+     "schema_changed": false
+    },
+    "cache": {
+     "rows_before": 7,
+     "rows_after": 6,
+     "schema_changed": false
+    },
+    "permissions": {
+     "rows_before": 34,
+     "rows_after": 48,
+     "schema_changed": false
+    },
+    "role_has_permissions": {
+     "rows_before": 79,
+     "rows_after": 125,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "access:sync, run 2 (idempotency)",
+   "from": "S3",
+   "to": "S4",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {}
+  },
+  {
+   "step": "seven temporary role users for the access check (test database only)",
+   "from": "S4",
+   "to": "S5",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 70,
+     "rows_after": 77,
+     "schema_changed": false
+    },
+    "model_has_roles": {
+     "rows_before": 4,
+     "rows_after": 11,
+     "schema_changed": false
+    },
+    "users": {
+     "rows_before": 4,
+     "rows_after": 11,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "OD-153 migration product_space_type",
+   "from": "S5",
+   "to": "S6",
+   "new_tables": [
+    "product_space_type"
+   ],
+   "dropped_tables": [],
+   "changed": {
+    "migrations": {
+     "rows_before": 69,
+     "rows_after": 70,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "reference data with the list, run 1",
+   "from": "S6",
+   "to": "S7",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "product_space_type": {
+     "rows_before": 0,
+     "rows_after": 10,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "reference data with the list, run 2 (idempotency)",
+   "from": "S7",
+   "to": "S8",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {}
+  }
+ ]
+}

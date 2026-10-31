@@ -5,7 +5,11 @@
             "args": [
                 "artisan",
                 "boost:mcp"
-            ]
+            ],
+            "env": {
+                "CACHE_STORE": "array",
+                "APP_CONFIG_CACHE": "bootstrap/cache/boost-mcp-never-uses-a-cached-config.php"
+            }
         }
     }
 }

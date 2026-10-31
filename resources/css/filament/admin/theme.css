@@ -2,3 +2,15 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+
+/*
+ * Text shown for an empty value, in a record's details or a table cell ("Unassigned", "Never", "—"). Filament's
+ * light grey fails WCAG AA contrast (4.5:1; found by axe, 2026-10-28), so it takes the grey of other
+ * secondary text. Same layer and selectors as Filament's rules, after them, so it wins by order alone.
+ */
+@layer components {
+    .fi-in-entry .fi-in-placeholder,
+    .fi-ta-cell .fi-ta-placeholder {
+        @apply text-gray-600 dark:text-gray-400;
+    }
+}

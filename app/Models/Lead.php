@@ -27,6 +27,8 @@ class Lead extends Model
 
     public const string SOURCE_CITY_WAITLIST = 'city_waitlist';
 
+    public const string SOURCE_TOUR_FORM = 'tour_form';
+
     /**
      * @return array<string, string>
      */
@@ -36,6 +38,7 @@ class Lead extends Model
             'status' => LeadStatus::class,
             'consent_snapshot' => 'array',
             'first_responded_at' => 'datetime',
+            'next_follow_up_at' => 'datetime',
         ];
     }
 
@@ -109,6 +112,16 @@ class Lead extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(LeadActivity::class)->latest('id');
+    }
+
+    /**
+     * The visits arranged for this enquiry (BR-TR-3), soonest first.
+     *
+     * @return HasMany<TourRequest, $this>
+     */
+    public function tourRequests(): HasMany
+    {
+        return $this->hasMany(TourRequest::class)->orderBy('scheduled_start_at');
     }
 
     /**

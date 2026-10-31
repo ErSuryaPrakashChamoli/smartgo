@@ -1,0 +1,278 @@
+{
+ "port": "8768",
+ "database": "smartgro_demo",
+ "problems": [],
+ "well_formed": true,
+ "root": "{http://www.sitemaps.org/schemas/sitemap/0.9}urlset",
+ "urls": 36,
+ "duplicates": [],
+ "checked": [
+  {
+   "path": "/",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces/private-cabins",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces/dedicated-desks",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces/hot-desks",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces/meeting-rooms",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces/private-cabins/noida",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces/dedicated-desks/noida",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces/hot-desks/noida",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/workspaces/meeting-rooms/noida",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/area/sector-2",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/area/sector-62",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/a-70",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/a-70/private-cabins",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/a-70/hot-desks",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/a-70/meeting-rooms",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/a-71",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/a-71/dedicated-desks",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/h-105",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/h-105/hot-desks",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/locations/noida/h-105/meeting-rooms",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/insights",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/insights/topic/test-fixture-topic",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/insights/test-fixture-insight",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/customers",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/customers/test-fixture-customer-story",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/faqs",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/enquire",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/book-a-tour",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/contact",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/legal/privacy",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/legal/terms",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/test-fixture-media",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  },
+  {
+   "path": "/test-fixture-sections",
+   "status": 200,
+   "meta_robots": null,
+   "sample_notice": false
+  }
+ ],
+ "database_view": {
+  "published_pages": 34,
+  "sample_pages": 29,
+  "published_articles": 11,
+  "sample_articles": 10,
+  "sample_topic_id": 2
+ },
+ "sample_pages_listed": [],
+ "sample_articles_listed": [],
+ "real_pages_missing": [],
+ "real_articles_missing": [],
+ "solutions_listed": [],
+ "sample_topic_listed": false,
+ "paths": [
+  "/",
+  "/workspaces",
+  "/workspaces/private-cabins",
+  "/workspaces/dedicated-desks",
+  "/workspaces/hot-desks",
+  "/workspaces/meeting-rooms",
+  "/workspaces/private-cabins/noida",
+  "/workspaces/dedicated-desks/noida",
+  "/workspaces/hot-desks/noida",
+  "/workspaces/meeting-rooms/noida",
+  "/locations",
+  "/locations/noida",
+  "/locations/noida/area/sector-2",
+  "/locations/noida/area/sector-62",
+  "/locations/noida/a-70",
+  "/locations/noida/a-70/private-cabins",
+  "/locations/noida/a-70/hot-desks",
+  "/locations/noida/a-70/meeting-rooms",
+  "/locations/noida/a-71",
+  "/locations/noida/a-71/dedicated-desks",
+  "/locations/noida/h-105",
+  "/locations/noida/h-105/hot-desks",
+  "/locations/noida/h-105/meeting-rooms",
+  "/insights",
+  "/insights/topic/test-fixture-topic",
+  "/insights/test-fixture-insight",
+  "/customers",
+  "/customers/test-fixture-customer-story",
+  "/faqs",
+  "/enquire",
+  "/book-a-tour",
+  "/contact",
+  "/legal/privacy",
+  "/legal/terms",
+  "/test-fixture-media",
+  "/test-fixture-sections"
+ ]
+}

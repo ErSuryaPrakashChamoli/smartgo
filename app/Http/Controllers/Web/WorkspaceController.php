@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\City;
+use App\Models\Faq;
 use App\Models\Offering;
 use App\Models\Product;
 use App\Services\Content\SiteNavigation;
@@ -70,6 +71,7 @@ class WorkspaceController extends Controller
                 'profile' => $this->catalogue->offeringProfile($offering->profile->toRevisionPayload(), $offering),
             ])->all(),
             'others' => collect($this->catalogue->categories($this->catalogue->listedProperties()))->where('path', '!==', null)->reject(fn (array $category): bool => $category['key'] === $product->key)->values()->all(),
+            'faqs' => Faq::query()->published()->aboutProduct($product)->orderBy('sort_order')->orderBy('id')->get(),
             'enquiryHref' => route('enquiries.create', ['workspace' => $product->slug]),
             'navigation' => $this->siteNavigation->present(),
             'canonical' => $this->canonical('/workspaces/'.$product->slug.($city === null ? '' : '/'.$city->slug)),

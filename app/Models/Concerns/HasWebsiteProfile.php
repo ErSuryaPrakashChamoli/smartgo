@@ -61,7 +61,8 @@ trait HasWebsiteProfile
 
     public function toRevisionPayload(): array
     {
-        $seo = $this->seo()->first();
+        // The search fields as loaded with the profile when a list loaded them, otherwise read now.
+        $seo = $this->relationLoaded('seo') ? $this->seo : $this->seo()->first();
 
         return [...$this->only($this->revisionFields()), 'seo_title' => $seo?->meta_title, 'seo_description' => $seo?->meta_description];
     }

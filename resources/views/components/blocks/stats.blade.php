@@ -9,7 +9,7 @@
         @if ($hasHeading)
             <h2 class="max-w-3xl font-display text-display-lg font-semibold text-balance text-forest">{{ $data['heading'] }}</h2>
         @endif
-        <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal-group>
             @foreach ($data['items'] as $item)
                 <div class="flex flex-col-reverse gap-1 rounded-2xl bg-surface p-6 shadow-card ring-1 ring-line">
                     <dt class="text-muted">{{ $item['label'] }}</dt>

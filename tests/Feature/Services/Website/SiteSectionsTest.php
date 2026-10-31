@@ -6,18 +6,19 @@ use App\Models\Page;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\Property;
+use App\Models\TourAvailabilityRule;
 use App\Services\Website\SiteSections;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('offers the home page and its contact section at all times, and lists only once they have something to show', function () {
+it('offers the home page, its contact section and search at all times, and lists only once they have something to show', function () {
     $keys = array_keys(SiteSections::SECTIONS);
 
-    expect(app(SiteSections::class)->availablePaths($keys))->toBe(['home' => '/', 'contact' => '/#contact']);
+    expect(app(SiteSections::class)->availablePaths($keys))->toBe(['home' => '/', 'contact' => '/#contact', 'search' => '/search']);
 
     Product::factory()->create(['is_active' => true]);
-    Property::factory()->listed()->create();
+    TourAvailabilityRule::factory()->for(Property::factory()->listed())->create();
     Page::factory()->published()->create(['slug' => 'legal/privacy', 'template' => 'legal']);
     Post::factory()->published()->create();
     CaseStudy::factory()->published()->create();
@@ -35,7 +36,23 @@ it('keeps drafts, closed or unpublished properties, inactive categories, stories
     CaseStudy::factory()->published()->create(['consent_on_file' => false]);
     Faq::factory()->create();
 
-    expect(app(SiteSections::class)->availablePaths(['workspaces', 'workspace_types', 'locations', 'enquire', 'insights', 'customers', 'faqs']))->toBe([]);
+    expect(app(SiteSections::class)->availablePaths(['workspaces', 'workspace_types', 'locations', 'enquire', 'book_a_tour', 'insights', 'customers', 'faqs']))->toBe([]);
+});
+
+it('offers the tour request form only while the form is open and a location on the website has tour hours', function () {
+    $listed = Property::factory()->listed()->create();
+    TourAvailabilityRule::factory()->for(Property::factory()->open())->create();
+    Page::factory()->published()->create(['slug' => 'legal/privacy', 'template' => 'legal']);
+
+    expect(app(SiteSections::class)->availablePaths(['book_a_tour']))->toBe([]);
+
+    TourAvailabilityRule::factory()->for($listed)->create();
+
+    expect(app(SiteSections::class)->availablePaths(['book_a_tour']))->toBe(['book_a_tour' => '/book-a-tour']);
+
+    Page::query()->where('slug', 'legal/privacy')->update(['status' => 'draft']);
+
+    expect(app(SiteSections::class)->availablePaths(['book_a_tour']))->toBe([]);
 });
 
 it('ignores keys that are not a part of the website', function () {

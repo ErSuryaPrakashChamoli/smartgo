@@ -1,6 +1,7 @@
 @props(['question'])
 
-{{-- Native disclosure: keyboard and screen-reader support without JavaScript. --}}
+{{-- Native disclosure: keyboard and screen-reader support without JavaScript. Each question shown is also described to search engines (FAQPage, StructuredData), so the two always match. --}}
+@php(app(\App\Services\Website\StructuredData::class)->question((string) $question, (string) $slot))
 <details {{ $attributes->class(['group border-b border-line py-1']) }}>
     <summary class="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md py-4 text-left font-semibold text-forest [&::-webkit-details-marker]:hidden">
         {{ $question }}

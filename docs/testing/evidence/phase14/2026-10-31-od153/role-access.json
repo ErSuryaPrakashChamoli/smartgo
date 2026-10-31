@@ -1,0 +1,177 @@
+{
+    "database": {
+        "db": "smartgro_testing",
+        "ro": 1
+    },
+    "roles": {
+        "super_admin": {
+            "panel": true,
+            "screens": {
+                "spaces": "200",
+                "space types": "200",
+                "new space type": "200",
+                "workspace categories": "200",
+                "edit a category": "200",
+                "properties": "200",
+                "3D models": "200",
+                "price plans": "200",
+                "offers": "200",
+                "inventory imports": "200",
+                "tours": "200",
+                "enquiries report": "200",
+                "pages (CMS)": "200"
+            },
+            "may": {
+                "create a space type": true,
+                "change a category": true,
+                "add spaces at A-70": true,
+                "see spaces list": true
+            }
+        },
+        "operations_manager": {
+            "panel": true,
+            "screens": {
+                "spaces": "200",
+                "space types": "200",
+                "new space type": "200",
+                "workspace categories": "200",
+                "edit a category": "200",
+                "properties": "200",
+                "3D models": "200",
+                "price plans": "200",
+                "offers": "200",
+                "inventory imports": "200",
+                "tours": "200",
+                "enquiries report": "200",
+                "pages (CMS)": "403"
+            },
+            "may": {
+                "create a space type": true,
+                "change a category": true,
+                "add spaces at A-70": true,
+                "see spaces list": true
+            }
+        },
+        "property_manager": {
+            "panel": true,
+            "screens": {
+                "spaces": "200",
+                "space types": "200",
+                "new space type": "403",
+                "workspace categories": "200",
+                "edit a category": "403",
+                "properties": "200",
+                "3D models": "403",
+                "price plans": "200",
+                "offers": "200",
+                "inventory imports": "200",
+                "tours": "200",
+                "enquiries report": "200",
+                "pages (CMS)": "403"
+            },
+            "may": {
+                "create a space type": false,
+                "change a category": false,
+                "add spaces at A-70": false,
+                "see spaces list": true
+            }
+        },
+        "sales_crm_executive": {
+            "panel": true,
+            "screens": {
+                "spaces": "200",
+                "space types": "200",
+                "new space type": "403",
+                "workspace categories": "200",
+                "edit a category": "403",
+                "properties": "200",
+                "3D models": "403",
+                "price plans": "200",
+                "offers": "200",
+                "inventory imports": "403",
+                "tours": "200",
+                "enquiries report": "200",
+                "pages (CMS)": "403"
+            },
+            "may": {
+                "create a space type": false,
+                "change a category": false,
+                "add spaces at A-70": false,
+                "see spaces list": true
+            }
+        },
+        "marketing_manager": {
+            "panel": true,
+            "screens": {
+                "spaces": "200",
+                "space types": "200",
+                "new space type": "403",
+                "workspace categories": "200",
+                "edit a category": "403",
+                "properties": "200",
+                "3D models": "200",
+                "price plans": "200",
+                "offers": "200",
+                "inventory imports": "403",
+                "tours": "403",
+                "enquiries report": "200",
+                "pages (CMS)": "200"
+            },
+            "may": {
+                "create a space type": false,
+                "change a category": false,
+                "add spaces at A-70": false,
+                "see spaces list": true
+            }
+        },
+        "finance": {
+            "panel": true,
+            "screens": {
+                "spaces": "200",
+                "space types": "200",
+                "new space type": "403",
+                "workspace categories": "200",
+                "edit a category": "403",
+                "properties": "200",
+                "3D models": "403",
+                "price plans": "200",
+                "offers": "200",
+                "inventory imports": "403",
+                "tours": "403",
+                "enquiries report": "403",
+                "pages (CMS)": "403"
+            },
+            "may": {
+                "create a space type": false,
+                "change a category": false,
+                "add spaces at A-70": false,
+                "see spaces list": true
+            }
+        },
+        "super_admin (deactivated)": {
+            "panel": false,
+            "screens": {
+                "spaces": "403",
+                "space types": "403",
+                "new space type": "403",
+                "workspace categories": "403",
+                "edit a category": "403",
+                "properties": "403",
+                "3D models": "403",
+                "price plans": "403",
+                "offers": "403",
+                "inventory imports": "403",
+                "tours": "403",
+                "enquiries report": "403",
+                "pages (CMS)": "403"
+            },
+            "may": {
+                "create a space type": false,
+                "change a category": false,
+                "add spaces at A-70": true,
+                "see spaces list": false
+            }
+        }
+    },
+    "still_read_only": 1
+}

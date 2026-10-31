@@ -1,0 +1,29 @@
+
+ INFO Running migrations. 
+
+ 2026_10_27_185025_create_twin_models_table .. 69.08ms DONE
+ 2026_10_27_185026_create_twin_anchors_table .. 38.65ms DONE
+ 2026_10_28_101824_create_post_topics_table .. 22.69ms DONE
+ 2026_10_28_101825_add_topic_ids_to_posts_table .. 24.23ms DONE
+ 2026_10_28_123721_create_security_settings_table .. 10.48ms DONE
+ 2026_10_28_133128_add_scope_to_faqs_table .. 103.73ms DONE
+ 2026_10_28_173942_create_space_types_table .. 18.04ms DONE
+ 2026_10_28_173943_create_floors_table .. 80.44ms DONE
+ 2026_10_28_173945_create_spaces_table .. 112.23ms DONE
+ 2026_10_28_173946_create_space_seats_table .. 43.24ms DONE
+ 2026_10_28_173948_create_offering_space_table .. 62.77ms DONE
+ 2026_10_28_173949_create_space_allocations_table .. 117.89ms DONE
+ 2026_10_28_173951_add_allowed_inventory_modes_to_products_table  30.06ms DONE
+ 2026_10_28_193821_create_price_plans_table .. 216.34ms DONE
+ 2026_10_28_193822_create_offers_table .. 111.99ms DONE
+ 2026_10_28_193823_create_offer_offering_table .. 59.70ms DONE
+ 2026_10_28_193825_create_inventory_imports_table .. 118.19ms DONE
+ 2026_10_28_193826_create_inventory_import_issues_table .. 43.94ms DONE
+ 2026_10_28_195325_create_amenities_table .. 33.44ms DONE
+ 2026_10_28_195327_create_amenity_space_table .. 59.71ms DONE
+ 2026_10_29_033934_create_tour_availability_rules_table .. 100.77ms DONE
+ 2026_10_29_033935_create_property_closures_table .. 74.99ms DONE
+ 2026_10_29_033937_create_tour_requests_table .. 213.23ms DONE
+ 2026_10_29_072209_create_missing_pages_table .. 23.68ms DONE
+ 2026_10_30_201616_add_details_to_navigation_items_table .. 27.48ms DONE
+

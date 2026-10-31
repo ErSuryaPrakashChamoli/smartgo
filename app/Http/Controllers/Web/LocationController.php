@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\CustomerSegment;
 use App\Models\MicroMarket;
 use App\Models\Offering;
+use App\Models\Product;
 use App\Models\Property;
 use App\Services\Content\SiteNavigation;
 use App\Services\Website\EnquiryForm;
@@ -35,13 +36,24 @@ class LocationController extends Controller
 
     public function __construct(private WorkspaceCatalogue $catalogue, private SiteNavigation $siteNavigation, private EnquiryForm $enquiryForm, private LocationPages $pages) {}
 
-    public function index(): View
+    /**
+     * Every city on the website with its listed properties, narrowed to those offering one workspace type
+     * when one is chosen (`?workspace=`); cities without a match are then left out (FR-DISC-2, OD-143).
+     */
+    public function index(Request $request): View
     {
         $properties = $this->catalogue->listedProperties();
+        $workspaceTypes = $this->workspaceTypes($properties);
+        $workspace = $workspaceTypes->firstWhere('slug', $request->query('workspace'));
+        $shown = $workspace === null ? $properties : $this->propertiesOffering($properties, $workspace);
+        $propertiesByCity = $shown->groupBy('city_id');
 
         return view('pages.locations.index', [
-            'cities' => $this->catalogue->publicCities(),
-            'propertiesByCity' => $properties->groupBy('city_id'),
+            'cities' => $workspace === null ? $this->catalogue->publicCities() : $this->catalogue->publicCities()->filter(fn (City $city): bool => $propertiesByCity->has($city->getKey()))->values(),
+            'propertiesByCity' => $propertiesByCity,
+            'workspaceTypes' => $workspaceTypes,
+            'workspace' => $workspace,
+            'shownCount' => $shown->count(),
             'canCompare' => $properties->count() > 1,
             'navigation' => $this->siteNavigation->present(),
             'canonical' => $this->canonical('/locations'),
@@ -99,15 +111,12 @@ class LocationController extends Controller
             ]);
         }
 
-        $workspaceTypes = $properties->flatMap(fn (Property $property): Collection => $property->publishedOfferings->pluck('product'))
-            ->unique('id')
-            ->sortBy('sort_order')
-            ->values();
+        $workspaceTypes = $this->workspaceTypes($properties);
         $workspace = $workspaceTypes->firstWhere('slug', $request->query('workspace'));
 
         return view('pages.locations.city', [
             'city' => $record,
-            'sectors' => $this->sectors($workspace === null ? $properties : $properties->filter(fn (Property $property): bool => $property->publishedOfferings->contains('product_id', $workspace->getKey()))->values()),
+            'sectors' => $this->sectors($workspace === null ? $properties : $this->propertiesOffering($properties, $workspace)),
             'workspaceTypes' => $workspaceTypes,
             'workspace' => $workspace,
             'canCompare' => $properties->count() > 1,
@@ -235,6 +244,31 @@ class LocationController extends Controller
             ->map(fn (Collection $group): array => ['sector' => $group->first()->microMarket, 'properties' => $group->values()])
             ->sortBy(fn (array $group): string => $group['sector'] === null ? "\u{10FFFF}" : $group['sector']->name, SORT_NATURAL | SORT_FLAG_CASE)
             ->values();
+    }
+
+    /**
+     * The workspace types published at any of the properties, in their set order.
+     *
+     * @param  Collection<int, Property>  $properties
+     * @return Collection<int, Product>
+     */
+    private function workspaceTypes(Collection $properties): Collection
+    {
+        return $properties->flatMap(fn (Property $property): Collection => $property->publishedOfferings->pluck('product'))
+            ->unique('id')
+            ->sortBy('sort_order')
+            ->values();
+    }
+
+    /**
+     * The properties with a published offering of the workspace type.
+     *
+     * @param  Collection<int, Property>  $properties
+     * @return Collection<int, Property>
+     */
+    private function propertiesOffering(Collection $properties, Product $workspace): Collection
+    {
+        return $properties->filter(fn (Property $property): bool => $property->publishedOfferings->contains('product_id', $workspace->getKey()))->values();
     }
 
     private function canonical(string $path): string

@@ -1,0 +1,23 @@
+{
+    "finished_at": "2026-10-29T09:01:04+00:00",
+    "git_head": "8a45ae6",
+    "php": "8.5.4",
+    "node": "v22.22.1",
+    "database_check": {
+        "expected_database": "smartgro_testing",
+        "configured_database": "smartgro_testing",
+        "connected_database": "smartgro_testing",
+        "server": "administrator-Latitude-7490:3306",
+        "config_cached": false,
+        "app_env": "local"
+    },
+    "server": "http:\/\/127.0.0.1:8767",
+    "checks": "enquiry tour",
+    "commands": {
+        "verify-public.mjs": 0,
+        "verify-enquiry.mjs": 0,
+        "verify-tour.mjs": 0,
+        "verify-admin.mjs": 0,
+        "verify-twin-performance.mjs": 0
+    }
+}

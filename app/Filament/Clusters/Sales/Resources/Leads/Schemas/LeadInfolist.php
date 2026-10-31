@@ -57,7 +57,11 @@ class LeadInfolist
                         TextEntry::make('consent_text')->label('Agreed to')->state(fn (Lead $record): ?string => $record->consent_snapshot['text'] ?? null)->columnSpanFull(),
                         TextEntry::make('consent_notice')->label('Privacy notice shown')->state(fn (Lead $record): string => ($record->consent_snapshot['notice_path'] ?? '—').' (version '.($record->consent_snapshot['notice_revision'] ?? '—').')'),
                         TextEntry::make('consent_marketing')->label('Marketing messages')->state(fn (Lead $record): string => ($record->consent_snapshot['marketing'] ?? false) ? 'Agreed' : 'Not asked, not agreed'),
-                        TextEntry::make('source')->formatStateUsing(fn (string $state): string => $state === Lead::SOURCE_CITY_WAITLIST ? 'City waitlist' : 'Website form'),
+                        TextEntry::make('source')->formatStateUsing(fn (string $state): string => match ($state) {
+                            Lead::SOURCE_CITY_WAITLIST => 'City waitlist',
+                            Lead::SOURCE_TOUR_FORM => 'Website tour request',
+                            default => 'Website form',
+                        }),
                         TextEntry::make('landing_path')->label('Came from')->placeholder('—'),
                         TextEntry::make('utm')->label('Campaign')->state(fn (Lead $record): ?string => collect([$record->utm_source, $record->utm_medium, $record->utm_campaign])->filter()->join(' · ') ?: null)->placeholder('—'),
                     ]),

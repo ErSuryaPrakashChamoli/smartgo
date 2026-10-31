@@ -21,7 +21,7 @@ Examples use **synthetic** identifiers (`synthville`, `SYN-…`). They are not r
 | Money | `{ "amount_minor": 1499900, "currency": "INR", "tax": "exclusive", "display": "₹14,999 + GST" }`. Only returned where the price display policy allows (BR-PR-3). |
 | Visibility | Only published properties in **publicly visible cities** (OD-18), and publicly listable, non-decommissioned spaces, are returned. Hidden records answer **404**, never 403, so they cannot be discovered. |
 | Personal data | **Never returned** by public endpoints |
-| Auth | Public read endpoints: none. No public write endpoints at launch (forms go through Livewire, §3). A future write API would use Sanctum tokens. **Back office** (not part of this public API): every protected page, route, Livewire action and back-office API requires sign-in with two-step login **and** the explicit `backoffice.access` permission (OD-74; implemented 2026-10-26). |
+| Auth | Public read endpoints: none. No public write endpoints at launch (forms go through Livewire, §3). A future write API would use Sanctum tokens. **Back office** (not part of this public API): every protected page, route, Livewire action and back-office API requires sign-in, two-step login where it is required (always outside local development; locally a Super Admin switch, OD-124) **and** the explicit `backoffice.access` permission (OD-74; implemented 2026-10-26). |
 | CORS | same-origin only |
 | Rate limits | named limiter `public-api`: 60 requests/min per IP; `slots`: 30/min per IP. Over the limit → **429** with `Retry-After`. |
 | Errors | Laravel's standard JSON shapes: `404 {"message": …}`; `422 {"message": …, "errors": {field: [..]}}`; `429 {"message": …}`; `500 {"message": "Server Error"}` (no details in production) |
@@ -185,6 +185,8 @@ Every form applies all of the following:
 3. A confirmation with an ICS invite and a signed reschedule/cancel link is sent.
 
 **If the slot was taken meanwhile:** the visitor sees "That time was just booked. Here are the next three available times", and no lead is lost.
+
+**Implementation (2026-10-29, OD-129 e and f; not accepted):** a server-rendered form at `/book-a-tour`, not a public write API. The tour is created `requested` and staff confirm it, as the approved tour journey shows; confirming at once is a switch kept off until D-07 (`TOURS_CONFIRM_ON_REQUEST`). Times come from §2.3's rules within 14 days. The reference is `TOUR-` and eight characters. No confirmation is sent yet (O-1, D-10): the visitor gets the private signed link on screen, and the calendar file (ICS) once the tour is confirmed. If the time was just taken, nothing is stored, the typed details stay in the form, and the free times of that day are shown again. The form is closed until the privacy notice is published (OD-111 c).
 
 ### 3.3 Booking (only if D-07 enables online booking)
 

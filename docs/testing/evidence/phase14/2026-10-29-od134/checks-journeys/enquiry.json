@@ -1,0 +1,142 @@
+{
+ "startedAt": "2026-10-29T10:39:19.788Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "156.0.8078.47",
+ "runs": [
+  {
+   "width": 360,
+   "javaScript": true,
+   "status": 200,
+   "formOpen": true,
+   "formAxe": [],
+   "received": {
+    "path": "/enquire/received",
+    "h1": [
+     "Thank you, we have your enquiry"
+    ],
+    "reference": "ENQ-RZTRBG9Y",
+    "overflow": 0,
+    "axe": []
+   }
+  },
+  {
+   "width": 1440,
+   "javaScript": true,
+   "status": 200,
+   "formOpen": true,
+   "formAxe": [],
+   "received": {
+    "path": "/enquire/received",
+    "h1": [
+     "Thank you, we have your enquiry"
+    ],
+    "reference": "ENQ-KTUT7YXG",
+    "overflow": 0,
+    "axe": []
+   }
+  },
+  {
+   "width": 360,
+   "javaScript": false,
+   "status": 200,
+   "formOpen": true,
+   "formAxe": null,
+   "received": {
+    "path": "/enquire/received",
+    "h1": [
+     "Thank you, we have your enquiry"
+    ],
+    "reference": "ENQ-SFWAHRP5",
+    "overflow": 0,
+    "axe": null
+   }
+  }
+ ],
+ "failures": [],
+ "pageJourney": {
+  "steps": [
+   {
+    "step": "built and submitted by the Marketing Manager",
+    "offered": true,
+    "notices": "Draft created | Submitted for approval"
+   },
+   {
+    "step": "approved by the Super Admin",
+    "notices": "Version approved"
+   },
+   {
+    "step": "published by the author",
+    "notices": "Page published"
+   }
+  ],
+  "visits": [
+   {
+    "width": 360,
+    "javaScript": true,
+    "status": 200,
+    "headings": [
+     "TEST FIXTURE where to find us",
+     "TEST FIXTURE ask about A-70"
+    ],
+    "cards": [
+     "/locations/noida/a-70",
+     "/locations/noida/a-71",
+     "/locations/noida/h-105"
+    ],
+    "chosen": "SmartGro A-70, Sector 2, Noida",
+    "from": "/test-fixture-locations-and-enquiry",
+    "utm": "test-fixture",
+    "overflow": 0,
+    "axe": []
+   },
+   {
+    "width": 1440,
+    "javaScript": true,
+    "status": 200,
+    "headings": [
+     "TEST FIXTURE where to find us",
+     "TEST FIXTURE ask about A-70"
+    ],
+    "cards": [
+     "/locations/noida/a-70",
+     "/locations/noida/a-71",
+     "/locations/noida/h-105"
+    ],
+    "chosen": "SmartGro A-70, Sector 2, Noida",
+    "from": "/test-fixture-locations-and-enquiry",
+    "utm": "test-fixture",
+    "overflow": 0,
+    "axe": [],
+    "wrongDetails": {
+     "at": "/test-fixture-locations-and-enquiry#enquiry-form",
+     "error": "Enter an email address in the format name@company.com.",
+     "formInView": true
+    },
+    "sent": {
+     "at": "/enquire/received",
+     "reference": "ENQ-ETPUEHZN"
+    }
+   },
+   {
+    "width": 360,
+    "javaScript": false,
+    "status": 200,
+    "headings": [
+     "TEST FIXTURE where to find us",
+     "TEST FIXTURE ask about A-70"
+    ],
+    "cards": [
+     "/locations/noida/a-70",
+     "/locations/noida/a-71",
+     "/locations/noida/h-105"
+    ],
+    "chosen": "SmartGro A-70, Sector 2, Noida",
+    "from": "/test-fixture-locations-and-enquiry",
+    "utm": "test-fixture",
+    "overflow": 0,
+    "axe": null
+   }
+  ]
+ },
+ "finishedAt": "2026-10-29T10:40:48.772Z"
+}

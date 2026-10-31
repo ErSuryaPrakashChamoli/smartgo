@@ -1,0 +1,1237 @@
+{
+ "base": "http://127.0.0.1:8080",
+ "desktop": [
+  {
+   "width": 1440,
+   "height": 900,
+   "workspaces": {
+    "tabs": [
+     "Workspaces:true",
+     "Business Solutions:false"
+    ],
+    "links": [
+     {
+      "label": "Dedicated Desks",
+      "href": "/workspaces/dedicated-desks",
+      "icon": true,
+      "description": "A dedicated workspace for professionals who want a consistent place to focus and work."
+     },
+     {
+      "label": "Flexible Desks",
+      "href": "/workspaces/hot-desks",
+      "icon": true,
+      "description": "A flexible workspace concept for people whose working needs change from day to day."
+     },
+     {
+      "label": "Private Offices",
+      "href": "/workspaces/private-cabins",
+      "icon": true,
+      "description": "A private workspace concept for individuals and teams seeking a more enclosed working environment."
+     },
+     {
+      "label": "Managed Workspaces",
+      "href": "/workspace-solutions/managed-workspaces",
+      "icon": true,
+      "description": "A managed workspace concept for businesses seeking a more tailored office arrangement."
+     }
+    ],
+    "note": "Sample pages: example text, not yet confirmed by SmartGro.",
+    "panel": {
+     "left": 579,
+     "right": 1315,
+     "top": 77,
+     "bottom": 444,
+     "width": 736,
+     "scrolls": false
+    },
+    "viewport": {
+     "width": 1440,
+     "height": 900
+    },
+    "overflow": 0
+   },
+   "axeOpenPanel": [],
+   "businessByHover": {
+    "tabs": [
+     "Workspaces:false",
+     "Business Solutions:true"
+    ],
+    "links": [
+     {
+      "label": "Meeting Rooms",
+      "href": "/business-solutions/meeting-rooms",
+      "icon": true,
+      "description": "A professional space concept for meetings, discussions, and collaborative sessions."
+     },
+     {
+      "label": "Day Pass",
+      "href": "/business-solutions/day-pass",
+      "icon": true,
+      "description": "A sample short-term workspace access offering for flexible working needs."
+     },
+     {
+      "label": "Business Address",
+      "href": "/business-solutions/business-address",
+      "icon": true,
+      "description": "A sample business-address service concept for organisations exploring professional address options."
+     },
+     {
+      "label": "GST Registration Support",
+      "href": "/business-solutions/gst-registration-support",
+      "icon": true,
+      "description": "A sample information page for customers exploring GST registration assistance."
+     },
+     {
+      "label": "Company Registration Support",
+      "href": "/business-solutions/company-registration-support",
+      "icon": true,
+      "description": "A sample information page for customers exploring company formation assistance."
+     },
+     {
+      "label": "Workspace Packages",
+      "href": "/business-solutions/workspace-packages",
+      "icon": true,
+      "description": "A sample overview of workspace options that may be combined around business needs."
+     },
+     {
+      "label": "Cabin Day Pass",
+      "href": "/business-solutions/cabin-day-pass",
+      "icon": true,
+      "description": "A sample short-term access concept for a private cabin or enclosed workspace."
+     },
+     {
+      "label": "Training Rooms",
+      "href": "/business-solutions/training-rooms",
+      "icon": true,
+      "description": "A sample space concept for training, workshops, and group learning."
+     },
+     {
+      "label": "Virtual Office",
+      "href": "/business-solutions/virtual-office",
+      "icon": true,
+      "description": "A sample virtual-office concept for businesses that work remotely but want a professional presence."
+     }
+    ],
+    "note": "Sample pages: example text, not yet confirmed by SmartGro.",
+    "panel": {
+     "left": 579,
+     "right": 1315,
+     "top": 77,
+     "bottom": 830,
+     "width": 736,
+     "scrolls": false
+    },
+    "viewport": {
+     "width": 1440,
+     "height": 900
+    },
+    "overflow": 0
+   },
+   "workspacesByClick": [
+    "Workspaces:true",
+    "Business Solutions:false"
+   ],
+   "namesExcludeDescriptions": 1,
+   "escape": {
+    "open": false,
+    "focus": "Solutions"
+   },
+   "outsideClickCloses": true,
+   "keyboard": {
+    "firstFocus": "Workspaces",
+    "afterArrow": "Business Solutions",
+    "afterEnter": "/business-solutions/meeting-rooms",
+    "tabs": [
+     "Workspaces:false",
+     "Business Solutions:true"
+    ]
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 1280,
+   "height": 720,
+   "workspaces": {
+    "tabs": [
+     "Workspaces:true",
+     "Business Solutions:false"
+    ],
+    "links": [
+     {
+      "label": "Dedicated Desks",
+      "href": "/workspaces/dedicated-desks",
+      "icon": true,
+      "description": "A dedicated workspace for professionals who want a consistent place to focus and work."
+     },
+     {
+      "label": "Flexible Desks",
+      "href": "/workspaces/hot-desks",
+      "icon": true,
+      "description": "A flexible workspace concept for people whose working needs change from day to day."
+     },
+     {
+      "label": "Private Offices",
+      "href": "/workspaces/private-cabins",
+      "icon": true,
+      "description": "A private workspace concept for individuals and teams seeking a more enclosed working environment."
+     },
+     {
+      "label": "Managed Workspaces",
+      "href": "/workspace-solutions/managed-workspaces",
+      "icon": true,
+      "description": "A managed workspace concept for businesses seeking a more tailored office arrangement."
+     }
+    ],
+    "note": "Sample pages: example text, not yet confirmed by SmartGro.",
+    "panel": {
+     "left": 499,
+     "right": 1235,
+     "top": 77,
+     "bottom": 372,
+     "width": 736,
+     "scrolls": false
+    },
+    "viewport": {
+     "width": 1280,
+     "height": 720
+    },
+    "overflow": 0
+   },
+   "axeOpenPanel": [],
+   "businessByHover": {
+    "tabs": [
+     "Workspaces:false",
+     "Business Solutions:true"
+    ],
+    "links": [
+     {
+      "label": "Meeting Rooms",
+      "href": "/business-solutions/meeting-rooms",
+      "icon": true,
+      "description": "A professional space concept for meetings, discussions, and collaborative sessions."
+     },
+     {
+      "label": "Day Pass",
+      "href": "/business-solutions/day-pass",
+      "icon": true,
+      "description": "A sample short-term workspace access offering for flexible working needs."
+     },
+     {
+      "label": "Business Address",
+      "href": "/business-solutions/business-address",
+      "icon": true,
+      "description": "A sample business-address service concept for organisations exploring professional address options."
+     },
+     {
+      "label": "GST Registration Support",
+      "href": "/business-solutions/gst-registration-support",
+      "icon": true,
+      "description": "A sample information page for customers exploring GST registration assistance."
+     },
+     {
+      "label": "Company Registration Support",
+      "href": "/business-solutions/company-registration-support",
+      "icon": true,
+      "description": "A sample information page for customers exploring company formation assistance."
+     },
+     {
+      "label": "Workspace Packages",
+      "href": "/business-solutions/workspace-packages",
+      "icon": true,
+      "description": "A sample overview of workspace options that may be combined around business needs."
+     },
+     {
+      "label": "Cabin Day Pass",
+      "href": "/business-solutions/cabin-day-pass",
+      "icon": true,
+      "description": "A sample short-term access concept for a private cabin or enclosed workspace."
+     },
+     {
+      "label": "Training Rooms",
+      "href": "/business-solutions/training-rooms",
+      "icon": true,
+      "description": "A sample space concept for training, workshops, and group learning."
+     },
+     {
+      "label": "Virtual Office",
+      "href": "/business-solutions/virtual-office",
+      "icon": true,
+      "description": "A sample virtual-office concept for businesses that work remotely but want a professional presence."
+     }
+    ],
+    "note": "Sample pages: example text, not yet confirmed by SmartGro.",
+    "panel": {
+     "left": 499,
+     "right": 1235,
+     "top": 77,
+     "bottom": 669,
+     "width": 736,
+     "scrolls": false
+    },
+    "viewport": {
+     "width": 1280,
+     "height": 720
+    },
+    "overflow": 0
+   },
+   "workspacesByClick": [
+    "Workspaces:true",
+    "Business Solutions:false"
+   ],
+   "namesExcludeDescriptions": 1,
+   "escape": {
+    "open": false,
+    "focus": "Solutions"
+   },
+   "outsideClickCloses": true,
+   "keyboard": {
+    "firstFocus": "Workspaces",
+    "afterArrow": "Business Solutions",
+    "afterEnter": "/business-solutions/meeting-rooms",
+    "tabs": [
+     "Workspaces:false",
+     "Business Solutions:true"
+    ]
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 1024,
+   "height": 768,
+   "workspaces": {
+    "tabs": [
+     "Workspaces:true",
+     "Business Solutions:false"
+    ],
+    "links": [
+     {
+      "label": "Dedicated Desks",
+      "href": "/workspaces/dedicated-desks",
+      "icon": true,
+      "description": "A dedicated workspace for professionals who want a consistent place to focus and work."
+     },
+     {
+      "label": "Flexible Desks",
+      "href": "/workspaces/hot-desks",
+      "icon": true,
+      "description": "A flexible workspace concept for people whose working needs change from day to day."
+     },
+     {
+      "label": "Private Offices",
+      "href": "/workspaces/private-cabins",
+      "icon": true,
+      "description": "A private workspace concept for individuals and teams seeking a more enclosed working environment."
+     },
+     {
+      "label": "Managed Workspaces",
+      "href": "/workspace-solutions/managed-workspaces",
+      "icon": true,
+      "description": "A managed workspace concept for businesses seeking a more tailored office arrangement."
+     }
+    ],
+    "note": "Sample pages: example text, not yet confirmed by SmartGro.",
+    "panel": {
+     "left": 268,
+     "right": 1004,
+     "top": 70,
+     "bottom": 366,
+     "width": 736,
+     "scrolls": false
+    },
+    "viewport": {
+     "width": 1024,
+     "height": 768
+    },
+    "overflow": 0
+   },
+   "axeOpenPanel": [],
+   "businessByHover": {
+    "tabs": [
+     "Workspaces:false",
+     "Business Solutions:true"
+    ],
+    "links": [
+     {
+      "label": "Meeting Rooms",
+      "href": "/business-solutions/meeting-rooms",
+      "icon": true,
+      "description": "A professional space concept for meetings, discussions, and collaborative sessions."
+     },
+     {
+      "label": "Day Pass",
+      "href": "/business-solutions/day-pass",
+      "icon": true,
+      "description": "A sample short-term workspace access offering for flexible working needs."
+     },
+     {
+      "label": "Business Address",
+      "href": "/business-solutions/business-address",
+      "icon": true,
+      "description": "A sample business-address service concept for organisations exploring professional address options."
+     },
+     {
+      "label": "GST Registration Support",
+      "href": "/business-solutions/gst-registration-support",
+      "icon": true,
+      "description": "A sample information page for customers exploring GST registration assistance."
+     },
+     {
+      "label": "Company Registration Support",
+      "href": "/business-solutions/company-registration-support",
+      "icon": true,
+      "description": "A sample information page for customers exploring company formation assistance."
+     },
+     {
+      "label": "Workspace Packages",
+      "href": "/business-solutions/workspace-packages",
+      "icon": true,
+      "description": "A sample overview of workspace options that may be combined around business needs."
+     },
+     {
+      "label": "Cabin Day Pass",
+      "href": "/business-solutions/cabin-day-pass",
+      "icon": true,
+      "description": "A sample short-term access concept for a private cabin or enclosed workspace."
+     },
+     {
+      "label": "Training Rooms",
+      "href": "/business-solutions/training-rooms",
+      "icon": true,
+      "description": "A sample space concept for training, workshops, and group learning."
+     },
+     {
+      "label": "Virtual Office",
+      "href": "/business-solutions/virtual-office",
+      "icon": true,
+      "description": "A sample virtual-office concept for businesses that work remotely but want a professional presence."
+     }
+    ],
+    "note": "Sample pages: example text, not yet confirmed by SmartGro.",
+    "panel": {
+     "left": 268,
+     "right": 1004,
+     "top": 70,
+     "bottom": 662,
+     "width": 736,
+     "scrolls": false
+    },
+    "viewport": {
+     "width": 1024,
+     "height": 768
+    },
+    "overflow": 0
+   },
+   "workspacesByClick": [
+    "Workspaces:true",
+    "Business Solutions:false"
+   ],
+   "namesExcludeDescriptions": 1,
+   "escape": {
+    "open": false,
+    "focus": "Solutions"
+   },
+   "outsideClickCloses": true,
+   "keyboard": {
+    "firstFocus": "Workspaces",
+    "afterArrow": "Business Solutions",
+    "afterEnter": "/business-solutions/meeting-rooms",
+    "tabs": [
+     "Workspaces:false",
+     "Business Solutions:true"
+    ]
+   },
+   "consoleErrors": []
+  }
+ ],
+ "phone": [
+  {
+   "width": 768,
+   "lists": [
+    {
+     "category": "Workspaces",
+     "open": true,
+     "links": [
+      {
+       "label": "Dedicated Desks",
+       "href": "/workspaces/dedicated-desks",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Flexible Desks",
+       "href": "/workspaces/hot-desks",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Private Offices",
+       "href": "/workspaces/private-cabins",
+       "height": 89,
+       "visible": true
+      },
+      {
+       "label": "Managed Workspaces",
+       "href": "/workspace-solutions/managed-workspaces",
+       "height": 69,
+       "visible": true
+      }
+     ],
+     "note": "Sample pages: example text, not yet confirmed by SmartGro."
+    },
+    {
+     "category": "Business Solutions",
+     "open": true,
+     "links": [
+      {
+       "label": "Meeting Rooms",
+       "href": "/business-solutions/meeting-rooms",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Day Pass",
+       "href": "/business-solutions/day-pass",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Business Address",
+       "href": "/business-solutions/business-address",
+       "height": 89,
+       "visible": true
+      },
+      {
+       "label": "GST Registration Support",
+       "href": "/business-solutions/gst-registration-support",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Company Registration Support",
+       "href": "/business-solutions/company-registration-support",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Workspace Packages",
+       "href": "/business-solutions/workspace-packages",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Cabin Day Pass",
+       "href": "/business-solutions/cabin-day-pass",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Training Rooms",
+       "href": "/business-solutions/training-rooms",
+       "height": 69,
+       "visible": true
+      },
+      {
+       "label": "Virtual Office",
+       "href": "/business-solutions/virtual-office",
+       "height": 89,
+       "visible": true
+      }
+     ],
+     "note": "Sample pages: example text, not yet confirmed by SmartGro."
+    }
+   ],
+   "sheetOverflow": 0,
+   "pageOverflow": 0,
+   "axeSheet": [],
+   "closed": true,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "lists": [
+    {
+     "category": "Workspaces",
+     "open": true,
+     "links": [
+      {
+       "label": "Dedicated Desks",
+       "href": "/workspaces/dedicated-desks",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Flexible Desks",
+       "href": "/workspaces/hot-desks",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Private Offices",
+       "href": "/workspaces/private-cabins",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Managed Workspaces",
+       "href": "/workspace-solutions/managed-workspaces",
+       "height": 108,
+       "visible": true
+      }
+     ],
+     "note": "Sample pages: example text, not yet confirmed by SmartGro."
+    },
+    {
+     "category": "Business Solutions",
+     "open": true,
+     "links": [
+      {
+       "label": "Meeting Rooms",
+       "href": "/business-solutions/meeting-rooms",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Day Pass",
+       "href": "/business-solutions/day-pass",
+       "height": 89,
+       "visible": true
+      },
+      {
+       "label": "Business Address",
+       "href": "/business-solutions/business-address",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "GST Registration Support",
+       "href": "/business-solutions/gst-registration-support",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Company Registration Support",
+       "href": "/business-solutions/company-registration-support",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Workspace Packages",
+       "href": "/business-solutions/workspace-packages",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Cabin Day Pass",
+       "href": "/business-solutions/cabin-day-pass",
+       "height": 89,
+       "visible": true
+      },
+      {
+       "label": "Training Rooms",
+       "href": "/business-solutions/training-rooms",
+       "height": 89,
+       "visible": true
+      },
+      {
+       "label": "Virtual Office",
+       "href": "/business-solutions/virtual-office",
+       "height": 108,
+       "visible": true
+      }
+     ],
+     "note": "Sample pages: example text, not yet confirmed by SmartGro."
+    }
+   ],
+   "sheetOverflow": 0,
+   "pageOverflow": 0,
+   "axeSheet": [],
+   "closed": true,
+   "consoleErrors": []
+  },
+  {
+   "width": 360,
+   "lists": [
+    {
+     "category": "Workspaces",
+     "open": true,
+     "links": [
+      {
+       "label": "Dedicated Desks",
+       "href": "/workspaces/dedicated-desks",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Flexible Desks",
+       "href": "/workspaces/hot-desks",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Private Offices",
+       "href": "/workspaces/private-cabins",
+       "height": 127,
+       "visible": true
+      },
+      {
+       "label": "Managed Workspaces",
+       "href": "/workspace-solutions/managed-workspaces",
+       "height": 108,
+       "visible": true
+      }
+     ],
+     "note": "Sample pages: example text, not yet confirmed by SmartGro."
+    },
+    {
+     "category": "Business Solutions",
+     "open": true,
+     "links": [
+      {
+       "label": "Meeting Rooms",
+       "href": "/business-solutions/meeting-rooms",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Day Pass",
+       "href": "/business-solutions/day-pass",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Business Address",
+       "href": "/business-solutions/business-address",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "GST Registration Support",
+       "href": "/business-solutions/gst-registration-support",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Company Registration Support",
+       "href": "/business-solutions/company-registration-support",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Workspace Packages",
+       "href": "/business-solutions/workspace-packages",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Cabin Day Pass",
+       "href": "/business-solutions/cabin-day-pass",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Training Rooms",
+       "href": "/business-solutions/training-rooms",
+       "height": 108,
+       "visible": true
+      },
+      {
+       "label": "Virtual Office",
+       "href": "/business-solutions/virtual-office",
+       "height": 108,
+       "visible": true
+      }
+     ],
+     "note": "Sample pages: example text, not yet confirmed by SmartGro."
+    }
+   ],
+   "sheetOverflow": 0,
+   "pageOverflow": 0,
+   "axeSheet": [],
+   "closed": true,
+   "consoleErrors": []
+  }
+ ],
+ "pages": [
+  {
+   "href": "/workspaces/dedicated-desks",
+   "label": "Dedicated Desks",
+   "sample": false,
+   "status": 200,
+   "h1": "Dedicated desks",
+   "headings": [
+    "Where to find dedicated desks",
+    "Other workspace types"
+   ],
+   "questions": 0,
+   "heroLink": "/workspaces",
+   "bookTour": false,
+   "robots": null,
+   "title": "Dedicated desks · SmartGro",
+   "description": "A desk of your own in a shared workspace, kept for you. Available at 1 SmartGro location.",
+   "notice": null,
+   "links": 5,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/workspaces/hot-desks",
+   "label": "Flexible Desks",
+   "sample": false,
+   "status": 200,
+   "h1": "Hot desks",
+   "headings": [
+    "Where to find hot desks",
+    "Questions about hot desks",
+    "Other workspace types"
+   ],
+   "questions": 1,
+   "heroLink": "/workspaces",
+   "bookTour": false,
+   "robots": null,
+   "title": "Hot desks · SmartGro",
+   "description": "Flexible seating: take any open desk when you need one. Available at 2 SmartGro locations.",
+   "notice": null,
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/workspaces/private-cabins",
+   "label": "Private Offices",
+   "sample": false,
+   "status": 200,
+   "h1": "Private offices and cabins",
+   "headings": [
+    "Where to find private offices and cabins",
+    "Other workspace types"
+   ],
+   "questions": 0,
+   "heroLink": "/workspaces",
+   "bookTour": false,
+   "robots": null,
+   "title": "Private offices and cabins · SmartGro",
+   "description": "Lockable offices and cabins for teams that want a room of their own. Available at 1 SmartGro location.",
+   "notice": null,
+   "links": 5,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/workspace-solutions/managed-workspaces",
+   "label": "Managed Workspaces",
+   "sample": true,
+   "status": 200,
+   "h1": "Managed Workspaces",
+   "headings": [
+    "About Managed Workspaces",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Managed Workspaces",
+    "Ask SmartGro about Managed Workspaces"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Managed Workspaces (sample) · SmartGro",
+   "description": "A managed workspace concept for businesses seeking a more tailored office arrangement.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/meeting-rooms",
+   "label": "Meeting Rooms",
+   "sample": true,
+   "status": 200,
+   "h1": "Meeting Rooms",
+   "headings": [
+    "About Meeting Rooms",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Meeting Rooms",
+    "Ask SmartGro about Meeting Rooms"
+   ],
+   "questions": 3,
+   "heroLink": "/workspaces/meeting-rooms",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Meeting Rooms (sample) · SmartGro",
+   "description": "A professional space concept for meetings, discussions, and collaborative sessions.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/day-pass",
+   "label": "Day Pass",
+   "sample": true,
+   "status": 200,
+   "h1": "Day Pass",
+   "headings": [
+    "About Day Pass",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Day Pass",
+    "Ask SmartGro about Day Pass"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Day Pass (sample) · SmartGro",
+   "description": "A sample short-term workspace access offering for flexible working needs.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/business-address",
+   "label": "Business Address",
+   "sample": true,
+   "status": 200,
+   "h1": "Business Address",
+   "headings": [
+    "About Business Address",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Business Address",
+    "Ask SmartGro about Business Address"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": false,
+   "robots": "noindex, follow",
+   "title": "Business Address (sample) · SmartGro",
+   "description": "A sample business-address service concept for organisations exploring professional address options.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 5,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/gst-registration-support",
+   "label": "GST Registration Support",
+   "sample": true,
+   "status": 200,
+   "h1": "GST Registration Support",
+   "headings": [
+    "About GST Registration Support",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about GST Registration Support",
+    "Ask SmartGro about GST Registration Support"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": false,
+   "robots": "noindex, follow",
+   "title": "GST Registration Support (sample) · SmartGro",
+   "description": "A sample information page for customers exploring GST registration assistance.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 5,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/company-registration-support",
+   "label": "Company Registration Support",
+   "sample": true,
+   "status": 200,
+   "h1": "Company Registration Support",
+   "headings": [
+    "About Company Registration Support",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Company Registration Support",
+    "Ask SmartGro about Company Registration Support"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": false,
+   "robots": "noindex, follow",
+   "title": "Company Registration Support (sample) · SmartGro",
+   "description": "A sample information page for customers exploring company formation assistance.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 5,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/workspace-packages",
+   "label": "Workspace Packages",
+   "sample": true,
+   "status": 200,
+   "h1": "Workspace Packages",
+   "headings": [
+    "About Workspace Packages",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Workspace Packages",
+    "Ask SmartGro about Workspace Packages"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Workspace Packages (sample) · SmartGro",
+   "description": "A sample overview of workspace options that may be combined around business needs.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/cabin-day-pass",
+   "label": "Cabin Day Pass",
+   "sample": true,
+   "status": 200,
+   "h1": "Cabin Day Pass",
+   "headings": [
+    "About Cabin Day Pass",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Cabin Day Pass",
+    "Ask SmartGro about Cabin Day Pass"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Cabin Day Pass (sample) · SmartGro",
+   "description": "A sample short-term access concept for a private cabin or enclosed workspace.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/training-rooms",
+   "label": "Training Rooms",
+   "sample": true,
+   "status": 200,
+   "h1": "Training Rooms",
+   "headings": [
+    "About Training Rooms",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Training Rooms",
+    "Ask SmartGro about Training Rooms"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Training Rooms (sample) · SmartGro",
+   "description": "A sample space concept for training, workshops, and group learning.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/business-solutions/virtual-office",
+   "label": "Virtual Office",
+   "sample": true,
+   "status": 200,
+   "h1": "Virtual Office",
+   "headings": [
+    "About Virtual Office",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Virtual Office",
+    "Ask SmartGro about Virtual Office"
+   ],
+   "questions": 3,
+   "heroLink": "/enquire",
+   "bookTour": false,
+   "robots": "noindex, follow",
+   "title": "Virtual Office (sample) · SmartGro",
+   "description": "A sample virtual-office concept for businesses that work remotely but want a professional presence.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 5,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/workspace-solutions/dedicated-desks",
+   "label": "Dedicated Desks",
+   "sample": true,
+   "status": 200,
+   "h1": "Dedicated Desks",
+   "headings": [
+    "About Dedicated Desks",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Dedicated Desks",
+    "Ask SmartGro about Dedicated Desks"
+   ],
+   "questions": 3,
+   "heroLink": "/workspaces/dedicated-desks",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Dedicated Desks (sample) · SmartGro",
+   "description": "A dedicated workspace for professionals who want a consistent place to focus and work.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/workspace-solutions/flexible-desks",
+   "label": "Flexible Desks",
+   "sample": true,
+   "status": 200,
+   "h1": "Flexible Desks",
+   "headings": [
+    "About Flexible Desks",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Flexible Desks",
+    "Ask SmartGro about Flexible Desks"
+   ],
+   "questions": 3,
+   "heroLink": "/workspaces/hot-desks",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Flexible Desks (sample) · SmartGro",
+   "description": "A flexible workspace concept for people whose working needs change from day to day.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  },
+  {
+   "href": "/workspace-solutions/private-offices",
+   "label": "Private Offices",
+   "sample": true,
+   "status": 200,
+   "h1": "Private Offices",
+   "headings": [
+    "About Private Offices",
+    "At a glance",
+    "Possible uses",
+    "Before this becomes a SmartGro service",
+    "Related offerings",
+    "Questions about Private Offices",
+    "Ask SmartGro about Private Offices"
+   ],
+   "questions": 3,
+   "heroLink": "/workspaces/private-cabins",
+   "bookTour": true,
+   "robots": "noindex, follow",
+   "title": "Private Offices (sample) · SmartGro",
+   "description": "A private workspace concept for individuals and teams seeking a more enclosed working environment.",
+   "notice": "Sample content. This page shows example text for SmartGro's team to replace. It is not SmartGro information.",
+   "links": 6,
+   "fixture": false,
+   "price": false,
+   "badLinks": []
+  }
+ ],
+ "sitemap": {
+  "listsSolutionPages": false,
+  "urls": 33
+ },
+ "home": [
+  {
+   "width": 1440,
+   "image": "/images/home/coworking-interior-1774.webp",
+   "loaded": true,
+   "label": "AI-generated image, not a photo of a SmartGro location",
+   "search": true,
+   "headerButtons": [
+    "Book a Tour /book-a-tour"
+   ],
+   "topLinks": [
+    "/workspaces",
+    "/locations",
+    "/community",
+    "/about",
+    "/insights"
+   ],
+   "overflow": 0,
+   "statuses": {
+    "/search": 200,
+    "/workspaces": 200,
+    "/locations": 200,
+    "/community": 200,
+    "/about": 200,
+    "/insights": 200,
+    "/book-a-tour": 200
+   },
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "image": "/images/home/coworking-interior-640.webp",
+   "loaded": true,
+   "label": "AI-generated image, not a photo of a SmartGro location",
+   "search": true,
+   "headerButtons": [
+    "Book a Tour /book-a-tour"
+   ],
+   "topLinks": [
+    "/workspaces",
+    "/locations",
+    "/community",
+    "/about",
+    "/insights"
+   ],
+   "overflow": 0,
+   "statuses": {
+    "/search": 200,
+    "/workspaces": 200,
+    "/locations": 200,
+    "/community": 200,
+    "/about": 200,
+    "/insights": 200,
+    "/book-a-tour": 200
+   },
+   "consoleErrors": []
+  }
+ ],
+ "failures": []
+}

@@ -1,0 +1,130 @@
+{
+ "database": "smartgro_testing",
+ "replica": "OD-150 backup + the 25 OD-150 migrations (equal to live smart_go except security_settings timestamps and one later guest session)",
+ "environment": "DB_DATABASE=smartgro_testing, the three APP_*_CACHE overrides, SESSION_DRIVER=array, QUEUE_CONNECTION=sync, LOG_CHANNEL=stderr; CACHE_STORE not overridden",
+ "steps": [
+  {
+   "step": "4. migration",
+   "new_tables": [
+    "product_space_type"
+   ],
+   "dropped_tables": [],
+   "changed": {
+    "migrations": {
+     "rows_before": 69,
+     "rows_after": 70,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "4. migration, again (idempotency)",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {}
+  },
+  {
+   "step": "5. reference data",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 58,
+     "rows_after": 64,
+     "schema_changed": false
+    },
+    "product_space_type": {
+     "rows_before": 0,
+     "rows_after": 10,
+     "schema_changed": false
+    },
+    "space_types": {
+     "rows_before": 0,
+     "rows_after": 6,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "5. reference data, again",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {}
+  },
+  {
+   "step": "6. access:sync (database cache store)",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 64,
+     "rows_after": 70,
+     "schema_changed": false
+    },
+    "cache": {
+     "rows_before": 7,
+     "rows_after": 6,
+     "schema_changed": false
+    },
+    "permissions": {
+     "rows_before": 34,
+     "rows_after": 48,
+     "schema_changed": false
+    },
+    "role_has_permissions": {
+     "rows_before": 79,
+     "rows_after": 125,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "6. access:sync, again",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {}
+  },
+  {
+   "step": "9. A-28 refused (SetCategorySpaceTypes, as the category form does)",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 70,
+     "rows_after": 71,
+     "schema_changed": false
+    },
+    "cache": {
+     "rows_before": 6,
+     "rows_after": 7,
+     "schema_changed": false
+    },
+    "product_space_type": {
+     "rows_before": 10,
+     "rows_after": 9,
+     "schema_changed": false
+    }
+   }
+  },
+  {
+   "step": "7. read-only smoke test (must change nothing)",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {}
+  },
+  {
+   "step": "recovery: migrate:rollback --batch=12",
+   "new_tables": [],
+   "dropped_tables": [
+    "product_space_type"
+   ],
+   "changed": {
+    "migrations": {
+     "rows_before": 70,
+     "rows_after": 69,
+     "schema_changed": false
+    }
+   }
+  }
+ ]
+}

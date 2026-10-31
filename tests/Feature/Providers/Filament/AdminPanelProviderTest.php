@@ -5,6 +5,7 @@ use App\Enums\Access\Capability;
 use App\Enums\Access\StaffRole;
 use App\Models\Property;
 use App\Models\Revision;
+use App\Models\SecuritySetting;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -97,7 +98,22 @@ it('returns 403 to deactivated staff', function () {
     actingAs($user)->get(Filament::getUrl())->assertForbidden();
 });
 
-it('sends staff without two-step login to set it up before they can continue', function () {
+it('lets staff without two-step login in while two-step login is optional', function () {
+    $user = User::factory()->withRole(StaffRole::SuperAdmin)->create();
+
+    actingAs($user)->get(Filament::getUrl())->assertOk();
+});
+
+it('sends staff without two-step login to set it up once it is required', function () {
+    $user = User::factory()->withRole(StaffRole::SuperAdmin)->create();
+    SecuritySetting::query()->update(['two_step_login_required' => true]);
+
+    actingAs($user)->get(Filament::getUrl())
+        ->assertRedirect(Filament::getSetUpRequiredMultiFactorAuthenticationUrl());
+});
+
+it('sends staff without two-step login to set it up in production, even while it is switched off', function () {
+    app()->detectEnvironment(fn (): string => 'production');
     $user = User::factory()->withRole(StaffRole::SuperAdmin)->create();
 
     actingAs($user)->get(Filament::getUrl())

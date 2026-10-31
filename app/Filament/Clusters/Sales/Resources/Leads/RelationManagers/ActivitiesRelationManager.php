@@ -23,6 +23,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\On;
 
 /**
  * Internal notes, contacts made and follow-ups on an enquiry. Staff-only; entries are never edited or
@@ -43,6 +44,12 @@ class ActivitiesRelationManager extends RelationManager
     {
         return Gate::allows('view', $ownerRecord);
     }
+
+    /**
+     * Shows at once what the enquiry's page recorded, such as a call started from it.
+     */
+    #[On('lead-changed')]
+    public function refreshActivities(): void {}
 
     public function table(Table $table): Table
     {

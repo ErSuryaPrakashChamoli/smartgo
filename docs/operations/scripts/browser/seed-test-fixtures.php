@@ -7,8 +7,10 @@
 // Refuses to run unless the connection reaches `smartgro_testing`. Rebuilds that database (every test
 // run does the same), then adds content labelled "TEST FIXTURE": three listed properties with offerings,
 // one location's getting-here details and own numbers (fixture numbers, not real ones), SmartGro's main
-// contact details, menus, a contact page, an about page, a page with every text-only section, a legal
-// page, an insight, a customer story, an FAQ, a coming-soon city, a 410 rule and four test-only 3D models
+// contact details, menus, a contact page, an about page, a page with every text-only section, a page
+// with an image and a testimonial section, a legal page, an insight, a customer story, FAQs (general, A-70's, hot desks'), a
+// coming-soon city, a 410 rule, an insight topic, an enquiry, a draft page for the staff preview, one
+// floor of A-70 with cabins, a pool and a hybrid zone, some allocated, and four test-only 3D models
 // (Tests\Support\Twin\TestGlb, uploaded through the real checks). The models' files are stored only when
 // LARAVEL_STORAGE_PATH points at a temporary folder (run-checks.sh sets it), never in the shared storage.
 // It writes the rendered 403, 419, 429, 500 and 503 pages into <out-dir> and prints the fixture IDs and
@@ -20,22 +22,36 @@ use App\Actions\Content\ApproveRevision;
 use App\Actions\Content\CreateDraft;
 use App\Actions\Content\PublishRevision;
 use App\Actions\Content\SubmitRevision;
+use App\Actions\Inventory\AddSpaces;
+use App\Actions\Inventory\RecordAllocation;
+use App\Actions\Inventory\SaveFloor;
+use App\Actions\Inventory\SaveSpace;
+use App\Actions\Media\CreateMediaAsset;
 use App\Actions\Properties\SaveProperty;
 use App\Actions\Twin\CreateTwinModel;
 use App\Enums\Access\StaffRole;
 use App\Enums\Content\RedirectMatch;
 use App\Enums\Twin\CaptureType;
+use App\Http\Controllers\Backoffice\RevisionPreviewController;
 use App\Models\CaseStudy;
 use App\Models\City;
+use App\Models\Contact;
 use App\Models\Faq;
+use App\Models\Lead;
 use App\Models\NavigationMenu;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\PostTopic;
 use App\Models\Product;
 use App\Models\Property;
 use App\Models\Redirect;
 use App\Models\SiteSetting;
+use App\Models\SpaceType;
+use App\Models\Testimonial;
+use App\Models\TourAvailabilityRule;
+use App\Models\TourRequest;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Console\Kernel;
@@ -123,6 +139,29 @@ foreach ([$a70, $a71, $h105] as $property) {
     }
 }
 
+// Inventory (Phase 5, OD-127): one floor of A-70 with three cabins, a hot-desk pool and a hybrid desk zone,
+// some allocated, all labelled TEST FIXTURE. A-71 keeps no floor, for the location set-up journey.
+$inventoryFloor = app(SaveFloor::class)->handle($staff['operations'], $a70, null, ['building_id' => $a70->primaryBuilding->id, 'building_level' => 1, 'label' => 'TEST FIXTURE floor', 'reason' => 'TEST FIXTURE']);
+$spaceType = fn (string $key): int => SpaceType::query()->where('key', $key)->value('id');
+$offeringOf = fn (string $key): int => $a70->offerings()->whereHas('product', fn ($product) => $product->where('key', $key))->value('id');
+$fixtureCabins = app(AddSpaces::class)->handle($staff['operations'], $a70, [
+    'floor_id' => $inventoryFloor->id, 'space_type_id' => $spaceType('private_cabin'), 'inventory_mode' => 'exclusive', 'count' => 3, 'code_prefix' => 'TF-C',
+    'first_number' => 1, 'name_prefix' => 'TEST FIXTURE cabin', 'capacity_seats' => 4, 'offering_ids' => [$offeringOf('private_office')], 'reason' => 'TEST FIXTURE',
+]);
+$fixturePool = app(SaveSpace::class)->handle($staff['operations'], $a70, null, [
+    'floor_id' => $inventoryFloor->id, 'space_type_id' => $spaceType('desk_zone_flexible'), 'inventory_mode' => 'pooled', 'code' => 'TF-P1', 'name' => 'TEST FIXTURE pool',
+    'capacity_seats' => 12, 'offering_ids' => [$offeringOf('hot_desk')], 'reason' => 'TEST FIXTURE',
+]);
+$fixtureZone = app(SaveSpace::class)->handle($staff['operations'], $a70, null, [
+    'floor_id' => $inventoryFloor->id, 'space_type_id' => $spaceType('desk_zone_dedicated'), 'inventory_mode' => 'hybrid', 'code' => 'TF-H1', 'name' => 'TEST FIXTURE hybrid zone',
+    'capacity_seats' => 6, 'offering_ids' => [], 'reason' => 'TEST FIXTURE',
+]);
+$allocate = fn ($space, array $data) => app(RecordAllocation::class)->handle($staff['operations'], $space, [...$data, 'reason' => 'TEST FIXTURE']);
+$allocate($fixtureCabins->first(), ['agreement_reference' => 'TF-AG-1', 'starts_on' => now()->subMonth()->toDateString(), 'ends_on' => now()->addMonths(2)->toDateString()]);
+$allocate($fixturePool, ['agreement_reference' => 'TF-AG-2', 'seats_allocated' => 5, 'starts_on' => now()->toDateString()]);
+$allocate($fixtureZone, ['agreement_reference' => 'TF-AG-3', 'space_seat_id' => $fixtureZone->seats->first()->id, 'starts_on' => now()->toDateString()]);
+$allocate($fixtureZone, ['agreement_reference' => 'TF-AG-4', 'seats_allocated' => 2, 'starts_on' => now()->toDateString()]);
+
 $publish(SiteSetting::query()->where('handle', 'contact')->sole(), ['phone' => '+91 0000 000 001', 'whatsapp' => '+910000000001', 'email' => 'hello@fixture.test']);
 
 $contactPage = Page::query()->forceCreate(['status' => 'draft']);
@@ -133,6 +172,10 @@ $about = Page::query()->forceCreate(['status' => 'draft']);
 $publish($about, ['title' => 'TEST FIXTURE about page', 'slug' => 'about', 'template' => 'standard', 'blocks' => [
     ['type' => 'text', 'data' => ['heading' => 'TEST FIXTURE heading', 'body' => '<p>TEST FIXTURE text. Not SmartGro copy.</p>']],
 ]]);
+// A second version of the about page waiting for approval, for the approver's "What changed" (UJ-8, OD-126).
+app(SubmitRevision::class)->handle(app(CreateDraft::class)->handle($about->fresh(), $staff['marketing'], ['title' => 'TEST FIXTURE about page, revised', 'slug' => 'about', 'template' => 'standard', 'blocks' => [
+    ['type' => 'text', 'data' => ['heading' => 'TEST FIXTURE heading', 'body' => '<p>TEST FIXTURE text, revised. Not SmartGro copy.</p>']],
+]]), $staff['marketing']);
 $publish(Page::query()->forceCreate(['status' => 'draft']), ['title' => 'TEST FIXTURE sections', 'slug' => 'test-fixture-sections', 'template' => 'standard', 'blocks' => [
     ['type' => 'hero', 'data' => ['eyebrow' => 'TEST FIXTURE', 'heading' => 'TEST FIXTURE hero heading', 'intro' => 'TEST FIXTURE introduction.', 'link' => ['label' => 'TEST FIXTURE link', 'type' => 'page', 'page_id' => $about->id, 'url' => null]]],
     ['type' => 'text', 'data' => ['heading' => 'TEST FIXTURE text', 'body' => '<p>TEST FIXTURE <strong>text</strong>.</p>']],
@@ -145,19 +188,52 @@ $publish(Page::query()->forceCreate(['status' => 'draft']), ['title' => 'TEST FI
 $publish(Page::query()->forceCreate(['status' => 'draft']), ['title' => 'TEST FIXTURE terms', 'slug' => 'legal/terms', 'template' => 'legal', 'legal_review_reference' => 'TEST-FIXTURE',
     'blocks' => [['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>TEST FIXTURE. Not legal text.</p>']]]]);
 
-$publish(NavigationMenu::query()->where('handle', 'main')->sole(), ['items' => [
-    ['label' => 'Workspaces', 'type' => 'section', 'section' => 'workspace_types'],
-    ['label' => 'Locations', 'type' => 'section', 'section' => 'locations'],
-    ['label' => 'About', 'type' => 'page', 'page_id' => $about->id],
-    ['label' => 'Contact', 'type' => 'page', 'page_id' => $contactPage->id],
+// The owner's header navigation (OD-140): Spaces, Locations, Solutions, Community, About, Resources, and
+// Book a Tour as the main button. SmartGro has no Solutions or Community page yet, so the fixture
+// pages below stand in for them, labelled, on this database only.
+$solutions = Page::query()->forceCreate(['status' => 'draft']);
+$publish($solutions, ['title' => 'TEST FIXTURE solutions page', 'slug' => 'solutions', 'template' => 'standard', 'blocks' => [
+    ['type' => 'text', 'data' => ['heading' => 'TEST FIXTURE heading', 'body' => '<p>TEST FIXTURE text. Not SmartGro copy.</p>']],
 ]]);
-$publish(NavigationMenu::query()->where('handle', 'actions')->sole(), ['items' => [['label' => 'Enquire', 'type' => 'section', 'section' => 'enquire']]]);
+$community = Page::query()->forceCreate(['status' => 'draft']);
+$publish($community, ['title' => 'TEST FIXTURE community page', 'slug' => 'community', 'template' => 'standard', 'blocks' => [
+    ['type' => 'text', 'data' => ['heading' => 'TEST FIXTURE heading', 'body' => '<p>TEST FIXTURE text. Not SmartGro copy.</p>']],
+]]);
 
-Post::factory()->published()->create(['title' => 'TEST FIXTURE insight', 'slug' => 'test-fixture-insight', 'excerpt' => 'TEST FIXTURE excerpt.']);
+$publish(NavigationMenu::query()->where('handle', 'main')->sole(), ['items' => [
+    ['label' => 'Spaces', 'type' => 'section', 'section' => 'workspace_types'],
+    ['label' => 'Locations', 'type' => 'section', 'section' => 'locations'],
+    ['label' => 'Solutions', 'type' => 'page', 'page_id' => $solutions->id],
+    ['label' => 'Community', 'type' => 'page', 'page_id' => $community->id],
+    ['label' => 'About', 'type' => 'page', 'page_id' => $about->id],
+    ['label' => 'Resources', 'type' => 'section', 'section' => 'insights'],
+]]);
+$publish(NavigationMenu::query()->where('handle', 'actions')->sole(), ['items' => [
+    ['label' => 'Book a Tour', 'type' => 'section', 'section' => 'book_a_tour'],
+]]);
+
+$topic = PostTopic::factory()->create(['name' => 'TEST FIXTURE topic', 'slug' => 'test-fixture-topic']);
+Post::factory()->published()->create(['title' => 'TEST FIXTURE insight', 'slug' => 'test-fixture-insight', 'excerpt' => 'TEST FIXTURE excerpt.', 'topic_ids' => [$topic->id]]);
 CaseStudy::factory()->published()->create(['title' => 'TEST FIXTURE customer story', 'slug' => 'test-fixture-customer-story']);
 Faq::factory()->published()->create(['question' => 'TEST FIXTURE question?', 'answer' => 'TEST FIXTURE answer.']);
+// FAQs shown on a location's page and on a workspace type's page (FR-CMS-7, OD-125).
+Faq::factory()->published()->create(['question' => 'TEST FIXTURE question about A-70?', 'answer' => 'TEST FIXTURE answer about A-70.', 'property_id' => $a70->id]);
+Faq::factory()->published()->create(['question' => 'TEST FIXTURE question about hot desks?', 'answer' => 'TEST FIXTURE answer about hot desks.', 'product_id' => Product::query()->where('key', 'hot_desk')->sole()->id]);
 City::query()->where('slug', 'gurugram')->update(['is_publicly_visible' => true]);
 Redirect::factory()->create(['from_path' => '/pin/', 'match_type' => RedirectMatch::Prefix, 'to_path' => null, 'status_code' => 410]);
+
+// An enquiry as the form leaves it, with no owner, company, phone or team size, so the back-office screens
+// show their text for empty values ("Unassigned", "—").
+$lead = Lead::factory()->forProperty($a70)
+    ->for(Contact::factory()->state(['name' => 'TEST FIXTURE visitor', 'email' => 'visitor@fixture.test', 'phone_e164' => null, 'company_name' => null]), 'contact')
+    ->create(['submitted_name' => 'TEST FIXTURE visitor', 'submitted_email' => 'visitor@fixture.test', 'message' => 'TEST FIXTURE enquiry (not a real visitor).']);
+
+// Tour hours for A-70 on every day (TEST FIXTURE values, not SmartGro's tour rules, which are open: D-28)
+// and a visitor's request waiting for confirmation tomorrow, for the tour screens and journey (OD-129).
+foreach (range(1, 7) as $weekday) {
+    TourAvailabilityRule::query()->forceCreate(['property_id' => $a70->id, 'weekday' => $weekday, 'start_time' => '09:00:00', 'end_time' => '18:00:00', 'slot_minutes' => 30, 'max_concurrent_tours' => 2, 'created_by' => $staff['operations']->id]);
+}
+$tour = TourRequest::factory()->create(['lead_id' => $lead->id, 'property_id' => $a70->id, 'scheduled_start_at' => CarbonImmutable::now('Asia/Kolkata')->addDay()->setTime(11, 0)->utc(), 'notes' => 'TEST FIXTURE tour request (not a real visitor).']);
 
 if (realpath(storage_path()) === realpath($root.'/storage')) {
     fwrite(STDERR, "Refusing to store the test 3D model in the shared storage folder: set LARAVEL_STORAGE_PATH to a temporary folder\n");
@@ -176,7 +252,14 @@ foreach ([
     'twin_model_typical' => ['TEST FIXTURE typical-size model (not a real location)', fn (): string => TestGlb::panelsModel(50, 4, 1024, 'typical size')],
     'twin_model_limits' => ['TEST FIXTURE model at the limits (not a real location)', fn (): string => TestGlb::panelsModel(250, 8, 2048, 'at the limits')],
 ] as $key => [$title, $bytes]) {
-    $file = UploadedFile::fake()->createWithContent("{$key}.glb", $bytes());
+    $glb = $bytes();
+    $file = UploadedFile::fake()->createWithContent("{$key}.glb", $glb);
+
+    // The model at the limits, kept for an upload through the back-office form (verify-admin.mjs).
+    if ($key === 'twin_model_limits') {
+        file_put_contents("{$out}/upload-at-limits.glb", $glb);
+    }
+
     $started = hrtime(true);
     $twinModels[$key] = app(CreateTwinModel::class)->handle($staff['marketing'], $file, [
         'property_id' => $a70->id,
@@ -187,6 +270,30 @@ foreach ([
     $twinChecks[$key] = ['upload_ms' => round((hrtime(true) - $started) / 1e6, 1), 'bytes' => $twinModels[$key]->file_bytes, 'triangles' => $twinModels[$key]->triangle_count];
 }
 $twinModel = $twinModels['twin_model'];
+file_put_contents("{$out}/upload-oversized.glb", TestGlb::modelOfSize(15 * 1024 * 1024 + 4));
+
+// The image and testimonial sections (Phase 6 pack §11.4: never checked, for want of real media and
+// consented testimonials): a generated image and a testimonial, both labelled, on a page of their own.
+$image = app(CreateMediaAsset::class)->handle($staff['marketing'], UploadedFile::fake()->image('test-fixture.jpg', 1600, 900), [
+    'title' => 'TEST FIXTURE image', 'origin' => 'commissioned', 'alt_text' => 'TEST FIXTURE image (plain black, not a real photo)', 'credit_line' => 'TEST FIXTURE credit',
+    'not_from_old_website' => true,
+]);
+$testimonial = Testimonial::factory()->published()->create([
+    'quote' => 'TEST FIXTURE quote. Not a real customer.', 'person_name' => 'TEST FIXTURE person', 'person_title' => 'Fixture title', 'company_name' => 'TEST FIXTURE company', 'consent_reference' => 'TEST-FIXTURE',
+]);
+$publish(Page::query()->forceCreate(['status' => 'draft']), ['title' => 'TEST FIXTURE media sections', 'slug' => 'test-fixture-media', 'template' => 'standard', 'blocks' => [
+    ['type' => 'text', 'data' => ['heading' => 'TEST FIXTURE media sections', 'body' => '<p>TEST FIXTURE. Not SmartGro copy.</p>']],
+    ['type' => 'image', 'data' => ['media_asset_id' => $image->id, 'alt' => 'TEST FIXTURE image (plain black, not a real photo)', 'decorative' => false, 'caption' => 'TEST FIXTURE caption']],
+    ['type' => 'testimonial', 'data' => ['testimonial_id' => $testimonial->id]],
+]]);
+
+// A draft that is never published, for the staff preview (Phase 6 pack §11.4: staff previews were never
+// checked). The preview's signed address lasts 30 minutes, longer than the checks take.
+$previewDraft = app(CreateDraft::class)->handle(Page::query()->forceCreate(['status' => 'draft']), $staff['marketing'], ['title' => 'TEST FIXTURE draft', 'slug' => 'test-fixture-draft', 'template' => 'standard', 'blocks' => [
+    ['type' => 'hero', 'data' => ['eyebrow' => 'TEST FIXTURE', 'heading' => 'TEST FIXTURE draft heading', 'intro' => 'TEST FIXTURE draft, never published.', 'link' => null]],
+    ['type' => 'image', 'data' => ['media_asset_id' => $image->id, 'alt' => 'TEST FIXTURE image (plain black, not a real photo)', 'decorative' => false, 'caption' => null]],
+    ['type' => 'testimonial', 'data' => ['testimonial_id' => $testimonial->id]],
+]]);
 
 (new RegisterErrorViewPaths)();
 foreach ([403, 419, 429, 500, 503] as $status) {
@@ -206,7 +313,9 @@ foreach (['admin', 'marketing', 'operations', 'sales'] as $key) {
 }
 
 echo json_encode([
-    'ids' => ['a70' => $a70->id, 'a71' => $a71->id, 'h105' => $h105->id, 'a70_profile' => $a70->profile->id, 'noida' => $a70->city_id, 'contact_page' => $contactPage->id, ...array_map(fn ($model): int => $model->id, $twinModels)],
+    'ids' => ['a70' => $a70->id, 'a71' => $a71->id, 'h105' => $h105->id, 'a70_profile' => $a70->profile->id, 'noida' => $a70->city_id, 'contact_page' => $contactPage->id, 'about_page' => $about->id, 'lead' => $lead->id, 'space_cabin' => $fixtureCabins->first()->id, 'space_zone' => $fixtureZone->id, 'tour' => $tour->id, ...array_map(fn ($model): int => $model->id, $twinModels)],
     'twin_checks' => $twinChecks,
+    'upload_files' => ['at_limits' => "{$out}/upload-at-limits.glb", 'oversized' => "{$out}/upload-oversized.glb"],
+    'preview' => (string) parse_url(RevisionPreviewController::url($previewDraft), PHP_URL_PATH).'?'.parse_url(RevisionPreviewController::url($previewDraft), PHP_URL_QUERY),
     'sessions' => $sessions,
 ]), PHP_EOL;

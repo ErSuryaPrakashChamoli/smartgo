@@ -6,10 +6,13 @@ use App\Services\Content\Blocks\CallToActionBlock;
 use App\Services\Content\Blocks\ComparisonBlock;
 use App\Services\Content\Blocks\ContactDetailsBlock;
 use App\Services\Content\Blocks\ContentBlock;
+use App\Services\Content\Blocks\EnquiryFormBlock;
 use App\Services\Content\Blocks\FaqBlock;
 use App\Services\Content\Blocks\FeatureGridBlock;
 use App\Services\Content\Blocks\HeroBlock;
 use App\Services\Content\Blocks\ImageBlock;
+use App\Services\Content\Blocks\LinkCardsBlock;
+use App\Services\Content\Blocks\LocationListBlock;
 use App\Services\Content\Blocks\StatsBlock;
 use App\Services\Content\Blocks\TestimonialBlock;
 use App\Services\Content\Blocks\TextBlock;
@@ -38,12 +41,15 @@ class BlockLibrary
         TextBlock::class,
         ImageBlock::class,
         FeatureGridBlock::class,
+        LinkCardsBlock::class,
         StatsBlock::class,
         ComparisonBlock::class,
         FaqBlock::class,
         TestimonialBlock::class,
         CallToActionBlock::class,
         ContactDetailsBlock::class,
+        LocationListBlock::class,
+        EnquiryFormBlock::class,
     ];
 
     /**
@@ -87,7 +93,7 @@ class BlockLibrary
     public function rules(array $blocks, bool $forSubmission, ?array $types = null): array
     {
         $rules = [
-            'blocks' => [$forSubmission ? 'required' : 'present', 'array', 'list', 'max:'.self::MAX_BLOCKS, ...($forSubmission ? ['min:1'] : []), $this->introductionFirstRule()],
+            'blocks' => [$forSubmission ? 'required' : 'present', 'array', 'list', 'max:'.self::MAX_BLOCKS, ...($forSubmission ? ['min:1'] : []), $this->introductionFirstRule(), $this->oneEnquiryFormRule()],
             'blocks.*' => ['required', 'array:type,data'],
             'blocks.*.type' => ['required', 'string', Rule::in($types ?? array_keys($this->all()))],
             'blocks.*.data' => ['present', 'array'],
@@ -160,6 +166,18 @@ class BlockLibrary
 
             if (count($introductions) > 1 || ($introductions !== [] && $introductions[0] !== 0)) {
                 $fail('The introduction can be used once, as the first section.');
+            }
+        };
+    }
+
+    /**
+     * The enquiry form's fields have fixed names and ids, so a page holds one at most.
+     */
+    private function oneEnquiryFormRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail): void {
+            if (is_array($value) && count(array_filter($value, fn (mixed $block): bool => is_array($block) && ($block['type'] ?? null) === 'enquiry')) > 1) {
+                $fail('A page can have one enquiry form section.');
             }
         };
     }

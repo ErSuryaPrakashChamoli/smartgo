@@ -1,0 +1,14 @@
+OD-153 security scan 2026-10-31T14:23:12 (values never printed)
+.env mode 600 (was 664; changed to 600 in OD-153), owner uid 1000
+commits scanned 57
+APP_KEY: history 0, working tree (tracked + untracked, not ignored) 0
+DB_PASSWORD: history 0, working tree (tracked + untracked, not ignored) 0
+.env ever committed: False | ignored: True
+generic secret patterns: 0
+log storage/logs/laravel.log: secret values 0, password fields with values 0, mode 664
+log /home/administrator/smartgro-demo/storage/logs/laravel.log: secret values 0, password fields with values 0, mode 664
+log /home/administrator/smartgro-demo/server.log: secret values 0, password fields with values 0, mode 664
+log /home/administrator/smartgro-site/server.log: secret values 0, password fields with values 0, mode 664
+log storage/app/private/preview-storage/logs/laravel.log: secret values 0, password fields with values 0, mode 664
+log storage/app/private/preview-storage/logs/php-server.log: secret values 0, password fields with values 0, mode 664
+APP_DEBUG in .env: true (local server bound to 127.0.0.1; DEPLOYMENT_RUNBOOK requires false in production)

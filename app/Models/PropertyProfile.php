@@ -105,7 +105,10 @@ class PropertyProfile extends Model implements BelongsToProperty, Unpublishable
     /**
      * A property can be published once its state allows it, its address is complete and operations
      * staff have recorded at least one workspace category it offers (BR-PROP-3; every offering is
-     * enquiry-only until inventory exists). Floors are not checked: they are not built yet.
+     * enquiry-only until inventory exists). The floor-and-space part of BR-PROP-3 applies only once the
+     * owner switches it on under the transition plan (config inventory.enforce_floor_rule_on_publication,
+     * OD-128 b); like every check here it runs when a version is submitted, scheduled or published,
+     * never while a draft is written, and it never takes a published property off the website.
      */
     protected function publicationBlockers(): array
     {
@@ -114,6 +117,7 @@ class PropertyProfile extends Model implements BelongsToProperty, Unpublishable
         return [
             ...$this->propertyBlockers($property),
             ...($property->activeProducts()->exists() ? [] : ['Operations staff must record at least one workspace category this property offers first.']),
+            ...(config('inventory.enforce_floor_rule_on_publication') ? $property->inventoryPublicationGaps() : []),
         ];
     }
 }

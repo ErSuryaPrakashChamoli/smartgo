@@ -15,21 +15,7 @@
         </div>
 
         @if ($workspaceTypes->count() > 1)
-            <nav aria-label="Workspace types" class="flex flex-col gap-3">
-                <p class="text-sm font-semibold text-forest">Show locations offering</p>
-                <ul class="flex flex-wrap gap-2">
-                    <li>
-                        <a href="/locations/{{ $city->slug }}" aria-current="{{ $workspace === null ? 'page' : 'false' }}"
-                            @class(['inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold ring-1 ring-inset', 'bg-forest text-paper ring-forest' => $workspace === null, 'bg-surface text-forest ring-control hover:bg-mist' => $workspace !== null])>All workspace types</a>
-                    </li>
-                    @foreach ($workspaceTypes as $type)
-                        <li>
-                            <a href="/locations/{{ $city->slug }}?workspace={{ $type->slug }}" aria-current="{{ $workspace?->is($type) ? 'page' : 'false' }}"
-                                @class(['inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold ring-1 ring-inset', 'bg-forest text-paper ring-forest' => $workspace?->is($type), 'bg-surface text-forest ring-control hover:bg-mist' => ! $workspace?->is($type)])>{{ $type->name }}</a>
-                        </li>
-                    @endforeach
-                </ul>
-            </nav>
+            <x-site.workspace-filter :types="$workspaceTypes" :current="$workspace" :path="'/locations/'.$city->slug" />
         @endif
 
         @if ($workspace !== null)

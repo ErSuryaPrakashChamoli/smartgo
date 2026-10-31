@@ -26,7 +26,7 @@ Facts observed in the repository and on the development machine. See the Phase 0
 | Object storage | `league/flysystem-aws-s3-v3` **not installed**; AWS keys empty | S3-compatible | Add adapter at Phase 4 (dependency approval) |
 | Three.js | not installed (npm latest `three@0.186.1`, checked 2026-10-24) | yes | Add at Phase 7 |
 | Version control | **Git initialised 2026-10-24** on `main` (reviewed baseline + small commits). Interim private backup remote only (`ErSuryaPrakashChamoli/smartgo`, OD-80). | Git + private GitHub, organisation `Smartgro` (OD-78) | Remote: D-31 / action A-2. Destination conflict R-21; push not authorised. |
-| Spreadsheet reading | `openspout/openspout` 4.32.0 and `league/csv` 9.28.0 present as Filament dependencies | XLSX import (ADR-0012) | Declare openspout as a direct dependency (D-24) |
+| Spreadsheet reading | `openspout/openspout` 4.32.0 and `league/csv` 9.28.0 present as Filament dependencies | XLSX import (ADR-0012) | `openspout/openspout` declared as a direct dependency `^4` (D-24; done 2026-10-29, OD-129 c) |
 | Image processing | `gd` and `imagick` extensions loaded | yes | — |
 
 All candidate packages listed in §9 publish constraints compatible with Laravel 13 and PHP 8.5, according to Packagist metadata retrieved 2026-10-24. **None has been installed.** Adding dependencies requires owner approval (D-24).
@@ -131,7 +131,7 @@ tests/
 | Public pages (`/`, `/locations/...`, `/workspaces/...`, `/insights/...`) | Blade, server-rendered | none | HTML cacheable at the CDN, tag-purged on publish and availability change |
 | Public interactive islands (search filters, tour scheduler, booking flow, enquiry forms) | Livewire 4 components | CSRF, rate limits, Turnstile/honeypot | not cached |
 | JSON API `/api/v1/*` | Laravel controllers + Eloquent API Resources | public read endpoints are rate-limited; write endpoints are not exposed at launch | short TTL (≤ 60 s) for availability |
-| Back office `/admin` (path TBC) | Filament 5 panel with custom theme | session + **required MFA** + role permissions | none |
+| Back office `/admin` (path TBC) | Filament 5 panel with custom theme | session + **MFA** (always required outside local development; locally a Super Admin switch, OD-124) + role permissions | none |
 | Webhooks `/webhooks/{provider}` | controllers | provider signature verification | none |
 
 **Initial API v1 endpoints (read-only).** Full request/response contracts are in [`API_CONTRACTS.md`](API_CONTRACTS.md).
@@ -231,7 +231,7 @@ Compatibility was checked against Packagist and npm metadata on 2026-10-24.
 | `laravel/horizon` | v5.50.1 | illuminate ^13 supported; ext-pcntl, ext-posix | queue supervision | 3/15 |
 | `predis/predis` **or** `php8.5-redis` extension | v3.7.0 | php ^8.0 | Redis client (ADR-0007) | 3 |
 | `three` (npm) | 0.186.1 | — | 3D viewer | 7 |
-| `openspout/openspout` (declare as direct, **`^4`**) | 4.32.0 installed | `filament/actions` 5.10.3 requires `^4.23`, so **5.x (12.2 available) must not be required** | XLSX inventory import (ADR-0012) | 5 |
+| `openspout/openspout` (declared as direct, **`^4`**, 2026-10-29, OD-129 c) | 4.32.0 installed | `filament/actions` 5.10.3 requires `^4.23`, so **5.x (12.2 available) must not be required** | XLSX inventory import (ADR-0012) | 5 |
 
 **Considered and not recommended now:** `bezhansalleh/filament-shield` (supports Filament ^5, but generates permissions per CRUD resource, which conflicts with the business-oriented permission model in `SECURITY_MODEL.md`); `laravel/scout` (MySQL queries suffice for tens of locations; revisit only if search volume demands it).
 

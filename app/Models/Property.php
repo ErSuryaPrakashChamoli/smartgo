@@ -85,6 +85,26 @@ class Property extends Model
     }
 
     /**
+     * The floors SmartGro operates in this property's buildings, lowest first (none until recorded).
+     *
+     * @return HasMany<Floor, $this>
+     */
+    public function floors(): HasMany
+    {
+        return $this->hasMany(Floor::class)->orderBy('building_level');
+    }
+
+    /**
+     * The property's spaces: cabins, rooms, suites and desk zones (none until recorded).
+     *
+     * @return HasMany<Space, $this>
+     */
+    public function spaces(): HasMany
+    {
+        return $this->hasMany(Space::class);
+    }
+
+    /**
      * The workspace categories operations staff have recorded for this property.
      *
      * @return BelongsToMany<Product, $this>
@@ -106,13 +126,14 @@ class Property extends Model
 
     /**
      * The offerings shown on the website: active, of an active category, with a published profile, at
-     * this property while it is on the website. Public pages read only this relation.
+     * this property while it is on the website. Public pages read only this relation. Each offering
+     * loaded through it knows its property (chaperone), so building its address loads nothing again.
      *
      * @return HasMany<Offering, $this>
      */
     public function publishedOfferings(): HasMany
     {
-        return $this->hasMany(Offering::class)->publiclyListed();
+        return $this->hasMany(Offering::class)->publiclyListed()->chaperone('property');
     }
 
     /**
@@ -141,6 +162,32 @@ class Property extends Model
     public function staff(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot('assigned_by')->withTimestamps();
+    }
+
+    /**
+     * When tours can happen here (BR-TR-1), Monday first; none until staff enter them (D-28).
+     *
+     * @return HasMany<TourAvailabilityRule, $this>
+     */
+    public function tourRules(): HasMany
+    {
+        return $this->hasMany(TourAvailabilityRule::class)->orderBy('weekday')->orderBy('start_time');
+    }
+
+    /**
+     * @return HasMany<PropertyClosure, $this>
+     */
+    public function closures(): HasMany
+    {
+        return $this->hasMany(PropertyClosure::class)->orderBy('starts_at');
+    }
+
+    /**
+     * @return HasMany<TourRequest, $this>
+     */
+    public function tourRequests(): HasMany
+    {
+        return $this->hasMany(TourRequest::class);
     }
 
     /**
@@ -177,6 +224,26 @@ class Property extends Model
                 ? $hours[$key]['opens'].' to '.$hours[$key]['closes']
                 : 'Closed',
         ])->values()->all();
+    }
+
+    /**
+     * What BR-PROP-3's inventory part still needs before this property may be published once the rule is
+     * enforced: a floor, and a publicly listable active space or an active offering (every offering is
+     * enquiry-only until bookings exist, Phase 8). Empty when ready.
+     *
+     * @return list<string>
+     */
+    public function inventoryPublicationGaps(): array
+    {
+        if (! Space::isAvailable()) {
+            return ['Floors and spaces cannot be checked on this database.'];
+        }
+
+        return array_values(array_filter([
+            $this->floors()->exists() ? null : 'Record at least one floor this property operates.',
+            $this->spaces()->where('operational_status', 'active')->where('is_publicly_listable', true)->exists() || $this->activeProducts()->exists()
+                ? null : 'Record a space that may be shown to customers, or a workspace category the property offers.',
+        ]));
     }
 
     /**

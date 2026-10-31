@@ -64,6 +64,23 @@ it('stores one contact and one enquiry when the same enquiry is sent twice at th
         ->and(collect($results)->pluck('outcome')->unique()->all())->toBe([Lead::query()->sole()->reference]);
 })->group('mysql', 'concurrency');
 
+it('stores both enquiries when two new visitors send one at the same instant', function () {
+    Page::factory()->published()->create(['slug' => 'legal/privacy', 'template' => 'legal']);
+    $enquiry = fn (string $email): array => [
+        'started' => Crypt::encryptString((string) now()->subMinute()->getTimestamp()),
+        'name' => 'Test visitor', 'email' => $email, 'consent' => '1',
+    ];
+
+    $results = PublishingHarness::runWorkers([
+        ['mode' => 'submit_enquiry', 'enquiry' => $enquiry('first@example.com')],
+        ['mode' => 'submit_enquiry', 'enquiry' => $enquiry('second@example.com')],
+    ]);
+
+    expect(Lead::query()->count())->toBe(2)
+        ->and(Contact::query()->count())->toBe(2)
+        ->and(collect($results)->pluck('outcome')->sort()->values()->all())->toBe(Lead::query()->orderBy('reference')->pluck('reference')->all());
+})->group('mysql', 'concurrency');
+
 it('never leaves a property on the website when operations close it while its profile is being published', function () {
     offerForTest($this->property, 'hot_desk', published: false);
     $author = User::factory()->withRole(StaffRole::MarketingManager)->create();

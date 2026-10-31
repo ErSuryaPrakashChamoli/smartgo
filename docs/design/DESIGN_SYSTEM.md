@@ -171,6 +171,7 @@ Sampled from the supplied logo (§3.1) where a logo colour exists; the rest keep
 | P2-C | **Visual direction** shown in `review/2026-10-24/` and at `/design/home` (AC-2.5) | **under owner review**; not signed off |
 | P2-D | Favicon and app icons made by **cropping the "SG" monogram** from the supplied logo, without reshaping or recolouring | **approved (OD-44)**; built (§7.6) |
 | P2-E | A **reversed logo** for dark backgrounds made by recolouring only the dark wordmark and buildings to Warm White; geometry unchanged | **approved (OD-45)**; tagline lettering added by OD-46; built (§7.6) |
+| P-OD139 | **Playfair Display** (weights 500 and 600, SIL OFL, downloaded at build time) for the **home page's** editorial headings, after the owner's design reference; token `--font-editorial`. Sora and Inter stay everywhere else; prices keep Inter | **proposed (OD-139 c)**; built on the home page; not approved |
 
 ### 7.5 Engineering decisions made in Phase 2
 

@@ -1,0 +1,815 @@
+{
+  "layout": [
+    {
+      "width": 1440,
+      "path": "/",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/locations",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/locations/noida/a-70",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/workspaces",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/workspaces/hot-desks",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/solutions",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/community",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/about",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/insights",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/faqs",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/contact",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/enquire",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1440,
+      "path": "/book-a-tour",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1280,
+      "path": "/",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 93,
+      "logoHeight": 72,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 1024,
+      "path": "/",
+      "labels": [
+        "Spaces",
+        "Locations",
+        "Solutions",
+        "Community",
+        "About",
+        "Resources"
+      ],
+      "actions": [
+        "Book a Tour"
+      ],
+      "headerHeight": 81,
+      "logoHeight": 56,
+      "menuButton": null,
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 768,
+      "path": "/",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 48,
+      "menuButton": {
+        "x": 638,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/locations",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/locations/noida/a-70",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/workspaces",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/workspaces/hot-desks",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/solutions",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/community",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/about",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/insights",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/faqs",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/contact",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/enquire",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    },
+    {
+      "width": 390,
+      "path": "/book-a-tour",
+      "labels": [],
+      "actions": [],
+      "headerHeight": 73,
+      "logoHeight": 44,
+      "menuButton": {
+        "x": 272,
+        "y": 14,
+        "w": 98,
+        "h": 44
+      },
+      "overflow": 0,
+      "oneLine": true,
+      "noOverlap": true
+    }
+  ],
+  "destinations": [
+    {
+      "text": "Spaces",
+      "href": "/workspaces",
+      "status": 200,
+      "landedOn": "/workspaces",
+      "h1": "Space for every way of working"
+    },
+    {
+      "text": "Locations",
+      "href": "/locations",
+      "status": 200,
+      "landedOn": "/locations",
+      "h1": "SmartGro locations"
+    },
+    {
+      "text": "Solutions",
+      "href": "/solutions",
+      "status": 200,
+      "landedOn": "/solutions",
+      "h1": "TEST FIXTURE solutions page"
+    },
+    {
+      "text": "Community",
+      "href": "/community",
+      "status": 200,
+      "landedOn": "/community",
+      "h1": "TEST FIXTURE community page"
+    },
+    {
+      "text": "About",
+      "href": "/about",
+      "status": 200,
+      "landedOn": "/about",
+      "h1": "TEST FIXTURE about page"
+    },
+    {
+      "text": "Resources",
+      "href": "/insights",
+      "status": 200,
+      "landedOn": "/insights",
+      "h1": "Insights"
+    },
+    {
+      "text": "Book a Tour",
+      "href": "/book-a-tour",
+      "status": 200,
+      "landedOn": "/book-a-tour",
+      "h1": "Visit a SmartGro location"
+    },
+    {
+      "text": "Spaces",
+      "href": "/workspaces",
+      "status": 200,
+      "landedOn": "/workspaces",
+      "h1": "Space for every way of working"
+    },
+    {
+      "text": "Locations",
+      "href": "/locations",
+      "status": 200,
+      "landedOn": "/locations",
+      "h1": "SmartGro locations"
+    },
+    {
+      "text": "Solutions",
+      "href": "/solutions",
+      "status": 200,
+      "landedOn": "/solutions",
+      "h1": "TEST FIXTURE solutions page"
+    },
+    {
+      "text": "Community",
+      "href": "/community",
+      "status": 200,
+      "landedOn": "/community",
+      "h1": "TEST FIXTURE community page"
+    },
+    {
+      "text": "About",
+      "href": "/about",
+      "status": 200,
+      "landedOn": "/about",
+      "h1": "TEST FIXTURE about page"
+    },
+    {
+      "text": "Resources",
+      "href": "/insights",
+      "status": 200,
+      "landedOn": "/insights",
+      "h1": "Insights"
+    },
+    {
+      "text": "Book a Tour",
+      "href": "/book-a-tour",
+      "status": 200,
+      "landedOn": "/book-a-tour",
+      "h1": "Visit a SmartGro location"
+    }
+  ],
+  "consistency": [
+    {
+      "path": "/",
+      "same": true
+    },
+    {
+      "path": "/locations",
+      "same": true
+    },
+    {
+      "path": "/locations/noida/a-70",
+      "same": true
+    },
+    {
+      "path": "/workspaces",
+      "same": true
+    },
+    {
+      "path": "/workspaces/hot-desks",
+      "same": true
+    },
+    {
+      "path": "/solutions",
+      "same": true
+    },
+    {
+      "path": "/community",
+      "same": true
+    },
+    {
+      "path": "/about",
+      "same": true
+    },
+    {
+      "path": "/insights",
+      "same": true
+    },
+    {
+      "path": "/faqs",
+      "same": true
+    },
+    {
+      "path": "/contact",
+      "same": true
+    },
+    {
+      "path": "/enquire",
+      "same": true
+    },
+    {
+      "path": "/book-a-tour",
+      "same": true
+    }
+  ],
+  "phoneMenu": {
+    "reachedByTab": true,
+    "collapsedBefore": 1,
+    "expandedAfter": 1,
+    "focusOnOpen": "Close",
+    "stops": [
+      {
+        "text": "Spaces",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Locations",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Solutions",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Community",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "About",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Resources",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Book a Tour",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 52
+      },
+      {
+        "text": "Close",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 44
+      },
+      {
+        "text": "Spaces",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Locations",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Solutions",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Community",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "About",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      },
+      {
+        "text": "Resources",
+        "inMenu": true,
+        "focusRing": true,
+        "height": 48
+      }
+    ],
+    "closedWithEscape": true,
+    "focusReturnedToMenuButton": true,
+    "links": [
+      "Spaces",
+      "Locations",
+      "Solutions",
+      "Community",
+      "About",
+      "Resources",
+      "Book a Tour"
+    ]
+  },
+  "problems": []
+}

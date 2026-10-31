@@ -6,6 +6,7 @@ use App\Enums\Crm\LeadStatus;
 use App\Filament\Clusters\Sales\Resources\Leads\Pages\ListLeads;
 use App\Filament\Clusters\Sales\Resources\Leads\Pages\ViewLead;
 use App\Filament\Clusters\Sales\Resources\Leads\RelationManagers\ActivitiesRelationManager;
+use App\Filament\Clusters\Sales\Resources\Leads\RelationManagers\ToursRelationManager;
 use App\Filament\Clusters\Sales\Resources\Leads\Schemas\LeadInfolist;
 use App\Filament\Clusters\Sales\Resources\Leads\Tables\LeadsTable;
 use App\Filament\Clusters\Sales\SalesCluster;
@@ -94,6 +95,7 @@ class LeadResource extends Resource
     {
         return [
             ActivitiesRelationManager::class,
+            ToursRelationManager::class,
         ];
     }
 

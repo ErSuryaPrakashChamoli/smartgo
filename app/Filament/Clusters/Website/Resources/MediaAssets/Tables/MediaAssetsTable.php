@@ -17,6 +17,8 @@ class MediaAssetsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->emptyStateHeading('No images yet')
+            ->emptyStateDescription('Upload an image with its origin, licence and alt text. Pages, articles and location profiles can then use it.')
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['media', 'uploader']))
             ->defaultSort('created_at', 'desc')
             ->columns([

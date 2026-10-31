@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **Ready to schedule once the preconditions in §2 are met (updated 2026-10-26, round 34).** Not yet run. No scenario has a result yet. Phase 4 is **not** accepted. |
+| Status | **Ready to schedule once the preconditions in §2 are met (updated 2026-10-26, round 34).** Not yet run. No scenario has a result yet. Phase 4 is **not** accepted. **Update (2026-10-28, OD-125):** the last two sections of FR-CMS-1, a location list and the enquiry form, are built and added to S2 (S2.7, S2.8); the FR-CMS-5 and FR-CMS-6 rows of §9.2 are brought up to date with what Phase 5 built; FAQs can be shown on a location's or a workspace type's page (FR-CMS-7, S7.2a). **Update (2026-10-28, OD-126):** "What changed" for the approver (UJ-8, S3.2a); FR-CMS-8's design tokens and the logo wait on owner decisions A-15 and A-16. |
 | Purpose | Human evidence for Phase 4 acceptance: AC-4.1 (FR-CMS-1 to FR-CMS-8), AC-4.2 (UJ-7 and UJ-8 completed unaided in a moderated test) and AC-4.3 (no routine CMS task needs code, JSON or SQL). `PROJECT_MASTER_PLAN.md` §2, Phase 4. |
 | Who runs it | The owner, or someone the owner names, moderates. Participants are the real people who will use the back office. A second person takes notes if possible. |
 | Where | The owner's local environment or a demo environment the owner chooses. Staging is deferred (OD-79), so nothing in this session is public. |
@@ -30,12 +30,12 @@
 | Not available | Why | Reference |
 |---|---|---|
 | Property and offering profiles, and a centre's photo gallery | They attach to the property and offering records Phase 5 builds (step 4.7). No stand-in records are created. UJ-7 is run on a **page with image sections** here and **must be repeated against a real centre profile in Phase 5**. | PHASE_STATUS, step 4.7 |
-| Location list and enquiry form sections | Need Phase 5 data and Phase 6 forms. | FR-CMS-1 |
+| ~~Location list and enquiry form sections~~ | **Built 2026-10-28 (OD-125)** and now part of S2 (S2.7, S2.8). The enquiry form section follows the Enquire page: it shows the form only once a privacy notice is published (D8.1); until then visitors see the same notice and the contact details. | FR-CMS-1 |
 | Analytics and advertising code | Disabled until the consent approach is agreed with counsel. | OD-100, SECURITY_MODEL §11.7 |
 | What counts as valid consent evidence, how long withdrawn content is kept, and recording a withdrawal for an item that is not live | Policy questions for the owner and counsel. | OD-101 (§0.33) |
 | Taking down pages, articles, FAQs or other content | Not in the approved scope. | OD-98 |
 | Editing the logo and design colours | Needs SVG sanitising and contrast checks. | OD-99 |
-| Side-by-side comparison of two versions | The approver uses the preview and the editor. Record in the notes whether this was enough. | UJ-8 |
+| ~~Side-by-side comparison of two versions~~ | **Built 2026-10-28 (OD-126): "What changed"** lists what a version changes compared with the live one (S3.2a). Record in the notes whether it was enough. | UJ-8 |
 | 404 monitor | Not built. | FR-SEO-4 |
 
 ---
@@ -128,6 +128,8 @@ Each step has an expected outcome. Record the actual result in the results sheet
 | S2.4 | Figures section | "Where these figures come from" must be filled before submission; it is not shown on the website. |
 | S2.5 | **Save draft**, then **Preview** | Preview opens in a new tab, marked as a preview, not indexed by search engines. |
 | S2.6 | **Submit for approval** | Status "Submitted for approval"; the fields can no longer be changed. |
+| S2.7 | (Added by OD-125, on a second page.) Add a **Location list** section and choose a city under "Locations in" | The published page lists that city's locations on the website as cards linking to their pages; a location whose profile is not published never appears. No address or link is typed. |
+| S2.8 | Add an **Enquiry form** section and choose a location under "Location already chosen" | The preview shows the form, marked "cannot be sent from this preview". On the published page: while no privacy notice is published, the same notice and contact details as the Enquire page; once one is, the form with that location chosen, and an enquiry sent from it records the page it came from. A second enquiry form section on the same page is refused. |
 
 ### S3. Review, reject, revise and approve (P2, then P1) — UJ-8, FR-CMS-2
 
@@ -137,6 +139,7 @@ Each step has an expected outcome. Record the actual result in the results sheet
 |---|---|---|
 | S3.1 | P2 opens the **Dashboard** | "Waiting for approval" lists the page with its author. |
 | S3.2 | Opens it and previews it | Preview matches what P1 built. |
+| S3.2a | (Added by OD-126; needs a page that was published before, for example the one from S4 on a second pass.) Presses **What changed** | A window lists each field the version changes, with the live value and the new one; sections by number and kind. Record whether this, with the preview, was enough to judge the change. |
 | S3.3 | **Reject** without a note | Refused: a note is required. |
 | S3.4 | **Reject** with a note | Status "Rejected"; the note is shown. |
 | S3.5 | P1: "Make the change asked for and send it again." | **Revise the rejected version** starts a new draft with the note visible; resubmitting works. |
@@ -179,6 +182,7 @@ Each step has an expected outcome. Record the actual result in the results sheet
 |---|---|---|
 | S7.1 | Website → Insights → **New article**, approve, publish | Appears at /insights and at its own address. |
 | S7.2 | Website → FAQs → **New FAQ**, approve, publish | Appears at /faqs in its set position. |
+| S7.2a | (Added by OD-125.) A second FAQ with **Shown on: One location's page** and a location chosen from the list; a third with **One workspace type's page** | After publication: the second appears on that location's page above the general questions, and not at /faqs; the third on that workspace type's page. Nothing is typed but the question and answer. |
 | S7.3 | Website → Testimonials → **New testimonial** without consent | Draft saves, but **Submit for approval** is refused until consent, its reference and "statement is real" are given (BR-CMS-7). |
 | S7.4 | Complete, approve, publish; add a testimonial section to a page and publish the page | The quote appears on that page; it cannot be typed into the page directly. |
 | S7.5 | Customer story (optional) | Same consent rule; appears at /customers. |
@@ -347,14 +351,14 @@ Automated evidence, 2026-10-26 (test database only, outside caches bypassed): 63
 
 | Requirement | Built | Automated evidence | Scenarios | Status before the session | Session result |
 |---|---|---|---|---|---|
-| FR-CMS-1 Block library | Introduction, text, image, feature grid, figures, comparison table, FAQs, testimonial, call to action | `PagePayloadTest`, `StatsAndComparisonBlocksTest`, `PageControllerTest` | S2 | **Partial:** location list (Phase 5) and form embed (Phase 6) not built | |
+| FR-CMS-1 Block library | Introduction, text, image, feature grid, figures, comparison table, FAQs, testimonial, call to action, contact details; **location list and enquiry form (OD-125)** | `PagePayloadTest`, `StatsAndComparisonBlocksTest`, `PageControllerTest`, `ContactDetailsBlockTest`, `LocationListBlockTest`, `EnquiryFormBlockTest`; browser: `evidence/phase4/2026-10-28-od125/checks/enquiry.json` (page built, approved and published in the back office, then used on the website) | S2 | **Built** (every section in the PRD's list exists; was "Partial: location list and form embed not built") | |
 | FR-CMS-2 Workflow, rejection, scheduling | Yes, for every content type | `RevisionWorkflowTest`, `EditPageTest`, `ContentPublishingConcurrencyTest` | S3, S4 | Built | |
 | FR-CMS-3 Signed preview | Yes, `noindex`, expires after 30 minutes | `RevisionPreviewControllerTest` | S2, S3 | Built | |
 | FR-CMS-4 Navigation, header and footer | Yes | `NavigationWorkflowTest`, `EditNavigationMenuTest`, `PublicShellTest` | S6 | Built | |
-| FR-CMS-5 Media library | Yes; licence expiry hides images | `MediaLibraryTest`, `MediaLibraryScreensTest` | S1 | **Partial:** blocking concept images from centre galleries comes with the galleries (Phase 5) | |
-| FR-CMS-6 Location and offering profiles | No | none | none | **Not built:** depends on Phase 5 (step 4.7); UJ-7 to be repeated on a real centre | |
-| FR-CMS-7 Insights, FAQs, testimonials, customer stories, legal pages | Yes; taking testimonials and customer stories down (OD-98, committed `84a8f35`); withdrawn consent (OD-101, committed locally in round 35) | `ContentTypesWorkflowTest`, `PublishedContentControllerTest`, `ContentTypeScreensTest`, `UnpublishContentTest`, `ConsentWithdrawalTest`, `TakeDownScreensTest`, `ContentPublishingConcurrencyTest` | S7, S8, S13 | **Partial:** FAQ location and product scopes (Phase 5); consent-evidence policy questions open with the owner and counsel (OD-101) | |
-| FR-CMS-8 Brand settings | Contact details, social links, tracking IDs (stored only), legal details, manual redirects | `SiteSettingsWorkflowTest`, `RedirectMapWorkflowTest`, `SettingsAndRedirectsScreensTest` | S9 to S11, S14 | **Partial:** design tokens and logo (OD-99); tracking disabled by decision (OD-100) | |
+| FR-CMS-5 Media library | Yes; licence expiry hides images; centre galleries accept only SmartGro or commissioned photography (built with the galleries in Phase 5) | `MediaLibraryTest`, `MediaLibraryScreensTest`, `PropertyProfileWorkflowTest` (photography origins) | S1 | **Built** (was "Partial: concept images in centre galleries"; updated 2026-10-28, OD-125) | |
+| FR-CMS-6 Location and offering profiles | Yes, built on the Phase 5 records (OD-105, OD-109) | `PropertyProfileWorkflowTest`, `OfferingProfileWorkflowTest` ("never lets a profile change status, capacity, availability or price (FR-CMS-6)") | none yet | **Built** (was "Not built"; updated 2026-10-28, OD-125). UJ-7 still has to be repeated on a real centre profile in the session | |
+| FR-CMS-7 Insights, FAQs, testimonials, customer stories, legal pages | Yes; taking testimonials and customer stories down (OD-98, committed `84a8f35`); withdrawn consent (OD-101, committed locally in round 35) | `ContentTypesWorkflowTest`, `PublishedContentControllerTest`, `ContentTypeScreensTest`, `UnpublishContentTest`, `ConsentWithdrawalTest`, `TakeDownScreensTest`, `ContentPublishingConcurrencyTest` | S7, S8, S13 | **Partial:** consent-evidence policy questions open with the owner and counsel (OD-101). FAQ location and product scopes **built 2026-10-28 (OD-125)**: `FaqScopeTest`; browser: the fixture FAQs on the A-70 and hot desks pages in `evidence/phase4/2026-10-28-od125/checks/public.json` | |
+| FR-CMS-8 Brand settings | Contact details, social links, tracking IDs (stored only), legal details, manual redirects | `SiteSettingsWorkflowTest`, `RedirectMapWorkflowTest`, `SettingsAndRedirectsScreensTest` | S9 to S11, S14 | **Partial:** design tokens: no source names the editable tokens, **owner decision A-15** (OD-126 a); logo management (FR-BRAND-1, "Phases 4–5"): SVG needs a sanitising package, **owner decision A-16**; tracking disabled by decision (OD-100) | |
 
 ### 9.3 AC-4.2, AC-4.3 and the owner's decisions
 

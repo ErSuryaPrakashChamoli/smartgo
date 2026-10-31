@@ -9,6 +9,7 @@ use App\Models\NavigationMenu;
 use App\Models\OfferingProfile;
 use App\Models\Page;
 use App\Models\Post;
+use App\Models\PostTopic;
 use App\Models\PropertyProfile;
 use App\Models\RedirectMap;
 use App\Models\Revision;
@@ -75,6 +76,7 @@ class RevisionPreviewController extends Controller
                 'title' => (string) ($revision->payload['title'] ?? ''),
                 'lead' => $revision->payload['excerpt'] ?? null,
                 'blocks' => $blockLibrary->present($revision->payload['blocks'] ?? []),
+                'topics' => PostTopic::inOrder($revision->payload['topic_ids'] ?? [])->map(fn (PostTopic $topic): array => ['name' => $topic->name, 'path' => null])->all(),
                 'date' => null, 'preview' => $preview, 'navigation' => $siteNavigation->present(),
             ]),
             $content instanceof CaseStudy => view('pages.customers.show', [

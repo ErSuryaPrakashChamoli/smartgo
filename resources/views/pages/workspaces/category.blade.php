@@ -55,6 +55,10 @@
             </ul>
         </section>
 
+        @if ($faqs->isNotEmpty())
+            <x-site.faq-section :faqs="$faqs" :title="'Questions about '.\Illuminate\Support\Str::lower($product->name)" />
+        @endif
+
         @if ($others !== [])
             <section aria-labelledby="related-heading" class="flex flex-col gap-6">
                 <x-ui.section-heading eyebrow="Also consider" title="Other workspace types" id="related-heading" />

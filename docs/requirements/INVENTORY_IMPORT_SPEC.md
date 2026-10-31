@@ -6,6 +6,7 @@
 | Last updated | 2026-10-24 |
 | Template | [`docs/templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.3.xlsx`](../templates/inventory-import/SmartGro_Inventory_Import_Template_SG-INV-1.3.xlsx) (template ID `SG-INV-1.3`). SG-INV-1.0, 1.1 and 1.2 are superseded; they were removed from the working tree and remain in Git history. |
 | Synthetic fixtures | [`tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_valid.xlsx) · [`tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx`](../../tests/Fixtures/Inventory/SYNTHETIC_inventory_with_errors.xlsx) (regenerated for 1.2) |
+| Implementation | **Built locally 2026-10-29 (OD-128 e, f), uncommitted, not accepted:** back office Properties → Inventory imports. The two synthetic fixtures conform (zero issues; exactly the 20 expected). Differences from this document are listed in DECISION_REGISTER OD-128 (f); the annotated workbook download and V-005 are not built. `openspout/openspout` is declared as a direct dependency (`^4`, OD-129 c; 4.32.0 installed, nothing installed or upgraded). **The entry gate has not passed:** no real inventory has been imported. |
 | Depends on | Q-OW-1 (floors per property and their levels; still open). Resolved: each address is its own property (OD-13), all current properties owned (OD-14), hybrid zones required (OD-15), official city names (OD-16), D-03, D-05 and D-06. |
 
 ---
@@ -161,7 +162,7 @@ Severity: **E** = error (blocks commit) · **W** = warning (must be acknowledged
 | V-114 | W | each property has exactly 7 Hours rows. Missing days are treated as closed. |
 | V-115 | E | spaces sellable under a time-booked category (meeting rooms, conference and training rooms) need `min_booking_minutes` ≤ `max_booking_minutes`. A blank turnaround becomes 0. |
 | V-116 | E | `inventory_mode` is allowed for the `space_type` (table in §2) |
-| V-117 | E | every `sellable_as` value is a known product category, and is compatible with the space's inventory mode (BR-PRODCFG-2). "Virtual office / business address" is never allowed on a space. **Evaluated only after V-116 passes.** |
+| V-117 | E | every `sellable_as` value is a known product category, and is compatible with the space's inventory mode and, where the database keeps the list, its space type (BR-PRODCFG-2; the category's "Space types it can be sold with", OD-153). "Virtual office / business address" is never allowed on a space. **Evaluated only after V-116 passes.** |
 
 ### 4.3 Uniqueness and references
 
@@ -211,7 +212,7 @@ Both are added to `../architecture/DATABASE_ERD.md` §3.
 
 ## 6. Technology (proposed; requires approval with D-24)
 
-* **Reading XLSX:** `openspout/openspout` 4.32.0 is already installed as a Filament dependency (verified with `composer show`, 2026-10-24). It streams large files with low memory use. It would be declared as a **direct** dependency, so the importer does not rely on a transitive package.
+* **Reading XLSX:** `openspout/openspout` 4.32.0 is already installed as a Filament dependency (verified with `composer show`, 2026-10-24). It streams large files with low memory use. It is declared as a **direct** dependency (`^4`, 2026-10-29, OD-129 c), so the importer does not rely on a transitive package.
 * **Why not Filament's built-in CSV importer:** it imports one entity per CSV. This import is relational across several sheets, all-or-nothing, and needs an approval step. Filament provides the **UI** (upload, report, preview, approval pages); a domain action (`Inventory\ImportInventoryWorkbook`) does the work.
 * **CSV fallback:** deferred. Excel is the format operations teams use, and the template's dropdowns only work in XLSX.
 

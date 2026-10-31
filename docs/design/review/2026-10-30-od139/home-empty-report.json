@@ -1,0 +1,50 @@
+{
+  "base": "http://127.0.0.1:8767",
+  "path": "/",
+  "label": "home-empty",
+  "chromium": "156.0.8078.47",
+  "runs": [
+    {
+      "width": 1440,
+      "height": 900,
+      "console": [],
+      "pageErrors": [],
+      "failed": [],
+      "external": [],
+      "badStatus": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:8767/",
+      "overflow": 0,
+      "fontsLoaded": [
+        "Inter 400",
+        "Inter 500",
+        "Inter 600",
+        "Playfair Display 600",
+        "Playfair Display 600",
+        "Playfair Display 600"
+      ],
+      "pageHeight": 4442
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "console": [],
+      "pageErrors": [],
+      "failed": [],
+      "external": [],
+      "badStatus": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:8767/",
+      "overflow": 0,
+      "fontsLoaded": [
+        "Inter 400",
+        "Inter 500",
+        "Inter 600",
+        "Playfair Display 600",
+        "Playfair Display 600",
+        "Playfair Display 600"
+      ],
+      "pageHeight": 6606
+    }
+  ]
+}

@@ -1,0 +1,927 @@
+{
+ "startedAt": "2026-10-28T09:50:05.916Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "156.0.8078.47",
+ "machineAtStart": {
+  "cpus": 8,
+  "cpu": "Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz",
+  "loadAverage": [
+   2.79,
+   2.01,
+   3.12
+  ]
+ },
+ "profiles": [
+  {
+   "name": "desktop",
+   "context": {
+    "viewport": {
+     "width": 1440,
+     "height": 900
+    }
+   },
+   "cpu": 1,
+   "network": null,
+   "gzip": false
+  },
+  {
+   "name": "phone, slow 4G",
+   "context": {
+    "viewport": {
+     "width": 360,
+     "height": 800
+    },
+    "deviceScaleFactor": 2,
+    "isMobile": true,
+    "hasTouch": true
+   },
+   "cpu": 4,
+   "network": {
+    "offline": false,
+    "latency": 562.5,
+    "downloadThroughput": 188743.68,
+    "uploadThroughput": 86400
+   },
+   "gzip": false
+  },
+  {
+   "name": "phone, slow 4G, gzip",
+   "context": {
+    "viewport": {
+     "width": 360,
+     "height": 800
+    },
+    "deviceScaleFactor": 2,
+    "isMobile": true,
+    "hasTouch": true
+   },
+   "cpu": 4,
+   "network": {
+    "offline": false,
+    "latency": 562.5,
+    "downloadThroughput": 188743.68,
+    "uploadThroughput": 86400
+   },
+   "gzip": true,
+   "skip": [
+    "twin_model_limits"
+   ]
+  }
+ ],
+ "uploadChecks": {
+  "twin_model": {
+   "upload_ms": 37.5,
+   "bytes": 2216,
+   "triangles": 36
+  },
+  "twin_model_draco": {
+   "upload_ms": 21.9,
+   "bytes": 2004,
+   "triangles": 36
+  },
+  "twin_model_typical": {
+   "upload_ms": 26.2,
+   "bytes": 2850388,
+   "triangles": 100000
+  },
+  "twin_model_limits": {
+   "upload_ms": 55.3,
+   "bytes": 15568664,
+   "triangles": 500000
+  }
+ },
+ "runs": [
+  {
+   "model": "small, Meshopt",
+   "profile": "desktop",
+   "fileBytes": 2216,
+   "trianglesCounted": 36,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 188,
+   "stages": {
+    "viewerJsDownloadedMs": 102,
+    "viewerJsReadyMs": 123,
+    "rendererReadyMs": 141,
+    "rendererInitMs": 18,
+    "modelDownloadMs": [
+     1,
+     99
+    ],
+    "decoderDownloadMs": null,
+    "decodersReadyMs": 145,
+    "modelDecodedMs": 153,
+    "decodingAfterDownloadsMs": 8,
+    "firstRenderMs": 187,
+    "firstFrameMs": 189,
+    "usableMs": 188
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 1,
+     "endMs": 99,
+     "bytes": 2216,
+     "decodedBytes": 2216
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 1,
+     "endMs": 7,
+     "bytes": 215755,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "meshopt_decoder.module-DXTYc6wn.js",
+     "startMs": 1,
+     "endMs": 6,
+     "bytes": 26486,
+     "decodedBytes": 26486
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 1,
+     "endMs": 102,
+     "bytes": 422832,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 667289,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 3,
+    "triangles": 36
+   },
+   "move": {
+    "renders": 34,
+    "medianFrameMs": 20,
+    "worstFrameMs": 33
+   },
+   "jsHeapMB": 8,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "small, Draco",
+   "profile": "desktop",
+   "fileBytes": 2004,
+   "trianglesCounted": 36,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 153,
+   "stages": {
+    "viewerJsDownloadedMs": 7,
+    "viewerJsReadyMs": 81,
+    "rendererReadyMs": 97,
+    "rendererInitMs": 15,
+    "modelDownloadMs": [
+     1,
+     59
+    ],
+    "decoderDownloadMs": [
+     1,
+     64
+    ],
+    "decodersReadyMs": 101,
+    "modelDecodedMs": 127,
+    "decodingAfterDownloadsMs": 26,
+    "firstRenderMs": 152,
+    "firstFrameMs": 154,
+    "usableMs": 152
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 1,
+     "endMs": 59,
+     "bytes": 2004,
+     "decodedBytes": 2004
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 1,
+     "endMs": 65,
+     "bytes": 215755,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "DRACOLoader-BbahKxeV.js",
+     "startMs": 1,
+     "endMs": 4,
+     "bytes": 7353,
+     "decodedBytes": 7353
+    },
+    {
+     "path": "draco_wasm_wrapper-fZCQGLGb.js",
+     "startMs": 1,
+     "endMs": 5,
+     "bytes": 58456,
+     "decodedBytes": 58456
+    },
+    {
+     "path": "draco_decoder-Z1_iN-Ht.wasm",
+     "startMs": 1,
+     "endMs": 64,
+     "bytes": 192420,
+     "decodedBytes": 192420
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 2,
+     "endMs": 7,
+     "bytes": 422832,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 898820,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 3,
+    "triangles": 36
+   },
+   "move": {
+    "renders": 35,
+    "medianFrameMs": 19,
+    "worstFrameMs": 31
+   },
+   "jsHeapMB": 9,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "typical size",
+   "profile": "desktop",
+   "fileBytes": 2850388,
+   "trianglesCounted": 100000,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 191,
+   "stages": {
+    "viewerJsDownloadedMs": 10,
+    "viewerJsReadyMs": 25,
+    "rendererReadyMs": 42,
+    "rendererInitMs": 16,
+    "modelDownloadMs": [
+     1,
+     75
+    ],
+    "decoderDownloadMs": null,
+    "decodersReadyMs": 80,
+    "modelDecodedMs": 133,
+    "decodingAfterDownloadsMs": 53,
+    "firstRenderMs": 191,
+    "firstFrameMs": 192,
+    "usableMs": 191
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 1,
+     "endMs": 75,
+     "bytes": 2850388,
+     "decodedBytes": 2850388
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 1,
+     "endMs": 8,
+     "bytes": 215755,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "meshopt_decoder.module-DXTYc6wn.js",
+     "startMs": 1,
+     "endMs": 7,
+     "bytes": 26486,
+     "decodedBytes": 26486
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 2,
+     "endMs": 10,
+     "bytes": 422832,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 3515461,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 50,
+    "triangles": 100000
+   },
+   "move": {
+    "renders": 9,
+    "medianFrameMs": 96,
+    "worstFrameMs": 193
+   },
+   "jsHeapMB": 8,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "at the limits",
+   "profile": "desktop",
+   "fileBytes": 15568664,
+   "trianglesCounted": 500000,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 565,
+   "stages": {
+    "viewerJsDownloadedMs": 8,
+    "viewerJsReadyMs": 25,
+    "rendererReadyMs": 39,
+    "rendererInitMs": 14,
+    "modelDownloadMs": [
+     1,
+     85
+    ],
+    "decoderDownloadMs": null,
+    "decodersReadyMs": 96,
+    "modelDecodedMs": 291,
+    "decodingAfterDownloadsMs": 195,
+    "firstRenderMs": 564,
+    "firstFrameMs": 566,
+    "usableMs": 565
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 1,
+     "endMs": 85,
+     "bytes": 15568664,
+     "decodedBytes": 15568664
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 1,
+     "endMs": 7,
+     "bytes": 215755,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "meshopt_decoder.module-DXTYc6wn.js",
+     "startMs": 1,
+     "endMs": 5,
+     "bytes": 26486,
+     "decodedBytes": 26486
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 1,
+     "endMs": 8,
+     "bytes": 422832,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 16233737,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 250,
+    "triangles": 500000
+   },
+   "move": {
+    "renders": 3,
+    "medianFrameMs": 433,
+    "worstFrameMs": 433
+   },
+   "jsHeapMB": 7,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "small, Meshopt",
+   "profile": "phone, slow 4G",
+   "fileBytes": 2216,
+   "trianglesCounted": 36,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 4626,
+   "stages": {
+    "viewerJsDownloadedMs": 4177,
+    "viewerJsReadyMs": 4291,
+    "rendererReadyMs": 4362,
+    "rendererInitMs": 70,
+    "modelDownloadMs": [
+     6,
+     644
+    ],
+    "decoderDownloadMs": null,
+    "decodersReadyMs": 4395,
+    "modelDecodedMs": 4452,
+    "decodingAfterDownloadsMs": 57,
+    "firstRenderMs": 4618,
+    "firstFrameMs": 4630,
+    "usableMs": 4622
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 6,
+     "endMs": 644,
+     "bytes": 2216,
+     "decodedBytes": 2216
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 9,
+     "endMs": 3073,
+     "bytes": 215755,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "meshopt_decoder.module-DXTYc6wn.js",
+     "startMs": 11,
+     "endMs": 1069,
+     "bytes": 26486,
+     "decodedBytes": 26486
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 13,
+     "endMs": 4177,
+     "bytes": 422832,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 667289,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 3,
+    "triangles": 36
+   },
+   "move": {
+    "renders": 28,
+    "medianFrameMs": 21,
+    "worstFrameMs": 71
+   },
+   "jsHeapMB": 8,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "small, Draco",
+   "profile": "phone, slow 4G",
+   "fileBytes": 2004,
+   "trianglesCounted": 36,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 5760,
+   "stages": {
+    "viewerJsDownloadedMs": 5421,
+    "viewerJsReadyMs": 5478,
+    "rendererReadyMs": 5527,
+    "rendererInitMs": 47,
+    "modelDownloadMs": [
+     6,
+     637
+    ],
+    "decoderDownloadMs": [
+     10,
+     4078
+    ],
+    "decodersReadyMs": 5546,
+    "modelDecodedMs": 5654,
+    "decodingAfterDownloadsMs": 108,
+    "firstRenderMs": 5755,
+    "firstFrameMs": 5760,
+    "usableMs": 5756
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 6,
+     "endMs": 637,
+     "bytes": 2004,
+     "decodedBytes": 2004
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 9,
+     "endMs": 4308,
+     "bytes": 215755,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "DRACOLoader-BbahKxeV.js",
+     "startMs": 10,
+     "endMs": 804,
+     "bytes": 7353,
+     "decodedBytes": 7353
+    },
+    {
+     "path": "draco_wasm_wrapper-fZCQGLGb.js",
+     "startMs": 10,
+     "endMs": 1948,
+     "bytes": 58456,
+     "decodedBytes": 58456
+    },
+    {
+     "path": "draco_decoder-Z1_iN-Ht.wasm",
+     "startMs": 15,
+     "endMs": 4078,
+     "bytes": 192420,
+     "decodedBytes": 192420
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 17,
+     "endMs": 5421,
+     "bytes": 422832,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 898820,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 3,
+    "triangles": 36
+   },
+   "move": {
+    "renders": 43,
+    "medianFrameMs": 17,
+    "worstFrameMs": 26
+   },
+   "jsHeapMB": 7,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "typical size",
+   "profile": "phone, slow 4G",
+   "fileBytes": 2850388,
+   "trianglesCounted": 100000,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 19701,
+   "stages": {
+    "viewerJsDownloadedMs": 6341,
+    "viewerJsReadyMs": 6404,
+    "rendererReadyMs": 6444,
+    "rendererInitMs": 39,
+    "modelDownloadMs": [
+     5,
+     19207
+    ],
+    "decoderDownloadMs": null,
+    "decodersReadyMs": 19219,
+    "modelDecodedMs": 19476,
+    "decodingAfterDownloadsMs": 257,
+    "firstRenderMs": 19695,
+    "firstFrameMs": 19703,
+    "usableMs": 19698
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 5,
+     "endMs": 19207,
+     "bytes": 2850388,
+     "decodedBytes": 2850388
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 6,
+     "endMs": 4131,
+     "bytes": 215755,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "meshopt_decoder.module-DXTYc6wn.js",
+     "startMs": 8,
+     "endMs": 1127,
+     "bytes": 26486,
+     "decodedBytes": 26486
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 10,
+     "endMs": 6341,
+     "bytes": 422832,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 3515461,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 50,
+    "triangles": 100000
+   },
+   "move": {
+    "renders": 7,
+    "medianFrameMs": 112,
+    "worstFrameMs": 156
+   },
+   "jsHeapMB": 7,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "at the limits",
+   "profile": "phone, slow 4G",
+   "fileBytes": 15568664,
+   "trianglesCounted": 500000,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 88045,
+   "stages": {
+    "viewerJsDownloadedMs": 6344,
+    "viewerJsReadyMs": 6397,
+    "rendererReadyMs": 6435,
+    "rendererInitMs": 37,
+    "modelDownloadMs": [
+     8,
+     86601
+    ],
+    "decoderDownloadMs": null,
+    "decodersReadyMs": 86655,
+    "modelDecodedMs": 87351,
+    "decodingAfterDownloadsMs": 696,
+    "firstRenderMs": 88039,
+    "firstFrameMs": 88045,
+    "usableMs": 88040
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 8,
+     "endMs": 86601,
+     "bytes": 15568664,
+     "decodedBytes": 15568664
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 11,
+     "endMs": 4143,
+     "bytes": 215755,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "meshopt_decoder.module-DXTYc6wn.js",
+     "startMs": 12,
+     "endMs": 1139,
+     "bytes": 26486,
+     "decodedBytes": 26486
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 14,
+     "endMs": 6344,
+     "bytes": 422832,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 16233737,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 250,
+    "triangles": 500000
+   },
+   "move": {
+    "renders": 3,
+    "medianFrameMs": 665,
+    "worstFrameMs": 665
+   },
+   "jsHeapMB": 9,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "small, Meshopt",
+   "profile": "phone, slow 4G, gzip",
+   "fileBytes": 2216,
+   "trianglesCounted": 36,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 1678,
+   "stages": {
+    "viewerJsDownloadedMs": 1476,
+    "viewerJsReadyMs": 1502,
+    "rendererReadyMs": 1535,
+    "rendererInitMs": 32,
+    "modelDownloadMs": [
+     3,
+     641
+    ],
+    "decoderDownloadMs": null,
+    "decodersReadyMs": 1552,
+    "modelDecodedMs": 1577,
+    "decodingAfterDownloadsMs": 25,
+    "firstRenderMs": 1675,
+    "firstFrameMs": 1680,
+    "usableMs": 1677
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 3,
+     "endMs": 641,
+     "bytes": 2216,
+     "decodedBytes": 2216
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 4,
+     "endMs": 1213,
+     "bytes": 56513,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "meshopt_decoder.module-DXTYc6wn.js",
+     "startMs": 5,
+     "endMs": 698,
+     "bytes": 7160,
+     "decodedBytes": 26486
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 7,
+     "endMs": 1476,
+     "bytes": 103053,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 168942,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 3,
+    "triangles": 36
+   },
+   "move": {
+    "renders": 43,
+    "medianFrameMs": 17,
+    "worstFrameMs": 23
+   },
+   "jsHeapMB": 9,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "small, Draco",
+   "profile": "phone, slow 4G, gzip",
+   "fileBytes": 2004,
+   "trianglesCounted": 36,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 2225,
+   "stages": {
+    "viewerJsDownloadedMs": 2016,
+    "viewerJsReadyMs": 2044,
+    "rendererReadyMs": 2076,
+    "rendererInitMs": 30,
+    "modelDownloadMs": [
+     4,
+     649
+    ],
+    "decoderDownloadMs": [
+     10,
+     1786
+    ],
+    "decodersReadyMs": 2089,
+    "modelDecodedMs": 2141,
+    "decodingAfterDownloadsMs": 52,
+    "firstRenderMs": 2219,
+    "firstFrameMs": 2225,
+    "usableMs": 2222
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 4,
+     "endMs": 649,
+     "bytes": 2004,
+     "decodedBytes": 2004
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 5,
+     "endMs": 991,
+     "bytes": 56513,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "DRACOLoader-BbahKxeV.js",
+     "startMs": 8,
+     "endMs": 664,
+     "bytes": 2999,
+     "decodedBytes": 7353
+    },
+    {
+     "path": "draco_wasm_wrapper-fZCQGLGb.js",
+     "startMs": 10,
+     "endMs": 752,
+     "bytes": 11688,
+     "decodedBytes": 58456
+    },
+    {
+     "path": "draco_decoder-Z1_iN-Ht.wasm",
+     "startMs": 11,
+     "endMs": 1786,
+     "bytes": 63407,
+     "decodedBytes": 192420
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 13,
+     "endMs": 2016,
+     "bytes": 103053,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 239664,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 3,
+    "triangles": 36
+   },
+   "move": {
+    "renders": 42,
+    "medianFrameMs": 17,
+    "worstFrameMs": 31
+   },
+   "jsHeapMB": 6,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  },
+  {
+   "model": "typical size",
+   "profile": "phone, slow 4G, gzip",
+   "fileBytes": 2850388,
+   "trianglesCounted": 100000,
+   "beforePress": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownMs": 16981,
+   "stages": {
+    "viewerJsDownloadedMs": 2002,
+    "viewerJsReadyMs": 2039,
+    "rendererReadyMs": 2083,
+    "rendererInitMs": 42,
+    "modelDownloadMs": [
+     3,
+     16570
+    ],
+    "decoderDownloadMs": null,
+    "decodersReadyMs": 16583,
+    "modelDecodedMs": 16808,
+    "decodingAfterDownloadsMs": 225,
+    "firstRenderMs": 16977,
+    "firstFrameMs": 16984,
+    "usableMs": 16980
+   },
+   "waterfall": [
+    {
+     "path": "file",
+     "startMs": 3,
+     "endMs": 16570,
+     "bytes": 2850388,
+     "decodedBytes": 2850388
+    },
+    {
+     "path": "three.core-CTmbohv1.js",
+     "startMs": 5,
+     "endMs": 1502,
+     "bytes": 56513,
+     "decodedBytes": 215755
+    },
+    {
+     "path": "meshopt_decoder.module-DXTYc6wn.js",
+     "startMs": 5,
+     "endMs": 715,
+     "bytes": 7160,
+     "decodedBytes": 26486
+    },
+    {
+     "path": "twin-viewer-Bmlcv8fL.js",
+     "startMs": 8,
+     "endMs": 2002,
+     "bytes": 103053,
+     "decodedBytes": 422832
+    }
+   ],
+   "threeDBytes": 3017114,
+   "rendersBeforeMove": 1,
+   "drawnWhole": {
+    "calls": 50,
+    "triangles": 100000
+   },
+   "move": {
+    "renders": 9,
+    "medianFrameMs": 106,
+    "worstFrameMs": 115
+   },
+   "jsHeapMB": 7,
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "consoleErrors": []
+  }
+ ],
+ "failures": [],
+ "finishedAt": "2026-10-28T09:54:23.056Z",
+ "machineAtEnd": {
+  "cpus": 8,
+  "cpu": "Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz",
+  "loadAverage": [
+   3.01,
+   2.95,
+   3.3
+  ]
+ }
+}

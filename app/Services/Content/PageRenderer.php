@@ -11,7 +11,37 @@ use Illuminate\Support\Str;
  */
 class PageRenderer
 {
-    public function __construct(private BlockLibrary $blockLibrary) {}
+    public function __construct(private BlockLibrary $blockLibrary, private RichText $richText) {}
+
+    /**
+     * Only what a page tells search engines: its title, search title, search description and whether it
+     * may be indexed, worked out exactly as present() does but without presenting the sections, which
+     * may load contact details, locations, media or links. The default description reads only hero and
+     * contact introductions and text bodies (defaultDescription), so only those are prepared here. Used
+     * by the search titles report (FR-SEO-1), so its cost does not grow with what sections show.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array{title: string, metaTitle: string|null, metaDescription: string|null, indexable: bool}
+     */
+    public function searchFields(array $payload): array
+    {
+        $seo = is_array($payload['seo'] ?? null) ? $payload['seo'] : [];
+        $sections = collect(is_array($payload['blocks'] ?? null) ? $payload['blocks'] : [])
+            ->filter(fn (mixed $block): bool => is_array($block) && in_array($block['type'] ?? null, ['hero', 'contact', 'text'], true) && is_array($block['data'] ?? null))
+            ->map(fn (array $block): array => ['type' => $block['type'], 'data' => match ($block['type']) {
+                'text' => ['body' => $this->richText->sanitize($block['data']['body'] ?? null)],
+                'contact' => ['intro' => filled($block['data']['intro'] ?? null) ? (string) $block['data']['intro'] : null],
+                default => ['intro' => $block['data']['intro'] ?? null],
+            }])
+            ->values()->all();
+
+        return [
+            'title' => (string) ($payload['title'] ?? ''),
+            'metaTitle' => filled($seo['title'] ?? null) ? (string) $seo['title'] : null,
+            'metaDescription' => filled($seo['description'] ?? null) ? (string) $seo['description'] : $this->defaultDescription($sections),
+            'indexable' => (bool) ($seo['indexable'] ?? true),
+        ];
+    }
 
     /**
      * @param  array<string, mixed>  $payload

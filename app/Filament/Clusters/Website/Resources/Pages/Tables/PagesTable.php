@@ -4,6 +4,7 @@ namespace App\Filament\Clusters\Website\Resources\Pages\Tables;
 
 use App\Enums\Content\RevisionState;
 use App\Models\Page;
+use App\Services\Content\PagePayload;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -12,16 +13,23 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * Pages with their live version and the version being worked on. Titles and addresses of pages that
- * were never published come from their draft.
+ * Pages with their live version and the version being worked on. Titles, addresses and layouts of pages
+ * that were never published come from their draft; sample pages are marked and can be filtered (OD-149).
  */
 class PagesTable
 {
+    /**
+     * @var array<string, string>
+     */
+    private const array LAYOUTS = ['standard' => 'Standard', 'legal' => 'Legal', PagePayload::SAMPLE_TEMPLATE => 'Sample content'];
+
     public static function configure(Table $table): Table
     {
         $timezone = config('backoffice.timezone');
 
         return $table
+            ->emptyStateHeading('No pages yet')
+            ->emptyStateDescription('Create a page and submit it for approval. It reaches the website only once someone else has approved it and it is published.')
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
                 'publishedRevision.author', 'publishedRevision.reviewer', 'publishedRevision.publisher',
                 'workingRevision.author', 'workingRevision.reviewer', 'workingRevision.scheduler',
@@ -42,6 +50,12 @@ class PagesTable
                                 ->where('payload->title', 'like', "%{$search}%")
                                 ->orWhere('payload->slug', 'like', "%{$search}%")))))
                     ->sortable(),
+                TextColumn::make('template')
+                    ->label('Layout')
+                    ->badge()
+                    ->getStateUsing(fn (Page $record): string => $record->template ?? $record->workingRevision?->payload['template'] ?? PagePayload::TEMPLATES[0])
+                    ->formatStateUsing(fn (string $state): string => self::LAYOUTS[$state] ?? $state)
+                    ->color(fn (string $state): string => $state === PagePayload::SAMPLE_TEMPLATE ? 'warning' : 'gray'),
                 TextColumn::make('status')
                     ->label('On the website')
                     ->badge()
@@ -76,6 +90,16 @@ class PagesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('template')
+                    ->label('Layout')
+                    ->options(self::LAYOUTS)
+                    ->query(fn (Builder $query, array $data): Builder => blank($data['value'] ?? null)
+                        ? $query
+                        : $query->where(fn (Builder $query): Builder => $query
+                            ->where('template', $data['value'])
+                            ->orWhere(fn (Builder $query): Builder => $query->whereNull('template')->whereHas('revisions', fn (Builder $query): Builder => $query
+                                ->whereIn('state', RevisionState::open())
+                                ->where('payload->template', $data['value']))))),
                 SelectFilter::make('status')
                     ->label('On the website')
                     ->options(['published' => 'Live', 'draft' => 'Not published']),

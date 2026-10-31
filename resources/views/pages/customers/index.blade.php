@@ -1,5 +1,5 @@
 {{-- Customer case studies published with consent on file (FR-CMS-7, BR-CMS-7). --}}
-<x-layouts::site title="Customer stories" description="How companies work at SmartGro." :canonical="$canonical" :navigation="$navigation">
+<x-layouts::site title="Customer stories" description="How companies work at SmartGro." :noindex="$caseStudies->isEmpty()" :canonical="$canonical" :navigation="$navigation">
     <div class="container-page flex flex-col gap-10 py-12 sm:py-16">
         <h1 class="font-display text-display-xl font-semibold text-balance text-forest">Customer stories</h1>
         @if ($caseStudies->isEmpty())

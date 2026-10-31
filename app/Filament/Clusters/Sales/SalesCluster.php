@@ -8,8 +8,8 @@ use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Support\Icons\Heroicon;
 
 /**
- * Enquiries from the website (Phase 5): the inbox, ownership, status, notes and follow-ups. Tours,
- * bookings and the full CRM pipeline join here in later phases.
+ * Enquiries from the website (Phase 5): the inbox, ownership, status, notes and follow-ups; and tours
+ * (Phase 8). Bookings and the full CRM pipeline join here in later phases.
  */
 class SalesCluster extends Cluster
 {

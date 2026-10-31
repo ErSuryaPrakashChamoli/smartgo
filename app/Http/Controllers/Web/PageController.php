@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\SeoMetadata;
 use App\Services\Content\LiveRedirects;
+use App\Services\Content\PagePayload;
 use App\Services\Content\PageRenderer;
 use App\Services\Content\SiteNavigation;
 use Illuminate\Http\RedirectResponse;
@@ -32,7 +33,7 @@ class PageController extends Controller
             return response()->view('pages.content.show', [
                 ...$content,
                 'preview' => null,
-                'robots' => $content['indexable'] ? null : SeoMetadata::NOINDEX,
+                'robots' => $content['indexable'] && $content['template'] !== PagePayload::SAMPLE_TEMPLATE ? null : SeoMetadata::NOINDEX,
                 'canonical' => rtrim((string) config('app.url'), '/').$page->path(),
                 'shareImage' => $content['shareImagePath'] === null ? null : rtrim((string) config('app.url'), '/').$content['shareImagePath'],
                 'navigation' => $siteNavigation->present(),

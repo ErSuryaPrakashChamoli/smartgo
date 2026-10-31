@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | Implemented locally for owner review (2026-10-27, OD-113), limited to the Phase 6 work that does not depend on the unresolved Phase 5 requirements. **Partially accepted by the owner on 2026-10-27 (§9, OD-114); not fully accepted.** Accepted: AC-6.3 (templates checked, §10.2), AC-6.4, FR-DISC-1 and the "404/410 pages" deliverable. Performance is **NOT VERIFIED**. Phase 7 is not authorised to start. **Closure round (2026-10-27, OD-117, §11):** every code-completable item done, two defects fixed, the browser evidence made repeatable from the repository; no criterion changed status and no further owner decision was recorded. Nothing is committed, pushed or deployed. Phase 5 stays partially accepted (OD-112); owner action A-8 stays open. |
+| Status | Implemented locally for owner review (2026-10-27, OD-113), limited to the Phase 6 work that does not depend on the unresolved Phase 5 requirements. **Partially accepted by the owner on 2026-10-27 (§9, OD-114); not fully accepted.** Accepted: AC-6.3 (templates checked, §10.2), AC-6.4, FR-DISC-1 and the "404/410 pages" deliverable. Performance is **NOT VERIFIED**. Phase 7 is not authorised to start. **Closure round (2026-10-27, OD-117, §11):** every code-completable item done, two defects fixed, the browser evidence made repeatable from the repository; no criterion changed status and no further owner decision was recorded. Nothing is committed, pushed or deployed. Phase 5 stays partially accepted (OD-112); owner action A-8 stays open. **Second closure round (2026-10-28, OD-121, §12):** one back-office contrast defect fixed; the image and testimonial sections, the open enquiry form, its confirmation page and staff previews checked; no status changed. The work up to 2026-10-28 morning was committed by the owner as `8a45ae6`; this round's changes are uncommitted. **Third round (OD-122, §13):** insight topic pages built. **Acceptance-readiness audit (2026-10-28, OD-123, §14):** every criterion reconciled with its evidence and dependency; the topics audited, two defects fixed; no status changed. |
 | Authority | OD-113 (owner instruction of 2026-10-27, "SmartGro — Phase 6 master execution prompt"). It narrows OD-112 (d) to the independent work only; OD-112 (d) still governs everything that depends on Phase 5. The brief arrived cut off after its "Dependencies" heading, so scope and criteria come from the project records listed below. |
 | Scope sources | `../../PROJECT_MASTER_PLAN.md` §2 Phase 6 (deliverables, AC-6.1 to AC-6.4); `../requirements/PRD.md` FR-DISC-1 to FR-DISC-7, NFR-PERF-1/2, NFR-A11Y-1; `../requirements/INFORMATION_ARCHITECTURE.md` §2 to §3 |
 | Earlier Phase 6 work | Public pages built in rounds 38 to 41 under OD-103 and OD-109 (home, locations, sectors, properties, offerings, workspace categories, enquiry page). Reused as built; not rebuilt. |
@@ -318,3 +318,148 @@ The machine restarted at about 19:44 IST; the evidence above was produced after 
 ### 11.7 Status
 
 Phase 6: **partially accepted (OD-114)**. All code-completable work is done; the remaining items need the inputs in §8 and register A-8 and A-10. Phase 7: **not started**; its gate is not met (register OD-117 b). **Update (2026-10-28):** the owner let Phase 7 start (OD-118); Phase 6 stays partially accepted.
+
+---
+
+## 12. Second closure round (2026-10-28, OD-121)
+
+The owner asked again for every code-completable Phase 6 item to be finished, the browser checks reproduced, genuine defects fixed with regression tests, and each remaining criterion recorded with its evidence and precise blocker (register OD-121). **No acceptance decision was recorded: OD-114 stands and Phase 6 stays partially accepted.** A passing suite is not taken as proof of browser behaviour: each browser claim below comes from the browser checks.
+
+### 12.1 Work done
+
+| Item | Detail |
+|---|---|
+| **Defect fixed: grey "empty value" text in the back office failed WCAG AA contrast** | Filament shows an empty value ("Unassigned", "Never", "Nothing in progress", "—") in a light grey below 4.5:1. axe found it on the 3D model page (Phase 7, 2026-10-28) and then, once those screens were added to the checks, on the enquiries list, the enquiry view, the staff list and the pages list. One rule in the back-office theme (`resources/css/filament/admin/theme.css`) gives that text the grey of other secondary text on every screen. **Shown both ways:** built once without the rule, axe reported colour-contrast failures on 5 of the new screen checks; with it, 0. Regression: those five screens are in `verify-admin.mjs`. The back office is not part of AC-6.3, which covers public templates; it is recorded here because the closure checks found it. |
+| Templates never checked, now checked | **Image and testimonial sections:** a page with a generated, labelled image ("TEST FIXTURE image (plain black, not a real photo)") and a labelled testimonial with fixture consent, on the test database only (`/test-fixture-media`). **Enquiry form, open, and its confirmation page:** `verify-enquiry.mjs`, with the form opened on the test database only by a fixture privacy notice; three labelled submissions. **Staff preview:** a draft page (hero, image, testimonial) opened through its signed 30-minute preview link by its author. |
+| Repeatable | `run-checks.sh` runs `verify-enquiry.mjs` too, stops when seeding fails (the seeder could end with exit code 0 after an error), can run parts (`CHECKS`), and runs its server with four workers. |
+
+Not changed: the enquiry form's submission and its rules (D8.1), notifications, the public site's styles, permissions.
+
+### 12.2 Evidence (repeatable)
+
+Browser checks: `CHECKS="public enquiry admin" CHROMIUM_EXECUTABLE=/snap/bin/chromium TMPDIR=$HOME/snap/chromium/common/tmp bash docs/operations/scripts/browser/run-checks.sh docs/testing/evidence/phase7/2026-10-28-a13/after/checks 8767`, 2026-10-28 13:54 to 14:21 IST, headless Chromium 156.0.8078.47 (the installed snap browser; Playwright's own had disappeared from the machine), on `smartgro_testing` (`run.json`, all exit code 0); results in that folder: `public.json`, `enquiry.json`, `admin.json`. Full suite: register OD-121 (f), 1,070 passed, 0 failed.
+
+| Check | Result |
+|---|---|
+| Public addresses (`public.json`) | 27 addresses (the 26 of §11.2 plus the image and testimonial page) at 360, 768, 1024 and 1440 px: 108 page loads, expected statuses, no overflow, no external or failed requests, no console errors; 54 axe runs plus the error pages, **0 violations**; 27 of 27 with one heading and their content without JavaScript; the phone menu, filter, comparison and its shared address without JavaScript; keyboard on a phone with no focus hidden |
+| Image and testimonial sections | 200 at four widths, no overflow, **0 axe violations** at 360 and 1440 px, content without JavaScript |
+| Enquiry form and confirmation (`enquiry.json`) | Form open at 360 and 1440 px: **0 axe violations**. After sending: `/enquire/received`, one heading, a reference, no overflow, **0 axe violations**. With JavaScript off the form sends and the confirmation page shows |
+| Staff preview (`admin.json`) | 200 at its own address at 360 and 1440 px, no overflow, no external requests, **0 axe violations** |
+| Back office (`admin.json`) | every screen checked at 360 and 1440 px with 0 axe violations, including the five screens with empty values |
+
+### 12.3 Criteria after this round (statuses unchanged)
+
+| Item | Status | Evidence | Precise blocker |
+|---|---|---|---|
+| AC-6.1 | PARTIAL | the FR-DISC rows below | the blockers of FR-DISC-2 to FR-DISC-7 |
+| AC-6.2 | BLOCKED; performance **NOT VERIFIED** | local Lighthouse diagnostics only (§11.2) | no staging environment (OD-79 defers it; P6-6), and the owner's choice of how field targets are judged (P6-9) |
+| AC-6.3 | PASS, accepted (OD-114) for the templates in §10.2 | `public.json`, `enquiry.json`, `admin.json` (staff preview) | — The image, testimonial, open-form, confirmation and staff-preview templates now also show 0 violations; whether they join the accepted scope is the owner's decision (A-10). Not done: a manual screen-reader pass (§12.4) |
+| AC-6.4 | PASS, accepted (OD-114) | `public.json` "noJs" and "flows"; `enquiry.json` (form sent without JavaScript) | — |
+| FR-DISC-1 | PASS, accepted (OD-114) | `LocationControllerTest`, `WorkspaceControllerTest`; `public.json` | real copy and photography from SmartGro (D-12, C-6.3) |
+| FR-DISC-2 | PARTIAL | `LocationControllerTest` (filter); `public.json` flows | team size and move-in date need inventory (O-2, O-3; AC-5.1 to AC-5.4); amenities need the amenity list (C-2.7); the map toggle needs a map provider (D-18) |
+| FR-DISC-3 | BLOCKED | — | inventory and approved pricing (AC-5.1 to AC-5.4; O-2, O-3, O-4) |
+| FR-DISC-4 | PARTIAL | `LocationControllerTest` (comparison); `public.json` flows | prices and availability (O-2, O-3), amenities (C-2.7), commute times beyond the walk from the metro (no data source) |
+| FR-DISC-5 | PARTIAL | `LocationControllerTest` (phone bar); `public.json` | city context from city and sector pages waits for the owner's P6-5 and the D8.1 re-verification; tours are Phase 8 |
+| FR-DISC-6 | PARTIAL | `PublicShellTest`, `LocationControllerTest`; `public.json` keyboard and phone bars | "Book a tour" (Phase 8); tap tracking waits for the consent approach (OD-100) |
+| FR-DISC-7 | PARTIAL | `PropertyProfileWorkflowTest`, `LocationControllerTest` | the getting-here details themselves (C-2.9); an embedded map (D-18) |
+| "404/410 pages" | PASS, accepted (OD-114) | `ErrorPagesTest`; `public.json` statuses | — |
+| "All IA templates" | PARTIAL | §1.3 | `/book-a-tour` and booking pages (Phase 8), `/enterprise` (Phase 8, OD-110 e), `/offers` (approved offers), `/solutions`, `/partners`, `/careers` (D-27), topic pages (OD-97), `/sitemap.xml` (Phase 11) |
+| "Live availability and price fragments" | BLOCKED | — | AC-5.1 to AC-5.4 |
+| "Compare feature" | PARTIAL | FR-DISC-4 | as FR-DISC-4 |
+| "Forms (UI)" | PARTIAL | `enquiry.json` (the form works and is accessible when opened on the test database) | the form stays closed to the public until D8.1 and the legal texts (D-15) are in place (OD-111 c); tour and enterprise forms are Phase 8 |
+| "Legal pages" | BLOCKED (texts) | the template exists (Phase 4) | the texts, through counsel (D-15, C-7.4) |
+
+**Phase 6 still cannot be fully accepted:** every PARTIAL or BLOCKED item above waits on an owner, client, legal, Phase 5 or staging input, not on code. The next step is the owner's further decision (P6-8, register A-10).
+
+### 12.4 Still not tested
+
+* **Performance (AC-6.2): NOT VERIFIED** (no staging).
+* A manual screen-reader pass: no screen reader is available on this machine.
+* Real phones, and browsers other than Chromium.
+* Real content: every check used labelled fixtures; the image is a plain black test image, the testimonial and its consent are fixtures, and the enquiries are labelled test submissions on the test database.
+* A real maintenance window (simulated in the tests only).
+
+### 12.5 Status
+
+Phase 6: **partially accepted (OD-114)**, unchanged. One back-office accessibility defect fixed; three more templates and the staff preview checked. Remaining items need the inputs in §8 and register A-8 and A-10.
+
+---
+
+## 13. Third closure round (2026-10-28, OD-122)
+
+The owner asked again for the remaining code-completable Phase 6 work, without leaving independent work idle because owner-dependent items are open (register OD-122). **No acceptance decision was recorded: OD-114 stands and Phase 6 stays partially accepted.**
+
+### 13.1 Work done
+
+| Item | Detail |
+|---|---|
+| **Insight topic pages built** ("All IA templates", IA `/insights/topic/{slug}`; ERD C-31) | They waited under OD-97, an engineering choice, not an owner input. Marketing keeps a list of topics (Website → Insights → Topics; `content.view` to see it, `content.edit` to change it). An article takes up to three topics in its versions, so a topic reaches the website only when an article version with it is approved and published (BR-CMS-1). A topic's page lists its published articles, newest first, and exists only while it has one (otherwise 404, or a live redirect). Articles link to their topics; the insights page lists the topics on the website; staff previews show a version's topics without links. A topic a published article shows keeps its name and address; one any article uses cannot be deleted. Plain text only; audited. No topic was created except the labelled test fixture. |
+| Tests | `PublishedContentControllerTest` (+3: a topic's page and its 404s, links from articles in the order chosen and from the insights page, no topic list while none is used) and `PostTopicScreensTest` (5: adding a topic with its refusals and audit, roles, choosing topics on a version (at most three, existing ones), publication through the workflow, the rules on changing and deleting) |
+| Browser | The topic page joins the public checks (labelled fixture topic on the fixture article) |
+
+### 13.2 Evidence
+
+`docs/testing/evidence/phase7/2026-10-28-od122/checks/` (`public.json`, `enquiry.json`, `admin.json`, `run.json`), headless Chromium 156 (installed snap), `smartgro_testing`: all three scripts exit code 0; 28 public addresses (now with the topic page) at four widths, 112 page loads, 0 axe violations in 56 runs plus 10 on the error pages, 28 of 28 with their content without JavaScript; the enquiry form and its confirmation page 0 violations, sent without JavaScript; 32 back-office screen checks, 0 axe violations, nothing 3D before the press; viewers drawn; loading states; uploads through the form: the 14.85 MB model stored and opened, a file 4 bytes over 15 MB refused with the reason. Full suite: 1,081 passed, 0 failed, 0 skipped (4,038 assertions, exit code 0), 314 s, on the final code.
+
+### 13.3 Criteria after this round
+
+Statuses unchanged. "All IA templates" stays **PARTIAL**: the topic pages are built, and what is left needs other phases or decisions: `/book-a-tour` and booking pages (Phase 8), `/enterprise` (Phase 8, OD-110 e), `/offers` (approved offers), `/solutions`, `/partners`, `/careers` (D-27), `/sitemap.xml` (Phase 11). Every other row of §12.3 is unchanged, with the same blockers. **No code-completable Phase 6 item is known to remain**; what remains waits on owner, client, legal, Phase 5, other-phase or staging input.
+
+---
+
+## 14. Acceptance-readiness audit (2026-10-28, OD-123)
+
+The owner asked for a final local verification: every criterion reconciled with its status, evidence and remaining dependency, without inferring acceptance from the test suite, and an audit of the insight topics (register OD-123). **No acceptance decision was recorded: OD-114 stands and Phase 6 stays partially accepted.** A passing suite shows that coded rules hold; it is not used below as evidence of browser behaviour, content or performance.
+
+### 14.1 Insight topics audited
+
+| Point audited | Result | Evidence |
+|---|---|---|
+| Who may keep topics | Finance, Sales and Operations Manager are refused the list, the add form and a topic's page; a deactivated Marketing Manager is refused; adding is audited | `PostTopicScreensTest` |
+| Drafts never expose topics | A topic only on a draft, or on a later version of a published article, has no page and is not in the insights list until that version is published | `PostTopicScreensTest`, `PublishedContentControllerTest` |
+| Topic pages list only published articles | Newest first, twelve to a page, each page with its own canonical address | `PublishedContentControllerTest` |
+| Empty or invalid addresses | `/insights/topic`, a trailing slash, capitals, an underscore, a deeper path and markup answer 404; a live redirect for an old topic address is followed | `PublishedContentControllerTest` |
+| Topic without a published article | No page (404) and not listed | `PublishedContentControllerTest` |
+| At most three topics, each existing | Refused otherwise, with plain messages; the form allows three | `PostTopicScreensTest` |
+| Publication, revision, unpublishing | Publishing a version that changes the topics moves them on the website; an article whose status leaves "published" takes its topics off. Articles have no take-down action (OD-98 covers testimonials and customer stories), so that case is tested as the status change | `PostTopicScreensTest` |
+| Queries | The insights page and a topic page use the same number of queries for 2 or 6 articles. **Defect fixed:** the back-office topic list ran six queries per topic (20 for 3 topics, 56 for 9); the counts now come with the list's own query and its permission checks use them | `PublishedContentControllerTest`, `PostTopicScreensTest` |
+| Staff preview | **Defect fixed:** a preview listed a draft's topics alphabetically, unlike the published article (the order chosen); it now uses the same order, still without links | `RevisionPreviewControllerTest` |
+| A database without topics (added 2026-10-28, OD-125) | **Defect fixed:** the owner's local `smart_go` has no topic table or column (OD-120), and the insights page, the article editor and publishing an article queried them unguarded, so they would fail there. Without them, topics are now simply absent: no topic links, topic addresses 404, no topic field, nothing read or written | `PostTopicScreensTest` (no SQL touching topics with the table reported missing) |
+
+Not built and not needed for the audit: an index on `posts.topic_ids`. Each topic query reads the published articles, which is fine at the expected number of articles; a MySQL multi-valued index would be the step if there are ever thousands.
+
+### 14.2 Criteria reconciled
+
+Sources: `PROJECT_MASTER_PLAN.md` §2 Phase 6 (deliverables, AC-6.1 to AC-6.4) and `../requirements/PRD.md` FR-DISC-1 to FR-DISC-7, NFR-PERF-1/2, NFR-A11Y-1. Every item of those sources is below; none is missing from §1. Each test file named was confirmed to exist, and each browser figure was re-read from its result file. The latest browser results are in `evidence/phase7/2026-10-28-od123/checks/` (§14.3).
+
+| Item | Status | Evidence | Remaining dependency |
+|---|---|---|---|
+| AC-6.1 (FR-DISC-1 to 7 pass) | PARTIAL | the rows below | the FR-DISC rows' dependencies |
+| AC-6.2 (NFR-PERF-1/2 on staging) | BLOCKED; performance **NOT VERIFIED** | local Lighthouse diagnostics only (`evidence/phase6/2026-10-27/lighthouse.json`) | staging (P6-6, OD-79); how field targets are judged (P6-9) |
+| AC-6.3 (axe, no AA violations) | PASS, accepted (OD-114) for the templates in §10.2 | `public.json`, `enquiry.json`, `admin.json` (staff preview) | none for the accepted scope. Whether the later templates (image and testimonial sections, open form, confirmation, staff preview, topic page) join it is the owner's decision (A-10). Not done: a manual screen-reader pass (NFR-A11Y-1; no screen reader on this machine) |
+| AC-6.4 (server-rendered) | PASS, accepted (OD-114) | `public.json` "noJs" and "flows"; `enquiry.json` | none |
+| FR-DISC-1 | PASS, accepted (OD-114) | `LocationControllerTest`, `WorkspaceControllerTest`; `public.json` | real copy and photography (D-12, C-6.3) |
+| FR-DISC-2 | PARTIAL | `LocationControllerTest`; `public.json` flows | team size and move-in (O-2, O-3; AC-5.1 to 5.4), amenities (C-2.7), map toggle (D-18) |
+| FR-DISC-3 | BLOCKED | none | inventory and approved pricing (AC-5.1 to 5.4; O-2, O-3, O-4) |
+| FR-DISC-4 | PARTIAL | `LocationControllerTest`; `public.json` flows | prices and availability (O-2, O-3), amenities (C-2.7), commute times (no data source) |
+| FR-DISC-5 | PARTIAL | `LocationControllerTest`; `public.json` phone bars | city context: the owner's P6-5 at the D8.1 re-verification; tours (Phase 8) |
+| FR-DISC-6 | PARTIAL | `PublicShellTest`, `LocationControllerTest`; `public.json` | "Book a tour" (Phase 8); tap tracking (OD-100) |
+| FR-DISC-7 | PARTIAL | `PropertyProfileWorkflowTest`, `LocationControllerTest` | the details (C-2.9); an embedded map (D-18) |
+| NFR-PERF-1/2 | NOT VERIFIED | as AC-6.2 | as AC-6.2 |
+| NFR-A11Y-1 (public site) | Not claimed | axe and the keyboard check (`public.json`) are automated; zero axe violations is not full WCAG 2.2 AA conformance | a manual screen-reader and keyboard pass (Phase 14) |
+| "All IA templates" | PARTIAL | §1.3; insight topic pages built (OD-122, audited above) | `/book-a-tour`, room booking and `/booking/{reference}` (Phase 8); `/enterprise` (Phase 8, OD-110 e); `/offers` (approved offers); `/solutions`, `/partners`, `/careers` (D-27); `/sitemap.xml` and **`/robots.txt` rules** (Phase 11, FR-SEO-3; today's file is Laravel's default, which allows everything; correction: not listed before) |
+| "Live availability and price fragments" | BLOCKED | none | AC-5.1 to AC-5.4 |
+| "Compare feature" | PARTIAL | as FR-DISC-4 | as FR-DISC-4 |
+| "Forms (UI)" | PARTIAL | `enquiry.json` (form opened on the test database only) | the public form stays closed (D8.1, D-15; OD-111 c); tour and enterprise forms (Phase 8) |
+| "Legal pages" | BLOCKED (texts) | template (Phase 4) | texts through counsel (D-15, C-7.4) |
+| "404/410 pages" | PASS, accepted (OD-114) | `ErrorPagesTest`, `ErrorPagesWithoutDatabaseTest`; `public.json` | none |
+
+**No independent code-only Phase 6 work is known to remain.** Every PARTIAL or BLOCKED item waits on an owner decision, client content, counsel, Phase 5 inputs, another phase or staging. The next step is the owner's further decision (P6-8, register A-10).
+
+### 14.3 Evidence of this round
+
+Browser checks: `CHECKS="public enquiry admin" CHROMIUM_EXECUTABLE=/snap/bin/chromium TMPDIR=$HOME/snap/chromium/common/tmp bash docs/operations/scripts/browser/run-checks.sh docs/testing/evidence/phase7/2026-10-28-od123/checks 8767`, 2026-10-28 17:48 to 17:54 IST, headless Chromium 156.0.8078.47, `smartgro_testing` (`run.json`), exit code 0, no failures. `public.json`: 28 addresses at 360, 768, 1024 and 1440 px, 112 page loads, no overflow, no external or 3D requests, 56 axe runs plus 10 on the error pages, **0 violations**, 28 of 28 with one heading and their content without JavaScript; the topic page 200 at every width. `enquiry.json`: the open form and its confirmation, 0 violations, sent without JavaScript. `admin.json`: 32 back-office screen checks, 0 violations (the topic screens are covered by the tests above, not by these screen checks). Full suite: **1,096 passed, 0 failed, 0 skipped (4,086 assertions, exit code 0)** on the final code (register OD-123 e).
+
+### 14.4 Status
+
+Phase 6: **partially accepted (OD-114)**, unchanged. Not accepted beyond it. Nothing committed, pushed or deployed.

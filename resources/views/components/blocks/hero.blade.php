@@ -2,7 +2,8 @@
 
 <section class="relative isolate overflow-hidden">
     <div class="absolute inset-0 -z-10 bg-linear-to-b from-mist/70 to-paper" aria-hidden="true"></div>
-    <div class="container-page flex flex-col gap-6 py-12 sm:py-16 lg:py-20">
+    <div class="pointer-events-none absolute -top-32 -right-24 -z-10 size-[28rem] rounded-full bg-leaf-300/25 blur-3xl motion-safe:animate-drift" aria-hidden="true"></div>
+    <div class="container-page flex flex-col gap-6 py-12 sm:py-16 lg:py-20 [&>*]:motion-safe:animate-rise [&>*:nth-child(2)]:motion-safe:[animation-delay:100ms] [&>*:nth-child(3)]:motion-safe:[animation-delay:200ms] [&>*:nth-child(4)]:motion-safe:[animation-delay:300ms]">
         @if (filled($data['eyebrow']))
             <p class="text-eyebrow font-semibold text-leaf-700 uppercase">{{ $data['eyebrow'] }}</p>
         @endif

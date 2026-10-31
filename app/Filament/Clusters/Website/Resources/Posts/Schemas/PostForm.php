@@ -3,9 +3,11 @@
 namespace App\Filament\Clusters\Website\Resources\Posts\Schemas;
 
 use App\Models\Post;
+use App\Models\PostTopic;
 use App\Services\Content\BlockLibrary;
 use App\Services\Content\ContentRules;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -43,6 +45,14 @@ class PostForm
                             ->maxLength(300)
                             ->rows(2)
                             ->helperText('Shown under the title and in the list of articles. Plain text.')
+                            ->columnSpanFull(),
+                        Select::make('topic_ids')
+                            ->label('Topics')
+                            ->multiple()
+                            ->options(fn (): array => PostTopic::query()->orderBy('name')->pluck('name', 'id')->all())
+                            ->maxItems(Post::MAX_TOPICS)
+                            ->helperText('Up to '.Post::MAX_TOPICS.'. Once this version is published, they are shown with the article, and the article is listed on each topic\'s page. Topics are kept under Website → Insight topics.')
+                            ->visible(fn (): bool => PostTopic::isAvailable())
                             ->columnSpanFull(),
                     ]),
                 Section::make('Sections')

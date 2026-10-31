@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Page;
+use App\Models\Product;
 use App\Services\Content\PagePayload;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
@@ -90,6 +91,8 @@ it('refuses link targets that are not https or not a page', function (array $lin
     'protocol relative' => [['label' => 'Go', 'type' => 'url', 'page_id' => null, 'url' => '//evil.example'], 'url'],
     'typed path' => [['label' => 'Go', 'type' => 'url', 'page_id' => null, 'url' => '/about'], 'url'],
     'missing page' => [['label' => 'Go', 'type' => 'page', 'page_id' => 999999, 'url' => null], 'page_id'],
+    'missing workspace type' => [['label' => 'Go', 'type' => 'category', 'product_id' => 999999], 'product_id'],
+    'no workspace type chosen' => [['label' => 'Go', 'type' => 'category', 'product_id' => null], 'product_id'],
     'unknown kind' => [['label' => 'Go', 'type' => 'script', 'page_id' => null, 'url' => null], 'type'],
 ]);
 
@@ -104,7 +107,7 @@ it('allows the introduction only once, as the first section', function () {
 
 it('refuses page addresses that are malformed or used by another part of the website', function (string $slug) {
     expect(payloadErrors(payloadWithBlocks([['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Text</p>']]], $slug)))->toHaveKey('slug');
-})->with(['Upper-Case', 'trailing/', '../etc', 'with space', 'admin', 'admin/settings', 'design', 'workspaces/new', 'locations', 'up']);
+})->with(['Upper-Case', 'trailing/', '../etc', 'with space', 'admin', 'admin/settings', 'design', 'workspaces/new', 'find-a-workspace', 'locations', 'up']);
 
 it('accepts nested page addresses', function () {
     expect(payloadErrors(payloadWithBlocks([['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Text</p>']]], 'legal/privacy')))->toBe([]);
@@ -116,4 +119,34 @@ it('refuses an address another live page uses, but not the page\'s own', functio
 
     expect(payloadErrors($payload)['slug'])->toBe(['Another page already uses this address.'])
         ->and(payloadErrors($payload, page: $page))->toBe([]);
+});
+
+it('accepts cards whose links go to a page, a part of the website or another website, and refuses incomplete cards (OD-143)', function () {
+    $linkedPage = Page::factory()->create(['title' => 'Startups']);
+    $cards = fn (array $items): array => payloadWithBlocks([['type' => 'cards', 'data' => ['heading' => 'Solutions', 'intro' => null, 'items' => $items]]]);
+
+    expect(payloadErrors($cards([
+        ['title' => 'Startups', 'text' => 'Room to grow.', 'link' => ['label' => 'Read more', 'type' => 'page', 'page_id' => $linkedPage->id, 'section' => null, 'url' => null]],
+        ['title' => 'Book a visit', 'text' => null, 'link' => ['label' => 'Book a tour', 'type' => 'section', 'page_id' => null, 'section' => 'book_a_tour', 'url' => null]],
+        ['title' => 'Partner', 'text' => null, 'link' => ['label' => 'Visit', 'type' => 'url', 'page_id' => null, 'section' => null, 'url' => 'https://example.com']],
+    ])))->toBe([]);
+
+    expect(payloadErrors($cards([['title' => 'Only one', 'text' => null, 'link' => null]])))->toHaveKey('blocks.0.data.items')
+        ->and(payloadErrors($cards([['title' => '', 'text' => null, 'link' => null], ['title' => 'Second', 'text' => null, 'link' => null]])))->toHaveKey('blocks.0.data.items.0.title')
+        ->and(payloadErrors($cards([['title' => 'One', 'text' => null, 'link' => ['label' => 'Go', 'type' => 'section', 'page_id' => null, 'section' => 'admin', 'url' => null]], ['title' => 'Two', 'text' => null, 'link' => null]])))->toHaveKey('blocks.0.data.items.0.link.section')
+        ->and(payloadErrors($cards([['title' => 'One', 'text' => null, 'link' => ['label' => 'Go', 'type' => 'section', 'page_id' => null, 'section' => null, 'url' => null]], ['title' => 'Two', 'text' => null, 'link' => null]])))->toHaveKey('blocks.0.data.items.0.link.section');
+});
+
+it('accepts a link to a workspace type, keeping the chosen type (OD-150)', function () {
+    $product = Product::factory()->create();
+
+    $payload = app(PagePayload::class)->validate(Page::factory()->create(), payloadWithBlocks([['type' => 'hero', 'data' => ['eyebrow' => null, 'heading' => 'Desks', 'intro' => null,
+        'link' => ['label' => 'See locations', 'type' => 'category', 'page_id' => null, 'section' => null, 'product_id' => $product->id, 'url' => null]]]]), forSubmission: true);
+
+    expect($payload['blocks'][0]['data']['link'])->toMatchArray(['type' => 'category', 'product_id' => $product->id]);
+});
+
+it('accepts the sample layout for example content (OD-143)', function () {
+    expect(payloadErrors([...payloadWithBlocks([['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Example.</p>']]]), 'template' => 'sample']))->toBe([])
+        ->and(payloadErrors([...payloadWithBlocks([['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Example.</p>']]]), 'template' => 'draft-only']))->toHaveKey('template');
 });
