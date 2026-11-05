@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
  * filter offers only properties within that scope, and a crafted filter value cannot widen it. Each
  * enquiry shows its next open follow-up, and "Follow-up due" lists those due by the end of today in
  * India time, overdue ones included: the reminders of FR-CRM-3 inside the back office (no message is
- * sent, O-1).
+ * sent, O-1). An enquiry from a contact who has sent others is marked as a repeat (FR-CRM-1, BR-CRM-2).
  */
 class LeadsTable
 {
@@ -31,7 +31,7 @@ class LeadsTable
         $timezone = config('backoffice.timezone');
 
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['property', 'product', 'city', 'owner'])
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['property', 'product', 'city', 'owner'])->withCount('sameContactLeads')
                 ->withMin(['activities as next_follow_up_at' => fn (Builder $activities): Builder => $activities->where('type', LeadActivityType::FollowUp)->whereNull('completed_at')], 'due_at'))
             ->defaultSort('created_at', 'desc')
             ->columns([
@@ -42,7 +42,10 @@ class LeadsTable
                 TextColumn::make('submitted_name')
                     ->label('From')
                     ->searchable(['submitted_name', 'submitted_email', 'submitted_phone', 'submitted_company'])
-                    ->description(fn (Lead $record): ?string => $record->submitted_company),
+                    ->description(fn (Lead $record): ?string => collect([
+                        $record->submitted_company,
+                        $record->same_contact_leads_count > 1 ? 'Repeat contact: '.($record->same_contact_leads_count - 1).' other '.str('enquiry')->plural($record->same_contact_leads_count - 1) : null,
+                    ])->filter()->join(' · ') ?: null),
                 TextColumn::make('status')
                     ->badge()
                     ->formatStateUsing(fn (LeadStatus $state): string => $state->label())

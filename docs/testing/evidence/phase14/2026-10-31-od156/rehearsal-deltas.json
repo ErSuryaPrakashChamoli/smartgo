@@ -1,0 +1,307 @@
+{
+ "database": "smartgro_testing",
+ "replica": "OD-150 backup + 25 OD-150 migrations + the OD-153 migration = live smart_go at 15:29 (schema equal; data equal except security_settings timestamps and one guest session)",
+ "steps": [
+  {
+   "step": "5. reference data",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 58,
+     "rows_after": 64,
+     "schema_changed": false
+    },
+    "product_space_type": {
+     "rows_before": 0,
+     "rows_after": 10,
+     "schema_changed": false
+    },
+    "space_types": {
+     "rows_before": 0,
+     "rows_after": 6,
+     "schema_changed": false
+    }
+   },
+   "postcheck": {
+    "space_types": [
+     "private_cabin",
+     "desk_zone_dedicated",
+     "desk_zone_flexible",
+     "meeting_room",
+     "conference_training_room",
+     "office_suite"
+    ],
+    "links": [
+     "private_cabin -> private_office",
+     "private_cabin -> managed_office",
+     "desk_zone_dedicated -> dedicated_desk",
+     "desk_zone_flexible -> dedicated_desk",
+     "desk_zone_flexible -> hot_desk",
+     "meeting_room -> meeting_room",
+     "conference_training_room -> meeting_room",
+     "conference_training_room -> conference_room",
+     "office_suite -> private_office",
+     "office_suite -> managed_office"
+    ],
+    "a28": {
+     "1 flexible seating zone -> dedicated desks": "ENABLED",
+     "2 conference or training room -> meeting rooms": "ENABLED"
+    },
+    "permissions": {
+     "total": 34,
+     "of_the_14_added_by_access_sync_present": 0
+    },
+    "role_permission_counts": {
+     "finance": 5,
+     "marketing_manager": 22,
+     "operations_manager": 5,
+     "property_manager": 7,
+     "sales_crm_executive": 6,
+     "super_admin": 34
+    },
+    "audit_since": {
+     "2026-10-31 10:00:50": {
+      "inventory / created": 6
+     }
+    },
+    "permission_cache_entry": true
+   }
+  },
+  {
+   "step": "5a. A-28: remove both undecided combinations",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 64,
+     "rows_after": 66,
+     "schema_changed": false
+    },
+    "cache": {
+     "rows_before": 7,
+     "rows_after": 7,
+     "schema_changed": false
+    },
+    "product_space_type": {
+     "rows_before": 10,
+     "rows_after": 8,
+     "schema_changed": false
+    }
+   },
+   "postcheck": {
+    "space_types": [
+     "private_cabin",
+     "desk_zone_dedicated",
+     "desk_zone_flexible",
+     "meeting_room",
+     "conference_training_room",
+     "office_suite"
+    ],
+    "links": [
+     "private_cabin -> private_office",
+     "private_cabin -> managed_office",
+     "desk_zone_dedicated -> dedicated_desk",
+     "desk_zone_flexible -> hot_desk",
+     "meeting_room -> meeting_room",
+     "conference_training_room -> conference_room",
+     "office_suite -> private_office",
+     "office_suite -> managed_office"
+    ],
+    "a28": {
+     "1 flexible seating zone -> dedicated desks": "not enabled",
+     "2 conference or training room -> meeting rooms": "not enabled"
+    },
+    "permissions": {
+     "total": 34,
+     "of_the_14_added_by_access_sync_present": 0
+    },
+    "role_permission_counts": {
+     "finance": 5,
+     "marketing_manager": 22,
+     "operations_manager": 5,
+     "property_manager": 7,
+     "sales_crm_executive": 6,
+     "super_admin": 34
+    },
+    "audit_since": {
+     "2026-10-31 10:00:50": {
+      "inventory / created": 6,
+      "properties / space_types_changed": 2
+     }
+    },
+    "permission_cache_entry": true
+   }
+  },
+  {
+   "step": "5a. again (idempotency)",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {},
+   "postcheck": {
+    "space_types": [
+     "private_cabin",
+     "desk_zone_dedicated",
+     "desk_zone_flexible",
+     "meeting_room",
+     "conference_training_room",
+     "office_suite"
+    ],
+    "links": [
+     "private_cabin -> private_office",
+     "private_cabin -> managed_office",
+     "desk_zone_dedicated -> dedicated_desk",
+     "desk_zone_flexible -> hot_desk",
+     "meeting_room -> meeting_room",
+     "conference_training_room -> conference_room",
+     "office_suite -> private_office",
+     "office_suite -> managed_office"
+    ],
+    "a28": {
+     "1 flexible seating zone -> dedicated desks": "not enabled",
+     "2 conference or training room -> meeting rooms": "not enabled"
+    },
+    "permissions": {
+     "total": 34,
+     "of_the_14_added_by_access_sync_present": 0
+    },
+    "role_permission_counts": {
+     "finance": 5,
+     "marketing_manager": 22,
+     "operations_manager": 5,
+     "property_manager": 7,
+     "sales_crm_executive": 6,
+     "super_admin": 34
+    },
+    "audit_since": {
+     "2026-10-31 10:00:50": {
+      "inventory / created": 6,
+      "properties / space_types_changed": 2
+     }
+    },
+    "permission_cache_entry": true
+   }
+  },
+  {
+   "step": "6. access:sync (database cache store)",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {
+    "activity_log": {
+     "rows_before": 66,
+     "rows_after": 72,
+     "schema_changed": false
+    },
+    "cache": {
+     "rows_before": 7,
+     "rows_after": 6,
+     "schema_changed": false
+    },
+    "permissions": {
+     "rows_before": 34,
+     "rows_after": 48,
+     "schema_changed": false
+    },
+    "role_has_permissions": {
+     "rows_before": 79,
+     "rows_after": 125,
+     "schema_changed": false
+    }
+   },
+   "postcheck": {
+    "space_types": [
+     "private_cabin",
+     "desk_zone_dedicated",
+     "desk_zone_flexible",
+     "meeting_room",
+     "conference_training_room",
+     "office_suite"
+    ],
+    "links": [
+     "private_cabin -> private_office",
+     "private_cabin -> managed_office",
+     "desk_zone_dedicated -> dedicated_desk",
+     "desk_zone_flexible -> hot_desk",
+     "meeting_room -> meeting_room",
+     "conference_training_room -> conference_room",
+     "office_suite -> private_office",
+     "office_suite -> managed_office"
+    ],
+    "a28": {
+     "1 flexible seating zone -> dedicated desks": "not enabled",
+     "2 conference or training room -> meeting rooms": "not enabled"
+    },
+    "permissions": {
+     "total": 48,
+     "of_the_14_added_by_access_sync_present": 14
+    },
+    "role_permission_counts": {
+     "finance": 10,
+     "marketing_manager": 27,
+     "operations_manager": 14,
+     "property_manager": 15,
+     "sales_crm_executive": 11,
+     "super_admin": 48
+    },
+    "audit_since": {
+     "2026-10-31 10:00:50": {
+      "inventory / created": 6,
+      "properties / space_types_changed": 2,
+      "access / role_capabilities_changed": 6
+     }
+    },
+    "permission_cache_entry": false
+   }
+  },
+  {
+   "step": "5. reference data again, after 5a (must not re-add)",
+   "new_tables": [],
+   "dropped_tables": [],
+   "changed": {},
+   "postcheck": {
+    "space_types": [
+     "private_cabin",
+     "desk_zone_dedicated",
+     "desk_zone_flexible",
+     "meeting_room",
+     "conference_training_room",
+     "office_suite"
+    ],
+    "links": [
+     "private_cabin -> private_office",
+     "private_cabin -> managed_office",
+     "desk_zone_dedicated -> dedicated_desk",
+     "desk_zone_flexible -> hot_desk",
+     "meeting_room -> meeting_room",
+     "conference_training_room -> conference_room",
+     "office_suite -> private_office",
+     "office_suite -> managed_office"
+    ],
+    "a28": {
+     "1 flexible seating zone -> dedicated desks": "not enabled",
+     "2 conference or training room -> meeting rooms": "not enabled"
+    },
+    "permissions": {
+     "total": 48,
+     "of_the_14_added_by_access_sync_present": 14
+    },
+    "role_permission_counts": {
+     "finance": 10,
+     "marketing_manager": 27,
+     "operations_manager": 14,
+     "property_manager": 15,
+     "sales_crm_executive": 11,
+     "super_admin": 48
+    },
+    "audit_since": {
+     "2026-10-31 10:00:50": {
+      "inventory / created": 6,
+      "properties / space_types_changed": 2,
+      "access / role_capabilities_changed": 6
+     }
+    },
+    "permission_cache_entry": false
+   }
+  }
+ ]
+}

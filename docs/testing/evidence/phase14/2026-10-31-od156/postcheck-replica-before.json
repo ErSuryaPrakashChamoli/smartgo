@@ -1,0 +1,39 @@
+{
+    "database": {
+        "d": "smartgro_testing",
+        "ro": 1
+    },
+    "migrations": {
+        "total": 70,
+        "latest_batch": 12,
+        "activation_migration_ran": true
+    },
+    "product_space_type_table": true,
+    "space_types": [],
+    "links": [],
+    "a28": {
+        "1 flexible seating zone -> dedicated desks": "not enabled",
+        "2 conference or training room -> meeting rooms": "not enabled"
+    },
+    "spaces": 0,
+    "permissions": {
+        "total": 34,
+        "of_the_14_added_by_access_sync_present": 0
+    },
+    "role_permission_counts": {
+        "finance": 5,
+        "marketing_manager": 22,
+        "operations_manager": 5,
+        "property_manager": 7,
+        "sales_crm_executive": 6,
+        "super_admin": 34
+    },
+    "audit_since": {
+        "1970-01-01 00:00:00": {
+            "properties \/ created": 23,
+            "access \/ role_capabilities_changed": 6,
+            "access \/ created": 4
+        }
+    },
+    "permission_cache_entry": true
+}

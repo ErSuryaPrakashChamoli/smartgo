@@ -6,10 +6,12 @@ use App\Enums\Access\Capability;
 use App\Enums\Crm\LeadStatus;
 use Database\Factories\LeadFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * An enquiry (BR-CRM-1): who asked, about which property, workspace category or offering, and what
@@ -28,6 +30,29 @@ class Lead extends Model
     public const string SOURCE_CITY_WAITLIST = 'city_waitlist';
 
     public const string SOURCE_TOUR_FORM = 'tour_form';
+
+    /**
+     * Where enquiries come from today, as staff read them.
+     *
+     * @var array<string, string>
+     */
+    public const array SOURCES = [
+        self::SOURCE_WEBSITE_FORM => 'Website form',
+        self::SOURCE_CITY_WAITLIST => 'City waitlist',
+        self::SOURCE_TOUR_FORM => 'Website tour request',
+    ];
+
+    /**
+     * The visitor's details as typed on the form, and the contact columns they belong in (BR-CRM-2).
+     *
+     * @var array<string, array{label: string, submitted: string, contact: string}>
+     */
+    public const array CONTACT_FIELDS = [
+        'name' => ['label' => 'Name', 'submitted' => 'submitted_name', 'contact' => 'name'],
+        'email' => ['label' => 'Email', 'submitted' => 'submitted_email', 'contact' => 'email'],
+        'phone' => ['label' => 'Phone', 'submitted' => 'submitted_phone', 'contact' => 'phone_e164'],
+        'company' => ['label' => 'Company', 'submitted' => 'submitted_company', 'contact' => 'company_name'],
+    ];
 
     /**
      * @return array<string, string>
@@ -112,6 +137,62 @@ class Lead extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(LeadActivity::class)->latest('id');
+    }
+
+    /**
+     * What the assignment rules decided when the enquiry arrived (FR-CRM-2), if they ran.
+     *
+     * @return HasOne<LeadAssignment, $this>
+     */
+    public function assignment(): HasOne
+    {
+        return $this->hasOne(LeadAssignment::class);
+    }
+
+    /**
+     * Every enquiry from the same contact, this one included.
+     *
+     * @return HasMany<Lead, $this>
+     */
+    public function sameContactLeads(): HasMany
+    {
+        return $this->hasMany(self::class, 'contact_id', 'contact_id');
+    }
+
+    /**
+     * The details typed on this enquiry that its contact does not have, or has differently. A later
+     * enquiry never changes the contact by itself (BR-CRM-2); staff may copy these across
+     * (UpdateContactFromLead).
+     *
+     * @return array<string, array{label: string, submitted: string, contact: string|null}>
+     */
+    public function contactDifferences(): array
+    {
+        return collect(self::CONTACT_FIELDS)
+            ->map(fn (array $field): array => ['label' => $field['label'], 'submitted' => $this->{$field['submitted']}, 'contact' => $this->contact->{$field['contact']}])
+            ->filter(fn (array $difference): bool => filled($difference['submitted']) && $difference['submitted'] !== $difference['contact'])
+            ->all();
+    }
+
+    /**
+     * Other contacts that already have this enquiry's email or phone: the same visitor recorded more than
+     * once, for example under an email by one enquiry and under a phone number by another.
+     *
+     * @return Collection<int, Contact>
+     */
+    public function otherContactsWithSameDetails(): Collection
+    {
+        if (blank($this->submitted_email) && blank($this->submitted_phone)) {
+            return new Collection;
+        }
+
+        return Contact::query()
+            ->whereKeyNot($this->contact_id)
+            ->where(fn (Builder $query): Builder => $query
+                ->when(filled($this->submitted_email), fn (Builder $query): Builder => $query->orWhere('email', $this->submitted_email))
+                ->when(filled($this->submitted_phone), fn (Builder $query): Builder => $query->orWhere('phone_e164', $this->submitted_phone)))
+            ->orderBy('id')
+            ->get();
     }
 
     /**

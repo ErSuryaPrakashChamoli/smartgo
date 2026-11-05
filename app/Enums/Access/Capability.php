@@ -146,6 +146,9 @@ enum Capability: string
     /** Managing the lists used on enquiries, such as the reasons for closing one (BR-CRM-5); Super Admin only, like assignment rules and pipeline stages (SECURITY_MODEL §3.1). */
     case ManageLeadSettings = 'leads.settings.manage';
 
+    /** Creating, changing, switching on and off the rules that give new enquiries an owner (FR-CRM-2); Super Admin only (OD-36, SECURITY_MODEL §3.1). */
+    case ManageAssignmentRules = 'leads.assignment.manage';
+
     /** Seeing uploaded 3D models, their checks and anchors, and previewing them (§3.1 "3D model upload and anchors"). */
     case ViewTwinModels = 'twin_models.view';
 

@@ -5,7 +5,7 @@
  *
  * Boots the application, waits for the shared release instant, then publishes, submits, approves or
  * restores a revision, runs the scheduled publisher, takes a testimonial off the website, assigns an
- * enquiry, sends an enquiry or a tour request, or closes a property (Phases 5 and 8). After every read
+ * enquiry by hand or by the assignment rules, sends an enquiry or a tour request, or closes a property (Phases 5 and 8). After every read
  * of a revision, enquiry, contact, property or tour it pauses briefly, which widens the race window so a
  * missing lock would show up as a double publication, assignment, enquiry or tour. Prints one JSON line.
  */
@@ -19,6 +19,7 @@ use App\Actions\Content\RestoreRevision;
 use App\Actions\Content\SubmitRevision;
 use App\Actions\Content\UnpublishContent;
 use App\Actions\Crm\AssignLead;
+use App\Actions\Crm\AssignNewLead;
 use App\Actions\Crm\SubmitEnquiry;
 use App\Actions\Properties\SaveProperty;
 use App\Models\Lead;
@@ -45,7 +46,7 @@ if (! str_ends_with((string) DB::connection()->getDatabaseName(), '_testing')) {
 DB::connection()->getPdo();
 
 DB::listen(function (QueryExecuted $query): void {
-    if (preg_match('/^\s*select\b.*\bfrom `(revisions|leads|contacts|properties|tour_requests)`/is', $query->sql)) {
+    if (preg_match('/^\s*select\b.*\bfrom `(revisions|leads|contacts|properties|tour_requests|assignment_rules)`/is', $query->sql)) {
         usleep(150_000);
     }
 });
@@ -67,6 +68,9 @@ try {
     } elseif (getenv('PUBLISH_MODE') === 'assign_lead') {
         app(AssignLead::class)->handle(Lead::query()->findOrFail((int) getenv('PUBLISH_LEAD_ID')), User::query()->findOrFail((int) getenv('PUBLISH_USER_ID')), User::query()->findOrFail((int) getenv('PUBLISH_OWNER_ID')), expectedOwnerId: null);
         $outcome = 'assigned';
+    } elseif (getenv('PUBLISH_MODE') === 'auto_assign') {
+        $decision = app(AssignNewLead::class)->handle(Lead::query()->findOrFail((int) getenv('PUBLISH_LEAD_ID')));
+        $outcome = $decision?->outcome->value.':'.($decision?->assigned_user_id ?? '-');
     } elseif (getenv('PUBLISH_MODE') === 'submit_enquiry') {
         $outcome = app(SubmitEnquiry::class)->handle(json_decode((string) getenv('PUBLISH_ENQUIRY'), true, flags: JSON_THROW_ON_ERROR), '127.0.0.1')?->reference ?? 'spam';
     } elseif (getenv('PUBLISH_MODE') === 'request_tour') {

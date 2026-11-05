@@ -1,0 +1,35 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+browser.newContext: Target page, context or browser has been closed
+    at async file:///home/administrator/Documents/website/smartGrow/docs/operations/scripts/browser/verify-admin.mjs:501:21 {
+  log: []
+}
+
+Node.js v22.22.1
+{
+    "finished_at": "2026-10-31T21:00:55+00:00",
+    "git_head": "8325493",
+    "php": "8.5.4",
+    "node": "v22.22.1",
+    "database_check": {
+        "expected_database": "smartgro_testing",
+        "configured_database": "smartgro_testing",
+        "connected_database": "smartgro_testing",
+        "server": "administrator-Latitude-7490:3306",
+        "config_cached": false,
+        "app_env": "local"
+    },
+    "server": "http:\/\/127.0.0.1:8767",
+    "checks": "admin",
+    "interrupted_by": null,
+    "commands": {
+        "verify-public.mjs": "not run",
+        "verify-enquiry.mjs": "not run",
+        "verify-tour.mjs": "not run",
+        "verify-admin.mjs": 1,
+        "verify-twin-performance.mjs": "not run",
+        "verify-csp.mjs": "not run"
+    }
+}

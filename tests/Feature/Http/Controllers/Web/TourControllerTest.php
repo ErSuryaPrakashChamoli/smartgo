@@ -5,8 +5,10 @@ use App\Actions\Booking\ChangeTour;
 use App\Actions\Booking\ClaimTourSlot;
 use App\Enums\Access\StaffRole;
 use App\Enums\Booking\TourStatus;
+use App\Models\AssignmentRule;
 use App\Models\Contact;
 use App\Models\Lead;
+use App\Models\LeadAssignment;
 use App\Models\Page;
 use App\Models\Property;
 use App\Models\Revision;
@@ -125,6 +127,23 @@ it('attaches a further request from the same visitor to their open enquiry, and 
         ->and(Lead::query()->count())->toBe(1)
         ->and(TourRequest::query()->distinct()->pluck('lead_id')->all())->toBe([Lead::query()->sole()->id])
         ->and(Activity::query()->where('event', 'lead_tour_requested')->count())->toBe(1);
+});
+
+it('gives a new tour enquiry an owner by an active assignment rule, and not again when a later request joins it (FR-CRM-2)', function () {
+    app(SyncAccessControl::class)->handle();
+    $sales = User::factory()->withRole(StaffRole::SalesCrmExecutive)->create();
+    $sales->assignedProperties()->attach($this->property);
+    $other = User::factory()->withRole(StaffRole::SalesCrmExecutive)->create();
+    $other->assignedProperties()->attach($this->property);
+    AssignmentRule::factory()->active()->matching(['sources' => [Lead::SOURCE_TOUR_FORM]])->withAssignees([$sales, $other])->create();
+
+    post('/book-a-tour', tourRequestForTest($this->property))->assertRedirect('/book-a-tour/requested');
+    post('/book-a-tour', tourRequestForTest($this->property, ['starts_at' => '2027-03-02T05:00:00+00:00']));
+
+    expect(TourRequest::query()->count())->toBe(2)
+        ->and(Lead::query()->sole()->owner_user_id)->toBe($sales->id)
+        ->and(LeadAssignment::query()->count())->toBe(1)
+        ->and(Activity::query()->where('event', 'lead_auto_assigned')->count())->toBe(1);
 });
 
 it('refuses a time that was just taken, storing nothing and keeping what the visitor typed', function () {

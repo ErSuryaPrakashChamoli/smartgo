@@ -2,26 +2,31 @@
 
 // SmartGro browser checks: labelled fixtures on the TEST database, created through the real actions.
 //
-//   DB_DATABASE=smartgro_testing php docs/operations/scripts/browser/seed-test-fixtures.php <out-dir> [privacy]
+//   DB_DATABASE=smartgro_testing php docs/operations/scripts/browser/seed-test-fixtures.php <out-dir> [privacy|navigation-groups]
 //
 // Refuses to run unless the connection reaches `smartgro_testing`. Rebuilds that database (every test
 // run does the same), then adds content labelled "TEST FIXTURE": three listed properties with offerings,
 // one location's getting-here details and own numbers (fixture numbers, not real ones), SmartGro's main
 // contact details, menus, a contact page, an about page, a page with every text-only section, a page
 // with an image and a testimonial section, a legal page, an insight, a customer story, FAQs (general, A-70's, hot desks'), a
-// coming-soon city, a 410 rule, an insight topic, an enquiry, a draft page for the staff preview, one
+// coming-soon city, a 410 rule, an insight topic, an enquiry, a draft page for the staff preview, two
+// test-only assignment rules (switched off) with one decision, one
 // floor of A-70 with cabins, a pool and a hybrid zone, some allocated, and four test-only 3D models
 // (Tests\Support\Twin\TestGlb, uploaded through the real checks). The models' files are stored only when
 // LARAVEL_STORAGE_PATH points at a temporary folder (run-checks.sh sets it), never in the shared storage.
 // It writes the rendered 403, 419, 429, 500 and 503 pages into <out-dir> and prints the fixture IDs and
 // staff session cookies (for this database only) as JSON. With "privacy" it only adds a fixture privacy
-// notice to an existing fixture set, which opens the enquiry form on this database. Nothing here is real
-// SmartGro content.
+// notice to an existing fixture set, which opens the enquiry form on this database. With "navigation-groups"
+// it only publishes a main menu with two drop-downs, one with sub-groups, over an existing fixture set
+// (verify-csp.mjs; OD-158), since the fixture menu has none. Nothing here is real SmartGro content.
 use App\Actions\Access\SyncAccessControl;
 use App\Actions\Content\ApproveRevision;
 use App\Actions\Content\CreateDraft;
 use App\Actions\Content\PublishRevision;
 use App\Actions\Content\SubmitRevision;
+use App\Actions\Crm\AssignNewLead;
+use App\Actions\Crm\SaveAssignmentRule;
+use App\Actions\Crm\SetAssignmentRuleActive;
 use App\Actions\Inventory\AddSpaces;
 use App\Actions\Inventory\RecordAllocation;
 use App\Actions\Inventory\SaveFloor;
@@ -33,6 +38,7 @@ use App\Enums\Access\StaffRole;
 use App\Enums\Content\RedirectMatch;
 use App\Enums\Twin\CaptureType;
 use App\Http\Controllers\Backoffice\RevisionPreviewController;
+use App\Models\AssignmentRule;
 use App\Models\CaseStudy;
 use App\Models\City;
 use App\Models\Contact;
@@ -76,13 +82,13 @@ if (DB::selectOne('SELECT DATABASE() AS db')->db !== 'smartgro_testing' || $app-
 $out = $argv[1] ?? null;
 
 if ($out === null || ! is_dir($out)) {
-    fwrite(STDERR, "Usage: seed-test-fixtures.php <existing-out-dir> [privacy]\n");
+    fwrite(STDERR, "Usage: seed-test-fixtures.php <existing-out-dir> [privacy|navigation-groups]\n");
     exit(1);
 }
 
 $people = ['admin' => StaffRole::SuperAdmin, 'marketing' => StaffRole::MarketingManager, 'marketing2' => StaffRole::MarketingManager, 'operations' => StaffRole::OperationsManager, 'sales' => StaffRole::SalesCrmExecutive];
 
-if (in_array('privacy', $argv, true)) {
+if (in_array('privacy', $argv, true) || in_array('navigation-groups', $argv, true)) {
     $staff = array_map(fn (string $key): User => User::query()->where('email', "{$key}@fixture.test")->sole(), array_combine(array_keys($people), array_keys($people)));
 } else {
     Artisan::call('migrate:fresh', ['--force' => true]);
@@ -105,6 +111,21 @@ if (in_array('privacy', $argv, true)) {
     $publish(Page::query()->forceCreate(['status' => 'draft']), ['title' => 'TEST FIXTURE privacy notice', 'slug' => 'legal/privacy', 'template' => 'legal', 'legal_review_reference' => 'TEST-FIXTURE',
         'blocks' => [['type' => 'text', 'data' => ['heading' => null, 'body' => '<p>Test fixture for the browser checks. Not legal text.</p>']]]]);
     echo json_encode(['privacy' => 'published']), PHP_EOL;
+    exit(0);
+}
+
+if (in_array('navigation-groups', $argv, true)) {
+    $page = fn (string $label, string $slug): array => ['label' => $label, 'type' => 'page', 'page_id' => Page::query()->where('slug', $slug)->sole()->id];
+    $publish(NavigationMenu::query()->where('handle', 'main')->sole(), ['items' => [
+        ['label' => 'Spaces', 'type' => 'section', 'section' => 'workspace_types'],
+        ['label' => 'TEST FIXTURE group', 'type' => 'group', 'children' => [$page('TEST FIXTURE solutions link', 'solutions'), $page('TEST FIXTURE community link', 'community')]],
+        ['label' => 'TEST FIXTURE group with sub-groups', 'type' => 'group', 'children' => [
+            ['label' => 'TEST FIXTURE sub-group one', 'type' => 'group', 'children' => [$page('TEST FIXTURE about link', 'about')]],
+            ['label' => 'TEST FIXTURE sub-group two', 'type' => 'group', 'children' => [$page('TEST FIXTURE contact link', 'contact')]],
+        ]],
+        ['label' => 'Resources', 'type' => 'section', 'section' => 'insights'],
+    ]]);
+    echo json_encode(['navigation' => 'published with groups']), PHP_EOL;
     exit(0);
 }
 
@@ -300,6 +321,24 @@ foreach ([403, 419, 429, 500, 503] as $status) {
     file_put_contents("{$out}/error-{$status}.html", view("errors::{$status}")->render());
 }
 
+// Two test-only assignment rules (P9-B browser checks): never real rules, test database only, both left
+// switched off. The first is switched on just long enough to give one test-only enquiry an owner, so its
+// page has a decision to list, then off again so its form can be opened; the second has nobody, so
+// switching it on is refused. Enquiries the kit sends later are not assigned by either.
+$assignmentRule = app(SaveAssignmentRule::class)->handle($staff['admin'], new AssignmentRule, [
+    'name' => 'TEST FIXTURE rule (not a real rule)', 'priority' => 1, 'strategy' => 'round_robin',
+    'criteria' => ['property_ids' => [$a70->id], 'team_sizes' => ['2-5']], 'assignee_ids' => [$staff['admin']->id],
+]);
+app(SetAssignmentRuleActive::class)->handle($staff['admin'], $assignmentRule, true);
+$assignedLead = Lead::factory()->forProperty($a70)
+    ->for(Contact::factory()->state(['name' => 'TEST FIXTURE assigned visitor', 'email' => 'assigned@fixture.test', 'phone_e164' => null, 'company_name' => null]), 'contact')
+    ->create(['submitted_name' => 'TEST FIXTURE assigned visitor', 'submitted_email' => 'assigned@fixture.test', 'team_size' => '2-5', 'message' => 'TEST FIXTURE enquiry for the assignment rule checks.']);
+app(AssignNewLead::class)->handle($assignedLead);
+app(SetAssignmentRuleActive::class)->handle($staff['admin'], $assignmentRule, false);
+$emptyRule = app(SaveAssignmentRule::class)->handle($staff['admin'], new AssignmentRule, [
+    'name' => 'TEST FIXTURE rule without people', 'priority' => 2, 'strategy' => 'fixed_user', 'criteria' => [], 'assignee_ids' => [],
+]);
+
 // Staff sessions for this database only: one session row per person, as signing in leaves it.
 $sessions = [];
 foreach (['admin', 'marketing', 'operations', 'sales'] as $key) {
@@ -313,7 +352,7 @@ foreach (['admin', 'marketing', 'operations', 'sales'] as $key) {
 }
 
 echo json_encode([
-    'ids' => ['a70' => $a70->id, 'a71' => $a71->id, 'h105' => $h105->id, 'a70_profile' => $a70->profile->id, 'noida' => $a70->city_id, 'contact_page' => $contactPage->id, 'about_page' => $about->id, 'lead' => $lead->id, 'space_cabin' => $fixtureCabins->first()->id, 'space_zone' => $fixtureZone->id, 'tour' => $tour->id, ...array_map(fn ($model): int => $model->id, $twinModels)],
+    'ids' => ['a70' => $a70->id, 'a71' => $a71->id, 'h105' => $h105->id, 'a70_profile' => $a70->profile->id, 'noida' => $a70->city_id, 'contact_page' => $contactPage->id, 'about_page' => $about->id, 'lead' => $lead->id, 'assignment_rule' => $assignmentRule->id, 'assignment_rule_empty' => $emptyRule->id, 'assigned_lead' => $assignedLead->id, 'space_cabin' => $fixtureCabins->first()->id, 'space_zone' => $fixtureZone->id, 'tour' => $tour->id, ...array_map(fn ($model): int => $model->id, $twinModels)],
     'twin_checks' => $twinChecks,
     'upload_files' => ['at_limits' => "{$out}/upload-at-limits.glb", 'oversized' => "{$out}/upload-oversized.glb"],
     'preview' => (string) parse_url(RevisionPreviewController::url($previewDraft), PHP_URL_PATH).'?'.parse_url(RevisionPreviewController::url($previewDraft), PHP_URL_QUERY),

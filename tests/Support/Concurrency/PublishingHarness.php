@@ -20,6 +20,7 @@ final class PublishingHarness
      * @var list<string>
      */
     private const TABLES = [
+        'lead_assignments', 'assignment_rule_user', 'assignment_rules',
         'tour_requests', 'tour_availability_rules', 'property_closures',
         'activity_log', 'redirects', 'revisions', 'pages', 'testimonials', 'case_studies', 'seo_metadata',
         'lead_activities', 'leads', 'contacts', 'customer_segments', 'property_user',
@@ -39,7 +40,7 @@ final class PublishingHarness
     /**
      * Run one worker per attempt, all released at the same instant.
      *
-     * @param  list<array{mode: 'manual'|'scheduled'|'takedown'|'submit'|'approve'|'restore'|'assign_lead'|'submit_enquiry'|'request_tour'|'schedule_tour'|'close_property', revision_id?: int, user_id?: int, testimonial_id?: int, consent_withdrawn?: bool, start_delay_ms?: int, lead_id?: int, owner_id?: int, property_id?: int, enquiry?: array<string, mixed>}>  $attempts  request_tour and schedule_tour send `enquiry` as the tour data
+     * @param  list<array{mode: 'manual'|'scheduled'|'takedown'|'submit'|'approve'|'restore'|'assign_lead'|'auto_assign'|'submit_enquiry'|'request_tour'|'schedule_tour'|'close_property', revision_id?: int, user_id?: int, testimonial_id?: int, consent_withdrawn?: bool, start_delay_ms?: int, lead_id?: int, owner_id?: int, property_id?: int, enquiry?: array<string, mixed>}>  $attempts  request_tour and schedule_tour send `enquiry` as the tour data
      * @return array<string, array{outcome: string, message: string|null}> worker name => result
      */
     public static function runWorkers(array $attempts): array

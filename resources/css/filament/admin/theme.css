@@ -13,4 +13,25 @@
     .fi-ta-cell .fi-ta-placeholder {
         @apply text-gray-600 dark:text-gray-400;
     }
+
+    /*
+     * The "Remove" button on each value chosen in a multi-select was 20 × 20 px; WCAG 2.2 AA asks for 24 × 24
+     * (2.5.8; D2, found by axe, 2026-11-01). Six pixels around the 12 px icon make 24, and Filament's negative
+     * margins keep it inside the badge.
+     */
+    .fi-badge .fi-badge-delete-btn {
+        @apply p-1.5;
+    }
+}
+
+/*
+ * A solid primary button lightens from shade 600 to 500 on hover, and white text on Smart Green (shade 500)
+ * gives 4.35:1, below WCAG AA's 4.5:1 (D3, found by axe, 2026-11-01). It darkens to shade 700 instead (6.86:1).
+ * Filament sets the hover shade in its utilities layer, so this goes there, with a more specific selector.
+ */
+@layer utilities {
+    .fi-btn.fi-color-primary:not(.fi-outlined) {
+        --hover-bg: var(--color-700);
+        --dark-hover-bg: var(--color-700);
+    }
 }

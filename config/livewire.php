@@ -30,4 +30,21 @@ return [
         'cleanup' => true,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CSP Safe
+    |--------------------------------------------------------------------------
+    |
+    | Off, as in Livewire's defaults. With it on, Livewire ships the build of
+    | Alpine that never evaluates expressions as strings, and the back office's
+    | Content Security Policy drops 'unsafe-eval' (SetSecurityHeaders). Filament
+    | 5 does not work with that build: on the test server 26 of 27 back-office
+    | screens threw "CSP Parser Error" and menus, filters, saving and uploads
+    | stopped (P14-16, OD-158). Keep it off; it exists only to repeat that check
+    | on a test server after a Filament upgrade.
+    |
+    */
+
+    'csp_safe' => (bool) env('LIVEWIRE_CSP_SAFE', false),
+
 ];

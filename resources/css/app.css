@@ -208,6 +208,26 @@
         left: auto;
         right: 1.25rem;
     }
+
+    /*
+     * Each drop-down is anchored to its own button. The names are set here rather than in style attributes,
+     * which a Content Security Policy would have to allow (P14-16, OD-158). The main menu holds at most seven
+     * items (NavigationMenu::STRUCTURES), so seven pairs cover every drop-down it can have.
+     */
+    [popovertarget='nav-group-0'] { anchor-name: --nav-group-0; }
+    #nav-group-0 { position-anchor: --nav-group-0; }
+    [popovertarget='nav-group-1'] { anchor-name: --nav-group-1; }
+    #nav-group-1 { position-anchor: --nav-group-1; }
+    [popovertarget='nav-group-2'] { anchor-name: --nav-group-2; }
+    #nav-group-2 { position-anchor: --nav-group-2; }
+    [popovertarget='nav-group-3'] { anchor-name: --nav-group-3; }
+    #nav-group-3 { position-anchor: --nav-group-3; }
+    [popovertarget='nav-group-4'] { anchor-name: --nav-group-4; }
+    #nav-group-4 { position-anchor: --nav-group-4; }
+    [popovertarget='nav-group-5'] { anchor-name: --nav-group-5; }
+    #nav-group-5 { position-anchor: --nav-group-5; }
+    [popovertarget='nav-group-6'] { anchor-name: --nav-group-6; }
+    #nav-group-6 { position-anchor: --nav-group-6; }
 }
 
 /*

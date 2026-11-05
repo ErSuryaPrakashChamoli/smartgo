@@ -1,0 +1,1455 @@
+{
+ "startedAt": "2026-10-31T21:01:58.486Z",
+ "base": "http://127.0.0.1:8767",
+ "chromium": "156.0.8078.47",
+ "threeDFiles": [
+  "assets/twin-viewer-6QofvT0G.js",
+  "assets/three.core-CTmbohv1.js",
+  "assets/DRACOLoader-BbahKxeV.js",
+  "assets/draco_decoder-C32yEggz.wasm",
+  "assets/draco_wasm_wrapper-DxJM36Ib.js",
+  "assets/draco_decoder-fzg4nYZr.js",
+  "assets/draco_wasm_wrapper-fZCQGLGb.js",
+  "assets/draco_decoder-Z1_iN-Ht.wasm",
+  "assets/meshopt_decoder.module-DXTYc6wn.js",
+  "assets/KTX2Loader-kSiNBP1d.js",
+  "assets/basis_transcoder-VXdx5NbI.wasm",
+  "assets/basis_transcoder-o4Hde_L7.js"
+ ],
+ "screens": [
+  {
+   "who": "marketing",
+   "path": "/admin/properties/website-profiles/1/edit",
+   "label": "property profile editor (\"Getting here\" section)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/website-profiles/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/properties/website-profiles/1/edit",
+   "label": "property profile editor (\"Getting here\" section)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/website-profiles/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/1/edit",
+   "label": "page editor with the contact details section",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/pages/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/1/edit",
+   "label": "page editor with the contact details section",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/pages/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/create",
+   "label": "new page editor",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/pages/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages/create",
+   "label": "new page editor",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/pages/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/cities/1/edit",
+   "label": "city editor (reserved address)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/cities/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/cities/1/edit",
+   "label": "city editor (reserved address)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/cities/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin",
+   "label": "dashboard",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin",
+   "label": "dashboard",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/closing-reasons",
+   "label": "back-office 403 page",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/closing-reasons",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/closing-reasons",
+   "label": "back-office 403 page",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/closing-reasons",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries/999999",
+   "label": "back-office 404 page",
+   "width": 360,
+   "status": 404,
+   "finalPath": "/admin/sales/enquiries/999999",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries/999999",
+   "label": "back-office 404 page",
+   "width": 1440,
+   "status": 404,
+   "finalPath": "/admin/sales/enquiries/999999",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/twin-models",
+   "label": "3D models list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/twin-models",
+   "label": "3D models list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/twin-models/create",
+   "label": "3D model upload form",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/twin-models/create",
+   "label": "3D model upload form",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/website/twin-models/1",
+   "label": "3D model page, viewer not opened",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/website/twin-models/1",
+   "label": "3D model page, viewer not opened",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/twin-models/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries",
+   "label": "enquiries list (empty values)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/sales/enquiries",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries",
+   "label": "enquiries list (empty values)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/sales/enquiries",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries/1",
+   "label": "enquiry view (empty values)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/sales/enquiries/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/enquiries/1",
+   "label": "enquiry view (empty values)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/sales/enquiries/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/settings/users",
+   "label": "staff list (empty values)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/settings/users",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/settings/users",
+   "label": "staff list (empty values)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/settings/users",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/settings/activities",
+   "label": "activity log (empty values)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/settings/activities",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/settings/activities",
+   "label": "activity log (empty values)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/settings/activities",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages",
+   "label": "pages list (empty values)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/pages",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/pages",
+   "label": "pages list (empty values)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/pages",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/content/revisions/21/preview?expires=1793482313&signature=6c82398fddddc8ce03520b1ad96924d4e9ab62dfc67a165625b963e11f451383",
+   "label": "staff preview of a draft page",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/content/revisions/21/preview",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/content/revisions/21/preview?expires=1793482313&signature=6c82398fddddc8ce03520b1ad96924d4e9ab62dfc67a165625b963e11f451383",
+   "label": "staff preview of a draft page",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/content/revisions/21/preview",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/properties/1/edit",
+   "label": "property page with floors and spaces",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/properties/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/properties/1/edit",
+   "label": "property page with floors and spaces",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/properties/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/spaces",
+   "label": "spaces list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/spaces",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/spaces",
+   "label": "spaces list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/spaces",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/spaces/5",
+   "label": "hybrid zone page with seats and allocations",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/spaces/5",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/spaces/5",
+   "label": "hybrid zone page with seats and allocations",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/spaces/5",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/spaces/1/edit",
+   "label": "space editor",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/spaces/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/spaces/1/edit",
+   "label": "space editor",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/spaces/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/properties/spaces/1",
+   "label": "space page seen by marketing (no allocations)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/spaces/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/properties/spaces/1",
+   "label": "space page seen by marketing (no allocations)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/spaces/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/space-types",
+   "label": "space types list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/space-types",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/space-types",
+   "label": "space types list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/space-types",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/properties/price-plans",
+   "label": "price plans list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/price-plans",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/properties/price-plans",
+   "label": "price plans list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/price-plans",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/properties/price-plans/create",
+   "label": "price plan form",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/price-plans/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/properties/price-plans/create",
+   "label": "price plan form",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/price-plans/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/properties/offers",
+   "label": "offers list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/offers",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/properties/offers",
+   "label": "offers list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/offers",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/properties/offers/create",
+   "label": "offer form",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/offers/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/properties/offers/create",
+   "label": "offer form",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/offers/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/inventory-imports",
+   "label": "inventory imports list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/inventory-imports",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/inventory-imports",
+   "label": "inventory imports list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/inventory-imports",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/inventory-imports/upload",
+   "label": "inventory workbook upload form",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/properties/inventory-imports/upload",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/properties/inventory-imports/upload",
+   "label": "inventory workbook upload form",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/properties/inventory-imports/upload",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/tours",
+   "label": "tours list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/sales/tours",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/tours",
+   "label": "tours list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/sales/tours",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/tours/1",
+   "label": "tour page (request waiting for confirmation)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/sales/tours/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/tours/1",
+   "label": "tour page (request waiting for confirmation)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/sales/tours/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/sales/tours",
+   "label": "tours list refused to marketing",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/tours",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/sales/tours",
+   "label": "tours list refused to marketing",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/tours",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/search-titles",
+   "label": "search titles and descriptions report",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/search-titles",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/search-titles",
+   "label": "search titles and descriptions report",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/search-titles",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/website/search-titles",
+   "label": "search titles report refused to sales",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/website/search-titles",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/website/search-titles",
+   "label": "search titles report refused to sales",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/website/search-titles",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/missing-pages",
+   "label": "missing pages (404 monitor)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/website/missing-pages",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/website/missing-pages",
+   "label": "missing pages (404 monitor)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/website/missing-pages",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/assignment-rules",
+   "label": "assignment rules list",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/sales/assignment-rules",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/assignment-rules",
+   "label": "assignment rules list",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/sales/assignment-rules",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/assignment-rules/create",
+   "label": "new assignment rule form",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/sales/assignment-rules/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/assignment-rules/create",
+   "label": "new assignment rule form",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/sales/assignment-rules/create",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/assignment-rules",
+   "label": "assignment rules refused to sales",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/assignment-rules",
+   "label": "assignment rules refused to sales",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/assignment-rules/1",
+   "label": "assignment rule page (settings and decision)",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/sales/assignment-rules/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/assignment-rules/1",
+   "label": "assignment rule page (settings and decision)",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/sales/assignment-rules/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/assignment-rules/1/edit",
+   "label": "assignment rule edit form",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/sales/assignment-rules/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": [
+    {
+     "id": "target-size",
+     "impact": "serious",
+     "nodes": 2,
+     "targets": [
+      "button[aria-label=\"Remove SmartGro A-70\"]",
+      "button[aria-label=\"Remove 2 to 5 people\"]"
+     ]
+    }
+   ]
+  },
+  {
+   "who": "admin",
+   "path": "/admin/sales/assignment-rules/1/edit",
+   "label": "assignment rule edit form",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/sales/assignment-rules/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": [
+    {
+     "id": "target-size",
+     "impact": "serious",
+     "nodes": 2,
+     "targets": [
+      "button[aria-label=\"Remove SmartGro A-70\"]",
+      "button[aria-label=\"Remove 2 to 5 people\"]"
+     ]
+    }
+   ]
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/assignment-rules/1",
+   "label": "assignment rule page refused to sales",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/assignment-rules/1",
+   "label": "assignment rule page refused to sales",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules/1",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/assignment-rules/1/edit",
+   "label": "assignment rule edit form refused to sales",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/sales/assignment-rules/1/edit",
+   "label": "assignment rule edit form refused to sales",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/sales/assignment-rules",
+   "label": "assignment rules refused to operations",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/sales/assignment-rules",
+   "label": "assignment rules refused to operations",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/sales/assignment-rules/1/edit",
+   "label": "assignment rule edit form refused to marketing",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/sales/assignment-rules/1/edit",
+   "label": "assignment rule edit form refused to marketing",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/sales/assignment-rules/1/edit",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/reports/enquiries-and-tours",
+   "label": "enquiry and tour totals",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/reports/enquiries-and-tours",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "operations",
+   "path": "/admin/reports/enquiries-and-tours",
+   "label": "enquiry and tour totals",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/reports/enquiries-and-tours",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/reports/content-freshness",
+   "label": "content freshness",
+   "width": 360,
+   "status": 200,
+   "finalPath": "/admin/reports/content-freshness",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "marketing",
+   "path": "/admin/reports/content-freshness",
+   "label": "content freshness",
+   "width": 1440,
+   "status": 200,
+   "finalPath": "/admin/reports/content-freshness",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/reports/content-freshness",
+   "label": "content freshness refused to sales",
+   "width": 360,
+   "status": 403,
+   "finalPath": "/admin/reports/content-freshness",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  },
+  {
+   "who": "sales",
+   "path": "/admin/reports/content-freshness",
+   "label": "content freshness refused to sales",
+   "width": 1440,
+   "status": 403,
+   "finalPath": "/admin/reports/content-freshness",
+   "overflow": 0,
+   "external": [],
+   "threeD": [],
+   "axe": []
+  }
+ ],
+ "viewer": [
+  {
+   "compression": "meshopt",
+   "width": 360,
+   "reducedMotion": "reduce",
+   "beforeAsking": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownAfterMs": 804,
+   "loaded": [
+    {
+     "path": "/admin/twin-models/1/file",
+     "bytes": 2216
+    },
+    {
+     "path": "/build/assets/three.core-CTmbohv1.js",
+     "bytes": 215755
+    },
+    {
+     "path": "/build/assets/meshopt_decoder.module-DXTYc6wn.js",
+     "bytes": 26486
+    },
+    {
+     "path": "/build/assets/twin-viewer-6QofvT0G.js",
+     "bytes": 422946
+    }
+   ],
+   "whole": {
+    "green": 432,
+    "amber": 785,
+    "drawn": 9495,
+    "total": 44240
+   },
+   "cameraStatus": "Camera position 1 shown.",
+   "camera": {
+    "green": 2326,
+    "amber": 3135,
+    "drawn": 8922,
+    "total": 44240
+   },
+   "canvas": {
+    "role": "img",
+    "label": "3D model of SmartGro A-70",
+    "width": 280,
+    "height": 158,
+    "tabIndex": 0
+   },
+   "axe": [],
+   "consoleErrors": [],
+   "overflow": 0
+  },
+  {
+   "compression": "meshopt",
+   "width": 1440,
+   "reducedMotion": "no-preference",
+   "beforeAsking": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownAfterMs": 545,
+   "loaded": [
+    {
+     "path": "/admin/twin-models/1/file",
+     "bytes": 2216
+    },
+    {
+     "path": "/build/assets/three.core-CTmbohv1.js",
+     "bytes": 215755
+    },
+    {
+     "path": "/build/assets/meshopt_decoder.module-DXTYc6wn.js",
+     "bytes": 26486
+    },
+    {
+     "path": "/build/assets/twin-viewer-6QofvT0G.js",
+     "bytes": 422946
+    }
+   ],
+   "whole": {
+    "green": 5570,
+    "amber": 10284,
+    "drawn": 120802,
+    "total": 571536
+   },
+   "cameraStatus": "Camera position 1 shown.",
+   "camera": {
+    "green": 30039,
+    "amber": 41052,
+    "drawn": 178890,
+    "total": 571536
+   },
+   "canvas": {
+    "role": "img",
+    "label": "3D model of SmartGro A-70",
+    "width": 1008,
+    "height": 567,
+    "tabIndex": 0
+   },
+   "axe": [],
+   "consoleErrors": [],
+   "overflow": 0
+  },
+  {
+   "compression": "draco",
+   "width": 1440,
+   "reducedMotion": "no-preference",
+   "beforeAsking": 0,
+   "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+   "shownAfterMs": 465,
+   "loaded": [
+    {
+     "path": "/admin/twin-models/2/file",
+     "bytes": 2004
+    },
+    {
+     "path": "/build/assets/three.core-CTmbohv1.js",
+     "bytes": 215755
+    },
+    {
+     "path": "/build/assets/DRACOLoader-BbahKxeV.js",
+     "bytes": 7353
+    },
+    {
+     "path": "/build/assets/draco_wasm_wrapper-fZCQGLGb.js",
+     "bytes": 58456
+    },
+    {
+     "path": "/build/assets/draco_decoder-Z1_iN-Ht.wasm",
+     "bytes": 192420
+    },
+    {
+     "path": "/build/assets/twin-viewer-6QofvT0G.js",
+     "bytes": 422946
+    }
+   ],
+   "whole": {
+    "green": 5570,
+    "amber": 10284,
+    "drawn": 120802,
+    "total": 571536
+   },
+   "cameraStatus": "Camera position 1 shown.",
+   "camera": {
+    "green": 30039,
+    "amber": 41052,
+    "drawn": 178890,
+    "total": 571536
+   },
+   "canvas": {
+    "role": "img",
+    "label": "3D model of SmartGro A-70",
+    "width": 1008,
+    "height": 567,
+    "tabIndex": 0
+   },
+   "axe": [],
+   "consoleErrors": [],
+   "overflow": 0
+  }
+ ],
+ "failures": [
+  "assignment rule edit form @360: axe target-size at button[aria-label=\"Remove SmartGro A-70\"], button[aria-label=\"Remove 2 to 5 people\"]",
+  "assignment rule edit form @1440: axe target-size at button[aria-label=\"Remove SmartGro A-70\"], button[aria-label=\"Remove 2 to 5 people\"]",
+  "assignment rule form with its error: axe color-contrast at span[x-show=\"! isProcessing\"]; target-size at button[aria-label=\"Remove SmartGro A-70\"], button[aria-label=\"Remove 2 to 5 people\"]"
+ ],
+ "loadingStates": {
+  "whileLoading": {
+   "status": "Loading the viewer and the model…",
+   "progressVisible": true,
+   "progressValue": 156428,
+   "stopVisible": true
+  },
+  "loadingAxe": [],
+  "afterStop": {
+   "status": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below.",
+   "stageHidden": true,
+   "progressHidden": true,
+   "focusOnShow": true,
+   "downloadAborted": true
+  },
+  "refused": {
+   "status": "The model could not be downloaded. Check the connection and try again; the anchors are listed below.",
+   "showEnabled": true
+  }
+ },
+ "stopping": {
+  "stopWhileDecoding": {
+   "fileArrived": true,
+   "status": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below.",
+   "stageHidden": true,
+   "canvases": 0
+  },
+  "showStopRounds": {
+   "rounds": 20,
+   "stoppedCleanly": 20,
+   "contextLimitWarnings": 0,
+   "afterwards": {
+    "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+    "stageHidden": false,
+    "canvases": 1
+   }
+  },
+  "decoderFailures": {
+   "module": {
+    "status": "The model could not be shown. Try again; the anchors are listed below.",
+    "stageHidden": true,
+    "canvases": 0,
+    "showEnabled": true
+   },
+   "WebAssembly": {
+    "status": "The model could not be shown. Try again; the anchors are listed below.",
+    "stageHidden": true,
+    "canvases": 0,
+    "showEnabled": true
+   }
+  },
+  "withoutWebgl": {
+   "status": "This browser or device cannot show 3D. The anchors are listed below.",
+   "stageHidden": true,
+   "canvases": 0
+  }
+ },
+ "changes": [
+  {
+   "width": 360,
+   "heading": "What version 2 changes",
+   "listsTitle": true,
+   "listsSection": true,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "width": 1440,
+   "heading": "What version 2 changes",
+   "listsTitle": true,
+   "listsSection": true,
+   "overflow": 0,
+   "axe": []
+  }
+ ],
+ "setup": {
+  "emptyState": true,
+  "floorsListed": true,
+  "modeSuggested": "exclusive",
+  "spacesNotice": "Floor added | Floor added | Floor added | Spaces added",
+  "spacesListed": true,
+  "setupMs": 8181,
+  "TF71-AG-1": "Allocation recorded",
+  "TF71-AG-2": "Allocation recorded | Not saved The space is already allocated for some of these dates: TF71-AG-1 (whole space, 31 Oct 2026 to open-ended).",
+  "allocationListed": true,
+  "statusRefusal": "Not saved The space is already allocated for some of these dates: TF71-AG-1 (whole space, 31 Oct 2026 to open-ended). | Not saved This space has allocations now or later; move, end or cancel them first (BR-INV-4): TF71-AG-1 (whole space, 31 Oct 2026 to open-ended).",
+  "availability": "Occupied; nothing frees up within the horizon",
+  "axe": [],
+  "overflow": 0,
+  "fortiethFound": true
+ },
+ "uploads": [
+  {
+   "kind": "at the limits",
+   "expect": "stored",
+   "outcome": "stored",
+   "uploadedMs": 2948,
+   "finalPath": "/admin/website/twin-models/5",
+   "checksShown": true
+  },
+  {
+   "kind": "4 bytes over 15 MB",
+   "expect": "refused",
+   "outcome": "refused",
+   "uploadedMs": 3465,
+   "finalPath": "/admin/website/twin-models/create",
+   "reason": "The file is 15.1 MB; the limit is 15.0 MB per model. Ask the 3D-modelling supplier to compress it further or reduce the detail."
+  }
+ ],
+ "assignmentRules": {
+  "page": {
+   "name": true,
+   "criteria": true,
+   "person": true,
+   "off": true,
+   "decision": true,
+   "editShown": true
+  },
+  "pageAxe": [],
+  "editOpens": true,
+  "validation": "The name field is required.",
+  "editAxe": [
+   {
+    "id": "color-contrast",
+    "nodes": 1,
+    "targets": [
+     "span[x-show=\"! isProcessing\"]"
+    ]
+   },
+   {
+    "id": "target-size",
+    "nodes": 2,
+    "targets": [
+     "button[aria-label=\"Remove SmartGro A-70\"]",
+     "button[aria-label=\"Remove 2 to 5 people\"]"
+    ]
+   }
+  ],
+  "keyboardReachesSwitchOn": true,
+  "confirmationAxe": [],
+  "switchedOn": "Rule switched on",
+  "editHiddenWhileOn": true,
+  "formWhileOnOpens": "/admin/sales/assignment-rules/1",
+  "switchedOff": "Switch the rule off to change it | Rule switched off",
+  "refused": "Not switched on Choose the one person this rule gives enquiries to before switching it on.",
+  "consoleErrors": []
+ },
+ "finishedAt": "2026-10-31T21:06:28.130Z"
+}

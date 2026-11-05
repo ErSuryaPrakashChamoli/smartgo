@@ -21,8 +21,12 @@
 #      Then "tour" runs verify-tour.mjs (OD-129): a visitor requests a tour of A-70 (fixture tour hours),
 #      the Super Admin confirms it, the visitor sees it confirmed, downloads its calendar file, moves it and cancels it.
 #      CHECKS limits the scripts run, for example CHECKS=performance (default: "public enquiry tour admin performance").
+#      CHECKS=csp runs verify-csp.mjs on its own (P14-16): the server then sends the Content Security Policy as
+#      report-only (CSP_MODE=report), a fixture privacy notice and a main menu with drop-downs are published
+#      first, and the script lists and classifies what the policy would block. It cannot be combined with the
+#      other checks, which count the browser's reports as console errors; for them the policy is off.
 #   5. With LIGHTHOUSE=1, also runs lighthouse-local.sh (diagnostics only; not a performance verdict).
-#   6. Writes public.json, admin.json, performance.json, run.json (and lighthouse.json) into <evidence-dir>. Session
+#   6. Writes public.json, admin.json, performance.json, csp.json, run.json (and lighthouse.json) into <evidence-dir>. Session
 #      cookies, the temporary storage and the browser's own temporary files stay in a temporary folder
 #      ($TMPDIR/smartgro-checks.*) that is deleted afterwards.
 #
@@ -100,7 +104,7 @@ write_run_json() {
         ], JSON_PRETTY_PRINT), PHP_EOL;
     ' "$target" "$base" "$(echo $checks)" "$interrupted" \
         "verify-public.mjs=$(check_status public)" "verify-enquiry.mjs=$(check_status enquiry)" "verify-tour.mjs=$(check_status tour)" \
-        "verify-admin.mjs=$(check_status admin)" "verify-twin-performance.mjs=$(check_status performance)" > "$evidence/run.json"
+        "verify-admin.mjs=$(check_status admin)" "verify-twin-performance.mjs=$(check_status performance)" "verify-csp.mjs=$(check_status csp)" > "$evidence/run.json"
 }
 
 # Stops a script still running (SIGTERM: Playwright closes its browser; killed after 20 seconds) and any
@@ -166,7 +170,15 @@ publish_privacy() {
 
 mkdir -p "$work/storage/framework/views" "$work/storage/framework/cache" "$work/storage/framework/sessions" "$work/storage/logs" "$work/storage/app" "$work/errors" "$work/tmp"
 export APP_CONFIG_CACHE="$work/no-config-cache.php" APP_ROUTES_CACHE="$work/no-routes-cache.php" APP_EVENTS_CACHE="$work/no-events-cache.php"
+# Filament's own list of screens (bootstrap/cache/filament, written by `optimize`) would hide screens added
+# since it was built, so the kit's server discovers them from the working tree (config/filament.php).
+export FILAMENT_CACHE_PATH="$work/no-filament-cache"
 export DB_DATABASE=smartgro_testing APP_URL="$base"
+if [[ "$checks" == *" csp "* && "$checks" != " csp " ]]; then
+    echo "Run CHECKS=csp on its own: the other checks count the policy's reports as console errors." >&2
+    exit 1
+fi
+if [[ "$checks" == " csp " ]]; then export CSP_MODE=report; else export CSP_MODE=off; fi
 
 target="$(EXPECT_DB=smartgro_testing php "$scripts/check-target.php")" || { echo "$target"; echo "Refusing: the test database is not the one reached." >&2; exit 1; }
 
@@ -212,6 +224,19 @@ fi
 if [[ "$checks" == *" performance "* ]]; then
     run_check performance "$scripts/verify-twin-performance.mjs" "$base" "$evidence" "$work/fixtures.json"
 fi
+# The forms open only once a privacy notice is published, and the fixture menu has no drop-down, so both are
+# added first (test database only), so the policy is checked against them too.
+if [[ "$checks" == *" csp "* ]]; then
+    if publish_privacy \
+        && LARAVEL_STORAGE_PATH="$work/storage" php -d variables_order=EGPCS "$scripts/seed-test-fixtures.php" "$work/errors" navigation-groups > "$work/navigation.json" \
+        && php -r 'exit(is_array(json_decode((string) file_get_contents($argv[1]), true)) ? 0 : 1);' "$work/navigation.json"; then
+        run_check csp "$scripts/verify-csp.mjs" "$base" "$evidence" "$work/fixtures.json"
+    else
+        echo "Preparing the CSP check failed:" >&2
+        cat "$work/navigation.json" >&2 2>/dev/null
+        exit_codes[csp]=1
+    fi
+fi
 
 # Optional, diagnostics only (LIGHTHOUSE=1): local Lighthouse figures are not a performance verdict.
 if [[ "${LIGHTHOUSE:-0}" == "1" ]]; then
@@ -220,7 +245,7 @@ fi
 
 write_run_json
 cat "$evidence/run.json"
-for name in public enquiry tour admin performance; do
+for name in public enquiry tour admin performance csp; do
     status="$(check_status "$name")"
     [[ "$status" == "not run" || "$status" == 0 ]] || exit "$status"
 done

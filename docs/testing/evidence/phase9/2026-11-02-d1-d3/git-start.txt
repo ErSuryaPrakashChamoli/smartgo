@@ -1,0 +1,3 @@
+8325493
+ resources/css/filament/admin/theme.css | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)

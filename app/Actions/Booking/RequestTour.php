@@ -2,6 +2,7 @@
 
 namespace App\Actions\Booking;
 
+use App\Actions\Crm\AssignNewLead;
 use App\Enums\Booking\TourStatus;
 use App\Enums\Crm\LeadStatus;
 use App\Models\Lead;
@@ -28,6 +29,7 @@ use Throwable;
  * what the visitor typed. A repeat of the same request within ten minutes returns the first one.
  * Requests for one property queue on its row, locked first (ADR-0004); the contact locks keep the same
  * visitor's requests apart, so the other reads are plain (locking reads would deadlock two visitors).
+ * A new enquiry is then given an owner by the assignment rules, or left unassigned (AssignNewLead).
  */
 class RequestTour
 {
@@ -41,6 +43,7 @@ class RequestTour
         private TourSlots $slots,
         private VisitorIntake $intake,
         private ClaimTourSlot $claimTourSlot,
+        private AssignNewLead $assignNewLead,
     ) {}
 
     /**
@@ -152,6 +155,7 @@ class RequestTour
             'consent_snapshot' => $consent,
         ]);
         $lead->save();
+        DB::afterCommit(fn () => $this->assignNewLead->handleSafely($lead));
 
         return $lead;
     }

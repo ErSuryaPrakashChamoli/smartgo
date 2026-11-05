@@ -2,7 +2,8 @@
     3D preview of one model (FR-3D-3, BR-3D-6). Nothing 3D is fetched until the button is pressed: then the
     model's download and the viewer module (a separate Vite entry) start together, so they overlap, with the
     download's progress shown and a way to stop it. The heading and notice are part of the page, set by how
-    the model was made (BR-3D-1, BR-3D-2), so they cannot be hidden.
+    the model was made (BR-3D-1, BR-3D-2), so they cannot be hidden. The script carries the response's
+    Content Security Policy nonce when there is one (P14-16, OD-158), as Filament's own scripts do.
 --}}
 <div wire:ignore data-twin-viewer data-module="{{ $moduleUrl }}" data-module-imports="{{ implode(' ', $moduleImports) }}" data-decoder-files="{{ implode(' ', $decoderFiles) }}" data-model="{{ $modelUrl }}" data-label="{{ $heading }}" data-decoders="{{ implode(' ', $decoders) }}" class="flex flex-col gap-3">
     <p class="text-base font-semibold text-gray-950">{{ $heading }}</p>
@@ -29,7 +30,7 @@
         @endforeach
     </div>
 
-    <script type="module">
+    <script type="module" @if (filled($cspNonce = \Illuminate\Support\Facades\Vite::cspNonce())) nonce="{{ $cspNonce }}" @endif>
         for (const root of document.querySelectorAll('[data-twin-viewer]:not([data-twin-ready])')) {
             root.dataset.twinReady = '';
             const status = root.querySelector('[data-twin-status]');

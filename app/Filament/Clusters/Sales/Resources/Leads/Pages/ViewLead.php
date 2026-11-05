@@ -5,6 +5,7 @@ namespace App\Filament\Clusters\Sales\Resources\Leads\Pages;
 use App\Actions\Crm\AssignLead;
 use App\Actions\Crm\ChangeLeadStatus;
 use App\Actions\Crm\RecordLeadActivity;
+use App\Actions\Crm\UpdateContactFromLead;
 use App\Enums\Crm\LeadActivityType;
 use App\Enums\Crm\LeadStatus;
 use App\Filament\Clusters\Sales\Resources\Leads\LeadResource;
@@ -13,6 +14,7 @@ use App\Models\LeadCloseReason;
 use App\Models\User;
 use Closure;
 use Filament\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -32,6 +34,7 @@ use Illuminate\Validation\ValidationException;
  * and "Email" open the user's own phone or mail program in one tap and record the contact on the
  * enquiry at the same moment (FR-CRM-3, UJ-10), on the channels the visitor agreed to ("by email or
  * phone"). WhatsApp is not offered: the visitor did not agree to it and the channel is not decided (D-10).
+ * "Update the contact" copies details typed here to the contact, only with staff confirmation (BR-CRM-2).
  *
  * @property Lead $record
  */
@@ -78,6 +81,21 @@ class ViewLead extends ViewRecord
                     $owner = filled($data['owner'] ?? null) ? User::query()->find($data['owner']) : null;
                     app(AssignLead::class)->handle($this->record, $user, $owner, filled($data['expected_owner'] ?? null) ? (int) $data['expected_owner'] : null);
                 }, 'Owner updated')),
+            Action::make('updateContact')
+                ->label('Update the contact')
+                ->icon(Heroicon::OutlinedIdentification)
+                ->color('gray')
+                ->visible(fn (): bool => $this->record->contactDifferences() !== [] && Gate::allows('update', $this->record))
+                ->modalDescription('Copies the chosen details typed on this enquiry to the contact record. Other enquiries keep what was typed on them.')
+                ->schema([
+                    CheckboxList::make('fields')
+                        ->label('Details to copy')
+                        ->options(fn (): array => collect($this->record->contactDifferences())
+                            ->map(fn (array $difference): string => $difference['label'].': '.$difference['submitted'].' (the contact has '.($difference['contact'] ?? 'none').')')
+                            ->all())
+                        ->required(),
+                ])
+                ->action(fn (array $data) => $this->runStep(fn (User $user) => app(UpdateContactFromLead::class)->handle($this->record, $user, array_values($data['fields'] ?? [])), 'Contact updated')),
             Action::make('changeStatus')
                 ->label('Change status')
                 ->icon(Heroicon::OutlinedArrowPath)

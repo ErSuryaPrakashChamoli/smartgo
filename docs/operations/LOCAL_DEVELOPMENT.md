@@ -123,28 +123,50 @@ cd public && php -d variables_order=EGPCS -S 127.0.0.1:8766 ../vendor/laravel/fr
 
 Then open http://127.0.0.1:8766 (website) and http://127.0.0.1:8766/admin (back office). `-d variables_order=EGPCS` is required: without it PHP's built-in server does not pass `LARAVEL_STORAGE_PATH` to the application, and uploads would land in the shared `storage/` folder. The `/tmp/smartgro-nocache/...` files never exist; pointing the cache variables at them makes Laravel ignore the cached files without deleting them. Sample content for layout checks goes on `smartgro_testing` only, which every test run wipes.
 
-### Sample content switch (OD-149, OD-152)
+### Local servers and databases (verified 2026-10-31, OD-158)
 
-`.env` sets `BACKOFFICE_SAMPLE_CONTENT=false`, so the owner's own server (`smart_go`) and the preview refuse to submit or publish sample pages and sample articles; drafts can still be saved. Everything that runs from this working tree reads `.env`, so the places that are meant for sample content set their own value:
+| What | Database | Address | How it runs | Writes |
+|---|---|---|---|---|
+| The owner's server | `smart_go` | `php artisan serve`: port 8000, or 8001 when another project already holds 8000 (on 2026-10-31 from 16:53: 8000, with the HRMS project on 8001) | started by the owner, outside this guide, on the cached configuration; `APP_ENV=local`, not a production deployment | none without the owner's explicit authorisation (`SPACES_ACTIVATION_PROCEDURE.md`, OD-150 procedure). Do not send requests to it: each one writes a session row. |
+| Local site | `smartgro_site` | http://127.0.0.1:8080 | user service `smartgro-site.service` (below) | a local copy, safe to change |
+| Preview | `smartgro_preview` | http://127.0.0.1:8766 | started by hand when needed (above) | kept read-only by owner instruction |
+| Browser-check server | `smartgro_testing` | the port given to `run-checks.sh` (8767 by default) | started and stopped by `run-checks.sh` | rebuilt on every run |
+| Tests | `smartgro_testing` | none | `phpunit.xml` forces the database; `tests/TestCase.php` refuses any other | rebuilt on every test |
+| Production or staging | none | none | not deployed (D-14) | none |
+
+### Local site on port 8080 (`smartgro_site`, OD-147)
+
+- **How it runs.** The user service `~/.config/systemd/user/smartgro-site.service`, enabled (`WantedBy=default.target`), `Restart=on-failure`. It runs PHP's built-in server with four workers from `public/`.
+- **Environment.** The unit file sets `DB_DATABASE=smartgro_site`, `APP_URL`, `LARAVEL_STORAGE_PATH=/home/administrator/smartgro-site/storage`, the three cache-bypass paths and `PHP_CLI_SERVER_WORKERS=4`. Everything else, `BACKOFFICE_SAMPLE_CONTENT` included, comes from the project's `.env`. The unit does not set the sample switch, so the site runs with `.env`'s `false`.
+- **When it starts.** The service starts with your user session. Lingering is off (`loginctl show-user administrator -p Linger` prints `Linger=no`). On 2026-10-31 it started at 15:47:40, 19 seconds after the machine booted, as soon as the session began. Without a login, for example a headless boot, it would not start.
+- **Checking it.**
+  - `systemctl --user status smartgro-site.service` shows whether it runs.
+  - `tr '\0' '\n' < /proc/$(systemctl --user show -p MainPID --value smartgro-site.service)/environ | grep -E '^(DB_DATABASE|BACKOFFICE_SAMPLE_CONTENT|CSP_MODE)='` shows the variables it was given. It should print `DB_DATABASE=smartgro_site` only.
+  - Effective values: run `php artisan tinker` with the same variables and read `config('backoffice.sample_content')`, which should be `false`. Its server log is `/home/administrator/smartgro-site/server.log`.
+- **Stopping and starting.** `systemctl --user stop smartgro-site.service`, then `systemctl --user start smartgro-site.service`. Editing the unit needs `systemctl --user daemon-reload` first. Do not start a second server on 8080 beside it.
+
+### Sample content switch (OD-149, OD-152, OD-158)
+
+`.env` sets `BACKOFFICE_SAMPLE_CONTENT=false`. The owner's server (`smart_go`), the preview and the local site therefore refuse to submit or publish sample pages and sample articles. Drafts can still be saved, and sample content already published stays visible. Two places set their own value:
 
 - **Tests:** `phpunit.xml` sets it to `true`.
 - **The sample seed script:** `docs/operations/scripts/browser/seed-sample-content.php` allows it itself, and only on the demo, site or test database.
-- **The demo and site servers** need it in their environment. Start each in its own systemd user scope, from `public/`, so it outlives the terminal or session that started it (a `setsid nohup` start did not survive a session restart on 2026-10-31, OD-153):
 
-  ```bash
-  systemd-run --user --scope --unit=smartgro-8768 --quiet -- setsid env DB_DATABASE=smartgro_demo APP_URL=http://127.0.0.1:8768 \
-    LARAVEL_STORAGE_PATH=/home/administrator/smartgro-demo/storage APP_CONFIG_CACHE=/nonexist/c.php APP_ROUTES_CACHE=/nonexist/r.php \
-    APP_EVENTS_CACHE=/nonexist/e.php PHP_CLI_SERVER_WORKERS=4 BACKOFFICE_SAMPLE_CONTENT=true \
-    php -d variables_order=EGPCS -S 127.0.0.1:8768 ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php >> /home/administrator/smartgro-demo/server.log 2>&1 < /dev/null &
-  ```
-
-  The site is the same, with `smartgro_site`, port 8080, unit `smartgro-8080` and `/home/administrator/smartgro-site/`. Stop one with `systemctl --user stop smartgro-8768.scope` (or `smartgro-8080.scope`). Neither survives a machine restart; start them again afterwards.
+No server sets it to `true` any more: the site's service does not (above), and the demo is retired (below). Turning sample submission back on for the site would need the owner's decision. It would mean adding `Environment=BACKOFFICE_SAMPLE_CONTENT=true` to its unit.
 
 The browser kit publishes no sample content and needs nothing.
+
+### Retired: the demo on port 8768 (OD-158)
+
+The demo is no longer part of the local setup. On 2026-10-31 nothing listened on 8768, and no process was using `smartgro_demo`. It was always started by hand: lastly in a transient `smartgro-8768` scope, which a restart ends. It has no service, timer, cron or autostart entry. Its start command was removed from this guide.
+
+Its database `smartgro_demo`, its folder `/home/administrator/smartgro-demo/` and the earlier evidence that mentions it are kept: nothing was deleted. `seed-sample-content.php` still accepts `smartgro_demo` as a target. Do not start a server on 8768 again unless the owner asks for one.
 
 ### Cached configuration and routes
 
 Do not run `php artisan optimize`, `config:cache` or `route:cache` in this working copy while developing or testing. On 2026-10-26 a run outside the development session cached the configuration and routes. The cached configuration pointed the tests at `smart_go` (the `*_testing` guard in `tests/TestCase.php` refused them, so nothing was harmed), and the cached routes hid route changes from the tests. If `bootstrap/cache/config.php`, `routes-v7.php` or `events.php` exists, run `php artisan config:clear`, `php artisan route:clear` and `php artisan event:clear` before testing. Caching belongs to deployment (`DEPLOYMENT_RUNBOOK.md`).
+
+**Filament's component cache (found 2026-10-31, OD-160).** `optimize` also writes `bootstrap/cache/filament/panels/admin.php`, Filament's list of back-office pages and resources. Web requests use that list, while the console and tests do not. The copy made at 15:25 on 2026-10-31 by a run outside the development session does not include the **Assignment rules** screens, so they return 404 on any server that reads it: the owner's server and the site. The browser kit sets `FILAMENT_CACHE_PATH` to a folder that does not exist (`config/filament.php`; the default is unchanged), so its server reads the working tree. Rebuilding that cache (`php artisan filament:cache-components`) or removing it is the owner's choice: it changes what the owner's server shows.
 
 ### Laravel Boost (MCP) and the local database
 
@@ -180,7 +202,7 @@ bash docs/operations/scripts/browser/run-checks.sh docs/testing/evidence/phase7/
 LIGHTHOUSE=1 bash docs/operations/scripts/browser/run-checks.sh docs/testing/evidence/phase7/<date> 8767   # adds local Lighthouse diagnostics
 ```
 
-The script stops unless `smartgro_testing` is the database reached with uncached configuration, rebuilds that database with labelled "TEST FIXTURE" content (including four test-only 3D models, stored only in the temporary storage folder), starts its own server on the given port with a temporary storage folder and cache paths (a server you already run is not affected), and writes `public.json`, `admin.json`, `performance.json` and `run.json` into the evidence folder. It takes about ten minutes, mostly loading the 15 MB model on the throttled network. `CHECKS=performance` (or any of `public enquiry tour admin performance`) runs only those parts; running each part on its own gives each its own `run.json` and exit code. `run.json` gives each script's exit code, "not run" for a script not selected, "interrupted" for the one running when the run was stopped (Ctrl-C, SIGTERM or SIGHUP, named in `interrupted_by`) and "not reached" for one that never started. A stopped run ends the running script, its browser and the server, and deletes the temporary folder (`$TMPDIR/smartgro-checks.*`). A failed or stopped run also keeps the server and application logs in `<evidence>/logs`. Only `kill -9` skips this (OD-135). `TWIN_PERF_MODELS` and `TWIN_PERF_PROFILES` narrow the performance script. If Playwright's own browser is missing (`~/.cache/ms-playwright`), point the scripts at an installed Chromium instead of downloading one: `CHROMIUM_EXECUTABLE=/snap/bin/chromium TMPDIR=$HOME/snap/chromium/common/tmp` (a snap browser reaches only folders in its own area, hence `TMPDIR`); results then name that browser's version, and `verify-admin.mjs` copies its upload test files into `TMPDIR` because that browser cannot read the run's own temporary folder. Never edit `run-checks.sh` while it runs: bash reads the script as it goes, and an edit makes the running copy execute shifted lines (it happened once, 2026-10-28). Do not run it while the test suite runs: both rebuild `smartgro_testing`. Local Lighthouse figures are diagnostics only; the performance targets are measured on staging.
+The script stops unless `smartgro_testing` is the database reached with uncached configuration, rebuilds that database with labelled "TEST FIXTURE" content (including four test-only 3D models, stored only in the temporary storage folder), starts its own server on the given port with a temporary storage folder and cache paths (a server you already run is not affected), and writes `public.json`, `admin.json`, `performance.json` and `run.json` into the evidence folder. It takes about ten minutes, mostly loading the 15 MB model on the throttled network. `CHECKS=performance` (or any of `public enquiry tour admin performance`) runs only those parts; running each part on its own gives each its own `run.json` and exit code. `run.json` gives each script's exit code, "not run" for a script not selected, "interrupted" for the one running when the run was stopped (Ctrl-C, SIGTERM or SIGHUP, named in `interrupted_by`) and "not reached" for one that never started. A stopped run ends the running script, its browser and the server, and deletes the temporary folder (`$TMPDIR/smartgro-checks.*`). A failed or stopped run also keeps the server and application logs in `<evidence>/logs`. Only `kill -9` skips this (OD-135). `TWIN_PERF_MODELS` and `TWIN_PERF_PROFILES` narrow the performance script. `CHECKS=csp` (P14-16) runs `verify-csp.mjs` on its own: the kit's server then sends the Content Security Policy as report-only (`CSP_MODE=report`, `config/security.php`), and `csp.json` lists every violation the browser reports on the public pages and a cross-section of back-office screens, grouped by directive. It cannot be combined with the other checks, which count those reports as console errors; for them the kit sets `CSP_MODE=off`. The policy is off unless `CSP_MODE=report` is set, so the owner's server, the demo and the site send no policy. If Playwright's own browser is missing (`~/.cache/ms-playwright`), point the scripts at an installed Chromium instead of downloading one: `CHROMIUM_EXECUTABLE=/snap/bin/chromium TMPDIR=$HOME/snap/chromium/common/tmp` (a snap browser reaches only folders in its own area, hence `TMPDIR`); results then name that browser's version, and `verify-admin.mjs` copies its upload test files into `TMPDIR` because that browser cannot read the run's own temporary folder. Never edit `run-checks.sh` while it runs: bash reads the script as it goes, and an edit makes the running copy execute shifted lines (it happened once, 2026-10-28). Do not run it while the test suite runs: both rebuild `smartgro_testing`. Local Lighthouse figures are diagnostics only; the performance targets are measured on staging.
 
 ---
 

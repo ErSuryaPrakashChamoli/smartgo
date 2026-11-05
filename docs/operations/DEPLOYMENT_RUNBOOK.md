@@ -85,7 +85,7 @@ To be added as integrations are chosen: payment gateway keys and webhook secret,
 7. `php artisan optimize` and `php artisan filament:optimize`
 8. `php artisan horizon:terminate` (or `queue:restart`) so workers load the new code
 9. `php artisan up`
-10. Smoke test: `/up` health route, home, one location page, back-office login, a test enquiry in staging.
+10. Smoke test: `/up` health route, home, one location page, back-office login, a test enquiry in staging. As the Super Admin, also open any back-office screen the release adds, for example Sales → Assignment rules (P9-B). Step 7 refreshes Filament's list of screens (`bootstrap/cache/filament`) and the route cache, and until it has run, a new screen answers 404. The browser kit cannot show this: its server reads the working tree, not the target's caches (`FILAMENT_CACHE_PATH`, OD-160, OD-162).
 11. Purge the CDN for changed static paths, if not fingerprinted.
 
 **First deployment only:** create the first back-office account with `php artisan make:filament-user` (this command does not apply the staff password policy, so choose a password of at least 12 characters with mixed case and a number), then `php artisan access:assign-role <email> super_admin`. The Super Admin then signs in, sets up two-step login and creates the other staff accounts in Settings → Staff users.

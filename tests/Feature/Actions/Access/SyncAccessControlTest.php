@@ -36,6 +36,7 @@ it('creates the six staff roles and the capability catalogue', function () {
         'inventory.import.approve',
         'inventory.manage',
         'leads.assign',
+        'leads.assignment.manage',
         'leads.export',
         'leads.manage',
         'leads.reports.view',
@@ -76,7 +77,7 @@ it('grants the Super Admin exactly the capabilities listed for it', function () 
     app(SyncAccessControl::class)->handle();
 
     expect(Role::findByName(StaffRole::SuperAdmin->value)->permissions->pluck('name')->sort()->values()->all())
-        ->toBe(['allocations.manage', 'allocations.view', 'audit_log.view', 'backoffice.access', 'brand.approve', 'brand.manage', 'brand.publish', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'inventory.import', 'inventory.import.approve', 'inventory.manage', 'leads.assign', 'leads.export', 'leads.manage', 'leads.reports.view', 'leads.settings.manage', 'leads.view', 'media.manage', 'offers.manage', 'pricing.approve', 'pricing.manage', 'pricing.view', 'products.manage', 'profiles.edit', 'profiles.view', 'properties.manage', 'properties.view', 'redirects.approve', 'redirects.manage', 'redirects.publish', 'settings.contact.approve', 'settings.contact.manage', 'settings.contact.publish', 'settings.legal.manage', 'settings.legal.verify', 'settings.legal.view', 'settings.tracking.approve', 'settings.tracking.manage', 'settings.tracking.publish', 'testimonials.publish', 'tours.manage', 'tours.view', 'twin_models.manage', 'twin_models.view', 'users.manage']);
+        ->toBe(['allocations.manage', 'allocations.view', 'audit_log.view', 'backoffice.access', 'brand.approve', 'brand.manage', 'brand.publish', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'inventory.import', 'inventory.import.approve', 'inventory.manage', 'leads.assign', 'leads.assignment.manage', 'leads.export', 'leads.manage', 'leads.reports.view', 'leads.settings.manage', 'leads.view', 'media.manage', 'offers.manage', 'pricing.approve', 'pricing.manage', 'pricing.view', 'products.manage', 'profiles.edit', 'profiles.view', 'properties.manage', 'properties.view', 'redirects.approve', 'redirects.manage', 'redirects.publish', 'settings.contact.approve', 'settings.contact.manage', 'settings.contact.publish', 'settings.legal.manage', 'settings.legal.verify', 'settings.legal.view', 'settings.tracking.approve', 'settings.tracking.manage', 'settings.tracking.publish', 'testimonials.publish', 'tours.manage', 'tours.view', 'twin_models.manage', 'twin_models.view', 'users.manage']);
 });
 
 it('lets the Marketing Manager view, edit, approve and publish website content, property profiles included, and upload 3D models', function () {
@@ -141,7 +142,7 @@ it('audits the capabilities it grants to each role', function () {
         ->and($entry->properties->all())->toEqual([
             'role' => 'super_admin',
             'old' => [],
-            'new' => ['allocations.manage', 'allocations.view', 'audit_log.view', 'backoffice.access', 'brand.approve', 'brand.manage', 'brand.publish', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'inventory.import', 'inventory.import.approve', 'inventory.manage', 'leads.assign', 'leads.export', 'leads.manage', 'leads.reports.view', 'leads.settings.manage', 'leads.view', 'media.manage', 'offers.manage', 'pricing.approve', 'pricing.manage', 'pricing.view', 'products.manage', 'profiles.edit', 'profiles.view', 'properties.manage', 'properties.view', 'redirects.approve', 'redirects.manage', 'redirects.publish', 'settings.contact.approve', 'settings.contact.manage', 'settings.contact.publish', 'settings.legal.manage', 'settings.legal.verify', 'settings.legal.view', 'settings.tracking.approve', 'settings.tracking.manage', 'settings.tracking.publish', 'testimonials.publish', 'tours.manage', 'tours.view', 'twin_models.manage', 'twin_models.view', 'users.manage'],
+            'new' => ['allocations.manage', 'allocations.view', 'audit_log.view', 'backoffice.access', 'brand.approve', 'brand.manage', 'brand.publish', 'content.approve', 'content.edit', 'content.publish', 'content.view', 'inventory.import', 'inventory.import.approve', 'inventory.manage', 'leads.assign', 'leads.assignment.manage', 'leads.export', 'leads.manage', 'leads.reports.view', 'leads.settings.manage', 'leads.view', 'media.manage', 'offers.manage', 'pricing.approve', 'pricing.manage', 'pricing.view', 'products.manage', 'profiles.edit', 'profiles.view', 'properties.manage', 'properties.view', 'redirects.approve', 'redirects.manage', 'redirects.publish', 'settings.contact.approve', 'settings.contact.manage', 'settings.contact.publish', 'settings.legal.manage', 'settings.legal.verify', 'settings.legal.view', 'settings.tracking.approve', 'settings.tracking.manage', 'settings.tracking.publish', 'testimonials.publish', 'tours.manage', 'tours.view', 'twin_models.manage', 'twin_models.view', 'users.manage'],
         ]);
 });
 

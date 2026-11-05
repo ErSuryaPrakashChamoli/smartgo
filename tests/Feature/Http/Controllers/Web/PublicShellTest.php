@@ -98,6 +98,27 @@ it('shows the published menus in the header, the phone menu, the action bar and 
         ->and($html)->toContain('<html lang="en-IN" class="scroll-pt-24 scroll-pb-24 lg:scroll-pb-0">');
 });
 
+it('anchors each drop-down to its own button with no inline style, so no policy has to allow one (P14-16, OD-158)', function () {
+    publishShellMenu('main', [
+        shellPageLink('About', $this->about),
+        ['label' => 'Company', 'type' => 'group', 'page_id' => null, 'url' => null, 'children' => [shellPageLink('Careers', $this->careers)]],
+        ['label' => 'Help', 'type' => 'group', 'page_id' => null, 'url' => null, 'children' => [
+            ['label' => 'Policies', 'type' => 'group', 'page_id' => null, 'url' => null, 'children' => [shellPageLink('Privacy', $this->privacy)]],
+            ['label' => 'People', 'type' => 'group', 'page_id' => null, 'url' => null, 'children' => [shellPageLink('Careers', $this->careers)]],
+        ]],
+    ]);
+
+    $header = str(shellHtml('/welcome'))->after('<header')->before('</header>')->toString();
+
+    expect($header)
+        ->toMatch('#<button type="button" popovertarget="nav-group-1" class="[^"]*"\s*>\s*Company#')
+        ->toMatch('#<div id="nav-group-1" popover class="nav-group-panel #')
+        ->toMatch('#<button type="button" popovertarget="nav-group-2" class="[^"]*"\s*>\s*Help#')
+        ->toMatch('#<div id="nav-group-2" popover class="nav-group-panel #')
+        ->toContain('aria-controls="nav-group-2-1"')
+        ->not->toContain('style=');
+});
+
 it('marks the link to the current page', function () {
     publishShellMenu('main', [shellPageLink('About', $this->about)]);
 

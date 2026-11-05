@@ -18,7 +18,6 @@
                         <button
                             type="button"
                             popovertarget="nav-group-{{ $loop->index }}"
-                            style="anchor-name: --nav-group-{{ $loop->index }}"
                             class="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-ink hover:bg-mist hover:text-forest xl:px-4 xl:text-[0.9375rem] [&:has(+:popover-open)]:bg-mist [&:has(+:popover-open)_svg]:rotate-180"
                         >
                             {{ $item['label'] }}
@@ -31,7 +30,6 @@
                         <div
                             id="nav-group-{{ $loop->index }}"
                             popover
-                            style="position-anchor: --nav-group-{{ $loop->index }}"
                             @class([
                                 'nav-group-panel inset-auto top-22 left-1/2 m-0 max-h-[calc(100dvh-7rem)] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-3xl border-0 bg-surface p-3 shadow-raised ring-1 ring-line xl:top-25',
                                 'w-[min(46rem,calc(100vw-2.5rem))]' => $subGroups !== [] && $hasDescriptions,

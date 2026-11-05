@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| Status | **In progress, not accepted** (2026-10-30). Local hardening and review under OD-132 to OD-137. Nothing here is an independent review, a manual accessibility audit, a staging measurement or owner UAT. |
+| Status | **In progress, not accepted** (2026-10-30). Local hardening and review under OD-132 to OD-137; Content-Security-Policy stage 1 (report-only, off by default) under OD-157 and its hardening under OD-158 (§11). Nothing here is an independent review, a manual accessibility audit, a staging measurement or owner UAT. |
 | Authority | OD-132 (Phases 12 to 14); OD-133 ("continue", Phase 14 only); OD-134 and OD-135 (continue Phases 12 and 14 locally); OD-136 (P14-1 approved: update `symfony/mime`); OD-137 (P14-2 investigated, then approved: update Pest and PHPUnit). D-21 is not approved. |
 | Scope sources | `../../PROJECT_MASTER_PLAN.md` §2 Phase 14 (AC-14.1 to AC-14.4); `../security/SECURITY_MODEL.md`; `../operations/DEPLOYMENT_RUNBOOK.md`; `TRACEABILITY_MATRIX.md` |
 | Databases | Test writes on `smartgro_testing` only, after checking the effective connection. `smart_go` and `smartgro_preview` are only read. No request to port 8001. |
@@ -16,7 +16,7 @@
 |---|---|---|
 | 1 | **Implemented and verified locally** | P14-1 (`symfony/mime` 8.1.10, OD-136), P14-2 (PHPUnit 13.4.5 with Pest 5.3.4, OD-137) and findings P14-5 to P14-15 below, fixed or checked, with regression tests or kit runs; security coverage (§4); query growth and migrations (§5); full suite 1,267 passed on the updated dependencies; `composer audit` clean; browser kit, every part exit code 0, including the tour journey through cancellation (§6, §7) |
 | 2 | **Ready for owner review** | The Phase 12 report definitions (`../requirements/KPI_DEFINITIONS.md`); the open choices in §8 |
-| 3 | **Blocked by owner decisions** | Content-Security-Policy enforcement (P14-16, needs a reviewed configuration change, SECURITY_MODEL §5); email delivery (D-10, O-1, A-14); response targets (D-09); hosting and staging (D-14); tracking and consent (OD-100, D-18); AI concierge (D-21, Phase 13) |
+| 3 | **Blocked by owner decisions** | Content-Security-Policy enforcement (P14-16; stage 1, report-only and off by default, built and run in OD-157, §11; enforcement needs the owner's approval of §11.3); email delivery (D-10, O-1, A-14); response targets (D-09); hosting and staging (D-14); tracking and consent (OD-100, D-18); AI concierge (D-21, Phase 13) |
 | 4 | **Needs an independent reviewer** | Penetration test or independent security review (AC-14.1); manual WCAG 2.2 AA audit (AC-14.2) |
 | 5 | **Needs staging** | Performance and NFR measurements (AC-14.3, NFR-PERF-1 to 4); the penetration test |
 | 6 | **Needs owner UAT** | AC-14.4, on real content, inventory and settings |
@@ -41,7 +41,8 @@
 | P14-13 | Low (test tooling) | 11 | `verify-public.mjs` fetched every sitemap address before checking it was on the test server | Code review | **Fixed**: other addresses are reported and never fetched |
 | P14-14 | Medium | 12, AC-12.2 | The enquiry report grouped days with a fixed `+05:30` and let the language choose the week's first day. With another `BACKOFFICE_TIMEZONE`, the daily totals stopped adding up to "received"; with Hindi, weeks started on Sunday. | `EnquiryReportTest`: failed before the fix; a mutation check restores the old week call | **Fixed**: the configured zone's offset; weeks start on Monday |
 | P14-15 | Low | 12 | The report screen described weekly totals as "Per day." and headed their column "Day" for periods of 32 to about 217 days | `EnquiryReportTest`: failed before the fix | **Fixed**: the report states its grouping |
-| P14-16 | Medium | 14, NFR-SEC-1 | No Content-Security-Policy yet (SECURITY_MODEL §5, planned for Phase 14). Public pages have no inline scripts, so `script-src 'self'` suits them; the back office (Livewire, Filament) needs nonces. Back-office screens are not yet checked for console errors. | Code review; OD-100 test | **Open.** Plan: report-only first, kit extended to back-office console errors, then enforcement as a reviewed change |
+| P14-16 | Medium | 14, NFR-SEC-1 | No Content-Security-Policy yet (SECURITY_MODEL §5, planned for Phase 14). Public pages have no inline scripts, so `script-src 'self'` suits them; the back office (Livewire, Filament) needs nonces. Back-office screens are not yet checked for console errors. | Code review; OD-100 test; `SetSecurityHeadersTest`, `PublicShellTest`, `TwinModelScreensTest`; `verify-csp.mjs` (OD-157, OD-158) | **Open; report-only hardened (OD-158, §11.4).** Still behind `CSP_MODE` (default off), report-only, no enforce mode. Per-response nonces; separate public and back-office policies; the navigation's inline styles moved to the stylesheet (A-31 a); the 3D viewer's script given the nonce; `blob:` previews allowed in the back office. The final check covers 130 visits, with drop-downs, forms, uploads and framing, and finds **no unexpected report** (exit 0). Left: Filament's un-nonced `<style>` elements (A-32). `'unsafe-eval'` stays: Livewire's CSP-safe Alpine breaks Filament 5. Enforcement is a separate, authorised change (proposal: `OD158_CSP_HARDENING_REPORT_2026-10-31.md` §K) |
+| P14-17 | Low | 4, FR-MED | The back-office media list shows no thumbnails: `MediaAsset::renditionPath()` gives a relative route, which Filament's `ImageColumn` looks up as a file on the `local` disk; it finds none and renders `<img src="">` (since `7905e2e`, 2026-10-26) | `verify-csp.mjs` media-list step (OD-158) | **Open, not fixed (outside OD-158's scope).** Proposed: an absolute URL for the column, with a screen test |
 
 Earlier defects fixed in this period: the deadlock when two new visitors sent an enquiry at the same instant (OD-129 e), and a follow-up due time stored in the wrong zone (OD-130 e).
 
@@ -113,7 +114,7 @@ Earlier defects fixed in this period: the deadlock when two new visitors sent an
 | Concurrency | 29 tests in `tests/Feature/Infrastructure` run real parallel processes on MySQL |
 | Queues and retries | SmartGro's own code defines no queued job. Filament's password-reset and emailed login-code notifications are queued (`ShouldQueue`), so production needs the queue workers DEPLOYMENT_RUNBOOK lists; locally (`QUEUE_CONNECTION=database`) they wait for a worker (corrected under OD-136). Events run after commit; the scheduler's two commands do not overlap; health check at `/up` |
 | External services and tracking | No outbound HTTP call or tracking script; OD-100 test |
-| Headers | Security headers and `X-Robots-Tag` tests; no Content-Security-Policy yet (P14-16) |
+| Headers | Security headers and `X-Robots-Tag` tests; Content-Security-Policy report-only behind `CSP_MODE`, off by default, not enforced (P14-16, §11) |
 
 ## 5. Performance, data integrity and reliability (local)
 
@@ -160,7 +161,7 @@ The server log of the OD-134 run the owner stopped was kept as `evidence/phase14
 
 * **Accessibility:** axe-core checks only what it can decide. On 9 of the 58 public page loads with JavaScript it could not decide colour contrast (the home page, `/workspaces`, a location page, its filter, the comparison page and the CMS sections page), so a person must check those. Keyboard checks cover the flows the kit drives. No screen reader was used.
 * **Performance:** headless Chromium with a software renderer, on a loaded machine; not staging.
-* **Content-Security-Policy (P14-16):** not started, for the reasons in §2.
+* **Content-Security-Policy (P14-16):** report-only and off by default (§11). The check runs in Chromium only, on the test database. Enforcement awaits A-32, staging and a separate authorisation (§11.4).
 
 ## 9. Outstanding: needs other people, another environment or the owner's approval
 
@@ -173,7 +174,7 @@ The server log of the OD-134 run the owner stopped was kept as `evidence/phase14
 | 5 | Email delivery checks | A mail provider and sending domain (D-10, O-1); A-14 | Owner | Delivery results | No provider chosen |
 | 6 | Backup and restore drill | Production hosting (D-14) | Owner and operator | Restore log (Phase 15) | Phase 15 not authorised |
 | 7 | Search Console and external structured-data validation (AC-11.4) | Production domain; the owner's account | Owner | Verification and submission records | Production does not exist |
-| 8 | Content-Security-Policy (P14-16) | Report-only policy and back-office console checks first | Developer builds; owner approves enforcement | Kit runs with no violations, then the enforced policy | Not started |
+| 8 | Content-Security-Policy (P14-16) | Report-only policy and its check (done, OD-157 and OD-158, §11); the owner's decision on A-32; staging (D-14) | Developer builds; owner approves enforcement | `CHECKS=csp` with no unexpected or undecided report, in Chromium, Firefox and Safari; then the whole kit with the enforced policy | Report-only hardened (OD-158); enforcement not authorised |
 
 Done in OD-135: the enquiry and tour journeys ran again (exit code 0), and the 36 leftover kit folders were deleted. Done in OD-136: the P14-1 update (§3). Done in OD-137: the P14-2 update (§3).
 
@@ -187,3 +188,108 @@ Done in OD-135: the enquiry and tour journeys ran again (exit code 0), and the 3
 | What it may answer from | Real inventory (entry gate); prices (D-04, PR-1 to PR-11); public availability (A-8) |
 | Keeping conversations | Privacy rules (D-15, counsel; privacy notice L-1) |
 | AC-13.2: red-team tests (no invented prices or availability) | All of the above |
+
+## 11. Content-Security-Policy, stage 1 (P14-16, OD-157)
+
+Stage 1 is the report-only policy and the check that lists what it would block. Enforcement is stage 2, a reviewed change the owner approves (§9 item 8). Evidence: `evidence/phase14/2026-10-31-p14-16-csp/` (`csp.json`, `run.json`; the first two attempts are kept as `run2.json`, `csp-run2-navigation-step-failed.json` and `logs-runs-1-2/`, see §11.2).
+
+### 11.1 What exists
+
+| Part | Detail |
+|---|---|
+| Switch | `config/security.php`, `csp_mode` from `CSP_MODE`. Default `off`; only `report` turns the policy on; there is no enforce mode. |
+| Header | In report mode, `SetSecurityHeaders` sends `Content-Security-Policy-Report-Only`. Same-site sources only, with `object-src 'none'`, `frame-src 'none'` and `'report-sample'` on scripts and styles. `frame-ancestors` is `'self'` on public pages and `'none'` in the back office. A route's own policy is kept. Nothing is enforced. |
+| Who sends it | Only a server started with `CSP_MODE=report`, so the kit's server during `CHECKS=csp`. The owner's server, the demo and the site set no `CSP_MODE`, and the cached configuration has no `security` key; both mean off. |
+| Tests | `SetSecurityHeadersTest`: off and an unknown value (`enforce`) send no policy; report mode sends it report-only, not enforced; the back office forbids framing; a route's own policy is kept. 9 tests in the file. Each new decision was broken on purpose and its test failed. |
+| Kit | `verify-csp.mjs`, run alone with `CHECKS=csp`. It cannot be combined with the other checks, which count the browser's reports as console errors; for them the kit sets `CSP_MODE=off`. It loads the 29 public addresses at 360 and 1440 px and 25 back-office screens. Then it opens the phone menu, searches a list (a Livewire request) and shows the 3D viewer for the Meshopt and Draco models. It records each page's own policy header, so a page without it cannot pass. It lists every report, grouped by directive. It exits non-zero only if a page fails to load as expected or arrives without the policy. |
+
+### 11.2 Report-only discovery (2026-10-31, `smartgro_testing`, Chromium 156)
+
+`CHECKS=csp CHROMIUM_EXECUTABLE=/snap/bin/chromium TMPDIR=$HOME/snap/chromium/common/tmp bash docs/operations/scripts/browser/run-checks.sh docs/testing/evidence/phase14/2026-10-31-p14-16-csp 8767`
+
+**Result:** exit code 0, target checked, 83 page loads (58 public, 25 back office), 2,642 reports, every follow-up step done.
+
+**Earlier attempts:**
+1. The first attempt stopped before any page: Playwright's own browser is not installed.
+2. The second, with the installed Chromium, failed only on "open a navigation group". The fixture menu has no group, so there was nothing to click. The script now records that instead.
+
+Its reports were identical to the third run's, apart from the staff preview's signed address.
+
+**Public pages** (58 page loads; the same two reports on every one):
+
+| Directive | What | Reports | Remedy |
+|---|---|---|---|
+| `script-src-elem` | Laravel Boost's browser logger, an inline script Boost injects | 58 | None in production. Boost is a development dependency and injects only locally or with debug on. |
+| `style-src-elem` | The inline `@font-face` style that `@fonts` writes (Laravel's Vite) | 58 | A nonce per request (`Vite::useCspNonce()`). Laravel's Vite adds it to that style. |
+
+No external request, inline event handler, image, frame or font was reported. The JSON-LD block is data, so it is not blocked.
+
+**Not exercised by the fixtures:**
+- **The CMS navigation bar's two style attributes** (`style="anchor-name: …"` and `style="position-anchor: …"` in `bar.blade.php`). They appear on every page of a site whose menu has a group, such as OD-150's Solutions, but the fixture menu has none.
+- **Form submissions** (`form-action`): forms were loaded, not sent.
+- **File-upload previews.**
+- **Framing:** report-only `frame-ancestors` was not tried in a browser; it is covered by tests.
+
+**Back office** (25 page loads):
+
+| Directive | What | Reports (screens) | Remedy |
+|---|---|---|---|
+| `script-src` (`eval`) | Alpine expressions evaluated by Livewire's bundle | 1,579 (22) | `'unsafe-eval'`. The alternative is Livewire's `csp_safe` (Alpine's CSP build); it is untested with Filament 5's screens. |
+| `script-src-elem` | Filament's inline scripts (theme, sidebar, `filamentData`) | 67 (22) | A nonce. Filament and Livewire read `Vite::cspNonce()`. |
+| `style-src-attr` | Inline style attributes (grid columns, heights; some set by `livewire.js`) | 742 (22) | `'unsafe-inline'` for styles, because attributes cannot carry a nonce. |
+| `style-src-elem` | Filament's `<style>` tags (theme colours, font, `x-cloak`), Livewire's progress bar, the rich editor | 136 (25) | `'unsafe-inline'`. Filament's layout `<style>` tags carry no nonce, and when `style-src` has a nonce, browsers ignore `'unsafe-inline'`. |
+| `script-src` (`wasm-eval`) | The Meshopt decoder compiling WebAssembly | 1 (1) | `'wasm-unsafe-eval'` |
+| `worker-src` | The Draco decoder's worker, started from a `blob:` address | 1 (1) | `worker-src 'self' blob:` |
+
+### 11.3 Proposed policy (OD-157; superseded by §11.4, kept for the record)
+
+**Public pages:**
+
+```
+default-src 'self'; script-src 'self'; style-src 'self' 'nonce-<per request>'; img-src 'self' data:; font-src 'self';
+connect-src 'self'; media-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+```
+
+**Owner choice for the navigation bar's style attributes:**
+- **(a) Recommended:** move the two anchor names into stylesheet classes. This is a small template and CSS change, and it supports a fixed number of top-level groups.
+- **(b)** Add `style-src-attr 'unsafe-inline'`.
+
+**Back office:**
+
+```
+default-src 'self'; script-src 'self' 'nonce-<per request>' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src 'self' blob:;
+style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self';
+frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+```
+
+**What the back-office policy still blocks and what it allows:**
+- **Still blocked:** scripts from other sites, injected inline scripts (they have no nonce), plugins, a changed `<base>`, forms sent elsewhere, and framing.
+- **Allowed:** string evaluation (Alpine) and inline styles.
+- **Not exercised:** `img-src blob:` is there for upload previews, which the kit did not exercise; confirm it in stage 2.
+- **Framing:** no back-office screen frames another, so `frame-ancestors 'none'` breaks nothing.
+
+**Stage 2 (developer work after approval):**
+1. A nonce for each request, set before the page renders.
+2. An `enforce` mode.
+3. Tests.
+4. `CHECKS=csp` showing only the accepted reports.
+5. The whole kit with the enforced policy, where any blocked script would fail the console checks.
+
+**Before staging (D-14):**
+- No full-page HTML caching in front of the site; a cached page would repeat its nonce. The application caches no pages today.
+- Decide whether reports go to a reporting service. Stage 1 has no report endpoint by choice, because one would take anonymous posts.
+
+### 11.4 Report-only hardening (OD-158)
+
+Full record: `OD158_CSP_HARDENING_REPORT_2026-10-31.md`; evidence `evidence/phase14/2026-10-31-od158/`.
+
+| Part | Result |
+|---|---|
+| Default | Off. Unknown values (`enforce`, `Report`, `true`, empty) are off. No nonce is generated when off, so the markup is unchanged. No code sends an enforcing header. |
+| Nonces | One per response in report mode (`Vite::useCspNonce()` before rendering). On the public site it is used by the `@fonts` style. In the back office it is used by Filament's and Livewire's scripts and by the 3D viewer's own script, which was fixed this round. Browser run 5: 137 documents, 1,462 nonced elements, all matching, all distinct. Public pages send `Cache-Control: no-cache, private`. |
+| Public policy | `script-src 'self'` (no inline script, no eval); `style-src 'self' 'nonce-…'`; no style attributes allowed. The navigation's two were moved to `app.css`, seven anchor pairs for the seven possible main-menu items (A-31 a). |
+| Back-office policy | Nonces, plus the exceptions the evidence requires: `'unsafe-eval'` (Alpine; Livewire's CSP-safe build was tried and breaks Filament 5); `'wasm-unsafe-eval'` and `worker-src blob:` (3D decoders); `style-src-attr 'unsafe-inline'` (Filament's layout attributes); `img-src blob:` (upload previews, added); `frame-ancestors 'none'` (working: reported when framed). |
+| Check | `verify-csp.mjs` covers 32 public addresses at three widths, drop-downs at 1024 and 1440 px (fixture menu with drop-downs), the phone menu, fonts, images, an enquiry refused and sent, framing, a failed sign-in, the user menu and sidebar, filters, sort, search, validation, a save, an image upload and preview, the media list, the 3D viewers, 16 other back-office screens and the back-office 403 and 404 pages. It sorts reports into development only, caused by the check, framework (owner decision) and unexpected. |
+| Result (run 5, final; exit 0) | 130 visits, 221 reports, **0 unexpected**: 104 from Boost's local logger, 4 from the framing test's own frames, and 113 from Filament's five un-nonced `<style>` elements (A-32). 0 console errors, 0 failed requests. |
+| Open | A-32. P14-17 (thumbnails, not a policy matter). Not covered: Firefox, Safari, a real sign-in, modals, typing in the rich editor, staging. |
+

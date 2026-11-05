@@ -1,0 +1,75 @@
+main
+832549382a367d686d9c0981471f2ce66f5270d4
+staged: 0
+ M app/Actions/Booking/RequestTour.php
+ M app/Actions/Crm/SubmitEnquiry.php
+ M app/Enums/Access/Capability.php
+ M app/Enums/Access/StaffRole.php
+ M app/Filament/Clusters/DesignPreviews/Pages/PermissionsReview.php
+ M app/Filament/Clusters/Sales/Resources/Leads/Pages/ViewLead.php
+ M app/Filament/Clusters/Sales/Resources/Leads/Schemas/LeadInfolist.php
+ M app/Filament/Clusters/Sales/Resources/Leads/Tables/LeadsTable.php
+ M app/Http/Middleware/SetSecurityHeaders.php
+ M app/Models/Lead.php
+ M config/livewire.php
+ M docs/architecture/DATABASE_ERD.md
+ M docs/decisions/DECISION_REGISTER.md
+ M docs/operations/DEPLOYMENT_RUNBOOK.md
+ M docs/operations/LOCAL_DEVELOPMENT.md
+ M docs/operations/SPACES_ACTIVATION_PROCEDURE.md
+ M docs/operations/scripts/browser/run-checks.sh
+ M docs/operations/scripts/browser/seed-test-fixtures.php
+ M docs/operations/scripts/browser/verify-admin.mjs
+ M docs/phases/PHASE_STATUS.md
+ M docs/security/SECURITY_MODEL.md
+ M docs/testing/PHASE_14_ACCEPTANCE_PACK.md
+ M docs/testing/TRACEABILITY_MATRIX.md
+ M resources/css/app.css
+ M resources/views/components/site/navigation/bar.blade.php
+ M resources/views/filament/twin-models/viewer.blade.php
+ M tests/Feature/Actions/Access/SyncAccessControlTest.php
+ M tests/Feature/Filament/Clusters/Website/Resources/TwinModels/TwinModelScreensTest.php
+ M tests/Feature/Http/Controllers/Web/PublicShellTest.php
+ M tests/Feature/Http/Controllers/Web/TourControllerTest.php
+ M tests/Feature/Http/Middleware/SetSecurityHeadersTest.php
+ M tests/Support/Concurrency/PublishingHarness.php
+ M tests/Support/Concurrency/publish-worker.php
+?? app/Actions/Crm/AssignNewLead.php
+?? app/Actions/Crm/SaveAssignmentRule.php
+?? app/Actions/Crm/SetAssignmentRuleActive.php
+?? app/Actions/Crm/UpdateContactFromLead.php
+?? app/Enums/Crm/AssignmentOutcome.php
+?? app/Enums/Crm/AssignmentStrategy.php
+?? app/Filament/Clusters/Sales/Resources/AssignmentRules/
+?? app/Models/AssignmentRule.php
+?? app/Models/LeadAssignment.php
+?? app/Policies/AssignmentRulePolicy.php
+?? config/crm.php
+?? config/filament.php
+?? config/security.php
+?? database/factories/AssignmentRuleFactory.php
+?? database/migrations/2026_10_31_163023_create_assignment_rules_table.php
+?? database/migrations/2026_10_31_163025_create_assignment_rule_user_table.php
+?? database/migrations/2026_10_31_163026_create_lead_assignments_table.php
+?? docs/operations/scripts/browser/verify-csp.mjs
+?? docs/testing/OD156_SPACES_READINESS_REVIEW_2026-10-31.md
+?? docs/testing/OD158_CSP_HARDENING_REPORT_2026-10-31.md
+?? docs/testing/P9B_ACCEPTANCE_AUDIT_REPORT_2026-11-01.md
+?? docs/testing/P9B_ACCEPTANCE_EVIDENCE_CLOSURE_REPORT_2026-11-01.md
+?? docs/testing/P9B_ASSIGNMENT_RULES_REPORT_2026-10-31.md
+?? docs/testing/PHASE_9_ACCEPTANCE_PACK.md
+?? docs/testing/evidence/phase14/2026-10-31-od156/
+?? docs/testing/evidence/phase14/2026-10-31-od158/
+?? docs/testing/evidence/phase14/2026-10-31-p14-16-csp/
+?? docs/testing/evidence/phase9/2026-10-31-od159/
+?? docs/testing/evidence/phase9/2026-10-31-od160/
+?? docs/testing/evidence/phase9/2026-11-01-p9b-closure/
+?? tests/Feature/Actions/Crm/AssignNewLeadTest.php
+?? tests/Feature/Actions/Crm/AssignmentRuleManagementTest.php
+?? tests/Feature/Actions/Crm/AssignmentSideEffectsTest.php
+?? tests/Feature/Actions/Crm/UpdateContactFromLeadTest.php
+?? tests/Feature/Filament/Clusters/Sales/AssignmentRuleAccessTest.php
+?? tests/Feature/Filament/Clusters/Sales/AssignmentRuleScreensTest.php
+?? tests/Feature/Filament/Clusters/Sales/EnquiryDuplicatesTest.php
+?? tests/Feature/Infrastructure/AssignmentRuleConcurrencyTest.php
+?? tests/Feature/Providers/FilamentConfigTest.php

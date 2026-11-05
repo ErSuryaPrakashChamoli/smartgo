@@ -112,6 +112,16 @@ it('shows a model with its notice, checks and anchors, and loads nothing 3D unti
         ->and(substr_count($html, 'data-model="'.$fileUrl.'"'))->toBe(1);
 });
 
+it('gives the viewer\'s script the nonce of the content security policy reported with the page (P14-16, OD-158)', function () {
+    config(['security.csp_mode' => 'report']);
+    $model = uploadTwinModelForTest($this->marketing, $this->property);
+
+    $response = actingAs($this->operations)->get(TwinModelResource::getUrl('view', ['record' => $model]))->assertOk();
+    preg_match("/'nonce-([^']+)'/", (string) $response->headers->get('Content-Security-Policy-Report-Only'), $nonce);
+
+    expect($response->getContent())->toMatch('/<script type="module"\\s+nonce="'.preg_quote($nonce[1], '/').'"\\s*>\\s*for \\(const root of document\\.querySelectorAll\\(\'\\[data-twin-viewer\\]/');
+});
+
 it('lets uploads in progress be larger than the model size limit, so an oversized file gets the plain-language reason', function () {
     $transferLimitKilobytes = (int) str(collect(config('livewire.temporary_file_upload.rules'))->first(fn (string $rule): bool => str_starts_with($rule, 'max:')))->after('max:')->toString();
 

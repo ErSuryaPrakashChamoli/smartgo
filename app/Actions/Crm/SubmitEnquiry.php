@@ -26,7 +26,9 @@ use Illuminate\Validation\ValidationException;
  * ten minutes returns the first one instead of a duplicate: the contact locks keep such repeats apart,
  * so the checks are plain reads (a locking read would make two new visitors deadlock). The visitor's agreement and the privacy
  * notice version shown are recorded. Personal data is never written to the logs. The visitor's
- * details are taken in as for a tour request (VisitorIntake).
+ * details are taken in as for a tour request (VisitorIntake). Once a new enquiry is stored, the
+ * assignment rules give it an owner or leave it unassigned (AssignNewLead, BR-CRM-3); a repeat does not
+ * run them again.
  */
 class SubmitEnquiry
 {
@@ -34,7 +36,7 @@ class SubmitEnquiry
 
     public const int MAX_PER_CONTACT_PER_DAY = VisitorIntake::MAX_PER_CONTACT_PER_DAY;
 
-    public function __construct(private EnquiryForm $form, private WorkspaceCatalogue $catalogue, private VisitorIntake $intake) {}
+    public function __construct(private EnquiryForm $form, private WorkspaceCatalogue $catalogue, private VisitorIntake $intake, private AssignNewLead $assignNewLead) {}
 
     /**
      * @param  array<string, mixed>  $input
@@ -89,6 +91,7 @@ class SubmitEnquiry
                 'consent_snapshot' => $this->intake->consentSnapshot($notice, $ipAddress),
             ]);
             $lead->save();
+            DB::afterCommit(fn () => $this->assignNewLead->handleSafely($lead));
 
             return $lead;
         }));

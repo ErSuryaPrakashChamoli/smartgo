@@ -15,6 +15,8 @@
 // given back); a decoder that cannot load; "What changed" for an approver (OD-126); and two uploads
 // through the form: a model at the limits (stored) and a file over 15 MB (refused); and setting up a
 // location's floors, 40 spaces and an allocation through the screens (FR-INV-1, OD-127).
+// Then the assignment rules (P9-B): a test-only rule's page and form, a validation error, switching on from
+// the keyboard and off again, and the refusal for a rule without people.
 // Writes <outDir>/admin.json and prints a summary. Performance is measured by verify-twin-performance.mjs.
 import fs from 'node:fs';
 import os from 'node:os';
@@ -71,6 +73,17 @@ const SCREENS = [
     ['marketing', '/admin/website/search-titles', 200, 'search titles and descriptions report'],
     ['sales', '/admin/website/search-titles', 403, 'search titles report refused to sales'],
     ['marketing', '/admin/website/missing-pages', 200, 'missing pages (404 monitor)'],
+    // Assignment rules (Phase 9, P9-B): Super Admin only.
+    ['admin', '/admin/sales/assignment-rules', 200, 'assignment rules list'],
+    ['admin', '/admin/sales/assignment-rules/create', 200, 'new assignment rule form'],
+    ['sales', '/admin/sales/assignment-rules', 403, 'assignment rules refused to sales'],
+    // A rule's page and form (P9-B evidence closure): the test-only rule, switched off; refused to the others by direct address.
+    ['admin', `/admin/sales/assignment-rules/${fixtures.ids.assignment_rule}`, 200, 'assignment rule page (settings and decision)'],
+    ['admin', `/admin/sales/assignment-rules/${fixtures.ids.assignment_rule}/edit`, 200, 'assignment rule edit form'],
+    ['sales', `/admin/sales/assignment-rules/${fixtures.ids.assignment_rule}`, 403, 'assignment rule page refused to sales'],
+    ['sales', `/admin/sales/assignment-rules/${fixtures.ids.assignment_rule}/edit`, 403, 'assignment rule edit form refused to sales'],
+    ['operations', '/admin/sales/assignment-rules', 403, 'assignment rules refused to operations'],
+    ['marketing', `/admin/sales/assignment-rules/${fixtures.ids.assignment_rule}/edit`, 403, 'assignment rule edit form refused to marketing'],
     // Reports (Phase 12, OD-132): totals only.
     ['operations', '/admin/reports/enquiries-and-tours', 200, 'enquiry and tour totals'],
     ['marketing', '/admin/reports/content-freshness', 200, 'content freshness'],
@@ -472,6 +485,102 @@ for (const [kind, file, expect] of [['at the limits', fixtures.upload_files.at_l
     report.uploads.push(entry);
     fs.rmSync(folder, { recursive: true, force: true });
     if (outcome !== expect || (outcome === 'stored' && !entry.checksShown)) report.failures.push(`upload through the form (${kind}): ${JSON.stringify(entry)}`);
+    await context.close();
+}
+
+// Assignment rules (P9-B evidence closure): the Super Admin opens the test-only rule's page (its settings
+// and its decision), its form refuses an empty name with the field's message, the rule is switched on from
+// the keyboard (Tab to the button, Enter, then the confirmation), its form then opens on its page instead,
+// and it is switched off again; switching on the rule without people is refused with the reason. axe-core
+// on the page, the form with its error and the open confirmation, at 1440 px. This is the working tree as
+// the kit's server runs it (Filament's component cache bypassed), not a target server's cached runtime.
+report.assignmentRules = {};
+{
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+    const [name, value] = fixtures.sessions.admin.split('\t');
+    await context.addCookies([{ name, value, url: base }]);
+    const page = await context.newPage();
+    const consoleErrors = [];
+    page.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text()); });
+    const axe = async () => {
+        await page.evaluate(axeSource);
+        return page.evaluate(async (tags) => (await window.axe.run(document, { runOnly: { type: 'tag', values: tags } })).violations
+            .map((v) => ({ id: v.id, nodes: v.nodes.length, targets: v.nodes.slice(0, 3).map((n) => n.target.join(' ')), details: v.nodes.slice(0, 2).map((n) => ({ html: n.html.slice(0, 240), summary: n.failureSummary })) })), AXE_TAGS);
+    };
+    const notice = async (pattern) => {
+        const read = async () => (await page.locator('.fi-no-notification').allInnerTexts().catch(() => [])).join(' | ').replace(/\s+/g, ' ').trim();
+        for (let waited = 0; !pattern.test(await read()) && waited < 10000; waited += 250) await page.waitForTimeout(250);
+        return read();
+    };
+    const confirm = async () => {
+        const dialog = page.locator('.fi-modal-window:visible').last();
+        await dialog.getByRole('button', { name: /^Confirm$/ }).click();
+        await page.waitForLoadState('networkidle');
+    };
+    const rulePath = `/admin/sales/assignment-rules/${fixtures.ids.assignment_rule}`;
+    const r = report.assignmentRules;
+
+    await page.goto(base + rulePath, { waitUntil: 'networkidle' });
+    const main = (await page.locator('main').innerText()).replace(/\s+/g, ' ');
+    r.page = {
+        name: main.includes('TEST FIXTURE rule (not a real rule)'),
+        criteria: main.includes('Locations: SmartGro A-70') && main.includes('Team sizes: 2 to 5 people'),
+        person: main.includes('Admin (fixture)'),
+        off: (await page.locator('.fi-badge').filter({ hasText: /^\s*Off\s*$/ }).count()) > 0,
+        decision: main.includes('Assigned by a rule') && (await page.locator(`a[href$="/admin/sales/enquiries/${fixtures.ids.assigned_lead}"]`).count()) > 0,
+        editShown: (await page.getByRole('link', { name: 'Edit' }).count()) > 0,
+    };
+    r.pageAxe = await axe();
+
+    await page.goto(`${base}${rulePath}/edit`, { waitUntil: 'networkidle' });
+    r.editOpens = new URL(page.url()).pathname === `${rulePath}/edit`;
+    await page.getByRole('textbox', { name: /^Name/ }).fill('');
+    await page.evaluate(() => document.querySelectorAll('form').forEach((form) => { form.noValidate = true; }));
+    await page.getByRole('button', { name: 'Save changes' }).click();
+    const error = page.locator('.fi-fo-field-wrp-error-message').first();
+    r.validation = await error.waitFor({ timeout: 15000 }).then(async () => (await error.innerText()).trim(), () => null);
+    r.editAxe = await axe();
+    // The same state with the pointer moved off the button just pressed, to tell a hover colour from the error state.
+    await page.mouse.move(5, 5);
+    await page.waitForTimeout(300);
+    r.editAxePointerAway = await axe();
+
+    await page.goto(base + rulePath, { waitUntil: 'networkidle' });
+    let focused = '';
+    for (let presses = 0; presses < 120 && !/Switch on/.test(focused); presses++) {
+        await page.keyboard.press('Tab');
+        focused = await page.evaluate(() => document.activeElement?.innerText?.trim() ?? '');
+    }
+    r.keyboardReachesSwitchOn = /Switch on/.test(focused);
+    await page.keyboard.press('Enter');
+    await page.locator('.fi-modal-window:visible').last().waitFor({ timeout: 10000 }).catch(() => null);
+    r.confirmationAxe = await axe();
+    await confirm();
+    r.switchedOn = await notice(/Rule switched on/);
+    r.editHiddenWhileOn = (await page.getByRole('link', { name: 'Edit' }).count()) === 0;
+    await page.goto(`${base}${rulePath}/edit`, { waitUntil: 'networkidle' });
+    r.formWhileOnOpens = new URL(page.url()).pathname;
+    await page.getByRole('button', { name: 'Switch off' }).click();
+    await confirm();
+    r.switchedOff = await notice(/Rule switched off/);
+
+    await page.goto(`${base}/admin/sales/assignment-rules/${fixtures.ids.assignment_rule_empty}`, { waitUntil: 'networkidle' });
+    await page.getByRole('button', { name: 'Switch on' }).click();
+    await confirm();
+    r.refused = await notice(/Not switched on/);
+    r.consoleErrors = consoleErrors;
+
+    const p = r.page;
+    if (!(p.name && p.criteria && p.person && p.off && p.decision && p.editShown)) report.failures.push(`assignment rule page: ${JSON.stringify(p)}`);
+    if (!r.editOpens || r.validation !== 'The name field is required.') report.failures.push(`assignment rule form: opens ${r.editOpens}, error ${r.validation}`);
+    if (!r.keyboardReachesSwitchOn) report.failures.push('assignment rule page: "Switch on" not reached with Tab');
+    if (!/Rule switched on/.test(r.switchedOn) || !r.editHiddenWhileOn || r.formWhileOnOpens !== rulePath) report.failures.push(`assignment rule switched on: ${r.switchedOn}; edit hidden ${r.editHiddenWhileOn}; form opened ${r.formWhileOnOpens}`);
+    if (!/Rule switched off/.test(r.switchedOff)) report.failures.push(`assignment rule switched off: ${r.switchedOff}`);
+    if (!/Not switched on/.test(r.refused) || !/Choose the one person/.test(r.refused)) report.failures.push(`assignment rule without people: ${r.refused}`);
+    for (const [where, violations] of [['page', r.pageAxe], ['form with its error', r.editAxe], ['form with its error, pointer away', r.editAxePointerAway], ['confirmation', r.confirmationAxe]]) {
+        if (violations.length) report.failures.push(`assignment rule ${where}: axe ${violations.map((v) => `${v.id} at ${v.targets.join(', ')}`).join('; ')}`);
+    }
+    if (consoleErrors.length) report.failures.push(`assignment rule checks: console errors ${consoleErrors.join(' | ')}`);
     await context.close();
 }
 

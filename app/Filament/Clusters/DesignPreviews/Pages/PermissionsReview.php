@@ -91,6 +91,7 @@ class PermissionsReview extends Page implements HasTable
             $row('Enquiries', 'leads.export', 'Export enquiries (audited)', ['Yes', '—', '—', '—', '—', '—'], 'implemented'),
             $row('Enquiries', 'leads.reports.view', 'See enquiry and tour totals in Reports, never an enquiry', ['Yes', 'Yes', 'Own properties', 'Yes', 'Yes', '—'], 'implemented'),
             $row('Enquiries', 'leads.settings.manage', 'Manage the reasons for closing an enquiry', ['Yes', '—', '—', '—', '—', '—'], 'implemented'),
+            $row('Enquiries', 'leads.assignment.manage', 'Create, change, switch on and off the rules that give new enquiries an owner', ['Yes', '—', '—', '—', '—', '—'], 'implemented'),
             $row('Bookings', 'bookings.view', 'See booking requests and bookings', ['Yes', 'Yes', 'Own properties', 'Yes', '—', 'Yes'], 'matrix'),
             $row('Bookings', 'bookings.approve', 'Approve or reject requests, and reschedules that change inventory, price or terms; never one you created or submitted', [$notOwn, $notOwn, 'Own properties, not own', '—', '—', '—'], 'decided'),
             $row('Bookings', 'bookings.cancel', 'Cancel bookings', ['Yes', 'Yes', 'Own properties', 'Yes', '—', '—'], 'matrix'),
