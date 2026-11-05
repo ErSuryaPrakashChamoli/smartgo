@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Schema;
 use RuntimeException;
+use Tests\Support\TestingDatabase;
 
 /**
  * Throwaway schema and parallel worker runner used to prove MySQL concurrency guarantees
@@ -54,8 +55,13 @@ final class ReservationHarness
         });
     }
 
+    /**
+     * Drop the throwaway tables, but only on a *_testing database (see PublishingHarness::reset()).
+     */
     public static function dropTables(): void
     {
+        TestingDatabase::assertConfigured();
+
         Schema::dropIfExists(self::RESERVATIONS);
         Schema::dropIfExists(self::RESOURCES);
     }

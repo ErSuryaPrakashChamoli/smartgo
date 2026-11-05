@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use RuntimeException;
+use Tests\Support\TestingDatabase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -17,15 +17,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function setUpTraits(): array
     {
-        $connection = config('database.default');
-        $database = (string) config("database.connections.{$connection}.database");
-
-        if (! str_ends_with($database, '_testing')) {
-            throw new RuntimeException(
-                "Tests must run against a dedicated *_testing database, but [{$connection}:{$database}] is configured. ".
-                'Run `php artisan config:clear` and check phpunit.xml.'
-            );
-        }
+        TestingDatabase::assertConfigured();
 
         return parent::setUpTraits();
     }

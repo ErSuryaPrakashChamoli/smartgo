@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Schema;
 use RuntimeException;
+use Tests\Support\TestingDatabase;
 
 /**
  * Runs inventory changes (allocations, status changes, seat changes) and price plan activations in
@@ -22,8 +23,13 @@ final class InventoryHarness
      */
     private const array TABLES = ['offer_offering', 'offers', 'price_plans', 'space_allocations', 'space_seats', 'offering_space', 'spaces', 'floors', 'space_types'];
 
+    /**
+     * Empty the tables, but only on a *_testing database (see PublishingHarness::reset()).
+     */
     public static function reset(): void
     {
+        TestingDatabase::assertConfigured();
+
         Schema::withoutForeignKeyConstraints(function (): void {
             foreach (self::TABLES as $table) {
                 DB::table($table)->truncate();

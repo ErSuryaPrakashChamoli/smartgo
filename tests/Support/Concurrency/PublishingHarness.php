@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Schema;
 use RuntimeException;
+use Tests\Support\TestingDatabase;
 
 /**
  * Runs publish and take-down attempts in parallel PHP processes against committed data in the testing
@@ -28,8 +29,14 @@ final class PublishingHarness
         'model_has_roles', 'model_has_permissions', 'role_has_permissions', 'roles', 'permissions', 'users',
     ];
 
+    /**
+     * Empty the tables, but only on a *_testing database: this also runs from afterEach, which Pest
+     * calls even when TestCase refused the configured database (OD-164).
+     */
     public static function reset(): void
     {
+        TestingDatabase::assertConfigured();
+
         Schema::withoutForeignKeyConstraints(function (): void {
             foreach (self::TABLES as $table) {
                 DB::table($table)->truncate();
