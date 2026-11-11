@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\Access\SyncAccessControl;
+use App\Actions\Content\CreateDraft;
 use App\Actions\Twin\DeleteTwinModel;
 use App\Enums\Access\StaffRole;
 use App\Enums\Twin\AnchorType;
@@ -164,6 +165,21 @@ it('deletes a model with its anchors and file, audited', function () {
         ->and(Media::query()->count())->toBe(0)
         ->and(Storage::disk('local')->allFiles())->toBe([])
         ->and(Activity::query()->where('event', 'twin_model_deleted')->sole())->causer_id->toBe($this->marketing->id);
+});
+
+it('refuses to delete a model a location\'s website profile uses, live or in a version (OD-181)', function () {
+    $live = uploadTwinModelForTest($this->marketing, $this->property);
+    $inVersion = uploadTwinModelForTest($this->marketing, $this->property);
+    publishPropertyProfileForTest($this->property, ['twin_model_id' => $live->id]);
+    app(CreateDraft::class)->handle($this->property->profile, $this->marketing, ['headline' => 'H', 'summary' => 'S', 'twin_model_id' => $inVersion->id]);
+
+    foreach ([$live, $inVersion] as $model) {
+        expect(fn () => app(DeleteTwinModel::class)->handle($model, $this->marketing))
+            ->toThrow(ValidationException::class, 'A location\'s website profile, or a version of it, uses this 3D model, so it cannot be deleted. Choose another model there first.');
+    }
+
+    expect(TwinModel::query()->count())->toBe(2)
+        ->and(Activity::query()->where('event', 'twin_model_deleted')->exists())->toBeFalse();
 });
 
 it('refuses deletion by staff who only see models', function () {

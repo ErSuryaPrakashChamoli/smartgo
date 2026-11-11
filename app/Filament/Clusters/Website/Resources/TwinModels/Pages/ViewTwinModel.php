@@ -11,6 +11,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 
 /**
  * One 3D model: its checks, the anchors found in it and a preview that loads only when asked for.
@@ -30,12 +31,18 @@ class ViewTwinModel extends ViewRecord
                 ->color('danger')
                 ->visible(fn (): bool => Gate::allows('delete', $this->record))
                 ->requiresConfirmation()
-                ->modalDescription('The model, its file and its anchors are deleted. A corrected file can be uploaded as a new model.')
+                ->modalDescription('The model, its file and its anchors are deleted. A corrected file can be uploaded as a new model. A model a location\'s website profile uses, live or in any version, cannot be deleted.')
                 ->action(function (): void {
                     /** @var User $user */
                     $user = auth()->user();
 
-                    app(DeleteTwinModel::class)->handle($this->record, $user);
+                    try {
+                        app(DeleteTwinModel::class)->handle($this->record, $user);
+                    } catch (ValidationException $exception) {
+                        Notification::make()->danger()->title('Not deleted')->body(collect($exception->errors())->flatten()->first())->send();
+
+                        return;
+                    }
 
                     Notification::make()->success()->title('3D model deleted')->send();
                     $this->redirect(static::getResource()::getUrl('index'));

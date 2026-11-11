@@ -61,17 +61,7 @@
             </div>
             @if ($space['photo'] !== null)
                 {{-- The space's photo (OD-177 e); a stock photo says it is not the location (OD-176). --}}
-                <figure class="flex flex-col gap-2 lg:col-span-5">
-                    <div class="relative">
-                        <img src="{{ $space['photo']['src'] }}" srcset="{{ $space['photo']['srcset'] }}" sizes="(min-width: 1024px) 500px, 100vw" alt="{{ $space['photo']['alt'] }}"
-                            @if ($space['photo']['dimensions']) width="{{ $space['photo']['dimensions']['width'] }}" height="{{ $space['photo']['dimensions']['height'] }}" @endif
-                            decoding="async" class="aspect-[4/3] h-auto w-full rounded-3xl bg-mist object-cover">
-                        <x-site.photo-label :label="$space['photo']['label']" />
-                    </div>
-                    @if (filled($space['photo']['credit']))
-                        <figcaption class="text-sm text-muted">{{ $space['photo']['credit'] }}</figcaption>
-                    @endif
-                </figure>
+                <x-site.photo-gallery :photos="[$space['photo']]" sizes="(min-width: 1024px) 500px, 100vw" rounded="rounded-3xl" class="lg:col-span-5" />
             @endif
         </div>
     </section>

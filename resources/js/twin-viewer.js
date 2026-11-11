@@ -73,13 +73,16 @@ function extensionsUsed(buffer) {
  * -Z axis, as glTF cameras do.
  *
  * @param {HTMLElement} stage
- * @param {{ model: Promise<ArrayBuffer>, label: string, decoders?: string[], onContextLost?: () => void, signal?: AbortSignal }} options
+ * @param {{ model: Promise<ArrayBuffer>, label: string, decoders?: string[], onContextLost?: () => void, signal?: AbortSignal, pageScroll?: boolean }} options
  *   model: the GLB file, downloading; decoders: those the upload's checks found the model needs (draco,
  *   meshopt, ktx2), started at once; any other the file turns out to need is loaded after the download;
- *   signal: once aborted, the viewer never touches the stage and gives up its graphics context.
+ *   signal: once aborted, the viewer never touches the stage and gives up its graphics context;
+ *   pageScroll: the viewer sits in a page people scroll past (a location page, OD-184), so it must not trap the
+ *   scroll: the wheel scrolls the page and zooms only with Ctrl or ⌘ held (a trackpad pinch arrives with Ctrl),
+ *   and on touch screens an upward or downward swipe scrolls the page while a sideways one turns the floor.
  * @returns {Promise<{ showWhole: () => void, showCamera: (nodeName: string) => boolean, dispose: () => void }>}
  */
-export async function mountTwinViewer(stage, { model, label, decoders = [], onContextLost = () => {}, signal }) {
+export async function mountTwinViewer(stage, { model, label, decoders = [], onContextLost = () => {}, signal, pageScroll = false }) {
     performance.mark('twin:renderer-started');
     const canvas = document.createElement('canvas');
     const renderer = createRenderer(canvas);
@@ -139,9 +142,26 @@ export async function mountTwinViewer(stage, { model, label, decoders = [], onCo
     scene.add(sun);
     scene.add(gltf.scene);
 
+    // Registered before the controls' own wheel listener, so a wheel turn without Ctrl or ⌘ never reaches them and
+    // the browser scrolls the page as usual.
+    const keepPageScroll = (event) => {
+        if (!event.ctrlKey && !event.metaKey) {
+            event.stopImmediatePropagation();
+        }
+    };
+
+    if (pageScroll) {
+        canvas.addEventListener('wheel', keepPageScroll, { passive: true });
+    }
+
     const camera = new PerspectiveCamera(50, 1, 0.05, 2000);
     const controls = new OrbitControls(camera, canvas);
     controls.listenToKeyEvents(canvas);
+
+    if (pageScroll) {
+        // The controls set 'none'; vertical swipes go back to the page, sideways drags and pinches stay with the controls.
+        canvas.style.touchAction = 'pan-y';
+    }
 
     const render = () => renderer.render(scene, camera);
 
@@ -243,6 +263,7 @@ export async function mountTwinViewer(stage, { model, label, decoders = [], onCo
         dispose: () => {
             cancelAnimationFrame(movement);
             observer.disconnect();
+            canvas.removeEventListener('wheel', keepPageScroll);
             controls.dispose();
             release();
         },

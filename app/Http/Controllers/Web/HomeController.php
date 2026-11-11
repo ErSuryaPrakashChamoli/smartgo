@@ -12,6 +12,7 @@ use App\Models\Property;
 use App\Services\Content\SiteNavigation;
 use App\Services\Website\EnquiryForm;
 use App\Services\Website\HomeShowcase;
+use App\Services\Website\LocationExplore;
 use App\Services\Website\TourForm;
 use App\Services\Website\WorkspaceCatalogue;
 use Illuminate\Contracts\View\View;
@@ -24,6 +25,7 @@ use Illuminate\Support\Collection;
  * segments, newest articles and general questions follow (OD-143), each only while there is one, and a
  * segment links to its solutions page only while that page is published (BR-CMS-9). The banners of the carousel and
  * the highlights strip come from the back office (OD-169, HomeShowcase); without a published banner the single hero shows.
+ * The "Experience our spaces" block links to a location page with a 3D walkthrough or floor plans once one is published (OD-181).
  */
 class HomeController extends Controller
 {
@@ -31,7 +33,7 @@ class HomeController extends Controller
 
     public const int FAQS_SHOWN = 4;
 
-    public function __invoke(WorkspaceCatalogue $catalogue, SiteNavigation $siteNavigation, EnquiryForm $enquiryForm, TourForm $tourForm, HomeShowcase $showcase): View
+    public function __invoke(WorkspaceCatalogue $catalogue, SiteNavigation $siteNavigation, EnquiryForm $enquiryForm, TourForm $tourForm, HomeShowcase $showcase, LocationExplore $explore): View
     {
         $properties = $catalogue->listedProperties();
         $categories = $catalogue->categories($properties);
@@ -55,6 +57,7 @@ class HomeController extends Controller
             'faqs' => Faq::query()->published()->general()->orderBy('sort_order')->orderBy('id')->limit(self::FAQS_SHOWN)->get(),
             'enquiryOpen' => $enquiryForm->isOpen(),
             'tourOffered' => $tourOffered,
+            'explore' => $explore->showcase($properties),
             'contact' => $navigation['contact'],
             'navigation' => $navigation,
             'canonical' => rtrim((string) config('app.url'), '/').'/',

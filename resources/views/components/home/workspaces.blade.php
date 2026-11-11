@@ -4,19 +4,15 @@
 ])
 
 @php
-    $columns = match (count($groups)) {
-        1 => 'sm:max-w-md',
-        2 => 'sm:grid-cols-2',
-        3 => 'sm:grid-cols-2 lg:grid-cols-3',
-        4 => 'sm:grid-cols-2 lg:grid-cols-4',
-        default => 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5',
-    };
+    $columns = count($groups) > 1 ? 'xl:grid-cols-2' : 'max-w-4xl';
 @endphp
 
 {{--
-    Each family of workspace types as one compact card in an even row, as in the owner's reference (OD-141):
-    a published photo of one of its offerings or a pictogram, the family, where each type is offered
-    (published offerings only) and the next step. Never a price.
+    Each workspace type as one wide card, two to a row on large screens (owner, 2026-11-11; card content as in
+    the owner's reference, OD-141): a published photo of one of its offerings or a pictogram beside the type,
+    where it is offered (published offerings only) and the next step. Never a price. From the small breakpoint
+    every row is as tall as the tallest, so all cards are the same size (OD-182); a last card left alone in its
+    row is centred.
 --}}
 <section id="workspaces" class="scroll-mt-24 bg-mist/50 py-14 sm:py-20" aria-labelledby="workspaces-heading">
     <div class="container-page flex flex-col gap-6 sm:gap-8">
@@ -31,19 +27,25 @@
             </a>
         </div>
 
-        <div class="grid gap-5 {{ $columns }}" data-reveal-group>
+        <div class="grid gap-5 sm:auto-rows-fr {{ $columns }}" data-reveal-group>
             @foreach ($groups as $group)
                 @php
                     $icon = $group['categories'][0]['icon'] ?? 'squares-2x2';
                     $single = count($group['categories']) === 1 ? $group['categories'][0] : null;
                 @endphp
-                <article id="{{ $group['anchor'] }}" class="group/card flex scroll-mt-24 flex-col overflow-hidden rounded-3xl bg-surface shadow-card ring-1 ring-line transition duration-300 hover:-translate-y-1 hover:shadow-raised">
-                    <div class="relative aspect-[16/10] overflow-hidden">
+                <article
+                    id="{{ $group['anchor'] }}"
+                    @class([
+                        'group/card flex scroll-mt-24 flex-col overflow-hidden rounded-3xl bg-surface shadow-card ring-1 ring-line transition duration-300 hover:-translate-y-1 hover:shadow-raised sm:flex-row',
+                        'xl:col-span-2 xl:w-[calc(50%-0.625rem)] xl:justify-self-center' => $loop->last && $loop->odd && ! $loop->first,
+                    ])
+                >
+                    <div class="relative aspect-[16/10] overflow-hidden sm:aspect-auto sm:min-h-64 sm:w-2/5 sm:shrink-0">
                         @if ($group['photo'])
                             <img
                                 src="{{ $group['photo']['src'] }}"
                                 srcset="{{ $group['photo']['srcset'] }}"
-                                sizes="(min-width: 1280px) 20vw, (min-width: 640px) 50vw, 100vw"
+                                sizes="(min-width: 1280px) 240px, (min-width: 640px) 40vw, 100vw"
                                 alt="{{ $group['photo']['alt'] }}"
                                 loading="lazy"
                                 decoding="async"
@@ -55,8 +57,8 @@
                         @endif
                     </div>
 
-                    <div class="relative flex flex-1 flex-col gap-2.5 p-5 pt-9">
-                        <span class="absolute -top-6 left-5 flex size-12 items-center justify-center rounded-2xl bg-surface text-leaf-700 shadow-card ring-1 ring-line" aria-hidden="true">
+                    <div class="relative flex flex-1 flex-col gap-2.5 p-5 pt-9 sm:p-6 sm:pl-10">
+                        <span class="absolute -top-6 left-5 flex size-12 items-center justify-center rounded-2xl bg-surface text-leaf-700 shadow-card ring-1 ring-line sm:top-6 sm:-left-6" aria-hidden="true">
                             <x-dynamic-component :component="'heroicon-o-'.$icon" class="size-6" />
                         </span>
                         <h3 class="font-editorial text-xl font-semibold text-forest">
@@ -84,7 +86,7 @@
                                         <p class="text-muted">
                                             Available at
                                             @foreach ($category['offeredAt'] as $location)
-                                                <a href="{{ $location['path'] }}" class="font-medium text-forest underline decoration-line underline-offset-2 hover:text-leaf-700">SmartGro {{ $location['name'] }}</a>@if (! $loop->last), @endif
+                                                <a href="{{ $location['path'] }}" class="font-medium whitespace-nowrap text-forest underline decoration-line underline-offset-2 hover:text-leaf-700">SmartGro {{ $location['name'] }}</a>@if (! $loop->last), @endif
                                             @endforeach
                                         </p>
                                     @else

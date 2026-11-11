@@ -4,8 +4,9 @@
 
 {{--
     Artwork for a family of workspace types without a published photo: a top-down pictogram in the style
-    of the floor-plan illustration (private offices, desks, meeting rooms, a virtual office's mail, a
-    managed floor). An illustration, never presented as a SmartGro space (D-12).
+    of the floor-plan illustration (private offices, dedicated desks, a shared hot-desk bench with free and
+    taken seats, a meeting room, a conference room set out in rows, a virtual office's mail, a managed floor).
+    An illustration, never presented as a SmartGro space (D-12).
 --}}
 <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true" {{ $attributes }}>
     <defs>
@@ -24,8 +25,17 @@
                     <path d="M{{ $x + 52 }} 165a28 28 0 0 0-28-28" stroke-dasharray="4 4" />
                 @endforeach
                 @break
-            @case('desks')
+            @case('dedicated-desks')
                 <path d="M60 112h280" stroke-dasharray="6 6" stroke-opacity="0.25" />
+                @break
+            @case('hot-desks')
+                <rect x="85" y="92" width="230" height="42" rx="6" />
+                @foreach ([[155, 74], [245, 74], [110, 152], [200, 152], [290, 152]] as [$x, $y])
+                    <circle cx="{{ $x }}" cy="{{ $y }}" r="8" stroke="#84bd53" stroke-opacity="0.6" />
+                @endforeach
+                @break
+            @case('conference-rooms')
+                <rect x="60" y="28" width="280" height="169" rx="6" />
                 @break
             @case('meeting-rooms')
                 <rect x="70" y="35" width="260" height="155" rx="6" stroke="#84bd53" stroke-opacity="0.75" stroke-dasharray="8 6" />
@@ -54,7 +64,35 @@
                 @endforeach
             </g>
             @break
-        @case('desks')
+        @case('hot-desks')
+            <g fill="#f7f7f2" fill-opacity="0.22">
+                @foreach ([[98, 98], [188, 98], [278, 98], [143, 118], [233, 118]] as [$x, $y])
+                    <rect x="{{ $x }}" y="{{ $y }}" width="24" height="10" rx="2" />
+                @endforeach
+            </g>
+            <g fill="#84bd53" fill-opacity="0.6">
+                @foreach ([[110, 74], [200, 74], [290, 74], [155, 152], [245, 152]] as [$x, $y])
+                    <circle cx="{{ $x }}" cy="{{ $y }}" r="9" />
+                @endforeach
+            </g>
+            @break
+        @case('conference-rooms')
+            <rect x="140" y="40" width="120" height="9" rx="2" fill="#84bd53" fill-opacity="0.6" />
+            <g fill="#f7f7f2" fill-opacity="0.2">
+                @foreach ([66, 106, 146] as $y)
+                    <rect x="105" y="{{ $y }}" width="85" height="12" rx="3" />
+                    <rect x="210" y="{{ $y }}" width="85" height="12" rx="3" />
+                @endforeach
+            </g>
+            <g fill="#84bd53" fill-opacity="0.55">
+                @foreach ([66, 106, 146] as $y)
+                    @foreach ([128, 167, 233, 272] as $x)
+                        <circle cx="{{ $x }}" cy="{{ $y + 26 }}" r="8" />
+                    @endforeach
+                @endforeach
+            </g>
+            @break
+        @case('dedicated-desks')
             <g fill="#f7f7f2" fill-opacity="0.2">
                 @foreach ([65, 120, 175, 230, 285] as $x)
                     <rect x="{{ $x }}" y="70" width="48" height="30" rx="3" />

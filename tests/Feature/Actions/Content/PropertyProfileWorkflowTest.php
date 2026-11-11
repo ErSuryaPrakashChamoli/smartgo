@@ -239,7 +239,7 @@ it('never lets a profile change status, capacity, availability or price (FR-CMS-
 
     expect($this->property->fresh()->operational_status)->toBe(PropertyStatus::Open)
         ->and(array_keys($this->profile->fresh()->publishedRevision->payload))
-        ->toEqualCanonicalizing(['headline', 'summary', 'getting_there', 'nearest_metro', 'metro_walk_minutes', 'buses', 'parking', 'accessibility', 'phone', 'whatsapp', 'email', 'hero_asset_id', 'gallery_asset_ids', 'seo_title', 'seo_description'])
+        ->toEqualCanonicalizing(['headline', 'summary', 'getting_there', 'nearest_metro', 'metro_walk_minutes', 'buses', 'parking', 'accessibility', 'phone', 'whatsapp', 'email', 'hero_asset_id', 'gallery_asset_ids', 'twin_model_id', 'twin_tour_stops', 'floor_plans', 'seo_title', 'seo_description'])
         ->and($this->marketing->can('update', $this->property))->toBeFalse();
 });
 
@@ -314,3 +314,39 @@ it('previews a profile version on the property page for staff who may see it, ne
     actingAs($unassigned)->get(RevisionPreviewController::url($draft))->assertForbidden();
     get('/locations/noida/a-70')->assertDontSee('Preview headline');
 });
+
+it('publishes a 3D walkthrough and floor plans with the profile, through approval, as plain lists (OD-181)', function () {
+    $model = uploadTwinModelForTest($this->marketing, $this->property);
+    $plan = profilePhoto($this->marketing, MediaOrigin::Commissioned);
+
+    publishProfile($this->profile, $this->marketing, $this->approver, $this->publisher, [
+        'headline' => 'Headline', 'summary' => 'Summary', 'twin_model_id' => (string) $model->id,
+        'twin_tour_stops' => ['first-item' => ['camera' => 'SG_CAM_2', 'title' => ' Meeting room '], 'second-item' => ['camera' => 'SG_CAM_1', 'title' => 'Reception']],
+        'floor_plans' => ['item' => ['label' => 'Ground floor', 'media_asset_id' => (string) $plan->id, 'note' => '', 'is_example' => '0']],
+    ]);
+
+    expect($this->profile->fresh())
+        ->twin_model_id->toBe($model->id)
+        ->twin_tour_stops->toEqual([['camera' => 'SG_CAM_2', 'title' => 'Meeting room'], ['camera' => 'SG_CAM_1', 'title' => 'Reception']])
+        ->floor_plans->toEqual([['label' => 'Ground floor', 'media_asset_id' => $plan->id, 'note' => null, 'is_example' => false]]);
+});
+
+it('refuses a 3D model, guided view or floor plan the location may not show (OD-181)', function (Closure $explore, string $field, string $message) {
+    expect(fn () => app(CreateDraft::class)->handle($this->profile, $this->marketing, ['headline' => 'H', 'summary' => 'S', ...$explore()]))
+        ->toThrow(function (ValidationException $exception) use ($field, $message): void {
+            expect($exception->errors())->toHaveKey($field)->and($exception->errors()[$field])->toContain($message);
+        });
+})->with([
+    'another location\'s model' => [fn () => ['twin_model_id' => uploadTwinModelForTest(test()->marketing, Property::query()->where('code', 'H-105')->sole())->id], 'twin_model_id', 'Choose a 3D model uploaded for this property.'],
+    'a view at no camera position of the model' => [fn () => ['twin_model_id' => uploadTwinModelForTest(test()->marketing, test()->property)->id, 'twin_tour_stops' => [['camera' => 'SG_CAM_9', 'title' => 'Lost']]], 'twin_tour_stops.0.camera', 'Choose one of the model\'s camera positions.'],
+    'guided views without a model' => [fn () => ['twin_tour_stops' => [['camera' => 'SG_CAM_1', 'title' => 'Reception']]], 'twin_tour_stops', 'Choose the 3D model first, then its guided views.'],
+    'a render as a real plan' => [fn () => ['floor_plans' => [['label' => 'Ground floor', 'media_asset_id' => profilePhoto(test()->marketing, MediaOrigin::Render)->id]]], 'floor_plans.0.media_asset_id', 'Use SmartGro\'s own or a commissioned plan of the property. A render or concept can only be an example floor plan.'],
+    'another location\'s plan' => [fn () => ['floor_plans' => [['label' => 'Ground floor', 'media_asset_id' => profilePhoto(test()->marketing, MediaOrigin::Commissioned, ['depicts_property_id' => Property::query()->where('code', 'H-105')->value('id')])->id]]], 'floor_plans.0.media_asset_id', 'Choose a floor plan uploaded for this property.'],
+    'a photo marked as an example plan' => [fn () => ['floor_plans' => [['label' => 'Ground floor', 'media_asset_id' => profilePhoto(test()->marketing)->id, 'is_example' => true]]], 'floor_plans.0.media_asset_id', 'An example floor plan must be a render or concept from the media library, so it is never taken for a real plan.'],
+    'an example plan where sample content is off' => [function (): array {
+        config(['backoffice.sample_content' => false]);
+
+        return ['floor_plans' => [['label' => 'Ground floor', 'media_asset_id' => profilePhoto(test()->marketing, MediaOrigin::Render)->id, 'is_example' => true]]];
+    }, 'floor_plans.0.media_asset_id', 'Example floor plans are sample content, which is not allowed here. Replace it with SmartGro\'s own or a commissioned plan of this property.'],
+    'a plan whose licence has expired' => [fn () => ['floor_plans' => [['label' => 'Ground floor', 'media_asset_id' => profilePhoto(test()->marketing, MediaOrigin::Commissioned, ['licence_expires_at' => '2020-01-01'])->id]]], 'floor_plans.0.media_asset_id', 'This image\'s licence has expired, so it cannot be used.'],
+]);

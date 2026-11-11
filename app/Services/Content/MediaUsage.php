@@ -19,7 +19,9 @@ use Illuminate\Database\Eloquent\Builder;
  * their data, share images are `seo.image_asset_id` in a page payload (`og_asset_id` once live), and
  * property and offering profiles hold `hero_asset_id` and `gallery_asset_ids`. A profile's photos are
  * public only while that profile is on the website. A home banner holds `media_asset_id` (OD-169), on databases
- * that have banners, and so does a listed space (OD-177 e), public while the space is shown.
+ * that have banners, and so does a listed space (OD-177 e), public while the space is shown. A property profile's
+ * floor plans hold `media_asset_id` in `floor_plans` (OD-181), on databases that have the column, public while the
+ * profile is on the website.
  */
 class MediaUsage
 {
@@ -37,7 +39,8 @@ class MediaUsage
             || $this->profilesShowing(PropertyProfile::query(), $asset)->published()->whereHas('property', fn ($query) => $query->publiclyListed())->exists()
             || $this->profilesShowing(OfferingProfile::query(), $asset)->published()->whereHas('offering', fn ($query) => $query->publiclyListed())->exists()
             || (HomeBanner::isAvailable() && HomeBanner::query()->published()->where('media_asset_id', $asset->getKey())->exists())
-            || (SpaceListing::hasPhotos() && SpaceListing::query()->shown()->where('media_asset_id', $asset->getKey())->exists());
+            || (SpaceListing::hasPhotos() && SpaceListing::query()->shown()->where('media_asset_id', $asset->getKey())->exists())
+            || (PropertyProfile::hasExplore() && $this->profilesWithFloorPlan($asset)->published()->whereHas('property', fn ($query) => $query->publiclyListed())->exists());
     }
 
     /**
@@ -54,11 +57,13 @@ class MediaUsage
             || $this->profilesShowing(OfferingProfile::query(), $asset)->exists()
             || (HomeBanner::isAvailable() && HomeBanner::query()->where('media_asset_id', $asset->getKey())->exists())
             || (SpaceListing::hasPhotos() && SpaceListing::query()->where('media_asset_id', $asset->getKey())->exists())
+            || (PropertyProfile::hasExplore() && $this->profilesWithFloorPlan($asset)->exists())
             || Revision::query()->where(fn ($query) => $query
                 ->whereRaw('JSON_CONTAINS(payload, ?)', [json_encode(['blocks' => [['data' => ['media_asset_id' => $asset->getKey()]]]])])
                 ->orWhereRaw('JSON_CONTAINS(payload, ?)', [json_encode(['seo' => ['image_asset_id' => $asset->getKey()]])])
                 ->orWhereRaw('JSON_CONTAINS(payload, ?)', [json_encode(['hero_asset_id' => $asset->getKey()])])
                 ->orWhereRaw('JSON_CONTAINS(payload, ?)', [json_encode(['gallery_asset_ids' => [$asset->getKey()]])])
+                ->orWhereRaw('JSON_CONTAINS(payload, ?)', [json_encode(['floor_plans' => [['media_asset_id' => $asset->getKey()]]])])
                 ->orWhere(fn ($query) => $query->whereIn('revisionable_type', [(new HomeBanner)->getMorphClass(), (new SpaceListing)->getMorphClass()])->whereRaw('JSON_CONTAINS(payload, ?)', [json_encode(['media_asset_id' => $asset->getKey()])])))
                 ->exists();
     }
@@ -76,6 +81,16 @@ class MediaUsage
         return $profiles->where(fn (Builder $query): Builder => $query
             ->where('hero_asset_id', $asset->getKey())
             ->orWhereRaw('JSON_CONTAINS(gallery_asset_ids, ?)', [json_encode($asset->getKey())]));
+    }
+
+    /**
+     * Property profiles whose live row uses the asset as a floor plan.
+     *
+     * @return Builder<PropertyProfile>
+     */
+    private function profilesWithFloorPlan(MediaAsset $asset): Builder
+    {
+        return PropertyProfile::query()->whereRaw('JSON_CONTAINS(floor_plans, ?)', [json_encode([['media_asset_id' => $asset->getKey()]])]);
     }
 
     private function blockNeedle(MediaAsset $asset): string

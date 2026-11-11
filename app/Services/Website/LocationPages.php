@@ -16,16 +16,18 @@ use Illuminate\Support\Collection;
  */
 class LocationPages
 {
-    public function __construct(private WorkspaceCatalogue $catalogue, private SiteNavigation $siteNavigation, private TourForm $tourForm, private StructuredData $structuredData) {}
+    public function __construct(private WorkspaceCatalogue $catalogue, private SiteNavigation $siteNavigation, private TourForm $tourForm, private StructuredData $structuredData, private LocationExplore $explore) {}
 
     /**
-     * The property page, live or as a staff preview of a profile version.
+     * The property page, live or as a staff preview of a profile version. Its 3D walkthrough and floor plans come
+     * from the version previewed ($payload), or else from the live profile (OD-181).
      *
      * @param  array<string, mixed>|null  $profile
-     * @param  iterable<int, Property>  $nearby
      * @param  array{number: int, state: string, expires_at: string}|null  $preview
+     * @param  iterable<int, Property>  $nearby
+     * @param  array<string, mixed>|null  $payload  the previewed version's payload
      */
-    public function property(Property $property, ?array $profile, ?array $preview, iterable $nearby = []): View
+    public function property(Property $property, ?array $profile, ?array $preview, iterable $nearby = [], ?array $payload = null): View
     {
         $navigation = $this->siteNavigation->present();
 
@@ -41,6 +43,7 @@ class LocationPages
                 'profile' => $this->catalogue->offeringProfile($offering->profile->toRevisionPayload(), $offering),
             ])->all(),
             'nearby' => $nearby,
+            'explore' => $this->explore->present($property, $preview !== null ? $payload : $this->explore->livePayload($property), isPreview: $preview !== null),
             'faqs' => $this->faqsFor($property),
             'enquiryHref' => route('enquiries.create', ['property' => $property->getKey()]),
             'tourHref' => $preview === null && $this->tourForm->isOpenFor($property) ? route('tours.create', ['property' => $property->getKey()]) : null,

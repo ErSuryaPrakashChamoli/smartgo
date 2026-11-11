@@ -1,4 +1,4 @@
-{{-- A property on the website (IA §3.1, the approved centre page design) from published records only, or a staff preview of a profile version. A section appears only when it has content; nothing is a placeholder. --}}
+{{-- A property on the website (IA §3.1, the approved centre page design) from published records only, or a staff preview of a profile version. A section appears only when it has content; nothing is a placeholder. "Explore" holds the 3D walkthrough and floor plans (OD-181). --}}
 @php
     $photos = $profile['photos'] ?? [];
     $openingHours = $property->openingHours();
@@ -7,6 +7,7 @@
     $sections = array_filter([
         'workspaces' => 'Workspaces',
         'photos' => count($photos) > 1 ? 'Photos' : null,
+        'explore' => $explore !== null ? ($explore['walkthrough'] !== null ? '3D and floor plans' : 'Floor plans') : null,
         'getting-here' => $hasGettingHere ? 'Getting here' : null,
         'hours' => $openingHours !== [] ? 'Opening hours' : null,
         'faqs' => $faqs->isNotEmpty() ? 'Questions' : null,
@@ -32,17 +33,7 @@
     <section class="border-b border-line bg-surface">
         <div @class(['container-page grid gap-8 py-8 lg:gap-12 lg:py-12', 'lg:grid-cols-12' => $photos !== []])>
             @if ($photos !== [])
-                <div class="grid grid-cols-4 gap-3 lg:col-span-7">
-                    @foreach (array_slice($photos, 0, 4) as $photo)
-                        <div @class(['relative', 'col-span-4' => $loop->first, 'hidden sm:block' => ! $loop->first])>
-                            <img src="{{ $photo['src'] }}" srcset="{{ $photo['srcset'] }}" sizes="{{ $loop->first ? '(min-width: 1024px) 700px, 100vw' : '200px' }}" alt="{{ $photo['alt'] }}"
-                                @if ($photo['dimensions']) width="{{ $photo['dimensions']['width'] }}" height="{{ $photo['dimensions']['height'] }}" @endif
-                                @unless ($loop->first) loading="lazy" @endunless decoding="async"
-                                @class(['h-auto w-full bg-mist object-cover', 'aspect-[4/3] rounded-2xl' => $loop->first, 'aspect-square rounded-xl' => ! $loop->first])>
-                            <x-site.photo-label :label="$photo['label'] ?? null ? ($loop->first ? $photo['label'] : 'Stock photo') : null" :compact="! $loop->first" />
-                        </div>
-                    @endforeach
-                </div>
+                <x-site.photo-gallery :photos="$photos" class="lg:col-span-7" />
             @endif
             <div @class(['flex flex-col gap-5', 'lg:col-span-5' => $photos !== [], 'max-w-3xl' => $photos === []])>
                 <x-site.breadcrumb :items="array_values(array_filter([['label' => 'Locations', 'href' => '/locations'], ['label' => $property->city->name, 'href' => '/locations/'.$property->city->slug], $property->microMarket ? ['label' => $property->microMarket->name, 'href' => $property->microMarket->path()] : null, ['label' => 'SmartGro '.$property->name]]))" />
@@ -142,12 +133,13 @@
                     @foreach (array_slice($photos, 1) as $photo)
                         <li>
                             <figure class="flex flex-col gap-2">
-                                <div class="relative">
+                                <button type="button" class="group relative block w-full cursor-pointer overflow-hidden rounded-2xl" data-photo-show="{{ $loop->index + 1 }}">
                                     <img src="{{ $photo['src'] }}" srcset="{{ $photo['srcset'] }}" sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw" alt="{{ $photo['alt'] }}"
                                         @if ($photo['dimensions']) width="{{ $photo['dimensions']['width'] }}" height="{{ $photo['dimensions']['height'] }}" @endif
-                                        loading="lazy" decoding="async" class="aspect-[4/3] h-auto w-full rounded-2xl bg-mist object-cover">
+                                        loading="lazy" decoding="async" class="aspect-[4/3] h-auto w-full bg-mist object-cover transition-opacity group-hover:opacity-90">
+                                    <span class="sr-only">Show this photo at the top of the page</span>
                                     <x-site.photo-label :label="$photo['label'] ?? null" />
-                                </div>
+                                </button>
                                 @if (filled($photo['credit']))
                                     <figcaption class="text-sm text-muted">{{ $photo['credit'] }}</figcaption>
                                 @endif
@@ -156,6 +148,10 @@
                     @endforeach
                 </ul>
             </section>
+        @endif
+
+        @if ($explore !== null)
+            <x-site.location-explore :explore="$explore" :location="'SmartGro '.$property->name" :tour-href="$tourHref" :enquiry-href="$enquiryHref" />
         @endif
 
         @if ($hasGettingHere || $openingHours !== [])

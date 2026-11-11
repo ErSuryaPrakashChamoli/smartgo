@@ -1,0 +1,137 @@
+{
+    "database": "smartgro_od181_rehearsal",
+    "read_only": 1,
+    "explore_columns": true,
+    "public": {
+        "/": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "not_available_yet": false,
+            "explore_link": "/locations/noida/a-23#explore"
+        },
+        "/locations/noida/a-70": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore": true,
+            "walkthrough": true,
+            "notice": true,
+            "views": 5,
+            "floor_plans": 2,
+            "example_plan_labels": 2,
+            "three_d_script_or_preload": false
+        },
+        "/3d-models/1": {
+            "status": 200,
+            "type": "model/gltf-binary"
+        },
+        "/media/12/w1600": {
+            "status": 200,
+            "type": "image/webp"
+        },
+        "/media/12/w960": {
+            "status": 200,
+            "type": "image/webp"
+        },
+        "/media/13/w1600": {
+            "status": 200,
+            "type": "image/webp"
+        },
+        "/media/13/w960": {
+            "status": 200,
+            "type": "image/webp"
+        },
+        "/locations/noida/a-71": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore": true,
+            "walkthrough": true,
+            "notice": true,
+            "views": 5,
+            "floor_plans": 2,
+            "example_plan_labels": 2,
+            "three_d_script_or_preload": false
+        },
+        "/3d-models/2": {
+            "status": 200,
+            "type": "model/gltf-binary"
+        },
+        "/locations/noida/a-23": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore": true,
+            "walkthrough": true,
+            "notice": true,
+            "views": 5,
+            "floor_plans": 2,
+            "example_plan_labels": 2,
+            "three_d_script_or_preload": false
+        },
+        "/3d-models/3": {
+            "status": 200,
+            "type": "model/gltf-binary"
+        },
+        "/locations/noida/h-105": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore": true,
+            "walkthrough": true,
+            "notice": true,
+            "views": 5,
+            "floor_plans": 2,
+            "example_plan_labels": 2,
+            "three_d_script_or_preload": false
+        },
+        "/3d-models/4": {
+            "status": 200,
+            "type": "model/gltf-binary"
+        },
+        "/3d-models/999999": {
+            "status": 404,
+            "type": "text/html; charset=utf-8",
+            "error": "ModelNotFoundException: No query results for model [App\\Models\\TwinModel] 999999"
+        }
+    },
+    "backoffice": {
+        "/admin/website/twin-models": {
+            "status": 200,
+            "type": "text/html; charset=utf-8"
+        },
+        "/admin/website/twin-models/1": {
+            "status": 200,
+            "type": "text/html; charset=utf-8"
+        },
+        "/admin/website/twin-models/2": {
+            "status": 200,
+            "type": "text/html; charset=utf-8"
+        },
+        "/admin/website/twin-models/3": {
+            "status": 200,
+            "type": "text/html; charset=utf-8"
+        },
+        "/admin/website/twin-models/4": {
+            "status": 200,
+            "type": "text/html; charset=utf-8"
+        },
+        "/admin/properties/website-profiles/1/edit": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore_section": true
+        },
+        "/admin/properties/website-profiles/2/edit": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore_section": true
+        },
+        "/admin/properties/website-profiles/3/edit": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore_section": true
+        },
+        "/admin/properties/website-profiles/4/edit": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore_section": true
+        }
+    },
+    "acting_as": 4
+}

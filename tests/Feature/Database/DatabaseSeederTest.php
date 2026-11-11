@@ -7,7 +7,9 @@ use App\Models\HomeHighlight;
 use App\Models\Offering;
 use App\Models\Page;
 use App\Models\Property;
+use App\Models\PropertyProfile;
 use App\Models\SpaceListing;
+use App\Models\TwinModel;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Filament\Facades\Filament;
@@ -37,6 +39,8 @@ it('fills an empty database with the roles, reference data, dummy staff and samp
         ->and(SpaceListing::query()->published()->where('is_sample', true)->count())->toBe(4 * 6 * 3)
         ->and(Offering::query()->publiclyListed()->count())->toBe(4 * 7)
         ->and(CaseStudy::query()->published()->count())->toBe(2)
+        ->and(TwinModel::query()->count())->toBe(4)
+        ->and(PropertyProfile::query()->published()->whereNotNull('twin_model_id')->count())->toBe(4)
         ->and(User::query()->where('email', 'test@example.com')->exists())->toBeFalse();
 });
 
@@ -52,5 +56,6 @@ it('seeds only the roles and reference data in production', function () {
         ->and(HomeBanner::query()->exists())->toBeFalse()
         ->and(SpaceListing::query()->exists())->toBeFalse()
         ->and(Offering::query()->exists())->toBeFalse()
-        ->and(CaseStudy::query()->exists())->toBeFalse();
+        ->and(CaseStudy::query()->exists())->toBeFalse()
+        ->and(TwinModel::query()->exists())->toBeFalse();
 });

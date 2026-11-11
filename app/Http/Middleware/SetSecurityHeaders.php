@@ -37,7 +37,10 @@ class SetSecurityHeaders
      * The public website's policy: this site's own files only, no plugins, no framing by other sites. The one
      * inline style, the font faces `@fonts` writes, carries the nonce; inline scripts and style attributes
      * are not allowed. Analytics, maps or 360° tours would each add a reviewed allow-list entry
-     * (SECURITY_MODEL §5). 'report-sample' puts the start of a blocked inline script or style in the report.
+     * (SECURITY_MODEL §5): the footer's Google map, loaded only when the visitor asks for it (OD-180), may be
+     * framed, from Google's map addresses only (its `/maps?…&output=embed` address answers with a redirect to
+     * `/maps/embed`). 'report-sample' puts the
+     * start of a blocked inline script or style in the report.
      *
      * @var array<string, string>
      */
@@ -49,7 +52,7 @@ class SetSecurityHeaders
         'font-src' => "'self'",
         'connect-src' => "'self'",
         'media-src' => "'self'",
-        'frame-src' => "'none'",
+        'frame-src' => 'https://www.google.com/maps https://www.google.com/maps/',
         'object-src' => "'none'",
         'base-uri' => "'self'",
         'form-action' => "'self'",

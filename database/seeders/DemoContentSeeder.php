@@ -19,6 +19,7 @@ use App\Models\Offering;
 use App\Models\Page;
 use App\Models\Product;
 use App\Models\Property;
+use App\Models\PropertyProfile;
 use App\Models\SiteSetting;
 use App\Models\Testimonial;
 use App\Models\User;
@@ -265,7 +266,8 @@ class DemoContentSeeder extends Seeder
             $where = trim(($property->microMarket?->name ?? '').', '.$property->city->name, ', ');
             $photos = $photoIds(self::LOCATION_PHOTOS[$property->code] ?? ['loft_lounge', 'lounge']);
 
-            $locations += (int) $publish($property->profile()->firstOrCreate([]), [
+            $profile = $property->profile()->firstOrCreate([]);
+            $locations += (int) $publish($profile, [
                 'headline' => "Workspaces at SmartGro {$property->name}, {$where}",
                 'summary' => "Example text for SmartGro to replace: SmartGro {$property->name} in {$where} offers private cabins, desks, meeting rooms, virtual offices and managed offices. Describe what it is like to work here and who it suits. Nothing here is confirmed SmartGro information.",
                 'getting_there' => "Example text: describe how to reach SmartGro {$property->name} by metro, bus and car, and where to enter the building.",
@@ -281,6 +283,8 @@ class DemoContentSeeder extends Seeder
                 'gallery_asset_ids' => array_slice($photos, 1),
                 'seo_title' => null,
                 'seo_description' => null,
+                // The 3D walkthrough and floor plans stay as they are (LocationExploreSeeder, OD-181).
+                ...(PropertyProfile::hasExplore() ? $profile->only(PropertyProfile::EXPLORE_FIELDS) : []),
             ]);
 
             foreach ($property->offerings()->with(['product', 'profile'])->where('is_active', true)->get() as $offering) {

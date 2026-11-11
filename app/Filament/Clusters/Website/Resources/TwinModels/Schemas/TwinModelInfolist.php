@@ -7,13 +7,13 @@ use App\Enums\Twin\CaptureType;
 use App\Http\Controllers\Backoffice\TwinModelFileController;
 use App\Models\TwinAnchor;
 use App\Models\TwinModel;
+use App\Services\Twin\TwinViewerAssets;
 use Closure;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Vite;
 
 /**
  * One 3D model: what it shows and how it was made, the checks it passed, a preview that loads only when
@@ -23,20 +23,6 @@ use Illuminate\Support\Facades\Vite;
  */
 class TwinModelInfolist
 {
-    private const string VIEWER_ENTRY = 'resources/js/twin-viewer.js';
-
-    /**
-     * Each decoder's module and the files that module fetches: three's defaults, and for Draco the build made
-     * for glTF, which the viewer selects (DRACO_GLTF_CONFIG).
-     *
-     * @var array<string, array{0: string, 1: list<string>}>
-     */
-    private const array DECODER_SOURCES = [
-        'draco' => ['node_modules/three/examples/jsm/loaders/DRACOLoader.js', ['node_modules/three/examples/jsm/libs/draco/gltf/draco_wasm_wrapper.js', 'node_modules/three/examples/jsm/libs/draco/gltf/draco_decoder.wasm']],
-        'meshopt' => ['node_modules/three/examples/jsm/libs/meshopt_decoder.module.js', []],
-        'ktx2' => ['node_modules/three/examples/jsm/loaders/KTX2Loader.js', ['node_modules/three/examples/jsm/libs/basis/basis_transcoder.js', 'node_modules/three/examples/jsm/libs/basis/basis_transcoder.wasm']],
-    ];
-
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -94,16 +80,13 @@ class TwinModelInfolist
                         TextEntry::make('outside_files')->label('Outside files')->state('None'),
                     ]),
                 Section::make('Preview')
-                    ->description('Nothing 3D loads until you ask for it. Not shown on the website: that needs a published scene.')
+                    ->description('Nothing 3D loads until you ask for it. On the website it appears once the location\'s website profile uses it and that version is published (Properties → Website profiles, OD-181).')
                     ->schema([
                         View::make('filament.twin-models.viewer')->viewData(fn (TwinModel $record): array => [
-                            'moduleUrl' => Vite::asset(self::VIEWER_ENTRY),
-                            ...self::viewerFiles(self::decoders($record)),
+                            ...app(TwinViewerAssets::class)->forModel($record),
                             'modelUrl' => route(TwinModelFileController::ROUTE, ['twinModel' => $record]),
                             'heading' => $record->capture_type->title('SmartGro '.$record->property->name),
                             'notice' => $record->capture_type->disclaimer(),
-                            'size' => self::megabytes($record->file_bytes),
-                            'decoders' => self::decoders($record),
                             'cameras' => $record->cameraAnchors->map(fn (TwinAnchor $anchor): array => ['node' => $anchor->node_name, 'label' => 'Camera position '.$anchor->reference])->all(),
                         ]),
                     ]),
@@ -125,42 +108,6 @@ class TwinModelInfolist
     private static function megabytes(int $bytes): string
     {
         return number_format($bytes / 1024 / 1024, 1);
-    }
-
-    /**
-     * The built files to fetch alongside the viewer module when the button is pressed, instead of after it:
-     * the modules it imports and the decoders' modules (`moduleImports`), and the files those decoders fetch
-     * (`decoderFiles`), for the decoders this model needs only. None while Vite's development server runs.
-     *
-     * @param  list<string>  $decoders
-     * @return array{moduleImports: list<string>, decoderFiles: list<string>}
-     */
-    private static function viewerFiles(array $decoders): array
-    {
-        $manifest = Vite::isRunningHot() ? [] : json_decode((string) @file_get_contents(public_path('build/manifest.json')), true);
-        $url = fn (string $source): ?string => isset($manifest[$source]['file']) ? asset('build/'.$manifest[$source]['file']) : null;
-        $needed = array_intersect_key(self::DECODER_SOURCES, array_flip($decoders));
-
-        return [
-            'moduleImports' => array_values(array_filter(array_map($url, [...($manifest[self::VIEWER_ENTRY]['imports'] ?? []), ...array_column($needed, 0)]))),
-            'decoderFiles' => array_values(array_filter(array_map($url, array_merge([], ...array_column($needed, 1))))),
-        ];
-    }
-
-    /**
-     * The decoders the checks found the model needs, so the viewer can start loading them at once.
-     *
-     * @return list<string>
-     */
-    private static function decoders(TwinModel $record): array
-    {
-        $report = $record->validation_report;
-
-        return array_values(array_filter([
-            in_array('draco', $report['compression'] ?? [], true) ? 'draco' : null,
-            in_array('meshopt', $report['compression'] ?? [], true) ? 'meshopt' : null,
-            in_array('ktx2', $report['textures']['formats'] ?? [], true) ? 'ktx2' : null,
-        ]));
     }
 
     /**

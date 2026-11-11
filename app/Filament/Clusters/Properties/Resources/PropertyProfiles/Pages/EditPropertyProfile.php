@@ -69,6 +69,11 @@ class EditPropertyProfile extends EditRecord
             'gallery_asset_ids' => array_map(strval(...), $payload['gallery_asset_ids'] ?? []),
             'seo_title' => $payload['seo_title'] ?? null,
             'seo_description' => $payload['seo_description'] ?? null,
+            ...(PropertyProfile::hasExplore() ? [
+                'twin_model_id' => $payload['twin_model_id'] ?? null,
+                'twin_tour_stops' => array_values($payload['twin_tour_stops'] ?? []),
+                'floor_plans' => array_values($payload['floor_plans'] ?? []),
+            ] : []),
         ];
     }
 }

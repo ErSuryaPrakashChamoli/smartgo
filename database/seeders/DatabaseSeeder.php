@@ -13,7 +13,8 @@ use Illuminate\Database\Seeder;
  * and highlights (HomeShowcaseSeeder, OD-169) and the example spaces under Spaces in the menu (SpaceListingSeeder,
  * OD-177), and the demo details for every part of the website that is still empty (DemoContentSeeder, OD-176:
  * placeholder contact details, a sample privacy notice, tour hours, the locations and their workspaces with
- * labelled stock photos, example case studies). Model events stay on: the audit log, the content workflow
+ * labelled stock photos, example case studies), and each location's example 3D walkthrough and floor plans
+ * (LocationExploreSeeder, OD-181). Model events stay on: the audit log, the content workflow
  * and the permission cache depend on them.
  */
 class DatabaseSeeder extends Seeder
@@ -30,6 +31,8 @@ class DatabaseSeeder extends Seeder
             $this->call(DemoContentSeeder::class);
             // After the demo content, whose stock photos the example spaces use (OD-177 e).
             $this->call(SpaceListingSeeder::class);
+            // After the demo content too, whose published location profiles get a 3D walkthrough and floor plans (OD-181).
+            $this->call(LocationExploreSeeder::class);
         }
     }
 }

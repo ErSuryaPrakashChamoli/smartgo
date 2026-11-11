@@ -2,14 +2,20 @@
 
 namespace App\Filament\Clusters\Properties\Resources\PropertyProfiles\Schemas;
 
+use App\Enums\Twin\AnchorType;
 use App\Models\MediaAsset;
 use App\Models\Property;
 use App\Models\PropertyProfile;
+use App\Models\TwinAnchor;
+use App\Models\TwinModel;
 use Closure;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -56,8 +62,128 @@ class PropertyProfileForm
                         TextInput::make('email')->label('Email')->email()->maxLength(120),
                     ]),
                 self::photoSection(fn (?PropertyProfile $record): ?Property => $record?->property),
+                ...(PropertyProfile::hasExplore() ? [self::exploreSection()] : []),
                 self::searchSection(),
             ]);
+    }
+
+    /**
+     * The page's 3D walkthrough and floor plans (OD-181). Nobody types coordinates: a guided view is one of the
+     * model's own camera positions, given a title (FR-3D-2). The notice a model's capture type requires is added by
+     * the website and cannot be removed here (BR-3D-2).
+     */
+    private static function exploreSection(): Section
+    {
+        return Section::make('3D walkthrough and floor plans')
+            ->description('Optional. Shown on the location page under "Explore". The 3D model loads when a visitor scrolls to it, and an architectural or conceptual model always carries its notice. Changes here go live only once this version is approved and published.')
+            ->schema([
+                Select::make('twin_model_id')
+                    ->label('3D model')
+                    ->options(fn (?PropertyProfile $record): array => self::modelOptions($record))
+                    ->live()
+                    ->helperText('One of this property\'s models from Website → 3D models. Leave empty for no walkthrough.'),
+                Repeater::make('twin_tour_stops')
+                    ->label('Guided views')
+                    ->helperText('The buttons under the model, in this order. Each stands at one of the model\'s camera positions. Without any, every camera position is shown as a numbered view.')
+                    ->schema([
+                        Select::make('camera')
+                            ->label('Camera position')
+                            ->options(fn (Get $get): array => self::cameraOptions($get('../../twin_model_id')))
+                            ->required(),
+                        TextInput::make('title')->label('View title')->required()->maxLength(60)
+                            ->helperText('For example "Reception" or "Meeting room".'),
+                    ])
+                    ->columns(2)
+                    ->reorderableWithButtons()
+                    ->maxItems(PropertyProfile::MAX_TOUR_STOPS)
+                    ->addActionLabel('Add guided view')
+                    ->itemLabel(fn (array $state): ?string => $state['title'] ?? null)
+                    ->defaultItems(0)
+                    ->visible(fn (Get $get): bool => filled($get('twin_model_id'))),
+                Repeater::make('floor_plans')
+                    ->label('Floor plans')
+                    ->helperText('Shown as tabs, one per floor, in this order. Upload plans in Website → Media library, choosing this property.')
+                    ->schema([
+                        TextInput::make('label')->label('Floor')->required()->maxLength(60)
+                            ->helperText('For example "Ground floor" or "Level 3".'),
+                        Select::make('media_asset_id')
+                            ->label('Floor plan image')
+                            ->options(fn (?PropertyProfile $record): array => self::floorPlanOptions($record))
+                            ->searchable()
+                            ->required(),
+                        Textarea::make('note')->label('Note')->maxLength(300)->rows(2)->columnSpanFull()
+                            ->helperText('Optional. What the floor holds, in words, for visitors who cannot see the plan.'),
+                        Toggle::make('is_example')
+                            ->label('Example floor plan')
+                            ->helperText('Only where sample content is allowed. The website labels it "Example floor plan — not SmartGro\'s layout". Untick once it is SmartGro\'s own plan.')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2)
+                    ->reorderableWithButtons()
+                    ->maxItems(PropertyProfile::MAX_FLOOR_PLANS)
+                    ->addActionLabel('Add floor plan')
+                    ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
+                    ->defaultItems(0),
+            ]);
+    }
+
+    /**
+     * The property's 3D models, newest first.
+     *
+     * @return array<int, string>
+     */
+    private static function modelOptions(?PropertyProfile $record): array
+    {
+        if ($record === null) {
+            return [];
+        }
+
+        return TwinModel::query()->where('property_id', $record->property_id)->latest()->limit(200)->get()
+            ->mapWithKeys(fn (TwinModel $model): array => [$model->getKey() => $model->title.' ('.$model->capture_type->label().', '.number_format($model->file_bytes / 1024 / 1024, 1).' MB)'])
+            ->all();
+    }
+
+    /**
+     * The camera positions of the chosen model, in the order of their numbers.
+     *
+     * @return array<string, string>
+     */
+    private static function cameraOptions(mixed $twinModelId): array
+    {
+        if (! is_numeric($twinModelId)) {
+            return [];
+        }
+
+        return TwinAnchor::query()->where('twin_model_id', (int) $twinModelId)->where('anchor_type', AnchorType::Camera)->orderByRaw('CAST(reference AS UNSIGNED)')->get()
+            ->mapWithKeys(fn (TwinAnchor $anchor): array => [$anchor->node_name => 'Camera position '.$anchor->reference])
+            ->all();
+    }
+
+    /**
+     * SmartGro's own or commissioned plans uploaded for the property; renders and concepts too while sample content is
+     * allowed (examples only), and always those the profile already holds, so an editor sees what to replace.
+     *
+     * @return array<int, string>
+     */
+    private static function floorPlanOptions(?PropertyProfile $record): array
+    {
+        if ($record === null) {
+            return [];
+        }
+
+        $inUse = collect([$record->openRevision()?->payload, $record->publishedRevision?->payload])->filter()
+            ->flatMap(fn (array $payload): array => array_column(array_filter($payload['floor_plans'] ?? [], is_array(...)), 'media_asset_id'))
+            ->filter(fn (mixed $id): bool => is_numeric($id))->map(fn (mixed $id): int => (int) $id)->unique()->values()->all();
+
+        return MediaAsset::query()
+            ->where(fn (Builder $query) => $query->where('depicts_property_id', $record->property_id)->whereIn('origin', PropertyProfile::FLOOR_PLAN_ORIGINS))
+            ->orWhere(fn (Builder $query) => $query->whereIn('origin', PropertyProfile::EXAMPLE_FLOOR_PLAN_ORIGINS)
+                ->when(! config('backoffice.sample_content'), fn (Builder $query) => $query->whereKey($inUse)))
+            ->orWhereKey($inUse)
+            ->latest()->limit(500)->get()
+            ->reject(fn (MediaAsset $asset): bool => $asset->isLicenceExpired())
+            ->mapWithKeys(fn (MediaAsset $asset): array => [$asset->getKey() => $asset->title.' ('.(in_array($asset->origin, PropertyProfile::EXAMPLE_FLOOR_PLAN_ORIGINS, true) ? $asset->origin->label().', example only' : $asset->origin->label()).')'])
+            ->all();
     }
 
     /**

@@ -51,7 +51,7 @@
 
     <x-home.steps :tour-offered="$tourOffered" :enquiry-open="$enquiryOpen" />
 
-    <x-home.experience :has-locations="$properties->isNotEmpty()" :tour-offered="$tourOffered" />
+    <x-home.experience :has-locations="$properties->isNotEmpty()" :tour-offered="$tourOffered" :explore="$explore ?? null" />
 
     @if ($segments !== [])
         <x-home.segments :segments="$segments" />

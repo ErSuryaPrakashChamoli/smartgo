@@ -227,3 +227,344 @@ document.querySelectorAll('[data-marquee]').forEach((marquee) => {
         toggle.querySelector('[data-marquee-play-icon]')?.classList.toggle('hidden', !paused);
     });
 });
+
+// The footer's Google map (OD-180) loads only when the visitor asks for it, so Google is not contacted and sets
+// no cookies before then. Without this script its placeholder offers only the "Open in Google Maps" link. With it,
+// the placeholder also offers "Show map"; pressing it puts the map in the placeholder's place and moves focus to it.
+// The choice is remembered on this device (browser storage, not a cookie), so later pages show the map without
+// asking, once it nears the screen. Where storage is blocked, the visitor is simply asked again.
+const MAP_CHOICE_KEY = 'smartgro.showGoogleMap';
+
+const remembersMapChoice = () => {
+    try {
+        return window.localStorage.getItem(MAP_CHOICE_KEY) === 'yes';
+    } catch {
+        return false;
+    }
+};
+
+document.querySelectorAll('[data-map]').forEach((map) => {
+    const frame = map.querySelector('[data-map-frame]');
+    const load = map.querySelector('[data-map-load]');
+
+    if (!frame || !load || !map.dataset.mapSrc) {
+        return;
+    }
+
+    const showMap = (moveFocus) => {
+        const iframe = document.createElement('iframe');
+        iframe.src = map.dataset.mapSrc;
+        iframe.title = map.dataset.mapTitle ?? 'Map';
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.className = 'absolute inset-0 block h-full w-full';
+        frame.replaceWith(iframe);
+
+        if (moveFocus) {
+            iframe.focus();
+        }
+    };
+
+    if (remembersMapChoice()) {
+        showMap(false);
+
+        return;
+    }
+
+    map.querySelectorAll('[data-map-load], [data-map-note]').forEach((element) => {
+        element.hidden = false;
+    });
+    load.addEventListener('click', () => {
+        try {
+            window.localStorage.setItem(MAP_CHOICE_KEY, 'yes');
+        } catch {
+            // Storage blocked: the map still shows now, and the visitor is asked again next time.
+        }
+
+        showMap(true);
+    }, { once: true });
+});
+
+// A location page's 3D walkthrough (OD-181, OD-184, BR-3D-6). It loads by itself once it comes near the screen, as
+// BR-3D-6 allows ("or the viewer scrolls into view"); nothing 3D is fetched before that. A browser set to save data
+// waits for "Explore in 3D" instead, and the button comes back to start again after "Stop loading" or a failure. The
+// model, the viewer module (twin-viewer.js, its own Vite entry) and the decoders this model needs download together,
+// with the download's progress and a way to stop it. The viewer does not trap the page's scroll (pageScroll): the
+// wheel zooms only with Ctrl or ⌘ held. It draws only when the view changes, and with reduced motion a guided view
+// is a cut, not a flight. Without this script nothing loads; the views are listed and the floor plans show the same
+// floor.
+document.querySelectorAll('[data-twin-walkthrough]').forEach((root) => {
+    const status = root.querySelector('[data-twin-status]');
+    const stage = root.querySelector('[data-twin-stage]');
+    const poster = root.querySelector('[data-twin-poster]');
+    const controls = root.querySelector('[data-twin-controls]');
+    const start = root.querySelector('[data-twin-start]');
+    const load = root.querySelector('[data-twin-load]');
+    const stop = root.querySelector('[data-twin-stop]');
+    const progress = root.querySelector('[data-twin-progress]');
+    const views = [...controls.querySelectorAll('[data-twin-camera]')];
+    let viewer = null;
+    let loading = null;
+
+    const failure = (name) => Object.assign(new Error(name), { name });
+
+    // The model's bytes, showing the download's progress.
+    const download = async (url, signal) => {
+        let response;
+
+        try {
+            response = await fetch(url, { signal });
+        } catch (error) {
+            throw signal.aborted ? error : failure('DownloadFailed');
+        }
+
+        if (!response.ok || !response.body) {
+            throw failure('DownloadFailed');
+        }
+
+        const total = Number(response.headers.get('Content-Length')) || 0;
+        const reader = response.body.getReader();
+        const parts = [];
+        let received = 0;
+
+        if (total) {
+            progress.max = total;
+            progress.value = 0;
+        } else {
+            progress.removeAttribute('value');
+        }
+
+        for (let part = await reader.read(); !part.done; part = await reader.read()) {
+            parts.push(part.value);
+            received += part.value.length;
+
+            if (total) {
+                progress.value = received;
+            }
+        }
+
+        const bytes = new Uint8Array(received);
+        let offset = 0;
+
+        for (const part of parts) {
+            bytes.set(part, offset);
+            offset += part.length;
+        }
+
+        return bytes.buffer;
+    };
+
+    const reset = (message) => {
+        loading?.abort();
+        viewer?.dispose();
+        viewer = null;
+        loading = null;
+        stage.hidden = true;
+        stage.replaceChildren();
+        poster.hidden = false;
+        progress.hidden = true;
+        stop.hidden = true;
+        controls.hidden = true;
+        load.hidden = false;
+        status.textContent = message;
+    };
+
+    start.hidden = false;
+
+    stop.addEventListener('click', () => {
+        reset('Loading stopped. Press "Explore in 3D" to start again.');
+        load.focus();
+    });
+
+    controls.querySelector('[data-twin-whole]').addEventListener('click', () => {
+        viewer?.showWhole();
+        views.forEach((view) => view.setAttribute('aria-pressed', 'false'));
+        status.textContent = 'The whole floor is shown.';
+    });
+
+    views.forEach((button) => {
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', () => {
+            const shown = viewer?.showCamera(button.dataset.twinCamera) ?? false;
+            views.forEach((view) => view.setAttribute('aria-pressed', String(shown && view === button)));
+            status.textContent = shown ? `${button.textContent.trim()} is shown.` : 'This view is not in the model.';
+        });
+    });
+
+    const begin = async () => {
+        const abort = new AbortController();
+        const pressed = document.activeElement === load;
+        loading = abort;
+        load.hidden = true;
+        stop.hidden = false;
+        progress.hidden = false;
+        status.textContent = 'Loading the 3D view…';
+
+        if (pressed) {
+            stop.focus();
+        }
+
+        try {
+            // The model, the viewer module, the modules it imports and the decoders this model needs all start now, so
+            // their downloads overlap; the viewer waits for the model.
+            const model = download(root.dataset.model, abort.signal);
+            model.catch(() => {});
+
+            for (const href of root.dataset.moduleImports.split(' ').filter(Boolean)) {
+                document.head.append(Object.assign(document.createElement('link'), { rel: 'modulepreload', href }));
+            }
+
+            for (const href of root.dataset.decoderFiles.split(' ').filter(Boolean)) {
+                document.head.append(Object.assign(document.createElement('link'), { rel: 'preload', as: 'fetch', crossOrigin: 'anonymous', href }));
+            }
+
+            const { mountTwinViewer } = await import(/* @vite-ignore */ root.dataset.module);
+            const shown = await mountTwinViewer(stage, {
+                model,
+                label: root.dataset.label,
+                decoders: root.dataset.decoders.split(' ').filter(Boolean),
+                onContextLost: () => reset('The 3D view stopped: the device ran out of graphics memory. Press "Explore in 3D" to try again.'),
+                signal: abort.signal,
+                pageScroll: true,
+            });
+
+            if (abort.signal.aborted) {
+                shown.dispose();
+
+                return;
+            }
+
+            viewer = shown;
+            loading = null;
+            poster.hidden = true;
+            controls.hidden = false;
+            status.textContent = 'Drag to turn the floor; pinch, or hold Ctrl (⌘ on a Mac) and scroll, to zoom; or choose a view. With the view focused, arrow keys move it.';
+        } catch (error) {
+            if (abort.signal.aborted) {
+                return;
+            }
+
+            reset({
+                WebGLUnavailable: 'This browser or device cannot show 3D. The views are listed below.',
+                DownloadFailed: 'The 3D model could not be downloaded. Check the connection and press "Explore in 3D" to try again.',
+            }[error?.name] ?? 'The 3D view could not be shown. Press "Explore in 3D" to try again.');
+        }
+    };
+
+    load.addEventListener('click', begin);
+
+    // Starts once the walkthrough is within 200 px of the screen, so the model is usually drawn by the time it is in
+    // view; with the browser set to save data, only the button starts it.
+    if (!navigator.connection?.saveData) {
+        load.hidden = true;
+        const nearby = new IntersectionObserver((entries) => {
+            if (entries.some((entry) => entry.isIntersecting)) {
+                nearby.disconnect();
+                begin();
+            }
+        }, { rootMargin: '200px 0px' });
+        nearby.observe(stage.parentElement);
+    }
+});
+
+// A location page's floor plans (OD-181): without this script every plan shows, one under the other, each with its
+// floor's name. With it, the floors become tabs (WAI-ARIA tabs: Left, Right, Home and End move between them) and one
+// plan shows at a time.
+document.querySelectorAll('[data-floor-plans]').forEach((plans) => {
+    const tablist = plans.querySelector('[data-floor-tabs]');
+
+    if (!tablist) {
+        return;
+    }
+
+    const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+    const panels = tabs.map((tab) => document.getElementById(tab.getAttribute('aria-controls')));
+
+    if (panels.some((panel) => !panel)) {
+        return;
+    }
+
+    const select = (index, moveFocus) => {
+        tabs.forEach((tab, position) => {
+            const selected = position === index;
+            tab.setAttribute('aria-selected', String(selected));
+            tab.tabIndex = selected ? 0 : -1;
+            panels[position].hidden = !selected;
+        });
+
+        if (moveFocus) {
+            tabs[index].focus();
+        }
+    };
+
+    panels.forEach((panel, position) => {
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', tabs[position].id);
+        panel.querySelector('[data-floor-plan-heading]')?.setAttribute('hidden', '');
+    });
+
+    tabs.forEach((tab, position) => {
+        tab.addEventListener('click', () => select(position, false));
+        tab.addEventListener('keydown', (event) => {
+            const target = { ArrowRight: position + 1, ArrowLeft: position - 1, Home: 0, End: tabs.length - 1 }[event.key];
+
+            if (target === undefined) {
+                return;
+            }
+
+            event.preventDefault();
+            select((target + tabs.length) % tabs.length, true);
+        });
+    });
+
+    tablist.hidden = false;
+    select(0, false);
+});
+
+// A page's main photo and its small photos (location, workspace and space pages, OD-183): choosing a small photo shows
+// it in the main frame, in place (never full screen), with its label and credit, and marks it as the current one. A
+// photo elsewhere on the page with [data-photo-show] (a location's or workspace's "Photos") shows itself in that frame
+// too, scrolls it into view and moves focus to its small photo. Without this script the main photo stays as it is.
+document.querySelectorAll('[data-photo-gallery]').forEach((gallery) => {
+    const mainImage = gallery.querySelector('[data-photo-main]');
+    const label = gallery.querySelector('[data-photo-label]');
+    const credit = gallery.querySelector('[data-photo-credit]');
+    const thumbs = [...gallery.querySelectorAll('[data-photo-thumb]')];
+
+    const select = (index) => {
+        const thumb = thumbs[index];
+
+        if (!thumb) {
+            return;
+        }
+
+        mainImage.srcset = thumb.dataset.srcset;
+        mainImage.src = thumb.dataset.src;
+        mainImage.alt = thumb.dataset.alt;
+
+        if (thumb.dataset.width && thumb.dataset.height) {
+            mainImage.width = Number(thumb.dataset.width);
+            mainImage.height = Number(thumb.dataset.height);
+        }
+
+        if (label) {
+            label.hidden = !thumb.dataset.label;
+            label.querySelector('[data-photo-label-text]').textContent = thumb.dataset.label;
+        }
+
+        if (credit) {
+            credit.textContent = thumb.dataset.credit;
+        }
+
+        thumbs.forEach((other) => other.setAttribute('aria-pressed', String(other === thumb)));
+    };
+
+    thumbs.forEach((thumb, index) => thumb.addEventListener('click', () => select(index)));
+
+    document.querySelectorAll('[data-photo-show]').forEach((button) => button.addEventListener('click', () => {
+        const index = Number(button.dataset.photoShow);
+        select(index);
+        gallery.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+        thumbs[index]?.focus({ preventScroll: true });
+    }));
+});

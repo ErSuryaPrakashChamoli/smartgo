@@ -1,0 +1,89 @@
+{
+    "database": "smart_go",
+    "read_only": 1,
+    "explore_columns": false,
+    "public": {
+        "/": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "not_available_yet": true,
+            "explore_link": null
+        },
+        "/locations/noida/a-70": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore": false,
+            "walkthrough": false,
+            "notice": false,
+            "views": 0,
+            "floor_plans": 0,
+            "example_plan_labels": 0,
+            "three_d_script_or_preload": false
+        },
+        "/locations/noida/a-71": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore": false,
+            "walkthrough": false,
+            "notice": false,
+            "views": 0,
+            "floor_plans": 0,
+            "example_plan_labels": 0,
+            "three_d_script_or_preload": false
+        },
+        "/locations/noida/a-23": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore": false,
+            "walkthrough": false,
+            "notice": false,
+            "views": 0,
+            "floor_plans": 0,
+            "example_plan_labels": 0,
+            "three_d_script_or_preload": false
+        },
+        "/locations/noida/h-105": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore": false,
+            "walkthrough": false,
+            "notice": false,
+            "views": 0,
+            "floor_plans": 0,
+            "example_plan_labels": 0,
+            "three_d_script_or_preload": false
+        },
+        "/3d-models/999999": {
+            "status": 404,
+            "type": "text/html; charset=utf-8",
+            "error": "ModelNotFoundException: No query results for model [App\\Models\\TwinModel] 999999"
+        }
+    },
+    "backoffice": {
+        "/admin/website/twin-models": {
+            "status": 200,
+            "type": "text/html; charset=utf-8"
+        },
+        "/admin/properties/website-profiles/1/edit": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore_section": false
+        },
+        "/admin/properties/website-profiles/2/edit": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore_section": false
+        },
+        "/admin/properties/website-profiles/3/edit": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore_section": false
+        },
+        "/admin/properties/website-profiles/4/edit": {
+            "status": 200,
+            "type": "text/html; charset=utf-8",
+            "explore_section": false
+        }
+    },
+    "acting_as": 4
+}

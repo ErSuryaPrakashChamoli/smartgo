@@ -118,6 +118,25 @@ it('lists a property under a category only once its offering there is published'
     get('/')->assertSeeInOrder(['id="meeting-rooms"', 'Meeting rooms', 'Available at', 'SmartGro A-23'], false)->assertSee('href="/locations/noida/a-23/meeting-rooms"', false)->assertSee('href="/workspaces/meeting-rooms"', false);
 });
 
+it('gives each workspace type its own card listing only where that type is offered (OD-182)', function () {
+    seed(ReferenceDataSeeder::class);
+    publishReferenceProperties();
+    $property = fn (string $code): Property => Property::query()->where('code', $code)->sole();
+    offerForTest($property('A-23'), 'dedicated_desk');
+    offerForTest($property('A-70'), 'hot_desk');
+    offerForTest($property('A-71'), 'meeting_room');
+    offerForTest($property('H-105'), 'conference_room');
+
+    $html = get('/')->assertOk()->getContent();
+    $card = fn (string $anchor): string => str($html)->after('id="'.$anchor.'"')->before('</article>')->toString();
+
+    expect(substr_count(str($html)->after('id="workspaces"')->before('</section>')->toString(), '<article'))->toBe(7)
+        ->and($card('dedicated-desks'))->toContain('href="/workspaces/dedicated-desks"')->toContain('SmartGro A-23')->not->toContain('SmartGro A-70')
+        ->and($card('hot-desks'))->toContain('href="/workspaces/hot-desks"')->toContain('SmartGro A-70')->not->toContain('SmartGro A-23')
+        ->and($card('meeting-rooms'))->toContain('href="/workspaces/meeting-rooms"')->toContain('SmartGro A-71')->not->toContain('SmartGro H-105')
+        ->and($card('conference-rooms'))->toContain('href="/workspaces/conference-training-rooms"')->toContain('SmartGro H-105')->not->toContain('SmartGro A-71');
+});
+
 it('hides inactive categories and their section', function () {
     seed(ReferenceDataSeeder::class);
     Product::query()->where('key', 'virtual_office')->update(['is_active' => false]);

@@ -14,6 +14,8 @@ use App\Filament\Widgets\WaitingForApproval;
 use App\Models\Property;
 use App\Models\User;
 use Database\Seeders\ReferenceDataSeeder;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -106,4 +108,37 @@ it('offers stock photos in the photo picker only as sample content, and always s
 
     Livewire::test(EditPropertyProfile::class, ['record' => $this->property->profile->getRouteKey()])
         ->assertOk()->assertSee('Reception at A-70')->assertSee('Stock lounge (stock photo, sample content only)')->assertDontSee('Stock desk');
+});
+
+it('chooses a 3D model, its guided views and floor plans in the editor, and saves them in the draft (OD-181)', function () {
+    Storage::fake('local');
+    $undoRepeaterFake = Repeater::fake();
+    $model = uploadTwinModelForTest($this->marketing, $this->property, ['title' => 'Ground floor model']);
+    uploadTwinModelForTest($this->marketing, Property::query()->where('code', 'H-105')->sole(), ['title' => 'Model of another location']);
+    $plan = app(CreateMediaAsset::class)->handle($this->marketing, UploadedFile::fake()->image('plan.png', 1600, 1000), [
+        'title' => 'Ground floor plan', 'origin' => MediaOrigin::Commissioned->value, 'alt_text' => 'Plan of the ground floor',
+        'not_from_old_website' => true, 'depicts_property_id' => $this->property->id,
+    ]);
+    actingAs($this->marketing);
+
+    Livewire::test(EditPropertyProfile::class, ['record' => $this->property->profile->getRouteKey()])
+        ->callAction('startDraft')
+        ->assertFormFieldExists('twin_model_id', fn (Select $field): bool => array_keys($field->getOptions()) === [$model->id])
+        ->assertFormFieldHidden('twin_tour_stops')
+        ->fillForm([
+            'headline' => 'Offices near the metro', 'summary' => 'Private offices and meeting rooms.', 'twin_model_id' => $model->id,
+            'twin_tour_stops' => [['camera' => 'SG_CAM_1', 'title' => 'Reception']],
+            'floor_plans' => [['label' => 'Ground floor', 'media_asset_id' => $plan->id, 'note' => 'Reception and cabins.', 'is_example' => false]],
+        ])
+        ->assertFormFieldVisible('twin_tour_stops')
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($this->property->profile->openRevision()->payload)->toMatchArray([
+        'twin_model_id' => $model->id,
+        'twin_tour_stops' => [['camera' => 'SG_CAM_1', 'title' => 'Reception']],
+        'floor_plans' => [['label' => 'Ground floor', 'media_asset_id' => $plan->id, 'note' => 'Reception and cabins.', 'is_example' => false]],
+    ]);
+
+    $undoRepeaterFake();
 });

@@ -1,0 +1,7 @@
+
+ INFO Seeding database. 
+
+ Database\Seeders\LocationExploreSeeder .. RUNNING 
+Location 3D walkthroughs and floor plans: {"models":4,"floor_plans":2,"locations":4,"skipped":[],"left_alone":[]}
+ Database\Seeders\LocationExploreSeeder .. 3,677 ms DONE 
+

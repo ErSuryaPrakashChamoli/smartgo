@@ -127,6 +127,7 @@ class RevisionPreviewController extends Controller
                 $content->property->load(['city', 'microMarket', 'primaryBuilding', 'publishedOfferings.product', 'publishedOfferings.profile']),
                 $catalogue->profile($revision->payload, $content->property),
                 $preview,
+                payload: $revision->payload,
             ),
             $content instanceof OfferingProfile => $locationPages->offering(
                 $content->offering->load(['product', 'property.city', 'property.microMarket', 'property.primaryBuilding']),

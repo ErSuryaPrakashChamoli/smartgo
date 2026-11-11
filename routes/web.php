@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\DesignPreviewController;
 use App\Http\Controllers\Web\EnquiryController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\LocationController;
+use App\Http\Controllers\Web\LocationModelController;
 use App\Http\Controllers\Web\MediaController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\PublishedContentController;
@@ -104,6 +105,12 @@ Route::get('/media/{mediaAsset}/{rendition}', MediaController::class)
     ->whereNumber('mediaAsset')
     ->whereIn('rendition', array_keys(MediaAsset::RENDITIONS))
     ->name('media.show');
+
+// A location's 3D model (GLB), fetched by its page's viewer only when a visitor asks for it, and only while a published
+// profile of a listed location uses it (BR-3D-6, OD-181).
+Route::get('/3d-models/{twinModel}', LocationModelController::class)
+    ->whereNumber('twinModel')
+    ->name('twin-models.show');
 
 // Published pages and live redirects, for paths no other route claims (BR-CMS-6).
 Route::fallback(PageController::class);

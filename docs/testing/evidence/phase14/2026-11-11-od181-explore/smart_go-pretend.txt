@@ -1,0 +1,9 @@
+
+ INFO Running migrations. 
+
+ 2026_11_11_075755_add_explore_fields_to_property_profiles_table .. 
+ ⇂ alter table `property_profiles` add `twin_model_id` bigint unsigned null after `gallery_asset_ids` 
+ ⇂ alter table `property_profiles` add constraint `property_profiles_twin_model_id_foreign` foreign key (`twin_model_id`) references `twin_models` (`id`) on delete set null 
+ ⇂ alter table `property_profiles` add `twin_tour_stops` json null after `twin_model_id` 
+ ⇂ alter table `property_profiles` add `floor_plans` json null after `twin_tour_stops` 
+

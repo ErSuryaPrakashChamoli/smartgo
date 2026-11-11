@@ -27,17 +27,22 @@ class WorkspaceCatalogue
     public const string STOCK_PHOTO_LABEL = 'Stock photo, not a SmartGro location';
 
     /**
-     * Groups shown as sections on the home page, in order, by category key.
+     * Groups shown as cards on the home page, in order, by category key: one workspace type per card, so every
+     * card is the same size (owner, OD-182).
      *
      * @var array<string, array{title: string, anchor: string, keys: list<string>, description: string}>
      */
     public const array GROUPS = [
         'private' => ['title' => 'Private offices and cabins', 'anchor' => 'private-offices', 'keys' => ['private_office'],
             'description' => 'A lockable office or cabin for your team, with room to focus and to hold private conversations.'],
-        'desks' => ['title' => 'Dedicated and hot desks', 'anchor' => 'desks', 'keys' => ['dedicated_desk', 'hot_desk'],
-            'description' => 'A desk kept for you in a shared workspace, or flexible seating where you take any open desk when you need one.'],
-        'meetings' => ['title' => 'Meeting and conference rooms', 'anchor' => 'meeting-rooms', 'keys' => ['meeting_room', 'conference_room'],
-            'description' => 'Rooms for client meetings and team discussions, and larger rooms for workshops, training and events.'],
+        'dedicated' => ['title' => 'Dedicated desks', 'anchor' => 'dedicated-desks', 'keys' => ['dedicated_desk'],
+            'description' => 'A desk kept for you in a shared workspace.'],
+        'hot' => ['title' => 'Hot desks', 'anchor' => 'hot-desks', 'keys' => ['hot_desk'],
+            'description' => 'Flexible seating in a shared workspace: take any open desk when you need one.'],
+        'meetings' => ['title' => 'Meeting rooms', 'anchor' => 'meeting-rooms', 'keys' => ['meeting_room'],
+            'description' => 'Rooms for client meetings and team discussions.'],
+        'conference' => ['title' => 'Conference and training rooms', 'anchor' => 'conference-rooms', 'keys' => ['conference_room'],
+            'description' => 'Larger rooms for workshops, training and events.'],
         'virtual' => ['title' => 'Virtual office', 'anchor' => 'virtual-office', 'keys' => ['virtual_office'],
             'description' => 'A business address for your company without renting a desk.'],
         'managed' => ['title' => 'Managed offices', 'anchor' => 'managed-offices', 'keys' => ['managed_office'],

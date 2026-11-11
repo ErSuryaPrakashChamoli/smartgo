@@ -47,7 +47,7 @@ it('shows contact details and social links in the footer only once published', f
     $contact = approvedSettings('contact', ['phone' => '+91 120 400 0000', 'email' => 'hello@example.com', 'whatsapp' => '+911204000000', 'address' => "Sector 62\nNoida"], $this->author, $this->approver);
     $social = approvedSettings('social', ['linkedin' => 'https://www.linkedin.com/company/example'], $this->author, $this->approver);
 
-    get('/about')->assertOk()->assertDontSee('+91 120 400 0000')->assertDontSee('linkedin.com');
+    get('/about')->assertOk()->assertDontSee('+91 120 400 0000')->assertDontSee('linkedin.com')->assertDontSee('google.com/maps');
 
     app(PublishRevision::class)->handle($contact, $this->publisher);
     app(PublishRevision::class)->handle($social, $this->publisher);
@@ -58,7 +58,21 @@ it('shows contact details and social links in the footer only once published', f
         ->assertSee('href="mailto:hello@example.com"', false)
         ->assertSee('href="https://wa.me/911204000000"', false)
         ->assertSee("Sector 62\nNoida", false)
-        ->assertSee('href="https://www.linkedin.com/company/example" rel="me noopener"', false);
+        ->assertSee('Visit our office')
+        ->assertSee('data-map-src="https://www.google.com/maps?q=Sector%2062%20Noida&amp;output=embed"', false)
+        ->assertSee('href="https://www.google.com/maps/dir/?api=1&amp;destination=Sector%2062%20Noida"', false)
+        ->assertSee('href="/#contact"', false)
+        ->assertSee('href="https://www.linkedin.com/company/example" rel="me noopener"', false)
+        ->assertSee('<span class="sr-only">LinkedIn</span>', false);
+});
+
+it('shows no map in the footer when the published contact details have no address', function () {
+    app(PublishRevision::class)->handle(approvedSettings('contact', ['phone' => '+91 120 400 0000'], $this->author, $this->approver), $this->publisher);
+
+    get('/about')
+        ->assertOk()
+        ->assertSee('href="tel:+911204000000"', false)
+        ->assertDontSee('google.com/maps');
 });
 
 it('refuses values that are not in their expected format', function (string $handle, string $field, string $value) {

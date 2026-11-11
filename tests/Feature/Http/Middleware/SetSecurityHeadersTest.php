@@ -93,7 +93,7 @@ it('allows the public website no inline script, no string evaluation and no inli
         ->and($directives['style-src'])->toMatch("/^'self' 'nonce-[^']+' 'report-sample'$/")
         ->and($directives)->not->toHaveKeys(['style-src-attr', 'worker-src'])
         ->and($directives['object-src'])->toBe("'none'")
-        ->and($directives['frame-src'])->toBe("'none'")
+        ->and($directives['frame-src'])->toBe('https://www.google.com/maps https://www.google.com/maps/')
         ->and($directives['frame-ancestors'])->toBe("'self'");
 });
 

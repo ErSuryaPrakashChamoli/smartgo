@@ -125,7 +125,7 @@ class SiteNavigation
     /**
      * The published social links, re-checked against their network, in a fixed order.
      *
-     * @return list<array{label: string, href: string}>
+     * @return list<array{network: string, label: string, href: string}>
      */
     private function social(?SiteSetting $setting): array
     {
@@ -140,7 +140,7 @@ class SiteNavigation
             $url = $setting->value($field);
 
             if (is_string($url) && in_array(strtolower((string) parse_url($url, PHP_URL_HOST)), SiteSettingPayload::SOCIAL_HOSTS[$field], true) && str_starts_with($url, 'https://')) {
-                $links[] = ['label' => $label, 'href' => $url];
+                $links[] = ['network' => $field, 'label' => $label, 'href' => $url];
             }
         }
 
