@@ -1,0 +1,22 @@
+
+ INFO Seeding database. 
+
+ Database\Seeders\ReferenceDataSeeder .. RUNNING 
+ Database\Seeders\ReferenceDataSeeder .. 64 ms DONE 
+
+ Database\Seeders\SampleContentSeeder .. RUNNING 
+Sample content: {"solutions":9,"community":3,"about":13,"articles":10,"faqs":5,"profile_drafts":0,"menus":["main","footer","legal"],"offerings":{"Workspaces":4,"Business Solutions":9},"left_alone":[]}
+ Database\Seeders\SampleContentSeeder .. 2,597 ms DONE 
+
+ Database\Seeders\HomeShowcaseSeeder .. RUNNING 
+Home banners and highlights: {"skipped":false,"images":4,"banners":4,"highlights":12,"left_alone":[]}
+ Database\Seeders\HomeShowcaseSeeder .. 101 ms DONE 
+
+ Database\Seeders\DemoContentSeeder .. RUNNING 
+Demo content: {"images":10,"settings":["contact","social"],"pages":["legal/privacy"],"offerings":0,"locations":0,"workspaces":0,"tour_hours":0,"testimonials":2,"case_studies":2,"left_alone":["Tour hours A-70","Tour hours A-71","Tour hours A-23","Tour hours H-105"]}
+ Database\Seeders\DemoContentSeeder .. 475 ms DONE 
+
+ Database\Seeders\SpaceListingSeeder .. RUNNING 
+Spaces on the website: {"skipped":false,"from_inventory":0,"examples":72,"menu":"published","left_alone":[]}
+ Database\Seeders\SpaceListingSeeder .. 1,117 ms DONE 
+

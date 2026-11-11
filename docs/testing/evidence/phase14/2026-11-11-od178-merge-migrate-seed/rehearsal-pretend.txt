@@ -1,0 +1,24 @@
+
+ INFO Running migrations. 
+
+ 2026_11_06_061610_create_pipeline_stages_table .. 
+ ⇂ create table `pipeline_stages` (`id` bigint unsigned not null auto_increment primary key, `name` varchar(60) not null, `sort_order` smallint unsigned not null default '0', `probability_pct` tinyint unsigned null, `outcome` varchar(10) not null default 'open', `is_active` tinyint(1) not null default '1', `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `pipeline_stages` add index `pipeline_stages_is_active_sort_order_index`(`is_active`, `sort_order`) 
+ ⇂ alter table `pipeline_stages` add unique `pipeline_stages_name_unique`(`name`) 
+ 2026_11_06_061611_create_deals_table .. 
+ ⇂ create table `deals` (`id` bigint unsigned not null auto_increment primary key, `lead_id` bigint unsigned not null, `pipeline_stage_id` bigint unsigned not null, `owner_user_id` bigint unsigned null, `seats` smallint unsigned null, `monthly_value_minor` bigint unsigned null, `expected_close_on` date null, `agreement_reference` varchar(60) null, `won_at` timestamp null, `lost_at` timestamp null, `lost_reason` varchar(300) null, `created_by` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `deals` add constraint `deals_lead_id_foreign` foreign key (`lead_id`) references `leads` (`id`) on delete restrict 
+ ⇂ alter table `deals` add constraint `deals_pipeline_stage_id_foreign` foreign key (`pipeline_stage_id`) references `pipeline_stages` (`id`) on delete restrict 
+ ⇂ alter table `deals` add constraint `deals_owner_user_id_foreign` foreign key (`owner_user_id`) references `users` (`id`) on delete set null 
+ ⇂ alter table `deals` add constraint `deals_created_by_foreign` foreign key (`created_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `deals` add index `deals_pipeline_stage_id_created_at_index`(`pipeline_stage_id`, `created_at`) 
+ 2026_11_06_061612_create_deal_space_table .. 
+ ⇂ create table `deal_space` (`id` bigint unsigned not null auto_increment primary key, `deal_id` bigint unsigned not null, `space_id` bigint unsigned not null, `space_seat_id` bigint unsigned null, `seats` smallint unsigned not null, `space_allocation_id` bigint unsigned null, `created_by` bigint unsigned not null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `deal_space` add constraint `deal_space_deal_id_foreign` foreign key (`deal_id`) references `deals` (`id`) on delete restrict 
+ ⇂ alter table `deal_space` add constraint `deal_space_space_id_foreign` foreign key (`space_id`) references `spaces` (`id`) on delete restrict 
+ ⇂ alter table `deal_space` add constraint `deal_space_space_seat_id_foreign` foreign key (`space_seat_id`) references `space_seats` (`id`) on delete restrict 
+ ⇂ alter table `deal_space` add constraint `deal_space_space_allocation_id_foreign` foreign key (`space_allocation_id`) references `space_allocations` (`id`) on delete restrict 
+ ⇂ alter table `deal_space` add constraint `deal_space_created_by_foreign` foreign key (`created_by`) references `users` (`id`) on delete restrict 
+ ⇂ alter table `deal_space` add index `deal_space_deal_id_space_id_index`(`deal_id`, `space_id`) 
+ ⇂ alter table `deal_space` add unique `deal_space_space_allocation_id_unique`(`space_allocation_id`) 
+

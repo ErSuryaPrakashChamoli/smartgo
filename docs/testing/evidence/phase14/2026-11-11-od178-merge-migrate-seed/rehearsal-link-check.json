@@ -1,0 +1,34 @@
+{
+    "database": "smartgro_od178_rehearsal",
+    "pages": {
+        "/workspace-solutions/dedicated-desks": 200,
+        "/workspace-solutions/flexible-desks": 200,
+        "/workspace-solutions/private-offices": 200,
+        "/workspace-solutions/managed-workspaces": 200,
+        "/business-solutions/meeting-rooms": 200,
+        "/business-solutions/day-pass": 200,
+        "/business-solutions/workspace-packages": 200,
+        "/business-solutions/cabin-day-pass": 200,
+        "/business-solutions/training-rooms": 200,
+        "/business-solutions/virtual-office": 200
+    },
+    "links": {
+        "/book-a-tour": 200,
+        "/business-solutions/business-address": 200,
+        "/business-solutions/cabin-day-pass": 200,
+        "/business-solutions/day-pass": 200,
+        "/business-solutions/meeting-rooms": 200,
+        "/business-solutions/training-rooms": 200,
+        "/business-solutions/workspace-packages": 200,
+        "/enquire": 200,
+        "/workspaces/conference-training-rooms": 200,
+        "/workspaces/dedicated-desks": 200,
+        "/workspaces/hot-desks": 200,
+        "/workspaces/managed-offices": 200,
+        "/workspaces/meeting-rooms": 200,
+        "/workspaces/private-cabins": 200,
+        "/workspaces/virtual-office": 200
+    },
+    "not_ok": [],
+    "still_read_only": 1
+}

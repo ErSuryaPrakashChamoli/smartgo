@@ -1,0 +1,7 @@
+
+ INFO Running migrations. 
+
+ 2026_11_06_061610_create_pipeline_stages_table .. 39.10ms DONE
+ 2026_11_06_061611_create_deals_table .. 166.23ms DONE
+ 2026_11_06_061612_create_deal_space_table .. 205.20ms DONE
+
