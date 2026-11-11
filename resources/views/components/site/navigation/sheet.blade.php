@@ -75,16 +75,36 @@
                                             @if ($child['sample'])
                                                 <p class="ml-4 flex items-start gap-2 border-l border-line px-4 py-3 text-sm text-muted">
                                                     <x-heroicon-m-information-circle class="mt-0.5 size-4 shrink-0 text-leaf-700" aria-hidden="true" />
-                                                    Sample pages: example text, not yet confirmed by SmartGro.
+                                                    {{ ($child['kind'] ?? null) === 'space_type' ? 'Example spaces: not yet confirmed by SmartGro.' : 'Sample pages: example text, not yet confirmed by SmartGro.' }}
                                                 </p>
                                             @endif
                                         </details>
                                     @else
-                                        <a href="{{ $child['href'] }}" @if ($child['external']) rel="noopener" @endif @if ($isCurrent($child['href'])) aria-current="page" @endif class="block rounded-lg px-2 py-3 text-ink hover:bg-mist aria-[current=page]:font-semibold">{{ $child['label'] }}</a>
+                                        <a href="{{ $child['href'] }}" @if ($child['external']) rel="noopener" @endif @if ($isCurrent($child['href'])) aria-current="page" @endif class="flex min-h-12 items-center gap-3 rounded-lg px-2 py-3 text-ink hover:bg-mist aria-[current=page]:font-semibold">
+                                            <x-dynamic-component :component="'heroicon-o-'.($child['icon'] ?? 'arrow-right')" @class(['size-5 shrink-0 text-forest', 'self-start mt-0.5' => $child['description']]) aria-hidden="true" />
+                                            <span class="flex flex-1 flex-col gap-0.5">
+                                                <span class="flex items-center gap-2">
+                                                    {{ $child['label'] }}
+                                                    @if (str_starts_with($child['href'], '/enquire'))
+                                                        <span class="rounded-full bg-mist px-2 py-0.5 text-xs font-semibold text-leaf-700">Ask us</span>
+                                                    @endif
+                                                </span>
+                                                @if ($child['description'])
+                                                    <span class="text-sm/snug text-muted">{{ $child['description'] }}</span>
+                                                @endif
+                                            </span>
+                                        </a>
                                     @endif
                                 </li>
                             @endforeach
                         </ul>
+                        {{-- A group of links on its own (OD-168) ends with the sample note, as its categories' lists do. --}}
+                        @if (collect($item['children'])->contains(fn (array $child): bool => $child['children'] === [] && $child['sample']))
+                            <p class="flex items-start gap-2 px-4 pb-3 text-sm text-muted">
+                                <x-heroicon-m-information-circle class="mt-0.5 size-4 shrink-0 text-leaf-700" aria-hidden="true" />
+                                Sample pages: example text, not yet confirmed by SmartGro.
+                            </p>
+                        @endif
                     </details>
                 @else
                     <a href="{{ $item['href'] }}" @if ($item['external']) rel="noopener" @endif @if ($isCurrent($item['href'])) aria-current="page" @endif class="rounded-lg px-2 py-3 font-semibold text-forest hover:bg-mist aria-[current=page]:bg-mist">{{ $item['label'] }}</a>

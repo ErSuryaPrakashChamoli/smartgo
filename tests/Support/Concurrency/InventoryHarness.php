@@ -10,9 +10,10 @@ use RuntimeException;
 use Tests\Support\TestingDatabase;
 
 /**
- * Runs inventory changes (allocations, status changes, seat changes) and price plan activations in
- * parallel PHP processes against committed data in the testing database, to prove that each locks its
- * row (the space's, or the offering's for prices) before reading anything (ADR-0004, BR-BK-5, BR-PR-2).
+ * Runs inventory changes (allocations, won deals, status changes, seat changes) and price plan
+ * activations in parallel PHP processes against committed data in the testing database, to prove that
+ * each locks its row (the space's, or the offering's for prices) before reading anything (ADR-0004,
+ * BR-BK-5, BR-PR-2).
  */
 final class InventoryHarness
 {
@@ -21,7 +22,7 @@ final class InventoryHarness
      *
      * @var list<string>
      */
-    private const array TABLES = ['offer_offering', 'offers', 'price_plans', 'space_allocations', 'space_seats', 'offering_space', 'spaces', 'floors', 'space_types'];
+    private const array TABLES = ['deal_space', 'deals', 'pipeline_stages', 'offer_offering', 'offers', 'price_plans', 'space_allocations', 'space_seats', 'offering_space', 'spaces', 'floors', 'space_types'];
 
     /**
      * Empty the tables, but only on a *_testing database (see PublishingHarness::reset()).
@@ -42,7 +43,7 @@ final class InventoryHarness
     /**
      * Run one worker per attempt, all released at the same instant.
      *
-     * @param  list<array{mode: 'allocate'|'status'|'deactivate_seat'|'activate_plan', space_id: int, user_id: int, data?: array<string, mixed>}>  $attempts
+     * @param  list<array{mode: 'allocate'|'status'|'deactivate_seat'|'activate_plan'|'win_deal', space_id: int, user_id: int, data?: array<string, mixed>}>  $attempts  win_deal sends `data.deal_id` and `data.win`
      * @return array<string, array{outcome: string, message: string|null}> worker name => result
      */
     public static function runWorkers(array $attempts): array

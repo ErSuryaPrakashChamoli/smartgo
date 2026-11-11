@@ -4,6 +4,7 @@ namespace App\Services\Content;
 
 use App\Models\NavigationItem;
 use App\Models\NavigationMenu;
+use App\Models\SpaceListing;
 use App\Services\Website\SiteSections;
 use Closure;
 use Illuminate\Support\Facades\Validator;
@@ -26,6 +27,12 @@ class NavigationPayload
     public const string PROPERTY = 'property';
 
     public const string CATEGORY = 'category';
+
+    /**
+     * A space type inside a main-menu drop-down: on the website it opens as a tab listing that type's spaces by
+     * location, from Website → Spaces on the website (OD-177).
+     */
+    public const string SPACE_TYPE = 'space_type';
 
     /**
      * The kinds of link an item or a group's link can be.
@@ -67,9 +74,10 @@ class NavigationPayload
         };
         // A menu whose items may be groups may also hold sub-groups inside a group, one level deep: a
         // drop-down then opens with headings, each showing its own links (OD-145).
-        $childTypes = $structure['groups'] === 'allowed' ? [...self::LINKS, self::GROUP] : self::LINKS;
+        // Such a drop-down may also list a space type's spaces, once the website has space listings (OD-177).
+        $childTypes = $structure['groups'] === 'allowed' ? [...self::LINKS, self::GROUP, ...(SpaceListing::isAvailable() ? [self::SPACE_TYPE] : [])] : self::LINKS;
         $details = $menu->offersDetails();
-        $keys = 'label,type,page_id,section,property_id,product_id,url,description,icon';
+        $keys = 'label,type,page_id,section,property_id,product_id,space_type_id,url,description,icon';
 
         $validated = Validator::make($payload, [
             'items' => ['present', 'array', 'list', 'max:'.$structure['max_items'], $this->groupsRule($forSubmission)],
@@ -102,6 +110,7 @@ class NavigationPayload
             'items.*.children.*.section' => 'part of the website',
             'items.*.children.*.property_id' => 'location',
             'items.*.children.*.product_id' => 'workspace type',
+            'items.*.children.*.space_type_id' => 'space type',
             'items.*.children.*.url' => 'web address',
             'items.*.children.*.description' => 'description',
             'items.*.children.*.icon' => 'icon',
@@ -140,6 +149,9 @@ class NavigationPayload
             "{$prefix}.section" => ['nullable', 'string', Rule::in(array_keys(SiteSections::SECTIONS)), "required_if:{$prefix}.type,".self::SECTION],
             "{$prefix}.property_id" => ['nullable', 'integer', Rule::exists('properties', 'id'), "required_if:{$prefix}.type,".self::PROPERTY],
             "{$prefix}.product_id" => ['nullable', 'integer', Rule::exists('products', 'id'), "required_if:{$prefix}.type,".self::CATEGORY],
+            "{$prefix}.space_type_id" => in_array(self::SPACE_TYPE, $types, true)
+                ? ['nullable', 'integer', Rule::exists('space_types', 'id'), "required_if:{$prefix}.type,".self::SPACE_TYPE]
+                : ['prohibited'],
             "{$prefix}.url" => ['nullable', 'string', 'max:2048', $this->contentLink->safeUrlRule(), "required_if:{$prefix}.type,".ContentLink::TO_URL],
         ];
     }
@@ -177,6 +189,7 @@ class NavigationPayload
             'property_id' => $link['type'] === self::PROPERTY ? (int) $link['property_id'] : null,
             'product_id' => $link['type'] === self::CATEGORY ? (int) $link['product_id'] : null,
             'url' => $link['type'] === ContentLink::TO_URL ? $link['url'] : null,
+            ...($link['type'] === self::SPACE_TYPE ? ['space_type_id' => (int) $link['space_type_id']] : []),
             ...($withDetails ? ['description' => filled($link['description'] ?? null) ? trim($link['description']) : null, 'icon' => $link['icon'] ?? null] : []),
         ];
     }

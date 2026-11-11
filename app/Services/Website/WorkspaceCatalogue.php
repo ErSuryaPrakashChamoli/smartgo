@@ -2,6 +2,7 @@
 
 namespace App\Services\Website;
 
+use App\Enums\Content\MediaOrigin;
 use App\Models\City;
 use App\Models\MediaAsset;
 use App\Models\Offering;
@@ -20,6 +21,11 @@ use Illuminate\Support\Collection;
  */
 class WorkspaceCatalogue
 {
+    /**
+     * What a stock photo on a location or workspace page says about itself (OD-176), as on the home banners.
+     */
+    public const string STOCK_PHOTO_LABEL = 'Stock photo, not a SmartGro location';
+
     /**
      * Groups shown as sections on the home page, in order, by category key.
      *
@@ -244,7 +250,7 @@ class WorkspaceCatalogue
      * BR-MED-3).
      *
      * @param  array<string, mixed>  $payload
-     * @return list<array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null}>
+     * @return list<array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null, label: string|null}>
      */
     public function photos(array $payload, Property $property): array
     {
@@ -255,8 +261,7 @@ class WorkspaceCatalogue
         }
 
         $assets = MediaAsset::query()->with('media')->whereKey($assetIds)
-            ->whereIn('origin', PropertyProfile::PHOTO_ORIGINS)
-            ->where('depicts_property_id', $property->getKey())
+            ->whereIn('origin', self::photoOrigins())
             ->get()->keyBy('id');
 
         return collect($assetIds)
@@ -272,7 +277,7 @@ class WorkspaceCatalogue
      * offerings, found in one query whatever their number, checked as photos() checks them.
      *
      * @param  Collection<int, Property>  $properties  listed properties, loaded by listedProperties()
-     * @return array{properties: array<int, array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null}>, offerings: array<int, array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null}>}
+     * @return array{properties: array<int, array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null, label: string|null}>, offerings: array<int, array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null, label: string|null}>}
      */
     public function mainPhotos(Collection $properties): array
     {
@@ -292,7 +297,7 @@ class WorkspaceCatalogue
             return ['properties' => [], 'offerings' => []];
         }
 
-        $assets = MediaAsset::query()->with('media')->whereKey($assetIds)->whereIn('origin', PropertyProfile::PHOTO_ORIGINS)->get()->keyBy('id');
+        $assets = MediaAsset::query()->with('media')->whereKey($assetIds)->whereIn('origin', self::photoOrigins())->get()->keyBy('id');
 
         return array_map(fn (array $items): array => collect($items)
             ->map(fn (array $item): ?MediaAsset => is_numeric($item[1]) ? $assets->get((int) $item[1]) : null)
@@ -302,15 +307,31 @@ class WorkspaceCatalogue
     }
 
     /**
-     * Real photography of this property whose licence holds and whose file exists (BR-MED-2, BR-MED-3).
+     * Real photography of this property, or a stock photo published as sample content (OD-176, labelled as
+     * such), whose licence holds and whose file exists (BR-MED-2, BR-MED-3).
      */
     private function isShowablePhoto(MediaAsset $asset, Property $property): bool
     {
-        return (int) $asset->depicts_property_id === (int) $property->getKey() && ! $asset->isLicenceExpired() && $asset->file() !== null;
+        $isSampleStock = in_array($asset->origin, PropertyProfile::SAMPLE_PHOTO_ORIGINS, true);
+
+        return ($isSampleStock || (int) $asset->depicts_property_id === (int) $property->getKey()) && ! $asset->isLicenceExpired() && $asset->file() !== null;
     }
 
     /**
-     * @return array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null}
+     * Origins a profile's published photo may have: only a profile published where sample content was allowed
+     * can hold a stock photo (HasWebsiteProfile::photoRule()).
+     *
+     * @return list<MediaOrigin>
+     */
+    private static function photoOrigins(): array
+    {
+        return [...PropertyProfile::PHOTO_ORIGINS, ...PropertyProfile::SAMPLE_PHOTO_ORIGINS];
+    }
+
+    /**
+     * A photo as the pages show it; a stock photo carries the label that says it is not the location.
+     *
+     * @return array{src: string, srcset: string, alt: string, credit: string|null, dimensions: array{width: int, height: int}|null, label: string|null}
      */
     private function presentPhoto(MediaAsset $asset): array
     {
@@ -320,6 +341,7 @@ class WorkspaceCatalogue
             'alt' => $asset->is_decorative ? '' : (string) $asset->alt_text,
             'credit' => $asset->credit_line,
             'dimensions' => $asset->dimensions(),
+            'label' => in_array($asset->origin, PropertyProfile::SAMPLE_PHOTO_ORIGINS, true) ? self::STOCK_PHOTO_LABEL : null,
         ];
     }
 

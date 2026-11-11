@@ -4,6 +4,8 @@
     The published main menu and header buttons from `lg` up; below `lg` the Menu button opens the sheet.
     Labels are compact until `xl`, and there only the main button (the last) shows, so up to seven menu
     items, search and the button fit at 1024 px; the other button is in the sheet and the phone action bar.
+    The menu sits in a soft capsule; the item under the pointer, the open one and the current page lift onto
+    white (OD-169).
 --}}
 @php
     $isCurrent = fn (?string $href): bool => $href !== null && str_starts_with($href, '/') && trim($href, '/') === trim(request()->path(), '/');
@@ -11,34 +13,39 @@
 
 @if ($items !== [])
     <nav aria-label="Main" class="hidden lg:block">
-        <ul class="flex items-center gap-1">
+        <ul class="flex items-center gap-0.5 rounded-full bg-paper p-1 ring-1 ring-line/80">
             @foreach ($items as $item)
                 <li>
                     @if ($item['children'] !== [])
                         <button
                             type="button"
                             popovertarget="nav-group-{{ $loop->index }}"
-                            class="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-ink hover:bg-mist hover:text-forest xl:px-4 xl:text-[0.9375rem] [&:has(+:popover-open)]:bg-mist [&:has(+:popover-open)_svg]:rotate-180"
+                            class="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-ink transition-[background-color,color,box-shadow] hover:bg-white hover:text-forest hover:shadow-sm xl:px-4 xl:text-[0.9375rem] [&:has(+:popover-open)]:bg-white [&:has(+:popover-open)]:text-forest [&:has(+:popover-open)]:shadow-sm [&:has(+:popover-open)_svg]:rotate-180"
                         >
                             {{ $item['label'] }}
-                            <x-heroicon-m-chevron-down class="size-4 transition-transform" aria-hidden="true" />
+                            <x-heroicon-m-chevron-down class="size-4 text-leaf-700 transition-transform" aria-hidden="true" />
                         </button>
                         @php
                             $subGroups = array_filter($item['children'], fn (array $child): bool => $child['children'] !== []);
                             $hasDescriptions = collect($subGroups)->flatMap(fn (array $child): array => [$child, ...$child['children']])->contains(fn (array $entry): bool => $entry['description'] !== null);
+                            $isWideList = $subGroups === [] && count($item['children']) > 6;
+                            $hasSpaceTypes = collect($subGroups)->contains(fn (array $child): bool => ($child['kind'] ?? null) === 'space_type');
                         @endphp
                         <div
                             id="nav-group-{{ $loop->index }}"
                             popover
                             @class([
                                 'nav-group-panel inset-auto top-22 left-1/2 m-0 max-h-[calc(100dvh-7rem)] -translate-x-1/2 overflow-y-auto overscroll-contain rounded-3xl border-0 bg-surface p-3 shadow-raised ring-1 ring-line xl:top-25',
-                                'w-[min(46rem,calc(100vw-2.5rem))]' => $subGroups !== [] && $hasDescriptions,
-                                'w-[min(38rem,calc(100vw-2.5rem))]' => $subGroups !== [] && ! $hasDescriptions,
-                                'w-[min(22rem,calc(100vw-2.5rem))]' => $subGroups === [] && count($item['children']) <= 6,
-                                'w-[min(36rem,calc(100vw-2.5rem))]' => $subGroups === [] && count($item['children']) > 6,
+                                'w-[min(58rem,calc(100vw-2.5rem))]' => $hasSpaceTypes,
+                                'w-[min(46rem,calc(100vw-2.5rem))]' => ! $hasSpaceTypes && $subGroups !== [] && $hasDescriptions,
+                                'w-[min(38rem,calc(100vw-2.5rem))]' => ! $hasSpaceTypes && $subGroups !== [] && ! $hasDescriptions,
+                                'w-[min(26rem,calc(100vw-2.5rem))]' => $subGroups === [] && ! $isWideList,
+                                'w-[min(46rem,calc(100vw-2.5rem))]' => $isWideList,
                             ])
                         >
-                            @if ($subGroups !== [])
+                            @if ($hasSpaceTypes)
+                                <x-site.navigation.space-tabs :item="$item" :index="$loop->index" />
+                            @elseif ($subGroups !== [])
                                 {{--
                                     Categories on the left, the active category's links on the right (OD-145), each with the
                                     description and icon chosen in the menu editor (OD-149). The script in resources/js/app.js
@@ -111,17 +118,47 @@
                                     </div>
                                 </div>
                             @else
-                                <ul @class(['grid gap-1', 'grid-cols-2' => count($item['children']) > 6])>
-                                    @foreach ($item['children'] as $child)
-                                        <li>
-                                            <a href="{{ $child['href'] }}" @if ($child['external']) rel="noopener" @endif @if ($isCurrent($child['href'])) aria-current="page" @endif class="block rounded-2xl px-3 py-2.5 text-sm font-semibold text-forest hover:bg-mist aria-[current=page]:bg-mist">{{ $child['label'] }}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                                {{--
+                                    A group of links on its own (OD-168) shows them as a Solutions list does: each link's icon,
+                                    name and description from the menu editor, in two columns beyond six links, and the same
+                                    note when the list leads to sample pages.
+                                --}}
+                                <div class="flex flex-col gap-2">
+                                    <ul aria-label="{{ $item['label'] }}" @class(['grid grid-cols-2 gap-x-3 gap-y-1' => $isWideList, 'flex flex-col divide-y divide-line' => ! $isWideList])>
+                                        @foreach ($item['children'] as $link)
+                                            @php
+                                                $about = $link['description'] ? 'nav-link-'.$loop->parent->index.'-'.$loop->index : null;
+                                            @endphp
+                                            <li>
+                                                <a href="{{ $link['href'] }}" @if ($link['external']) rel="noopener" @endif @if ($isCurrent($link['href'])) aria-current="page" @endif @if ($about) aria-describedby="{{ $about }}" @endif
+                                                    class="flex min-h-12 items-center gap-3 rounded-xl px-3 py-2 text-ink hover:bg-mist hover:text-forest aria-[current=page]:text-forest">
+                                                    <x-dynamic-component :component="'heroicon-o-'.($link['icon'] ?? 'arrow-right')" @class(['size-5 shrink-0 text-forest', 'self-start mt-0.5' => $about]) aria-hidden="true" />
+                                                    <span class="flex flex-1 flex-col gap-0.5">
+                                                        <span class="flex items-center gap-2 text-[0.9375rem] font-medium">
+                                                            {{ $link['label'] }}
+                                                            @if (str_starts_with($link['href'], '/enquire'))
+                                                                <span class="rounded-full bg-mist px-2 py-0.5 text-xs font-semibold text-leaf-700">Ask us</span>
+                                                            @endif
+                                                        </span>
+                                                        @if ($about)
+                                                            <span id="{{ $about }}" aria-hidden="true" class="line-clamp-2 text-[0.8125rem]/snug text-muted [@media(max-height:50rem)]:line-clamp-1">{{ $link['description'] }}</span>
+                                                        @endif
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    @if ($item['sample'])
+                                        <p class="flex items-center gap-2 border-t border-line px-3 pt-2.5 text-xs text-muted">
+                                            <x-heroicon-m-information-circle class="size-4 shrink-0 text-leaf-700" aria-hidden="true" />
+                                            Sample pages: example text, not yet confirmed by SmartGro.
+                                        </p>
+                                    @endif
+                                </div>
                             @endif
                         </div>
                     @else
-                        <a href="{{ $item['href'] }}" @if ($item['external']) rel="noopener" @endif @if ($isCurrent($item['href'])) aria-current="page" @endif class="rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-ink hover:bg-mist hover:text-forest aria-[current=page]:bg-mist aria-[current=page]:text-forest xl:px-4 xl:text-[0.9375rem]">{{ $item['label'] }}</a>
+                        <a href="{{ $item['href'] }}" @if ($item['external']) rel="noopener" @endif @if ($isCurrent($item['href'])) aria-current="page" @endif class="block rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap text-ink transition-[background-color,color,box-shadow] hover:bg-white hover:text-forest hover:shadow-sm aria-[current=page]:bg-white aria-[current=page]:text-leaf-800 aria-[current=page]:shadow-sm xl:px-4 xl:text-[0.9375rem]">{{ $item['label'] }}</a>
                     @endif
                 </li>
             @endforeach
@@ -134,7 +171,7 @@
     <a
         href="{{ route('search', [], false) }}"
         @if (request()->routeIs('search')) aria-current="page" @endif
-        class="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-forest hover:bg-mist aria-[current=page]:bg-mist"
+        class="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-forest ring-1 ring-line transition-colors hover:bg-mist hover:ring-leaf-300 aria-[current=page]:bg-mist"
     >
         <x-heroicon-o-magnifying-glass class="size-5" aria-hidden="true" />
         <span class="sr-only">Search</span>
@@ -144,7 +181,7 @@
         <div class="hidden items-center gap-2 lg:flex">
             @foreach ($actions as $action)
                 <div @class(['hidden xl:block' => ! $loop->last])>
-                    <x-ui.button pill :variant="$loop->last ? 'primary' : 'ghost'" :href="$action['href']" :rel="$action['external'] ? 'noopener' : null">{{ $action['label'] }}</x-ui.button>
+                    <x-ui.button pill :variant="$loop->last ? 'primary' : 'ghost'" :href="$action['href']" :rel="$action['external'] ? 'noopener' : null" :class="$loop->last ? 'shadow-[0_10px_24px_-12px_rgb(40_122_21/0.85)] transition-[background-color,translate,box-shadow] hover:-translate-y-px hover:shadow-[0_14px_28px_-12px_rgb(40_122_21/0.9)]' : ''">{{ $action['label'] }}</x-ui.button>
                 </div>
             @endforeach
         </div>
@@ -155,7 +192,7 @@
             type="button"
             popovertarget="mobile-menu"
             aria-controls="mobile-menu"
-            class="inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold text-forest ring-1 ring-control ring-inset hover:bg-mist lg:hidden"
+            class="inline-flex h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-forest ring-1 ring-control ring-inset hover:bg-mist lg:hidden"
         >
             <x-heroicon-m-bars-3 class="size-5" aria-hidden="true" />
             Menu

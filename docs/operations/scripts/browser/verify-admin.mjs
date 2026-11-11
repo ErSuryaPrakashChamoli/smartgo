@@ -84,6 +84,19 @@ const SCREENS = [
     ['sales', `/admin/sales/assignment-rules/${fixtures.ids.assignment_rule}/edit`, 403, 'assignment rule edit form refused to sales'],
     ['operations', '/admin/sales/assignment-rules', 403, 'assignment rules refused to operations'],
     ['marketing', `/admin/sales/assignment-rules/${fixtures.ids.assignment_rule}/edit`, 403, 'assignment rule edit form refused to marketing'],
+    // Pipeline and deals (Phase 9, P9-D): test-only stages and deals; deals follow the enquiry scope (the
+    // fixture Sales user has no locations, so sees none), the stages are the Super Admin's.
+    ['admin', '/admin/sales/deals', 200, 'deals list'],
+    ['admin', `/admin/sales/deals/${fixtures.ids.deal_open}`, 200, 'deal page (open, proposed spaces with availability)'],
+    ['admin', `/admin/sales/deals/${fixtures.ids.deal_won}`, 200, 'deal page (won, allocation and history)'],
+    ['admin', '/admin/sales/pipeline-stages', 200, 'pipeline stages list'],
+    ['admin', '/admin/sales/pipeline-stages/create', 200, 'new pipeline stage form'],
+    ['admin', `/admin/sales/pipeline-stages/${fixtures.ids.pipeline_stage}/edit`, 200, 'pipeline stage form (in use)'],
+    ['sales', '/admin/sales/deals', 200, 'deals list (sales, no locations)'],
+    ['sales', `/admin/sales/deals/${fixtures.ids.deal_open}`, 404, 'deal outside the sales scope'],
+    ['sales', '/admin/sales/pipeline-stages', 403, 'pipeline stages refused to sales'],
+    ['operations', '/admin/sales/deals', 403, 'deals refused to operations'],
+    ['marketing', `/admin/sales/pipeline-stages/${fixtures.ids.pipeline_stage}/edit`, 403, 'pipeline stage form refused to marketing'],
     // Reports (Phase 12, OD-132): totals only.
     ['operations', '/admin/reports/enquiries-and-tours', 200, 'enquiry and tour totals'],
     ['marketing', '/admin/reports/content-freshness', 200, 'content freshness'],

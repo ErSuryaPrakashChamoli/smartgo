@@ -11,6 +11,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * The property profile form. Rules are in PropertyProfile; capacity, status, availability and price
@@ -65,10 +67,10 @@ class PropertyProfileForm
      */
     public static function photoSection(Closure $property): Section
     {
-        $options = fn (mixed $record): array => self::photoOptions($property($record));
+        $options = fn (mixed $record): array => self::photoOptions($property($record), $record);
 
         return Section::make('Photos')
-            ->description('Only SmartGro or commissioned photography uploaded for this property can be chosen. Concept visuals, renders and stock photos are never shown as the property. Alt text comes from the media library. Replacing or removing a photo is a change to this profile, so it needs approval like any other.')
+            ->description('Only SmartGro or commissioned photography uploaded for this property can be chosen. Concept visuals and renders are never shown as the property. A stock photo is allowed only as sample content, where that is switched on, and the website labels it "Stock photo, not a SmartGro location"; elsewhere replace it before saving (OD-176). Alt text comes from the media library. Replacing or removing a photo is a change to this profile, so it needs approval like any other.')
             ->schema([
                 Select::make('hero_asset_id')
                     ->label('Main photo')
@@ -95,17 +97,30 @@ class PropertyProfileForm
     }
 
     /**
+     * Photography of the property; stock photos too while sample content is allowed, and always the stock photos
+     * this profile already holds, so an editor sees what has to be replaced (OD-176).
+     *
      * @return array<int, string>
      */
-    private static function photoOptions(?Property $property): array
+    private static function photoOptions(?Property $property, mixed $record = null): array
     {
         if ($property === null) {
             return [];
         }
 
-        return MediaAsset::query()->where('depicts_property_id', $property->getKey())->whereIn('origin', PropertyProfile::PHOTO_ORIGINS)->latest()->limit(500)->get()
+        $inUse = $record instanceof Model && method_exists($record, 'openRevision')
+            ? collect([$record->openRevision()?->payload, $record->publishedRevision?->payload])->filter()
+                ->flatMap(fn (array $payload): array => [$payload['hero_asset_id'] ?? null, ...($payload['gallery_asset_ids'] ?? [])])
+                ->filter(fn (mixed $id): bool => is_numeric($id))->map(fn (mixed $id): int => (int) $id)->unique()->values()->all()
+            : [];
+
+        return MediaAsset::query()
+            ->where(fn (Builder $query) => $query->where('depicts_property_id', $property->getKey())->whereIn('origin', PropertyProfile::PHOTO_ORIGINS))
+            ->orWhere(fn (Builder $query) => $query->whereIn('origin', PropertyProfile::SAMPLE_PHOTO_ORIGINS)
+                ->when(! config('backoffice.sample_content'), fn (Builder $query) => $query->whereKey($inUse)))
+            ->latest()->limit(500)->get()
             ->reject(fn (MediaAsset $asset): bool => $asset->isLicenceExpired())
-            ->mapWithKeys(fn (MediaAsset $asset): array => [$asset->getKey() => $asset->title.' ('.$asset->origin->label().')'])
+            ->mapWithKeys(fn (MediaAsset $asset): array => [$asset->getKey() => $asset->title.' ('.(in_array($asset->origin, PropertyProfile::SAMPLE_PHOTO_ORIGINS, true) ? 'stock photo, sample content only' : $asset->origin->label()).')'])
             ->all();
     }
 }

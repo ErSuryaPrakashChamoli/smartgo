@@ -88,7 +88,7 @@ it('shows the published menus in the header, the phone menu, the action bar and 
     $phone = str($html)->after('id="mobile-menu"')->before('</nav>')->toString();
 
     expect($desktop)
-        ->toMatch('#href="/about"[^>]*>About</a>.*popovertarget="nav-group-1"[^>]*> Company .*href="/careers"[^>]*>Careers</a>.*href="https://partner.example/smartgro" rel="noopener"#')
+        ->toMatch('#href="/about"[^>]*>About</a>.*popovertarget="nav-group-1"[^>]*> Company .*href="/careers"[^>]*>.*?Careers .*href="https://partner.example/smartgro" rel="noopener"#')
         ->and($phone)->toMatch('#href="/about"[^>]*>About</a>.*<summary[^>]*> Company .*href="/careers"#')
         ->and($phone)->toMatch('#Visit us.*Contact us#')
         ->and($html)->toMatch('#<div class="hidden items-center gap-2 lg:flex">.*Contact us.*Visit us#')
@@ -166,7 +166,7 @@ it('shows links to parts of the website and to locations only while they have so
         ->not->toContain('FAQs');
 });
 
-it('links a workspace type to its page, or to the enquiry form while it has none and the form is open, never an inactive type, and opens a long group as a wide panel (OD-143, OD-145)', function () {
+it('links a workspace type to its page, to the enquiry form while it has none and the form is open, otherwise to its card on the workspaces page, never an inactive type, and opens a long group as a wide panel (OD-143, OD-145, OD-174)', function () {
     seed(ReferenceDataSeeder::class);
     $products = Product::query()->orderBy('sort_order')->get();
     publishShellMenu('main', [['label' => 'Spaces', 'type' => 'group', 'children' => [
@@ -183,7 +183,8 @@ it('links a workspace type to its page, or to the enquiry form while it has none
     offerForTest($a70, 'virtual_office', published: false);
 
     expect($mainMenu())->toContain('href="/workspaces/meeting-rooms"')->not->toContain('href="/workspaces/virtual-office"')
-        ->not->toContain('workspace=virtual-office')->not->toContain('w-[min(36rem');
+        ->not->toContain('workspace=virtual-office')->toContain('href="/workspaces#virtual-office"')
+        ->and(shellHtml('/workspaces'))->toContain('<li id="virtual-office"');
 
     Page::factory()->published()->create(['slug' => 'legal/privacy', 'template' => 'legal']);
 
@@ -194,7 +195,7 @@ it('links a workspace type to its page, or to the enquiry form while it has none
 
     $products->reject(fn (Product $product): bool => $product->key === 'meeting_room')->each(fn (Product $product) => offerForTest($a70, $product->key));
 
-    expect($mainMenu())->toContain('href="/workspaces/virtual-office"')->toContain('w-[min(36rem,calc(100vw-2.5rem))]');
+    expect($mainMenu())->toContain('href="/workspaces/virtual-office"')->toContain('w-[min(46rem,calc(100vw-2.5rem))]')->toContain('grid grid-cols-2');
 });
 
 it('publishes a drop-down with sub-groups, shows each sub-group with its links on wide screens and phones, and hides an empty one (OD-145)', function () {
@@ -243,6 +244,32 @@ it('shows each drop-down category\'s and link\'s description and chosen icon, re
     $sample->forceFill(['status' => 'draft'])->save();
 
     expect(shellHtml('/welcome'))->not->toContain('Dedicated Desks')->not->toContain('Desks and offices.')->not->toContain('Sample pages');
+});
+
+it('shows a drop-down of links on its own as Solutions shows its lists: icon, name, description and the sample note, on wide screens and phones (OD-168)', function () {
+    $sample = Page::factory()->published()->create(['title' => 'Community', 'slug' => 'community', 'template' => 'sample']);
+    $iconPath = fn (string $name): string => (string) preg_replace('/\s+/', ' ', str(svg('heroicon-o-'.$name)->contents())->match('/ d="([^"]+)"/')->toString());
+    publishShellMenu('main', [
+        ['label' => 'Community', 'type' => 'group', 'children' => [
+            [...shellPageLink('Community at SmartGro', $sample), 'description' => 'How members meet and learn.', 'icon' => 'user-group'],
+            shellPageLink('Careers', $this->careers),
+        ]],
+        ['label' => 'About', 'type' => 'group', 'children' => [shellPageLink('About SmartGro', $this->about)]],
+    ]);
+
+    $html = shellHtml('/welcome');
+    $wide = str($html)->after('<nav aria-label="Main" class="hidden lg:block">')->before('</nav>')->toString();
+    $community = str($wide)->after('id="nav-group-0"')->before('id="nav-group-1"')->toString();
+    $phone = str($html)->after('id="mobile-menu"')->before('</nav>')->toString();
+
+    expect($community)->toMatch('#<ul aria-label="Community"[^>]*>.*<a href="/community"[^>]*aria-describedby="nav-link-0-0"[^>]*>.*Community at SmartGro.*<span id="nav-link-0-0" aria-hidden="true"[^>]*>How members meet and learn.</span>#s')
+        ->toContain($iconPath('user-group'))->toContain($iconPath('arrow-right'))
+        ->toContain('Sample pages: example text, not yet confirmed by SmartGro.')
+        ->toContain('w-[min(26rem,calc(100vw-2.5rem))]')->not->toContain('data-flyout')
+        ->and(str($community)->after('href="/careers"')->before('</a>')->toString())->not->toContain('aria-describedby')
+        ->and(str($wide)->after('id="nav-group-1"')->toString())->toContain('href="/about"')->not->toContain('Sample pages')
+        ->and($phone)->toContain('How members meet and learn.')->toContain($iconPath('user-group'))
+        ->and(substr_count($phone, 'Sample pages: example text'))->toBe(1);
 });
 
 it('shows a legal link in the footer only once its legal page has been reviewed, approved and published', function () {

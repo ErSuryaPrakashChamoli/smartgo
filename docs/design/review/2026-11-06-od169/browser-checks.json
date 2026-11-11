@@ -1,0 +1,128 @@
+[
+ {
+  "name": "1440",
+  "overflow": 0,
+  "hero": 477,
+  "slides": 4,
+  "firstImageLoaded": true,
+  "firstImageSrc": "http://127.0.0.1:8767/media/1/w960",
+  "labels": [
+   "AI-generated image, not a photo of a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location"
+  ],
+  "h1": "A better space to do your best work.",
+  "marquee": true,
+  "example": true,
+  "mainNavPad": "rgb(247, 247, 242)",
+  "slideImageWidths": [
+   748,
+   748,
+   748,
+   748
+  ],
+  "axe": [],
+  "errors": []
+ },
+ {
+  "name": "1280",
+  "overflow": 0,
+  "hero": 470,
+  "slides": 4,
+  "firstImageLoaded": true,
+  "firstImageSrc": "http://127.0.0.1:8767/media/1/w960",
+  "labels": [
+   "AI-generated image, not a photo of a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location"
+  ],
+  "h1": "A better space to do your best work.",
+  "marquee": true,
+  "example": true,
+  "mainNavPad": "rgb(247, 247, 242)",
+  "axe": null,
+  "errors": []
+ },
+ {
+  "name": "1024",
+  "overflow": 0,
+  "hero": 482,
+  "slides": 4,
+  "firstImageLoaded": true,
+  "firstImageSrc": "http://127.0.0.1:8767/media/1/w960",
+  "labels": [
+   "AI-generated image, not a photo of a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location"
+  ],
+  "h1": "A better space to do your best work.",
+  "marquee": true,
+  "example": true,
+  "mainNavPad": "rgb(247, 247, 242)",
+  "axe": null,
+  "errors": []
+ },
+ {
+  "name": "768",
+  "overflow": 0,
+  "hero": 736,
+  "slides": 4,
+  "firstImageLoaded": true,
+  "firstImageSrc": "http://127.0.0.1:8767/media/1/w960",
+  "labels": [
+   "AI-generated image, not a photo of a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location"
+  ],
+  "h1": "A better space to do your best work.",
+  "marquee": true,
+  "example": true,
+  "mainNavPad": "rgb(247, 247, 242)",
+  "axe": null,
+  "errors": []
+ },
+ {
+  "name": "390",
+  "overflow": 0,
+  "hero": 670,
+  "slides": 4,
+  "firstImageLoaded": true,
+  "firstImageSrc": "http://127.0.0.1:8767/media/1/w480",
+  "labels": [
+   "AI-generated image, not a photo of a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location"
+  ],
+  "h1": "A better space to do your best work.",
+  "marquee": true,
+  "example": true,
+  "mainNavPad": "rgb(247, 247, 242)",
+  "axe": [],
+  "errors": []
+ },
+ {
+  "name": "360",
+  "overflow": 0,
+  "hero": 652,
+  "slides": 4,
+  "firstImageLoaded": true,
+  "firstImageSrc": "http://127.0.0.1:8767/media/1/w480",
+  "labels": [
+   "AI-generated image, not a photo of a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location",
+   "Stock photo, not a SmartGro location"
+  ],
+  "h1": "A better space to do your best work.",
+  "marquee": true,
+  "example": true,
+  "mainNavPad": "rgb(247, 247, 242)",
+  "axe": null,
+  "errors": []
+ }
+]

@@ -1,0 +1,6 @@
+
+ INFO Running migrations. 
+
+ 2026_11_05_091534_create_home_banners_table .. 113.58ms DONE
+ 2026_11_05_091538_create_home_highlights_table .. 63.79ms DONE
+

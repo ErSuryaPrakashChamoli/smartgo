@@ -10,6 +10,7 @@ use App\Models\Page;
 use App\Models\Post;
 use App\Models\PostTopic;
 use App\Models\Property;
+use App\Models\SpaceListing;
 use App\Services\Content\PagePayload;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
@@ -52,6 +53,13 @@ class Sitemap
         $properties = $this->catalogue->listedProperties();
         $this->workspaces($add, $properties);
         $this->locations($add, $properties);
+
+        // Each shown space's page (OD-177); example spaces carry "noindex", so they are left out.
+        if (SpaceListing::isAvailable()) {
+            SpaceListing::query()->shown()->where('is_sample', false)->with(['property', 'spaceType'])->orderBy('slug')->get()
+                ->each(fn (SpaceListing $listing) => $add((string) $listing->path(), $listing->published_at, 'space', $listing));
+        }
+
         $this->insights($add);
 
         $caseStudies = CaseStudy::query()->published()->where('consent_on_file', true)->latest('published_at')->get(['id', 'slug', 'status', 'published_at', 'title', 'summary']);

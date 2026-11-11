@@ -1,0 +1,50 @@
+{
+    "database": "smart_go",
+    "read_only": 1,
+    "status": 200,
+    "drop_downs": {
+        "Spaces": {
+            "links": 1,
+            "first": [
+                "All workspace types Compare every kind of workspace SmartGro offers. -> /workspaces"
+            ],
+            "sample_note": false
+        },
+        "Solutions": {
+            "links": 13,
+            "first": [
+                "Dedicated Desks A dedicated workspace for professionals who want a consistent place to focus and work. -> /workspace-solutions/dedicated-desks",
+                "Flexible Desks A flexible workspace concept for people whose working needs change from day to day. -> /workspace-solutions/flexible-desks",
+                "Private Offices A private workspace concept for individuals and teams seeking a more enclosed working environment. -> /workspace-solutions/private-offices"
+            ],
+            "sample_note": true
+        },
+        "Community": {
+            "links": 4,
+            "first": [
+                "Community at SmartGro How teams at SmartGro meet, learn and share the space. -> /community",
+                "Founders' breakfast Example event: no date is set and registration is not open. -> /community/events/founders-breakfast",
+                "Workspace open house Example event: no date is set and registration is not open. -> /community/events/workspace-open-house"
+            ],
+            "sample_note": true
+        },
+        "About": {
+            "links": 4,
+            "first": [
+                "About SmartGro Who we are and what we value. -> /about",
+                "Careers Working at SmartGro, and open roles when there are any. -> /careers",
+                "Contact Phone, email and address. -> /#contact"
+            ],
+            "sample_note": true
+        },
+        "Resources": {
+            "links": 3,
+            "first": [
+                "Insights Articles and guides on flexible workspace. -> /insights",
+                "FAQs Answers to common questions. -> /faqs",
+                "Search Find a page, location or article. -> /search"
+            ],
+            "sample_note": false
+        }
+    }
+}

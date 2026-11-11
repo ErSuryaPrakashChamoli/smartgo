@@ -1,0 +1,12 @@
+
+ INFO Running migrations. 
+
+ 2026_11_10_152906_create_space_listings_table .. 
+ ⇂ create table `space_listings` (`id` bigint unsigned not null auto_increment primary key, `property_id` bigint unsigned null, `space_type_id` bigint unsigned null, `space_id` bigint unsigned null, `name` varchar(80) null, `slug` varchar(120) null, `summary` varchar(200) null, `details` text null, `seats` smallint unsigned null, `features` json null, `is_sample` tinyint(1) not null default '0', `sort_order` smallint unsigned not null default '0', `status` varchar(20) not null default 'draft', `published_revision_id` bigint unsigned null, `published_at` timestamp null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `space_listings` add constraint `space_listings_property_id_foreign` foreign key (`property_id`) references `properties` (`id`) on delete restrict 
+ ⇂ alter table `space_listings` add constraint `space_listings_space_type_id_foreign` foreign key (`space_type_id`) references `space_types` (`id`) on delete restrict 
+ ⇂ alter table `space_listings` add constraint `space_listings_space_id_foreign` foreign key (`space_id`) references `spaces` (`id`) on delete set null 
+ ⇂ alter table `space_listings` add constraint `space_listings_published_revision_id_foreign` foreign key (`published_revision_id`) references `revisions` (`id`) on delete set null 
+ ⇂ alter table `space_listings` add index `space_listings_status_space_type_id_property_id_sort_order_index`(`status`, `space_type_id`, `property_id`, `sort_order`) 
+ ⇂ alter table `space_listings` add unique `space_listings_slug_unique`(`slug`) 
+

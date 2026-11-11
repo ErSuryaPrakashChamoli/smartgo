@@ -7,14 +7,19 @@ use App\Filament\Clusters\Properties\Resources\OfferingProfiles\OfferingProfileR
 use App\Filament\Clusters\Properties\Resources\PropertyProfiles\PropertyProfileResource;
 use App\Filament\Clusters\Website\Resources\CaseStudies\CaseStudyResource;
 use App\Filament\Clusters\Website\Resources\Faqs\FaqResource;
+use App\Filament\Clusters\Website\Resources\HomeBanners\HomeBannerResource;
+use App\Filament\Clusters\Website\Resources\HomeHighlights\HomeHighlightResource;
 use App\Filament\Clusters\Website\Resources\NavigationMenus\NavigationMenuResource;
 use App\Filament\Clusters\Website\Resources\Pages\PageResource;
 use App\Filament\Clusters\Website\Resources\Posts\PostResource;
 use App\Filament\Clusters\Website\Resources\RedirectMaps\RedirectMapResource;
 use App\Filament\Clusters\Website\Resources\SiteSettings\SiteSettingResource;
+use App\Filament\Clusters\Website\Resources\SpaceListings\SpaceListingResource;
 use App\Filament\Clusters\Website\Resources\Testimonials\TestimonialResource;
 use App\Models\CaseStudy;
 use App\Models\Faq;
+use App\Models\HomeBanner;
+use App\Models\HomeHighlight;
 use App\Models\NavigationMenu;
 use App\Models\OfferingProfile;
 use App\Models\Page;
@@ -23,6 +28,7 @@ use App\Models\PropertyProfile;
 use App\Models\RedirectMap;
 use App\Models\Revision;
 use App\Models\SiteSetting;
+use App\Models\SpaceListing;
 use App\Models\Testimonial;
 use App\Models\User;
 use Filament\Tables\Columns\TextColumn;
@@ -49,6 +55,9 @@ class WaitingForApproval extends TableWidget
         CaseStudy::class => CaseStudyResource::class,
         Testimonial::class => TestimonialResource::class,
         Faq::class => FaqResource::class,
+        HomeBanner::class => HomeBannerResource::class,
+        HomeHighlight::class => HomeHighlightResource::class,
+        SpaceListing::class => SpaceListingResource::class,
         PropertyProfile::class => PropertyProfileResource::class,
         OfferingProfile::class => OfferingProfileResource::class,
         NavigationMenu::class => NavigationMenuResource::class,
@@ -145,6 +154,9 @@ class WaitingForApproval extends TableWidget
             $content instanceof CaseStudy => 'Customer story',
             $content instanceof Testimonial => 'Testimonial',
             $content instanceof Faq => 'FAQ',
+            $content instanceof HomeBanner => 'Home banner',
+            $content instanceof HomeHighlight => 'Highlight',
+            $content instanceof SpaceListing => 'Space',
             $content instanceof PropertyProfile => 'Property profile',
             $content instanceof OfferingProfile => 'Workspace offering',
             $content instanceof NavigationMenu => 'Menu',
@@ -161,6 +173,9 @@ class WaitingForApproval extends TableWidget
         return (string) match (true) {
             $content instanceof Testimonial => 'From '.($payload['person_name'] ?? 'unnamed'),
             $content instanceof Faq => $payload['question'] ?? 'FAQ',
+            $content instanceof HomeBanner => $payload['heading'] ?? 'Home banner',
+            $content instanceof HomeHighlight => $payload['text'] ?? 'Highlight',
+            $content instanceof SpaceListing => $payload['name'] ?? 'Space',
             $content instanceof PropertyProfile => 'SmartGro '.$content->property->name,
             $content instanceof OfferingProfile => $content->offering->displayName(),
             $content instanceof NavigationMenu => $content->name,

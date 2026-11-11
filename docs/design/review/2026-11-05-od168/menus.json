@@ -1,0 +1,926 @@
+{
+ "base": "http://127.0.0.1:8080",
+ "desktop": [
+  {
+   "width": 1440,
+   "label": "Spaces",
+   "panelWidth": 736,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "All workspace types Compare every kind of workspace SmartGro offers.",
+     "href": "/workspaces",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Private offices and cabins Lockable offices and cabins for teams that want a room of their own.",
+     "href": "/workspaces/private-cabins",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Dedicated desks A desk of your own in a shared workspace, kept for you.",
+     "href": "/workspaces/dedicated-desks",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Hot desks Flexible seating: take any open desk when you need one.",
+     "href": "/workspaces/hot-desks",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Meeting rooms Rooms for client meetings and team discussions.",
+     "href": "/workspaces/meeting-rooms",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Conference and training rooms Ask us Larger rooms for workshops, training and events.",
+     "href": "/enquire?workspace=conference-training-rooms",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Virtual office Ask us A business address for your company, without a desk.",
+     "href": "/enquire?workspace=virtual-office",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Managed offices Ask us Office space set up and run for your organisation.",
+     "href": "/enquire?workspace=managed-offices",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    }
+   ],
+   "sampleNote": 0
+  },
+  {
+   "width": 1440,
+   "label": "Locations",
+   "panelWidth": 416,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "All locations Every SmartGro location on one page.",
+     "href": "/locations",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "SmartGro A-70 Sector 2, Noida",
+     "href": "/locations/noida/a-70",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "SmartGro A-71 Sector 2, Noida",
+     "href": "/locations/noida/a-71",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "SmartGro H-105 Sector 62, Noida",
+     "href": "/locations/noida/h-105",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    }
+   ],
+   "sampleNote": 0
+  },
+  {
+   "width": 1440,
+   "label": "Solutions",
+   "panelWidth": 871,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "Dedicated Desks A dedicated workspace for professionals who want a consistent place to focus and work.",
+     "href": "/workspaces/dedicated-desks",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 595,
+      "height": 76
+     }
+    },
+    {
+     "text": "Flexible Desks A flexible workspace concept for people whose working needs change from day to day.",
+     "href": "/workspaces/hot-desks",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 595,
+      "height": 58
+     }
+    },
+    {
+     "text": "Private Offices A private workspace concept for individuals and teams seeking a more enclosed working environment.",
+     "href": "/workspaces/private-cabins",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 595,
+      "height": 76
+     }
+    },
+    {
+     "text": "Managed Workspaces A managed workspace concept for businesses seeking a more tailored office arrangement.",
+     "href": "/workspace-solutions/managed-workspaces",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 595,
+      "height": 76
+     }
+    },
+    {
+     "text": "Meeting Rooms A professional space concept for meetings, discussions, and collaborative sessions.",
+     "href": "/business-solutions/meeting-rooms",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Day Pass A sample short-term workspace access offering for flexible working needs.",
+     "href": "/business-solutions/day-pass",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Business Address A sample business-address service concept for organisations exploring professional address options.",
+     "href": "/business-solutions/business-address",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "GST Registration Support A sample information page for customers exploring GST registration assistance.",
+     "href": "/business-solutions/gst-registration-support",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Company Registration Support A sample information page for customers exploring company formation assistance.",
+     "href": "/business-solutions/company-registration-support",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Workspace Packages A sample overview of workspace options that may be combined around business needs.",
+     "href": "/business-solutions/workspace-packages",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Cabin Day Pass A sample short-term access concept for a private cabin or enclosed workspace.",
+     "href": "/business-solutions/cabin-day-pass",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Training Rooms A sample space concept for training, workshops, and group learning.",
+     "href": "/business-solutions/training-rooms",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Virtual Office A sample virtual-office concept for businesses that work remotely but want a professional presence.",
+     "href": "/business-solutions/virtual-office",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    }
+   ],
+   "sampleNote": 2
+  },
+  {
+   "width": 1440,
+   "label": "Community",
+   "panelWidth": 416,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "Community at SmartGro How teams at SmartGro meet, learn and share the space.",
+     "href": "/community",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 76
+     }
+    },
+    {
+     "text": "Founders' breakfast Example event: no date is set and registration is not open.",
+     "href": "/community/events/founders-breakfast",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 76
+     }
+    },
+    {
+     "text": "Workspace open house Example event: no date is set and registration is not open.",
+     "href": "/community/events/workspace-open-house",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 76
+     }
+    },
+    {
+     "text": "Partner with SmartGro For brokers, property owners and companies.",
+     "href": "/partners",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    }
+   ],
+   "sampleNote": 1
+  },
+  {
+   "width": 1440,
+   "label": "About",
+   "panelWidth": 416,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "About SmartGro Who we are and what we value.",
+     "href": "/about",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "Careers Working at SmartGro, and open roles when there are any.",
+     "href": "/careers",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 76
+     }
+    },
+    {
+     "text": "Contact Phone, email and address.",
+     "href": "/#contact",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "Book a tour Visit a location before you decide.",
+     "href": "/book-a-tour",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "Accessibility How this website works for everyone.",
+     "href": "/accessibility",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    }
+   ],
+   "sampleNote": 1
+  },
+  {
+   "width": 1440,
+   "label": "Resources",
+   "panelWidth": 416,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "Insights Articles and guides on flexible workspace.",
+     "href": "/insights",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "FAQs Answers to common questions.",
+     "href": "/faqs",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "Search Find a page, location or article.",
+     "href": "/search",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    }
+   ],
+   "sampleNote": 0
+  },
+  {
+   "width": 1440,
+   "overflow": 0
+  },
+  {
+   "width": 1024,
+   "label": "Spaces",
+   "panelWidth": 736,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "All workspace types Compare every kind of workspace SmartGro offers.",
+     "href": "/workspaces",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Private offices and cabins Lockable offices and cabins for teams that want a room of their own.",
+     "href": "/workspaces/private-cabins",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Dedicated desks A desk of your own in a shared workspace, kept for you.",
+     "href": "/workspaces/dedicated-desks",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Hot desks Flexible seating: take any open desk when you need one.",
+     "href": "/workspaces/hot-desks",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Meeting rooms Rooms for client meetings and team discussions.",
+     "href": "/workspaces/meeting-rooms",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Conference and training rooms Ask us Larger rooms for workshops, training and events.",
+     "href": "/enquire?workspace=conference-training-rooms",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Virtual office Ask us A business address for your company, without a desk.",
+     "href": "/enquire?workspace=virtual-office",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    },
+    {
+     "text": "Managed offices Ask us Office space set up and run for your organisation.",
+     "href": "/enquire?workspace=managed-offices",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 350,
+      "height": 76
+     }
+    }
+   ],
+   "sampleNote": 0
+  },
+  {
+   "width": 1024,
+   "label": "Locations",
+   "panelWidth": 416,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "All locations Every SmartGro location on one page.",
+     "href": "/locations",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "SmartGro A-70 Sector 2, Noida",
+     "href": "/locations/noida/a-70",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "SmartGro A-71 Sector 2, Noida",
+     "href": "/locations/noida/a-71",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "SmartGro H-105 Sector 62, Noida",
+     "href": "/locations/noida/h-105",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    }
+   ],
+   "sampleNote": 0
+  },
+  {
+   "width": 1024,
+   "label": "Solutions",
+   "panelWidth": 649,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "Dedicated Desks A dedicated workspace for professionals who want a consistent place to focus and work.",
+     "href": "/workspaces/dedicated-desks",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 373,
+      "height": 76
+     }
+    },
+    {
+     "text": "Flexible Desks A flexible workspace concept for people whose working needs change from day to day.",
+     "href": "/workspaces/hot-desks",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 373,
+      "height": 76
+     }
+    },
+    {
+     "text": "Private Offices A private workspace concept for individuals and teams seeking a more enclosed working environment.",
+     "href": "/workspaces/private-cabins",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 373,
+      "height": 76
+     }
+    },
+    {
+     "text": "Managed Workspaces A managed workspace concept for businesses seeking a more tailored office arrangement.",
+     "href": "/workspace-solutions/managed-workspaces",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 373,
+      "height": 76
+     }
+    },
+    {
+     "text": "Meeting Rooms A professional space concept for meetings, discussions, and collaborative sessions.",
+     "href": "/business-solutions/meeting-rooms",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Day Pass A sample short-term workspace access offering for flexible working needs.",
+     "href": "/business-solutions/day-pass",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Business Address A sample business-address service concept for organisations exploring professional address options.",
+     "href": "/business-solutions/business-address",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "GST Registration Support A sample information page for customers exploring GST registration assistance.",
+     "href": "/business-solutions/gst-registration-support",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Company Registration Support A sample information page for customers exploring company formation assistance.",
+     "href": "/business-solutions/company-registration-support",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Workspace Packages A sample overview of workspace options that may be combined around business needs.",
+     "href": "/business-solutions/workspace-packages",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Cabin Day Pass A sample short-term access concept for a private cabin or enclosed workspace.",
+     "href": "/business-solutions/cabin-day-pass",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Training Rooms A sample space concept for training, workshops, and group learning.",
+     "href": "/business-solutions/training-rooms",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    },
+    {
+     "text": "Virtual Office A sample virtual-office concept for businesses that work remotely but want a professional presence.",
+     "href": "/business-solutions/virtual-office",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 0,
+      "height": 0
+     }
+    }
+   ],
+   "sampleNote": 2
+  },
+  {
+   "width": 1024,
+   "label": "Community",
+   "panelWidth": 416,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "Community at SmartGro How teams at SmartGro meet, learn and share the space.",
+     "href": "/community",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 76
+     }
+    },
+    {
+     "text": "Founders' breakfast Example event: no date is set and registration is not open.",
+     "href": "/community/events/founders-breakfast",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 76
+     }
+    },
+    {
+     "text": "Workspace open house Example event: no date is set and registration is not open.",
+     "href": "/community/events/workspace-open-house",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 76
+     }
+    },
+    {
+     "text": "Partner with SmartGro For brokers, property owners and companies.",
+     "href": "/partners",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    }
+   ],
+   "sampleNote": 1
+  },
+  {
+   "width": 1024,
+   "label": "About",
+   "panelWidth": 416,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "About SmartGro Who we are and what we value.",
+     "href": "/about",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "Careers Working at SmartGro, and open roles when there are any.",
+     "href": "/careers",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 76
+     }
+    },
+    {
+     "text": "Contact Phone, email and address.",
+     "href": "/#contact",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "Book a tour Visit a location before you decide.",
+     "href": "/book-a-tour",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "Accessibility How this website works for everyone.",
+     "href": "/accessibility",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    }
+   ],
+   "sampleNote": 1
+  },
+  {
+   "width": 1024,
+   "label": "Resources",
+   "panelWidth": 416,
+   "inViewport": true,
+   "links": [
+    {
+     "text": "Insights Articles and guides on flexible workspace.",
+     "href": "/insights",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "FAQs Answers to common questions.",
+     "href": "/faqs",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    },
+    {
+     "text": "Search Find a page, location or article.",
+     "href": "/search",
+     "icon": true,
+     "described": true,
+     "box": {
+      "width": 392,
+      "height": 58
+     }
+    }
+   ],
+   "sampleNote": 0
+  },
+  {
+   "width": 1024,
+   "overflow": 0
+  }
+ ],
+ "phone": [
+  {
+   "label": "Spaces",
+   "links": [
+    "All workspace types Compare every kind of workspace SmartGro offers.",
+    "Private offices and cabins Lockable offices and cabins for teams that want a room of their own.",
+    "Dedicated desks A desk of your own in a shared workspace, kept for you.",
+    "Hot desks Flexible seating: take any open desk when you need one.",
+    "Meeting rooms Rooms for client meetings and team discussions.",
+    "Conference and training rooms Ask us Larger rooms for workshops, training and events.",
+    "Virtual office Ask us A business address for your company, without a desk.",
+    "Managed offices Ask us Office space set up and run for your organisation."
+   ],
+   "sampleNote": 0
+  },
+  {
+   "label": "Locations",
+   "links": [
+    "All locations Every SmartGro location on one page.",
+    "SmartGro A-70 Sector 2, Noida",
+    "SmartGro A-71 Sector 2, Noida",
+    "SmartGro H-105 Sector 62, Noida"
+   ],
+   "sampleNote": 0
+  },
+  {
+   "label": "Solutions",
+   "links": [],
+   "sampleNote": 0
+  },
+  {
+   "label": "Community",
+   "links": [
+    "Community at SmartGro How teams at SmartGro meet, learn and share the space.",
+    "Founders' breakfast Example event: no date is set and registration is not open.",
+    "Workspace open house Example event: no date is set and registration is not open.",
+    "Partner with SmartGro For brokers, property owners and companies."
+   ],
+   "sampleNote": 1
+  },
+  {
+   "label": "About",
+   "links": [
+    "About SmartGro Who we are and what we value.",
+    "Careers Working at SmartGro, and open roles when there are any.",
+    "Contact Phone, email and address.",
+    "Book a tour Visit a location before you decide.",
+    "Accessibility How this website works for everyone."
+   ],
+   "sampleNote": 1
+  },
+  {
+   "label": "Resources",
+   "links": [
+    "Insights Articles and guides on flexible workspace.",
+    "FAQs Answers to common questions.",
+    "Search Find a page, location or article."
+   ],
+   "sampleNote": 0
+  }
+ ],
+ "consoleErrors": [],
+ "failedRequests": [],
+ "external": [],
+ "phoneOverflow": 0
+}

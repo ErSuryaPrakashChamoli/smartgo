@@ -3,7 +3,9 @@
 use App\Actions\Access\SyncAccessControl;
 use App\Actions\Content\CreateDraft;
 use App\Actions\Content\SubmitRevision;
+use App\Actions\Media\CreateMediaAsset;
 use App\Enums\Access\StaffRole;
+use App\Enums\Content\MediaOrigin;
 use App\Filament\Clusters\Properties\Resources\Properties\PropertyResource;
 use App\Filament\Clusters\Properties\Resources\PropertyProfiles\Pages\EditPropertyProfile;
 use App\Filament\Clusters\Properties\Resources\PropertyProfiles\Pages\ListPropertyProfiles;
@@ -13,6 +15,8 @@ use App\Models\Property;
 use App\Models\User;
 use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
@@ -80,4 +84,26 @@ it('shows a Property Manager the take-down action of a live profile only as unav
     Livewire::test(EditPropertyProfile::class, ['record' => $this->property->profile->getRouteKey()])
         ->assertActionVisible('takeDown')
         ->assertActionDisabled('takeDown');
+});
+
+it('offers stock photos in the photo picker only as sample content, and always shows the ones a profile already holds (OD-176)', function () {
+    Storage::fake('local');
+    $photo = fn (MediaOrigin $origin, ?int $propertyId, string $title) => app(CreateMediaAsset::class)->handle($this->marketing, UploadedFile::fake()->image('photo.jpg', 1200, 800), [
+        'title' => $title, 'origin' => $origin->value, 'alt_text' => 'A room', 'not_from_old_website' => true,
+        'licence_holder' => 'Holder', 'licence_reference' => 'L-1', 'depicts_property_id' => $propertyId,
+    ]);
+    $photo(MediaOrigin::ClientPhotography, $this->property->id, 'Reception at A-70');
+    $inUse = $photo(MediaOrigin::LicensedStock, null, 'Stock lounge');
+    $photo(MediaOrigin::LicensedStock, null, 'Stock desk');
+    config(['backoffice.sample_content' => true]);
+    app(CreateDraft::class)->handle($this->property->profile, $this->marketing, ['headline' => 'H', 'summary' => 'S', 'hero_asset_id' => $inUse->id]);
+    actingAs($this->marketing);
+
+    Livewire::test(EditPropertyProfile::class, ['record' => $this->property->profile->getRouteKey()])
+        ->assertOk()->assertSee('Reception at A-70')->assertSee('Stock lounge (stock photo, sample content only)')->assertSee('Stock desk (stock photo, sample content only)');
+
+    config(['backoffice.sample_content' => false]);
+
+    Livewire::test(EditPropertyProfile::class, ['record' => $this->property->profile->getRouteKey()])
+        ->assertOk()->assertSee('Reception at A-70')->assertSee('Stock lounge (stock photo, sample content only)')->assertDontSee('Stock desk');
 });

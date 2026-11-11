@@ -125,7 +125,7 @@ it('hides inactive categories and their section', function () {
     get('/')->assertOk()->assertDontSee('id="virtual-office"', false)->assertDontSee('A business address for your company')->assertDontSee('value="virtual-office"', false);
 });
 
-it('shows only real, published photography of each location, never another location\'s photo, stock or one past its licence (BR-MED-2, BR-MED-3)', function () {
+it('shows only real, published photography of each location or labelled sample stock, never another location\'s photo or one past its licence (BR-MED-2, BR-MED-3, OD-176)', function () {
     Storage::fake('local');
     app(SyncAccessControl::class)->handle();
     seed(ReferenceDataSeeder::class);
@@ -153,7 +153,7 @@ it('shows only real, published photography of each location, never another locat
         ->toContain($a70->renditionPath('w960'))->toContain('SmartGro A-70, Sector 2, Noida')->toContain('alt="Reception at A-70"')
         ->toContain($meetingRoom->renditionPath('w960'))->toContain('Meeting rooms at SmartGro A-23')
         ->not->toContain($otherLocation->renditionPath('w960'))
-        ->not->toContain($stock->renditionPath('w960'))
+        ->toContain($stock->renditionPath('w960'))->toContain('Stock photo, not a SmartGro location')->not->toContain('SmartGro H-105, Sector 62')
         ->not->toContain($expired->renditionPath('w960'))
         ->not->toContain('AI-generated image, not a photo of a SmartGro location')->not->toContain('/images/home/coworking-interior');
     get($a70->renditionPath('w960'))->assertOk();

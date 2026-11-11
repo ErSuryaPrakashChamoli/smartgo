@@ -1,0 +1,237 @@
+{
+ "chromium": "156.0.8078.47",
+ "screens": [
+  "property profile editor (\"Getting here\" section) @360: 200 /admin/properties/website-profiles/1/edit overflow=0 external=0 axe=none",
+  "property profile editor (\"Getting here\" section) @1440: 200 /admin/properties/website-profiles/1/edit overflow=0 external=0 axe=none",
+  "page editor with the contact details section @360: 200 /admin/website/pages/1/edit overflow=0 external=0 axe=none",
+  "page editor with the contact details section @1440: 200 /admin/website/pages/1/edit overflow=0 external=0 axe=none",
+  "new page editor @360: 200 /admin/website/pages/create overflow=0 external=0 axe=none",
+  "new page editor @1440: 200 /admin/website/pages/create overflow=0 external=0 axe=none",
+  "city editor (reserved address) @360: 200 /admin/properties/cities/1/edit overflow=0 external=0 axe=none",
+  "city editor (reserved address) @1440: 200 /admin/properties/cities/1/edit overflow=0 external=0 axe=none",
+  "dashboard @360: 200 /admin overflow=0 external=0 axe=none",
+  "dashboard @1440: 200 /admin overflow=0 external=0 axe=none",
+  "back-office 403 page @360: 403 /admin/sales/closing-reasons overflow=0 external=0 axe=none",
+  "back-office 403 page @1440: 403 /admin/sales/closing-reasons overflow=0 external=0 axe=none",
+  "back-office 404 page @360: 404 /admin/sales/enquiries/999999 overflow=0 external=0 axe=none",
+  "back-office 404 page @1440: 404 /admin/sales/enquiries/999999 overflow=0 external=0 axe=none",
+  "3D models list @360: 200 /admin/website/twin-models overflow=0 external=0 axe=none",
+  "3D models list @1440: 200 /admin/website/twin-models overflow=0 external=0 axe=none",
+  "3D model upload form @360: 200 /admin/website/twin-models/create overflow=0 external=0 axe=none",
+  "3D model upload form @1440: 200 /admin/website/twin-models/create overflow=0 external=0 axe=none",
+  "3D model page, viewer not opened @360: 200 /admin/website/twin-models/1 overflow=0 external=0 axe=none",
+  "3D model page, viewer not opened @1440: 200 /admin/website/twin-models/1 overflow=0 external=0 axe=none",
+  "enquiries list (empty values) @360: 200 /admin/sales/enquiries overflow=0 external=0 axe=none",
+  "enquiries list (empty values) @1440: 200 /admin/sales/enquiries overflow=0 external=0 axe=none",
+  "enquiry view (empty values) @360: 200 /admin/sales/enquiries/1 overflow=0 external=0 axe=none",
+  "enquiry view (empty values) @1440: 200 /admin/sales/enquiries/1 overflow=0 external=0 axe=none",
+  "staff list (empty values) @360: 200 /admin/settings/users overflow=0 external=0 axe=none",
+  "staff list (empty values) @1440: 200 /admin/settings/users overflow=0 external=0 axe=none",
+  "activity log (empty values) @360: 200 /admin/settings/activities overflow=0 external=0 axe=none",
+  "activity log (empty values) @1440: 200 /admin/settings/activities overflow=0 external=0 axe=none",
+  "pages list (empty values) @360: 200 /admin/website/pages overflow=0 external=0 axe=none",
+  "pages list (empty values) @1440: 200 /admin/website/pages overflow=0 external=0 axe=none",
+  "staff preview of a draft page @360: 200 /admin/content/revisions/21/preview overflow=0 external=0 axe=none",
+  "staff preview of a draft page @1440: 200 /admin/content/revisions/21/preview overflow=0 external=0 axe=none",
+  "property page with floors and spaces @360: 200 /admin/properties/properties/1/edit overflow=0 external=0 axe=none",
+  "property page with floors and spaces @1440: 200 /admin/properties/properties/1/edit overflow=0 external=0 axe=none",
+  "spaces list @360: 200 /admin/properties/spaces overflow=0 external=0 axe=none",
+  "spaces list @1440: 200 /admin/properties/spaces overflow=0 external=0 axe=none",
+  "hybrid zone page with seats and allocations @360: 200 /admin/properties/spaces/5 overflow=0 external=0 axe=none",
+  "hybrid zone page with seats and allocations @1440: 200 /admin/properties/spaces/5 overflow=0 external=0 axe=none",
+  "space editor @360: 200 /admin/properties/spaces/1/edit overflow=0 external=0 axe=none",
+  "space editor @1440: 200 /admin/properties/spaces/1/edit overflow=0 external=0 axe=none",
+  "space page seen by marketing (no allocations) @360: 200 /admin/properties/spaces/1 overflow=0 external=0 axe=none",
+  "space page seen by marketing (no allocations) @1440: 200 /admin/properties/spaces/1 overflow=0 external=0 axe=none",
+  "space types list @360: 200 /admin/properties/space-types overflow=0 external=0 axe=none",
+  "space types list @1440: 200 /admin/properties/space-types overflow=0 external=0 axe=none",
+  "price plans list @360: 200 /admin/properties/price-plans overflow=0 external=0 axe=none",
+  "price plans list @1440: 200 /admin/properties/price-plans overflow=0 external=0 axe=none",
+  "price plan form @360: 200 /admin/properties/price-plans/create overflow=0 external=0 axe=none",
+  "price plan form @1440: 200 /admin/properties/price-plans/create overflow=0 external=0 axe=none",
+  "offers list @360: 200 /admin/properties/offers overflow=0 external=0 axe=none",
+  "offers list @1440: 200 /admin/properties/offers overflow=0 external=0 axe=none",
+  "offer form @360: 200 /admin/properties/offers/create overflow=0 external=0 axe=none",
+  "offer form @1440: 200 /admin/properties/offers/create overflow=0 external=0 axe=none",
+  "inventory imports list @360: 200 /admin/properties/inventory-imports overflow=0 external=0 axe=none",
+  "inventory imports list @1440: 200 /admin/properties/inventory-imports overflow=0 external=0 axe=none",
+  "inventory workbook upload form @360: 200 /admin/properties/inventory-imports/upload overflow=0 external=0 axe=none",
+  "inventory workbook upload form @1440: 200 /admin/properties/inventory-imports/upload overflow=0 external=0 axe=none",
+  "tours list @360: 200 /admin/sales/tours overflow=0 external=0 axe=none",
+  "tours list @1440: 200 /admin/sales/tours overflow=0 external=0 axe=none",
+  "tour page (request waiting for confirmation) @360: 200 /admin/sales/tours/1 overflow=0 external=0 axe=none",
+  "tour page (request waiting for confirmation) @1440: 200 /admin/sales/tours/1 overflow=0 external=0 axe=none",
+  "tours list refused to marketing @360: 403 /admin/sales/tours overflow=0 external=0 axe=none",
+  "tours list refused to marketing @1440: 403 /admin/sales/tours overflow=0 external=0 axe=none",
+  "search titles and descriptions report @360: 200 /admin/website/search-titles overflow=0 external=0 axe=none",
+  "search titles and descriptions report @1440: 200 /admin/website/search-titles overflow=0 external=0 axe=none",
+  "search titles report refused to sales @360: 403 /admin/website/search-titles overflow=0 external=0 axe=none",
+  "search titles report refused to sales @1440: 403 /admin/website/search-titles overflow=0 external=0 axe=none",
+  "missing pages (404 monitor) @360: 200 /admin/website/missing-pages overflow=0 external=0 axe=none",
+  "missing pages (404 monitor) @1440: 200 /admin/website/missing-pages overflow=0 external=0 axe=none",
+  "assignment rules list @360: 200 /admin/sales/assignment-rules overflow=0 external=0 axe=none",
+  "assignment rules list @1440: 200 /admin/sales/assignment-rules overflow=0 external=0 axe=none",
+  "new assignment rule form @360: 200 /admin/sales/assignment-rules/create overflow=0 external=0 axe=none",
+  "new assignment rule form @1440: 200 /admin/sales/assignment-rules/create overflow=0 external=0 axe=none",
+  "assignment rules refused to sales @360: 403 /admin/sales/assignment-rules overflow=0 external=0 axe=none",
+  "assignment rules refused to sales @1440: 403 /admin/sales/assignment-rules overflow=0 external=0 axe=none",
+  "assignment rule page (settings and decision) @360: 200 /admin/sales/assignment-rules/1 overflow=0 external=0 axe=none",
+  "assignment rule page (settings and decision) @1440: 200 /admin/sales/assignment-rules/1 overflow=0 external=0 axe=none",
+  "assignment rule edit form @360: 200 /admin/sales/assignment-rules/1/edit overflow=0 external=0 axe=none",
+  "assignment rule edit form @1440: 200 /admin/sales/assignment-rules/1/edit overflow=0 external=0 axe=none",
+  "assignment rule page refused to sales @360: 403 /admin/sales/assignment-rules/1 overflow=0 external=0 axe=none",
+  "assignment rule page refused to sales @1440: 403 /admin/sales/assignment-rules/1 overflow=0 external=0 axe=none",
+  "assignment rule edit form refused to sales @360: 403 /admin/sales/assignment-rules/1/edit overflow=0 external=0 axe=none",
+  "assignment rule edit form refused to sales @1440: 403 /admin/sales/assignment-rules/1/edit overflow=0 external=0 axe=none",
+  "assignment rules refused to operations @360: 403 /admin/sales/assignment-rules overflow=0 external=0 axe=none",
+  "assignment rules refused to operations @1440: 403 /admin/sales/assignment-rules overflow=0 external=0 axe=none",
+  "assignment rule edit form refused to marketing @360: 403 /admin/sales/assignment-rules/1/edit overflow=0 external=0 axe=none",
+  "assignment rule edit form refused to marketing @1440: 403 /admin/sales/assignment-rules/1/edit overflow=0 external=0 axe=none",
+  "enquiry and tour totals @360: 200 /admin/reports/enquiries-and-tours overflow=0 external=0 axe=none",
+  "enquiry and tour totals @1440: 200 /admin/reports/enquiries-and-tours overflow=0 external=0 axe=none",
+  "content freshness @360: 200 /admin/reports/content-freshness overflow=0 external=0 axe=none",
+  "content freshness @1440: 200 /admin/reports/content-freshness overflow=0 external=0 axe=none",
+  "content freshness refused to sales @360: 403 /admin/reports/content-freshness overflow=0 external=0 axe=none",
+  "content freshness refused to sales @1440: 403 /admin/reports/content-freshness overflow=0 external=0 axe=none"
+ ],
+ "viewer": [
+  "meshopt @360 reduce: before=0 \"Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.\" in 396 ms, loaded file 2216 B, three.core-CTmbohv1.js 215755 B, meshopt_decoder.module-DXTYc6wn.js 26486 B, twin-viewer-6QofvT0G.js 422946 B; drawn 9495/44240 px (green 432, amber 785); camera \"Camera position 1 shown.\" drawn 8922; axe=none",
+  "meshopt @1440 no-preference: before=0 \"Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.\" in 478 ms, loaded file 2216 B, three.core-CTmbohv1.js 215755 B, meshopt_decoder.module-DXTYc6wn.js 26486 B, twin-viewer-6QofvT0G.js 422946 B; drawn 120802/571536 px (green 5570, amber 10284); camera \"Camera position 1 shown.\" drawn 178890; axe=none",
+  "draco @1440 no-preference: before=0 \"Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.\" in 309 ms, loaded file 2004 B, three.core-CTmbohv1.js 215755 B, DRACOLoader-BbahKxeV.js 7353 B, draco_wasm_wrapper-fZCQGLGb.js 58456 B, draco_decoder-Z1_iN-Ht.wasm 192420 B, twin-viewer-6QofvT0G.js 422946 B; drawn 120802/571536 px (green 5570, amber 10284); camera \"Camera position 1 shown.\" drawn 178890; axe=none"
+ ],
+ "loadingStates": {
+  "whileLoading": {
+   "status": "Loading the viewer and the model…",
+   "progressVisible": true,
+   "progressValue": 231424,
+   "stopVisible": true
+  },
+  "loadingAxe": [],
+  "afterStop": {
+   "status": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below.",
+   "stageHidden": true,
+   "progressHidden": true,
+   "focusOnShow": true,
+   "downloadAborted": true
+  },
+  "refused": {
+   "status": "The model could not be downloaded. Check the connection and try again; the anchors are listed below.",
+   "showEnabled": true
+  }
+ },
+ "stopping": {
+  "stopWhileDecoding": {
+   "fileArrived": true,
+   "status": "Loading stopped. Press \"Show the 3D model\" to start again; the anchors are listed below.",
+   "stageHidden": true,
+   "canvases": 0
+  },
+  "showStopRounds": {
+   "rounds": 20,
+   "stoppedCleanly": 20,
+   "contextLimitWarnings": 0,
+   "afterwards": {
+    "status": "Model shown. Drag to turn it, scroll or pinch to zoom, or choose a view below. With the view focused, arrow keys move it.",
+    "stageHidden": false,
+    "canvases": 1
+   }
+  },
+  "decoderFailures": {
+   "module": {
+    "status": "The model could not be shown. Try again; the anchors are listed below.",
+    "stageHidden": true,
+    "canvases": 0,
+    "showEnabled": true
+   },
+   "WebAssembly": {
+    "status": "The model could not be shown. Try again; the anchors are listed below.",
+    "stageHidden": true,
+    "canvases": 0,
+    "showEnabled": true
+   }
+  },
+  "withoutWebgl": {
+   "status": "This browser or device cannot show 3D. The anchors are listed below.",
+   "stageHidden": true,
+   "canvases": 0
+  }
+ },
+ "changes": [
+  {
+   "width": 360,
+   "heading": "What version 2 changes",
+   "listsTitle": true,
+   "listsSection": true,
+   "overflow": 0,
+   "axe": []
+  },
+  {
+   "width": 1440,
+   "heading": "What version 2 changes",
+   "listsTitle": true,
+   "listsSection": true,
+   "overflow": 0,
+   "axe": []
+  }
+ ],
+ "setup": {
+  "emptyState": true,
+  "floorsListed": true,
+  "modeSuggested": "exclusive",
+  "spacesNotice": "Floor added | Floor added | Floor added | Spaces added",
+  "spacesListed": true,
+  "setupMs": 5938,
+  "TF71-AG-1": "Allocation recorded",
+  "TF71-AG-2": "Allocation recorded | Not saved The space is already allocated for some of these dates: TF71-AG-1 (whole space, 6 Nov 2026 to open-ended).",
+  "allocationListed": true,
+  "statusRefusal": "Not saved The space is already allocated for some of these dates: TF71-AG-1 (whole space, 6 Nov 2026 to open-ended). | Not saved This space has allocations now or later; move, end or cancel them first (BR-INV-4): TF71-AG-1 (whole space, 6 Nov 2026 to open-ended).",
+  "availability": "Occupied; nothing frees up within the horizon",
+  "axe": [],
+  "overflow": 0,
+  "fortiethFound": true
+ },
+ "uploads": [
+  {
+   "kind": "at the limits",
+   "expect": "stored",
+   "outcome": "stored",
+   "uploadedMs": 2915,
+   "finalPath": "/admin/website/twin-models/5",
+   "checksShown": true
+  },
+  {
+   "kind": "4 bytes over 15 MB",
+   "expect": "refused",
+   "outcome": "refused",
+   "uploadedMs": 3405,
+   "finalPath": "/admin/website/twin-models/create",
+   "reason": "The file is 15.1 MB; the limit is 15.0 MB per model. Ask the 3D-modelling supplier to compress it further or reduce the detail."
+  }
+ ],
+ "failures": []
+}
+{
+    "finished_at": "2026-11-06T06:13:05+00:00",
+    "git_head": "f129728",
+    "php": "8.5.4",
+    "node": "v22.22.1",
+    "database_check": {
+        "expected_database": "smartgro_testing",
+        "configured_database": "smartgro_testing",
+        "connected_database": "smartgro_testing",
+        "server": "administrator-Latitude-7490:3306",
+        "config_cached": false,
+        "app_env": "local"
+    },
+    "server": "http:\/\/127.0.0.1:8767",
+    "checks": "admin",
+    "interrupted_by": null,
+    "commands": {
+        "verify-public.mjs": "not run",
+        "verify-enquiry.mjs": "not run",
+        "verify-tour.mjs": "not run",
+        "verify-admin.mjs": 0,
+        "verify-twin-performance.mjs": "not run",
+        "verify-csp.mjs": "not run"
+    }
+}

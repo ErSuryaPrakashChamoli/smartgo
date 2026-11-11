@@ -1,0 +1,13 @@
+
+ INFO Running migrations. 
+
+ 2026_11_05_091534_create_home_banners_table .. 
+ ⇂ create table `home_banners` (`id` bigint unsigned not null auto_increment primary key, `heading` varchar(120) null, `text` varchar(300) null, `media_asset_id` bigint unsigned null, `image_alt` varchar(150) null, `primary_link` json null, `secondary_link` json null, `sort_order` smallint unsigned not null default '0', `status` varchar(20) not null default 'draft', `published_revision_id` bigint unsigned null, `published_at` timestamp null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `home_banners` add constraint `home_banners_media_asset_id_foreign` foreign key (`media_asset_id`) references `media_assets` (`id`) on delete set null 
+ ⇂ alter table `home_banners` add constraint `home_banners_published_revision_id_foreign` foreign key (`published_revision_id`) references `revisions` (`id`) on delete set null 
+ ⇂ alter table `home_banners` add index `home_banners_status_sort_order_index`(`status`, `sort_order`) 
+ 2026_11_05_091538_create_home_highlights_table .. 
+ ⇂ create table `home_highlights` (`id` bigint unsigned not null auto_increment primary key, `text` varchar(80) null, `icon` varchar(40) null, `is_sample` tinyint(1) not null default '0', `sort_order` smallint unsigned not null default '0', `status` varchar(20) not null default 'draft', `published_revision_id` bigint unsigned null, `published_at` timestamp null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci' 
+ ⇂ alter table `home_highlights` add constraint `home_highlights_published_revision_id_foreign` foreign key (`published_revision_id`) references `revisions` (`id`) on delete set null 
+ ⇂ alter table `home_highlights` add index `home_highlights_status_sort_order_index`(`status`, `sort_order`) 
+

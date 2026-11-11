@@ -1,0 +1,38 @@
+{
+    "sample_content": false,
+    "/admin/properties/website-profiles/1/edit": {
+        "status": 200,
+        "stock_option": 12,
+        "error": null
+    },
+    "/admin/properties/website-profiles/2/edit": {
+        "status": 200,
+        "stock_option": 12,
+        "error": null
+    },
+    "/admin/properties/website-profiles/3/edit": {
+        "status": 200,
+        "stock_option": 12,
+        "error": null
+    },
+    "/admin/properties/website-profiles/4/edit": {
+        "status": 200,
+        "stock_option": 12,
+        "error": null
+    },
+    "/admin/properties/workspace-offerings/1/edit": {
+        "status": 200,
+        "stock_option": 6,
+        "error": null
+    },
+    "/admin/properties/workspace-offerings/2/edit": {
+        "status": 200,
+        "stock_option": 6,
+        "error": null
+    },
+    "/admin/properties/workspace-offerings/3/edit": {
+        "status": 200,
+        "stock_option": 6,
+        "error": null
+    }
+}

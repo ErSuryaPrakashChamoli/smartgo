@@ -19,8 +19,10 @@ use Illuminate\Validation\ValidationException;
  * version is submitted and again, under the publishing lock, when it is published.
  *
  * Photos must be SmartGro or commissioned photography of this property, with a valid licence: concept
- * visuals, renders and stock photos never pass for a property (BR-MED-2), and a photo of another
- * property never appears here.
+ * visuals and renders never pass for a property (BR-MED-2), and a photo of another property never
+ * appears here. The one exception is sample content (OD-176): where it is allowed, a licensed stock photo
+ * may stand in, and the website always labels it "Stock photo, not a SmartGro location". Where sample
+ * content is not allowed, a stock photo is refused, so it has to be replaced before the profile changes.
  */
 trait HasWebsiteProfile
 {
@@ -36,6 +38,13 @@ trait HasWebsiteProfile
      * @var list<MediaOrigin>
      */
     public const array PHOTO_ORIGINS = [MediaOrigin::ClientPhotography, MediaOrigin::Commissioned];
+
+    /**
+     * Media origins accepted only as sample content, never as a photo of the property (OD-176).
+     *
+     * @var list<MediaOrigin>
+     */
+    public const array SAMPLE_PHOTO_ORIGINS = [MediaOrigin::LicensedStock];
 
     /**
      * Reasons the profile cannot be shown, read with the property locked; empty when it can.
@@ -165,7 +174,8 @@ trait HasWebsiteProfile
     }
 
     /**
-     * Only real photography of this property with a valid licence (BR-MED-2, BR-MED-3).
+     * Only real photography of this property with a valid licence (BR-MED-2, BR-MED-3), or, where sample
+     * content is allowed, a licensed stock photo (OD-176).
      */
     private function photoRule(): Closure
     {
@@ -176,9 +186,13 @@ trait HasWebsiteProfile
                 return;
             }
 
-            if (! in_array($asset->origin, self::PHOTO_ORIGINS, true)) {
-                $fail('Use SmartGro or commissioned photography of the property. Concept visuals, renders and stock photos cannot be shown as the property.');
-            } elseif ((int) $asset->depicts_property_id !== (int) $this->owningProperty()->getKey()) {
+            $isSampleStock = in_array($asset->origin, self::SAMPLE_PHOTO_ORIGINS, true);
+
+            if ($isSampleStock && ! config('backoffice.sample_content')) {
+                $fail('Stock photos can only be sample content, which is not allowed here. Replace it with SmartGro or commissioned photography of the property.');
+            } elseif (! $isSampleStock && ! in_array($asset->origin, self::PHOTO_ORIGINS, true)) {
+                $fail('Use SmartGro or commissioned photography of the property. Concept visuals and renders cannot be shown as the property.');
+            } elseif (! $isSampleStock && (int) $asset->depicts_property_id !== (int) $this->owningProperty()->getKey()) {
                 $fail('Choose a photo uploaded for this property.');
             } elseif ($asset->isLicenceExpired()) {
                 $fail('This image\'s licence has expired, so it cannot be used.');

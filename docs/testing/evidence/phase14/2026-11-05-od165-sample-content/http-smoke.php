@@ -1,0 +1,74 @@
+<?php
+
+// OD-165 read-only smoke test (OD-164's, plus every published page and article): php http-smoke.php <expected database>
+// Boots the app on the expected database with a READ ONLY database session (every write fails), array session
+// and cache, then handles public and back-office GET requests in-process (no server, no port 8001). Back-office
+// requests run as the database's active Super Admin. Prints each status, and the exception behind any 500.
+
+use App\Models\NavigationMenu;
+use App\Models\Page;
+use App\Models\Post;
+use App\Models\User;
+use App\Services\Content\NavigationPayload;
+use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
+use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+$root = '/home/administrator/Documents/website/smartGrow';
+require $root.'/vendor/autoload.php';
+$app = require $root.'/bootstrap/app.php';
+$app->make(ConsoleKernel::class)->bootstrap();
+
+config(['database.connections.mysql.options' => [...config('database.connections.mysql.options', []), PDO::MYSQL_ATTR_INIT_COMMAND => 'SET SESSION TRANSACTION READ ONLY']]);
+DB::purge('mysql');
+$database = DB::selectOne('SELECT DATABASE() AS db, @@session.transaction_read_only AS ro');
+if ($database->db !== $argv[1] || (int) $database->ro !== 1 || config('session.driver') !== 'array' || config('cache.default') !== 'array') {
+    fwrite(STDERR, "Refusing: database {$database->db}, read only {$database->ro}, session ".config('session.driver').', cache '.config('cache.default')."\n");
+    exit(1);
+}
+
+$kernel = $app->make(HttpKernel::class);
+$result = ['database' => $database->db, 'read_only' => (int) $database->ro, 'public' => [], 'backoffice' => []];
+$visit = function (string $path) use ($kernel): array {
+    $request = Request::create($path, 'GET');
+    $response = $kernel->handle($request);
+    $kernel->terminate($request, $response);
+    $body = (string) $response->getContent();
+
+    return array_filter([
+        'status' => $response->getStatusCode(),
+        'location' => $response->headers->get('Location'),
+        'error' => $response->exception ? class_basename($response->exception).': '.mb_substr($response->exception->getMessage(), 0, 300) : null,
+        'robots' => $response->headers->get('X-Robots-Tag'),
+        'has' => array_values(array_filter(['Short description', 'Spaces it can be sold with', 'Two-step login is optional', 'Sample content', 'noindex'], fn (string $text): bool => str_contains($body, $text))),
+    ], fn ($value): bool => $value !== null && $value !== []);
+};
+
+$published = [...Page::query()->where('status', 'published')->orderBy('slug')->pluck('slug')->map(fn (string $slug): string => '/'.$slug)->all(),
+    ...Post::query()->where('status', 'published')->orderBy('slug')->pluck('slug')->map(fn (string $slug): string => '/insights/'.$slug)->all()];
+foreach (['/', '/workspaces', '/locations', '/insights', '/faqs', '/search', '/enquire', '/book-a-tour', '/sitemap.xml', '/robots.txt', '/find-a-workspace', '/admin/login', ...$published] as $path) {
+    $result['public'][$path] = $visit($path);
+}
+
+$owner = User::query()->where('is_active', true)->whereHas('roles', fn ($roles) => $roles->where('name', 'super_admin'))->orderBy('id')->firstOrFail();
+auth()->guard('web')->setUser($owner);
+$result['acting_as'] = $owner->id;
+$menuId = NavigationMenu::query()->where('handle', 'main')->value('id');
+foreach ([
+    "/admin/website/navigation-menus/{$menuId}/edit", '/admin/properties/workspace-categories/1/edit',
+    '/admin', '/admin/properties', '/admin/properties/cities', '/admin/properties/inventory-imports', '/admin/properties/inventory-imports/upload', '/admin/properties/offers', '/admin/properties/price-plans', '/admin/properties/properties', '/admin/properties/spaces', '/admin/properties/space-types', '/admin/properties/website-profiles', '/admin/properties/workspace-categories', '/admin/properties/workspace-offerings', '/admin/reports', '/admin/reports/content-freshness', '/admin/reports/enquiries-and-tours', '/admin/sales', '/admin/sales/assignment-rules', '/admin/sales/assignment-rules/create', '/admin/sales/closing-reasons', '/admin/sales/enquiries', '/admin/sales/tours', '/admin/settings', '/admin/settings/activities', '/admin/settings/security', '/admin/settings/users', '/admin/website', '/admin/website/customer-stories', '/admin/website/faqs', '/admin/website/insights', '/admin/website/insight-topics', '/admin/website/media-assets', '/admin/website/missing-pages', '/admin/website/navigation-menus', '/admin/website/pages', '/admin/website/redirects', '/admin/website/search-titles', '/admin/website/settings', '/admin/website/testimonials', '/admin/website/twin-models', '/admin/design-previews', '/admin/design-previews/permissions-review',
+] as $path) {
+    $result['backoffice'][$path] = $visit($path);
+}
+
+// The menu editor's rules accept a description and an icon on this database (validation only, nothing saved).
+$menu = NavigationMenu::query()->where('handle', 'main')->sole();
+$payload = ['items' => [['label' => 'Solutions', 'type' => 'group', 'children' => [['label' => 'Workspaces', 'type' => 'group', 'description' => 'Desks and offices.', 'icon' => 'building-office', 'children' => [
+    ['label' => 'All workspace types', 'type' => 'section', 'section' => 'workspace_types', 'description' => 'Every type of workspace.', 'icon' => 'squares-2x2'],
+]]]]]];
+$validated = app(NavigationPayload::class)->validate($menu, $payload, forSubmission: true);
+$result['menu_rules_keep_details'] = ($validated['items'][0]['children'][0]['children'][0]['description'] ?? null) === 'Every type of workspace.' && ($validated['items'][0]['children'][0]['icon'] ?? null) === 'building-office';
+$result['still_read_only'] = (int) DB::selectOne('SELECT @@session.transaction_read_only AS ro')->ro;
+
+echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), PHP_EOL;

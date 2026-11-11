@@ -1,0 +1,7 @@
+
+ INFO Seeding database. 
+
+ Database\Seeders\DemoContentSeeder .. RUNNING 
+Demo content: {"images":10,"settings":["contact","social"],"pages":["legal/privacy"],"offerings":28,"locations":4,"workspaces":28,"tour_hours":24,"testimonials":2,"case_studies":2,"left_alone":[]}
+ Database\Seeders\DemoContentSeeder .. 20,623 ms DONE 
+

@@ -11,6 +11,7 @@ use App\Models\Post;
 use App\Models\Property;
 use App\Services\Content\SiteNavigation;
 use App\Services\Website\EnquiryForm;
+use App\Services\Website\HomeShowcase;
 use App\Services\Website\TourForm;
 use App\Services\Website\WorkspaceCatalogue;
 use Illuminate\Contracts\View\View;
@@ -21,7 +22,8 @@ use Illuminate\Support\Collection;
  * details, all from records. Nothing is shown about prices or availability until that data exists,
  * and links to the enquiry and tour forms appear only while those forms can be used. The customer
  * segments, newest articles and general questions follow (OD-143), each only while there is one, and a
- * segment links to its solutions page only while that page is published (BR-CMS-9).
+ * segment links to its solutions page only while that page is published (BR-CMS-9). The banners of the carousel and
+ * the highlights strip come from the back office (OD-169, HomeShowcase); without a published banner the single hero shows.
  */
 class HomeController extends Controller
 {
@@ -29,7 +31,7 @@ class HomeController extends Controller
 
     public const int FAQS_SHOWN = 4;
 
-    public function __invoke(WorkspaceCatalogue $catalogue, SiteNavigation $siteNavigation, EnquiryForm $enquiryForm, TourForm $tourForm): View
+    public function __invoke(WorkspaceCatalogue $catalogue, SiteNavigation $siteNavigation, EnquiryForm $enquiryForm, TourForm $tourForm, HomeShowcase $showcase): View
     {
         $properties = $catalogue->listedProperties();
         $categories = $catalogue->categories($properties);
@@ -37,6 +39,7 @@ class HomeController extends Controller
         $navigation = $siteNavigation->present();
         $photos = $catalogue->mainPhotos($properties);
         $offerings = $properties->flatMap(fn (Property $property) => $property->publishedOfferings);
+        $tourOffered = $tourForm->isOffered();
 
         return view('pages.home', [
             'properties' => $properties,
@@ -45,11 +48,13 @@ class HomeController extends Controller
             'groups' => array_map(fn (array $group): array => [...$group, 'photo' => $this->groupPhoto($group, $offerings, $photos['offerings'])], $groups),
             'propertyPhotos' => $photos['properties'],
             'heroPhoto' => $this->heroPhoto($properties, $photos['properties']),
+            'slides' => $showcase->slides(),
+            'highlights' => $showcase->highlights($categories, $properties, $tourOffered),
             'segments' => $this->segments(),
             'posts' => Post::query()->published()->latest('published_at')->limit(self::LATEST_POSTS)->get(),
             'faqs' => Faq::query()->published()->general()->orderBy('sort_order')->orderBy('id')->limit(self::FAQS_SHOWN)->get(),
             'enquiryOpen' => $enquiryForm->isOpen(),
-            'tourOffered' => $tourForm->isOffered(),
+            'tourOffered' => $tourOffered,
             'contact' => $navigation['contact'],
             'navigation' => $navigation,
             'canonical' => rtrim((string) config('app.url'), '/').'/',
@@ -83,7 +88,7 @@ class HomeController extends Controller
     {
         $property = $properties->first(fn (Property $property): bool => isset($photos[$property->getKey()]));
 
-        return $property === null ? null : [...$photos[$property->getKey()], 'caption' => 'SmartGro '.$property->name.', '.collect([$property->microMarket?->name, $property->city->name])->filter()->join(', ')];
+        return $property === null ? null : [...$photos[$property->getKey()], 'caption' => $photos[$property->getKey()]['label'] ?? 'SmartGro '.$property->name.', '.collect([$property->microMarket?->name, $property->city->name])->filter()->join(', ')];
     }
 
     /**
@@ -99,6 +104,6 @@ class HomeController extends Controller
         $keys = array_column($group['categories'], 'key');
         $offering = $offerings->first(fn (Offering $offering): bool => in_array($offering->product->key, $keys, true) && isset($photos[$offering->getKey()]));
 
-        return $offering === null ? null : [...$photos[$offering->getKey()], 'caption' => $offering->product->name.' at SmartGro '.$offering->property->name];
+        return $offering === null ? null : [...$photos[$offering->getKey()], 'caption' => $photos[$offering->getKey()]['label'] ?? $offering->product->name.' at SmartGro '.$offering->property->name];
     }
 }

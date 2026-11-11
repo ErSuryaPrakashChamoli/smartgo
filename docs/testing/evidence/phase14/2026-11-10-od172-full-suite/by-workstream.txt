@@ -1,0 +1,17 @@
+six parts: {'tests': 1466, 'assertions': 6957, 'failures': 6}
+P9-D deals (OD-170, in progress): 0 files, 0 tests, 0 failed
+P9-C first-response timers (OD-170): 2 files, 18 tests, 0 failed
+P9-B assignment rules (OD-159..OD-163): 6 files, 49 tests, 0 failed
+Phase 9 other CRM (enquiries, tours, contacts): 18 files, 148 tests, 0 failed
+OD-169 home banners, highlights, header: 3 files, 14 tests, 0 failed
+OD-168 menus + OD-169 header (shared shell): 1 files, 17 tests, 0 failed
+OD-165/166 seeders and access sync: 5 files, 24 tests, 3 failed
+    - part1-actions: Feature/Actions/Access/SyncAccessControlTest.php :: it creates the six staff roles and the capability catalogue
+    - part1-actions: Feature/Actions/Access/SyncAccessControlTest.php :: it grants the Super Admin exactly the capabilities listed for it
+    - part1-actions: Feature/Actions/Access/SyncAccessControlTest.php :: it audits the capabilities it grants to each role
+OD-164 harness guard: 1 files, 4 tests, 0 failed
+Design previews (permissions review): 3 files, 129 tests, 1 failed
+    - part4-filament: Feature/Filament/Clusters/DesignPreviews/DesignPreviewPagesTest.php :: it lists the same capabilities and role grants as the security model
+Phases 2–8, 11–14: everything else: 104 files, 1063 tests, 2 failed
+    - part2-console-to-arch: Feature/Providers/FilamentConfigTest.php :: it keeps the component cache in Filament's default folder, and every other Filament settin
+    - part2-console-to-arch: Feature/Providers/FilamentConfigTest.php :: it takes the folder from FILAMENT_CACHE_PATH, as the browser kit sets it

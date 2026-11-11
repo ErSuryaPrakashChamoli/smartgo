@@ -1,0 +1,5 @@
+
+ INFO Running migrations. 
+
+ 2026_11_10_152906_create_space_listings_table .. 358.29ms DONE
+

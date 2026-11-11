@@ -14,8 +14,10 @@ use Illuminate\Http\Request;
  * The home page's workspace finder, a plain form that needs no JavaScript: it takes the chosen workspace
  * type and location and sends the visitor to the most specific published page for them. Nothing is
  * searched for availability or price, because there is no verified inventory yet (OD-113 d): the finder
- * only leads to what SmartGro has published, or to the enquiry form with the choice filled in. Unknown,
- * inactive or unlisted choices are ignored, and every destination is an address on this website.
+ * only leads to what SmartGro has published, or to the enquiry form with the choice filled in. A type with
+ * neither leads to its own card on the workspaces page, the destination the Spaces menu uses (OD-174), never
+ * back to the home page (OD-175). Unknown, inactive or unlisted choices are ignored, and every destination
+ * is an address on this website.
  */
 class WorkspaceFinderController extends Controller
 {
@@ -44,6 +46,6 @@ class WorkspaceFinderController extends Controller
             ?? ($catalogue->categoryWithPage($workspace->slug) !== null ? '/workspaces/'.$workspace->slug : null)
             ?? $enquiry
             ?? $property?->path()
-            ?? '/#workspaces');
+            ?? '/workspaces#'.$workspace->slug);
     }
 }

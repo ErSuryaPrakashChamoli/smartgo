@@ -243,7 +243,9 @@ it('never lets a profile change status, capacity, availability or price (FR-CMS-
         ->and($this->marketing->can('update', $this->property))->toBeFalse();
 });
 
-it('accepts only SmartGro or commissioned photography with a valid licence as the property\'s photos (BR-MED-2, BR-MED-3)', function (MediaOrigin $origin, array $overrides, bool $accepted) {
+it('accepts only SmartGro or commissioned photography with a valid licence as the property\'s photos, or stock as sample content (BR-MED-2, BR-MED-3, OD-176)', function (MediaOrigin $origin, array $overrides, bool $accepted) {
+    config(['backoffice.sample_content' => true]);
+
     $photo = profilePhoto($this->marketing, $origin, $overrides);
     $attempt = fn () => app(CreateDraft::class)->handle($this->profile, $this->marketing, ['headline' => 'H', 'summary' => 'S', 'gallery_asset_ids' => [$photo->id]]);
 
@@ -255,9 +257,25 @@ it('accepts only SmartGro or commissioned photography with a valid licence as th
     'commissioned' => [MediaOrigin::Commissioned, [], true],
     'AI concept' => [MediaOrigin::AiGeneratedConcept, [], false],
     'render' => [MediaOrigin::Render, [], false],
-    'stock' => [MediaOrigin::LicensedStock, [], false],
+    'stock, as sample content' => [MediaOrigin::LicensedStock, [], true],
+    'stock of no property, as sample content' => [MediaOrigin::LicensedStock, ['depicts_property_id' => null], true],
+    'commissioned photo of another property' => [MediaOrigin::Commissioned, ['depicts_property_id' => null], false],
     'expired licence' => [MediaOrigin::Commissioned, ['licence_expires_at' => now()->subDay()->toDateString()], false],
+    'stock with an expired licence' => [MediaOrigin::LicensedStock, ['licence_expires_at' => now()->subDay()->toDateString()], false],
 ]);
+
+it('refuses a stock photo where sample content is not allowed, so it is replaced before the profile changes (OD-176)', function () {
+    config(['backoffice.sample_content' => true]);
+    $stock = profilePhoto($this->marketing, MediaOrigin::LicensedStock, ['depicts_property_id' => null]);
+    $draft = app(CreateDraft::class)->handle($this->profile, $this->marketing, ['headline' => 'H', 'summary' => 'S', 'hero_asset_id' => $stock->id]);
+
+    config(['backoffice.sample_content' => false]);
+
+    expect(fn () => app(SubmitRevision::class)->handle($draft, $this->marketing))
+        ->toThrow(fn (ValidationException $exception) => expect($exception->errors())->toHaveKey('hero_asset_id'))
+        ->and(fn () => app(CreateDraft::class)->handle($this->otherProfile, $this->marketing, ['headline' => 'H', 'summary' => 'S', 'gallery_asset_ids' => [$stock->id]]))
+        ->toThrow(fn (ValidationException $exception) => expect($exception->errors())->toHaveKey('gallery_asset_ids.0'));
+});
 
 it('refuses more than twelve photos or the same photo twice', function () {
     $photo = profilePhoto($this->marketing);

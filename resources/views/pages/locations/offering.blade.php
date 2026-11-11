@@ -48,9 +48,12 @@
             @if ($photos !== [])
                 @php($mainPhoto = $photos[0])
                 <figure class="flex flex-col gap-2 lg:col-span-5">
-                    <img src="{{ $mainPhoto['src'] }}" srcset="{{ $mainPhoto['srcset'] }}" sizes="(min-width: 1024px) 500px, 100vw" alt="{{ $mainPhoto['alt'] }}"
-                        @if ($mainPhoto['dimensions']) width="{{ $mainPhoto['dimensions']['width'] }}" height="{{ $mainPhoto['dimensions']['height'] }}" @endif
-                        decoding="async" class="aspect-[4/3] h-auto w-full rounded-3xl bg-mist object-cover">
+                    <div class="relative">
+                        <img src="{{ $mainPhoto['src'] }}" srcset="{{ $mainPhoto['srcset'] }}" sizes="(min-width: 1024px) 500px, 100vw" alt="{{ $mainPhoto['alt'] }}"
+                            @if ($mainPhoto['dimensions']) width="{{ $mainPhoto['dimensions']['width'] }}" height="{{ $mainPhoto['dimensions']['height'] }}" @endif
+                            decoding="async" class="aspect-[4/3] h-auto w-full rounded-3xl bg-mist object-cover">
+                        <x-site.photo-label :label="$mainPhoto['label'] ?? null" />
+                    </div>
                     @if (filled($mainPhoto['credit']))
                         <figcaption class="text-sm text-muted">{{ $mainPhoto['credit'] }}</figcaption>
                     @endif
@@ -99,10 +102,11 @@
                 <x-ui.section-heading eyebrow="Photos" title="Photos" id="offering-photos-heading" />
                 <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach (array_slice($photos, 1) as $photo)
-                        <li>
+                        <li class="relative">
                             <img src="{{ $photo['src'] }}" srcset="{{ $photo['srcset'] }}" sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw" alt="{{ $photo['alt'] }}"
                                 @if ($photo['dimensions']) width="{{ $photo['dimensions']['width'] }}" height="{{ $photo['dimensions']['height'] }}" @endif
                                 loading="lazy" decoding="async" class="aspect-[4/3] h-auto w-full rounded-2xl bg-mist object-cover">
+                            <x-site.photo-label :label="$photo['label'] ?? null" />
                         </li>
                     @endforeach
                 </ul>

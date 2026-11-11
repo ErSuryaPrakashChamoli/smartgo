@@ -1,0 +1,5 @@
+
+ INFO Running migrations. 
+
+ 2026_11_11_045007_add_media_asset_id_to_space_listings_table .. 70.91ms DONE
+

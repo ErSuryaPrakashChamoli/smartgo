@@ -1,0 +1,142 @@
+{
+ "db": "smartgro_testing",
+ "ro": 1,
+ "checked_at": "2026-11-05 15:16:02",
+ "tables": 68,
+ "rows": {
+  "activity_log": 272,
+  "amenities": 0,
+  "amenity_space": 0,
+  "assignment_rule_user": 0,
+  "assignment_rules": 0,
+  "buildings": 4,
+  "cache": 7,
+  "cache_locks": 0,
+  "case_studies": 0,
+  "cities": 5,
+  "contacts": 0,
+  "customer_segments": 8,
+  "failed_jobs": 0,
+  "faqs": 5,
+  "floors": 0,
+  "inventory_import_issues": 0,
+  "inventory_imports": 0,
+  "job_batches": 0,
+  "jobs": 0,
+  "lead_activities": 0,
+  "lead_assignments": 0,
+  "lead_close_reasons": 0,
+  "leads": 0,
+  "media": 0,
+  "media_assets": 0,
+  "micro_markets": 3,
+  "migrations": 73,
+  "missing_pages": 0,
+  "model_has_permissions": 0,
+  "model_has_roles": 11,
+  "navigation_items": 64,
+  "navigation_menus": 4,
+  "offer_offering": 0,
+  "offering_profiles": 0,
+  "offering_space": 0,
+  "offerings": 0,
+  "offers": 0,
+  "pages": 29,
+  "password_reset_tokens": 0,
+  "permissions": 49,
+  "post_topics": 4,
+  "posts": 10,
+  "price_plans": 0,
+  "product_space_type": 0,
+  "products": 7,
+  "properties": 4,
+  "property_closures": 0,
+  "property_profiles": 4,
+  "property_user": 8,
+  "redirect_maps": 1,
+  "redirects": 0,
+  "revisions": 52,
+  "role_has_permissions": 126,
+  "roles": 6,
+  "security_settings": 1,
+  "seo_metadata": 29,
+  "sessions": 9,
+  "site_settings": 4,
+  "space_allocations": 0,
+  "space_seats": 0,
+  "space_types": 0,
+  "spaces": 0,
+  "testimonials": 0,
+  "tour_availability_rules": 0,
+  "tour_requests": 0,
+  "twin_anchors": 0,
+  "twin_models": 0,
+  "users": 12
+ },
+ "migrations": {
+  "count": 73,
+  "last_batch": 11
+ },
+ "users": [
+  {
+   "id": 1,
+   "domain": "local-helper.test",
+   "is_active": 0
+  },
+  {
+   "id": 2,
+   "domain": "local-helper.test",
+   "is_active": 0
+  },
+  {
+   "id": 3,
+   "domain": "local-helper.test",
+   "is_active": 0
+  },
+  {
+   "id": 4,
+   "domain": "gmail.com",
+   "is_active": 1
+  },
+  {
+   "id": 5,
+   "domain": "example.com",
+   "is_active": 1
+  },
+  {
+   "id": 6,
+   "domain": "dummy.test",
+   "is_active": 1
+  },
+  {
+   "id": 7,
+   "domain": "dummy.test",
+   "is_active": 1
+  },
+  {
+   "id": 8,
+   "domain": "dummy.test",
+   "is_active": 1
+  },
+  {
+   "id": 9,
+   "domain": "dummy.test",
+   "is_active": 1
+  },
+  {
+   "id": 10,
+   "domain": "dummy.test",
+   "is_active": 1
+  },
+  {
+   "id": 11,
+   "domain": "dummy.test",
+   "is_active": 1
+  },
+  {
+   "id": 12,
+   "domain": "dummy.test",
+   "is_active": 1
+  }
+ ]
+}

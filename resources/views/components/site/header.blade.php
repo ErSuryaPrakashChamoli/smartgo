@@ -11,7 +11,9 @@
     $navigation (App\Services\Content\SiteNavigation) holds the published menus; without it the
     Phase 2 design previews show their sample menus.
 --}}
-<header {{ $attributes->class(['site-header sticky top-0 z-40 border-b border-line/80 bg-paper/95 backdrop-blur supports-[backdrop-filter]:bg-paper/85']) }}>
+<header {{ $attributes->class(['site-header sticky top-0 z-40 border-b border-line/70 bg-white/95 backdrop-blur-md supports-[backdrop-filter]:bg-white/80']) }}>
+    {{-- A thin brand-green line along the bottom edge (OD-169). --}}
+    <span class="pointer-events-none absolute inset-x-0 -bottom-px h-px bg-linear-to-r from-transparent via-leaf-500/60 to-transparent" aria-hidden="true"></span>
     <div class="container-page flex h-18 items-center justify-between gap-6 lg:h-20 xl:h-23">
         <a href="{{ $homeHref }}" class="shrink-0 rounded-md" aria-label="SmartGro home">
             <x-site.brand-logo />

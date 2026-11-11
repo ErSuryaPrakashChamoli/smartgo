@@ -37,7 +37,7 @@ it('sends a workspace type to its page when the chosen location does not offer i
 
 it('sends a workspace type nobody offers yet to the enquiry form with the choice filled in, once the form is open', function () {
     expect(findWorkspace(['workspace' => 'virtual-office', 'location' => $this->a71->id]))->toEndWith('/locations/noida/a-71')
-        ->and(findWorkspace(['workspace' => 'virtual-office']))->toEndWith('/#workspaces');
+        ->and(findWorkspace(['workspace' => 'virtual-office']))->toEndWith('/workspaces#virtual-office');
 
     Page::factory()->published()->create(['slug' => 'legal/privacy', 'template' => 'legal']);
 

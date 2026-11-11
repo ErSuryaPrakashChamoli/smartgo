@@ -9,6 +9,7 @@ use App\Models\Lead;
 use App\Models\Product;
 use App\Models\Property;
 use App\Models\User;
+use App\Services\Crm\FirstResponseClock;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Builder;
  * enquiry shows its next open follow-up, and "Follow-up due" lists those due by the end of today in
  * India time, overdue ones included: the reminders of FR-CRM-3 inside the back office (no message is
  * sent, O-1). An enquiry from a contact who has sent others is marked as a repeat (FR-CRM-1, BR-CRM-2).
+ * "Waiting" shows how long an enquiry without a first response has waited, and the filter lists them
+ * (FR-CRM-1, P9-C); a due time, "overdue" and its filter appear only once the owner has set a target (A-41).
  */
 class LeadsTable
 {
@@ -69,6 +72,15 @@ class LeadsTable
                     ->label('First response')
                     ->since($timezone)
                     ->placeholder('Not yet')
+                    ->description(fn (Lead $record): ?string => $record->first_responded_at === null ? null : 'after '.app(FirstResponseClock::class)->describe(app(FirstResponseClock::class)->waitedMinutes($record))
+                        .(app(FirstResponseClock::class)->respondedLate($record) ? ', after its target' : ''))
+                    ->toggleable(),
+                TextColumn::make('waiting')
+                    ->label('Waiting')
+                    ->state(fn (Lead $record): ?string => $record->first_responded_at === null ? app(FirstResponseClock::class)->describe(app(FirstResponseClock::class)->waitedMinutes($record)) : null)
+                    ->placeholder('—')
+                    ->description(fn (Lead $record): ?string => self::dueNote($record))
+                    ->color(fn (Lead $record): ?string => app(FirstResponseClock::class)->isOverdue($record) ? 'danger' : null)
                     ->toggleable(),
             ])
             ->filters([
@@ -86,6 +98,18 @@ class LeadsTable
                 SelectFilter::make('product_id')
                     ->label('Workspace type')
                     ->options(fn (): array => Product::query()->orderBy('sort_order')->pluck('name', 'id')->all()),
+                Filter::make('awaiting_first_response')
+                    ->label('Waiting for a first response')
+                    ->query(fn (Builder $query): Builder => $query->whereNull('first_responded_at')),
+                Filter::make('first_response_overdue')
+                    ->label('First response overdue')
+                    ->visible(fn (): bool => app(FirstResponseClock::class)->hasTarget())
+                    ->query(function (Builder $query): Builder {
+                        /** @var User $user */
+                        $user = auth()->user();
+
+                        return $query->whereKey(app(FirstResponseClock::class)->overdueLeadIds($user));
+                    }),
                 Filter::make('follow_up_due')
                     ->label('Follow-up due by today')
                     ->query(fn (Builder $query): Builder => $query->whereHas('activities', fn (Builder $activities): Builder => $activities
@@ -108,5 +132,20 @@ class LeadsTable
             ->emptyStateHeading('No enquiries')
             ->emptyStateDescription('Enquiries sent from the website about the locations you work on appear here.')
             ->emptyStateIcon('heroicon-o-inbox');
+    }
+
+    /**
+     * "Due by 10:45" or "Overdue since 10:45" once the owner has set a target (A-41); nothing before.
+     */
+    private static function dueNote(Lead $record): ?string
+    {
+        $clock = app(FirstResponseClock::class);
+        $due = $record->first_responded_at === null ? $clock->dueAt($record) : null;
+
+        if ($due === null) {
+            return null;
+        }
+
+        return ($clock->isOverdue($record) ? 'Overdue since ' : 'Due by ').$due->setTimezone(config('backoffice.timezone'))->format('j M, H:i');
     }
 }

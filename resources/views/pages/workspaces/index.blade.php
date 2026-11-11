@@ -1,4 +1,5 @@
-{{-- All workspace types (IA §2, the approved hub design). Each type links to its page only while a published offering exists (BR-PRODCFG-4); the others link to the enquiry form. No prices are shown. --}}
+{{-- All workspace types (IA §2, the approved hub design). Each type links to its page only while a published offering exists (BR-PRODCFG-4); the others link to the enquiry form. No prices are shown.
+     Each card carries its type's slug as an anchor, the menu's destination for a type without a page while the form is closed (OD-174); the card a visitor arrives at is ringed. --}}
 <x-layouts::site title="Workspaces" description="Private offices and cabins, dedicated and hot desks, meeting and conference rooms, virtual offices and managed offices at SmartGro in Noida." :canonical="$canonical" :navigation="$navigation">
     <div class="container-page flex flex-col gap-14 py-10 lg:gap-20 lg:py-16">
         <div class="flex flex-col gap-4">
@@ -10,7 +11,7 @@
 
         <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($categories as $category)
-                <li>
+                <li id="{{ $category['slug'] }}" class="scroll-mt-6 [&:target>article]:ring-2 [&:target>article]:ring-leaf-500">
                     <x-card.workspace :name="$category['name']" :icon="$category['icon'] ?? 'squares-2x2'" :href="$category['path'] ?? route('enquiries.create', ['workspace' => $category['slug']])" class="h-full">
                         {{ $category['summary'] }}
                         @if ($category['path'] === null)

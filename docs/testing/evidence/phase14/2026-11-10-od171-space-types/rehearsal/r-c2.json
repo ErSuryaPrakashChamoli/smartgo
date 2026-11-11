@@ -1,0 +1,291 @@
+{
+    "database": "smartgro_od171_rehearsal",
+    "read_only": 1,
+    "activity_log_max_id": 352,
+    "activity_log_up_to_ceiling": {
+        "rows": 340,
+        "sha256": "90ca41fa6c2503d78d9fa13012236bdfbc373db5a50c9847989452ecc6bde896"
+    },
+    "tables": {
+        "activity_log": {
+            "rows": 346,
+            "checksum": "1785300193"
+        },
+        "amenities": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "amenity_space": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "assignment_rule_user": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "assignment_rules": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "buildings": {
+            "rows": 4,
+            "checksum": "2971589775"
+        },
+        "cache": {
+            "rows": 9,
+            "checksum": "3779955191"
+        },
+        "cache_locks": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "case_studies": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "cities": {
+            "rows": 5,
+            "checksum": "1285037983"
+        },
+        "contacts": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "customer_segments": {
+            "rows": 8,
+            "checksum": "1420568967"
+        },
+        "failed_jobs": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "faqs": {
+            "rows": 5,
+            "checksum": "3527263865"
+        },
+        "floors": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "home_banners": {
+            "rows": 4,
+            "checksum": "3740020665"
+        },
+        "home_highlights": {
+            "rows": 12,
+            "checksum": "1463707940"
+        },
+        "inventory_import_issues": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "inventory_imports": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "job_batches": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "jobs": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "lead_activities": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "lead_assignments": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "lead_close_reasons": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "leads": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "media": {
+            "rows": 4,
+            "checksum": "408244777"
+        },
+        "media_assets": {
+            "rows": 4,
+            "checksum": "3905527811"
+        },
+        "micro_markets": {
+            "rows": 3,
+            "checksum": "4196604582"
+        },
+        "migrations": {
+            "rows": 75,
+            "checksum": "2182989936"
+        },
+        "missing_pages": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "model_has_permissions": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "model_has_roles": {
+            "rows": 11,
+            "checksum": "3545327962"
+        },
+        "navigation_items": {
+            "rows": 64,
+            "checksum": "283203001"
+        },
+        "navigation_menus": {
+            "rows": 4,
+            "checksum": "607457197"
+        },
+        "offer_offering": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "offering_profiles": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "offering_space": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "offerings": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "offers": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "pages": {
+            "rows": 29,
+            "checksum": "387734869"
+        },
+        "password_reset_tokens": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "permissions": {
+            "rows": 49,
+            "checksum": "2031438286"
+        },
+        "post_topics": {
+            "rows": 4,
+            "checksum": "735808635"
+        },
+        "posts": {
+            "rows": 10,
+            "checksum": "3789822512"
+        },
+        "price_plans": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "product_space_type": {
+            "rows": 8,
+            "checksum": "2319783792"
+        },
+        "products": {
+            "rows": 7,
+            "checksum": "3353241367"
+        },
+        "properties": {
+            "rows": 4,
+            "checksum": "3876545889"
+        },
+        "property_closures": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "property_profiles": {
+            "rows": 4,
+            "checksum": "3812313267"
+        },
+        "property_user": {
+            "rows": 8,
+            "checksum": "3130916583"
+        },
+        "redirect_maps": {
+            "rows": 1,
+            "checksum": "1600319038"
+        },
+        "redirects": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "revisions": {
+            "rows": 68,
+            "checksum": "4101650543"
+        },
+        "role_has_permissions": {
+            "rows": 126,
+            "checksum": "2607755113"
+        },
+        "roles": {
+            "rows": 6,
+            "checksum": "3301623495"
+        },
+        "security_settings": {
+            "rows": 1,
+            "checksum": "1431944375"
+        },
+        "seo_metadata": {
+            "rows": 29,
+            "checksum": "2111874888"
+        },
+        "sessions": {
+            "rows": 3,
+            "checksum": "2249525485"
+        },
+        "site_settings": {
+            "rows": 4,
+            "checksum": "2746219120"
+        },
+        "space_allocations": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "space_seats": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "space_types": {
+            "rows": 6,
+            "checksum": "3545271599"
+        },
+        "spaces": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "testimonials": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "tour_availability_rules": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "tour_requests": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "twin_anchors": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "twin_models": {
+            "rows": 0,
+            "checksum": "0"
+        },
+        "users": {
+            "rows": 12,
+            "checksum": "3480355621"
+        }
+    }
+}

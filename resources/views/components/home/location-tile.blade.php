@@ -5,7 +5,7 @@
 
 @php($typeCount = $property->publishedOfferings->count())
 
-{{-- One location: its published main photo (real photography of this property, BR-MED-2) or branded artwork, never another image. --}}
+{{-- One location: its published main photo (real photography of this property, BR-MED-2, or a stock photo published as sample content and labelled so, OD-176) or branded artwork, never another image. --}}
 <article class="group relative isolate flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-3xl bg-forest text-paper shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-raised sm:aspect-[5/4]" data-surface="dark">
     @if ($photo)
         <img
@@ -18,6 +18,7 @@
             class="absolute inset-0 -z-20 size-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-105"
         >
         <div class="absolute inset-0 -z-10 bg-linear-to-t from-forest via-forest/70 to-forest/0" aria-hidden="true"></div>
+        <x-site.photo-label :label="$photo['label'] ?? null" top />
     @else
         <x-home.location-art :code="$property->code" class="absolute inset-0 -z-10 size-full transition-transform duration-700 ease-out group-hover:scale-105" />
     @endif

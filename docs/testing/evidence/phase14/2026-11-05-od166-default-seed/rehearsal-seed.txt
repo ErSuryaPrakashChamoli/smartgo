@@ -1,0 +1,2 @@
+Dummy staff accounts: admin@dummy.test, marketing@dummy.test, marketing2@dummy.test, operations@dummy.test, property@dummy.test, sales@dummy.test, finance@dummy.test
+Sample content: {"solutions":9,"community":3,"about":13,"articles":10,"faqs":5,"profile_drafts":4,"menus":["main","footer"],"offerings":{"Workspaces":4,"Business Solutions":9},"left_alone":[]}

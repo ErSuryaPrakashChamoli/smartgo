@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\PublishedContentController;
 use App\Http\Controllers\Web\SearchController;
 use App\Http\Controllers\Web\SearchEngineController;
+use App\Http\Controllers\Web\SpaceListingController;
 use App\Http\Controllers\Web\TourController;
 use App\Http\Controllers\Web\WorkspaceController;
 use App\Http\Controllers\Web\WorkspaceFinderController;
@@ -44,6 +45,9 @@ Route::controller(WorkspaceController::class)->prefix('workspaces')->name('works
     Route::get('/{workspace}', 'category')->where('workspace', '[a-z0-9-]+')->name('category');
     Route::get('/{workspace}/{city}', 'categoryInCity')->where(['workspace' => '[a-z0-9-]+', 'city' => '[a-z0-9-]+'])->name('city');
 });
+
+// A listed space's own page (OD-177): only while it is published at a location that may be listed.
+Route::get('/spaces/{slug}', SpaceListingController::class)->where('slug', '[a-z0-9-]+')->name('spaces.show');
 
 // Enquiries (FR-BK-1): never a booking. Sending is rate limited per address (AppServiceProvider).
 Route::controller(EnquiryController::class)->prefix('enquire')->name('enquiries.')->group(function (): void {

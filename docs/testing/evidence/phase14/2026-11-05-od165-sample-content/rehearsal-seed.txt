@@ -1,0 +1,11 @@
+
+ INFO Seeding database. 
+
+ Database\Seeders\SampleContentSeeder .. RUNNING 
+ Database\Seeders\DummyStaffSeeder .. RUNNING 
+Dummy staff accounts: marketing@dummy.test, marketing2@dummy.test, operations@dummy.test, property@dummy.test, sales@dummy.test, finance@dummy.test
+ Database\Seeders\DummyStaffSeeder .. 1,443 ms DONE 
+
+Sample content: {"solutions":9,"community":3,"about":13,"articles":10,"faqs":5,"profile_drafts":4,"menus":["main","footer"],"offerings":{"Workspaces":4,"Business Solutions":9},"left_alone":[]}
+ Database\Seeders\SampleContentSeeder .. 4,673 ms DONE 
+

@@ -1,0 +1,163 @@
+{
+    "read_only": 1,
+    "space_types": [
+        {
+            "id": 1,
+            "key": "private_cabin",
+            "name": "Private cabin or office",
+            "default_inventory_mode": "exclusive",
+            "allowed_inventory_modes": "[\"exclusive\"]",
+            "is_bookable_by_time": 0,
+            "sort_order": 10,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 2,
+            "key": "desk_zone_dedicated",
+            "name": "Dedicated desk zone",
+            "default_inventory_mode": "per_seat",
+            "allowed_inventory_modes": "[\"per_seat\", \"hybrid\"]",
+            "is_bookable_by_time": 0,
+            "sort_order": 20,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 3,
+            "key": "desk_zone_flexible",
+            "name": "Flexible seating zone",
+            "default_inventory_mode": "pooled",
+            "allowed_inventory_modes": "[\"pooled\", \"per_seat\", \"hybrid\"]",
+            "is_bookable_by_time": 0,
+            "sort_order": 30,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 4,
+            "key": "meeting_room",
+            "name": "Meeting room",
+            "default_inventory_mode": "exclusive",
+            "allowed_inventory_modes": "[\"exclusive\"]",
+            "is_bookable_by_time": 1,
+            "sort_order": 40,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 5,
+            "key": "conference_training_room",
+            "name": "Conference or training room",
+            "default_inventory_mode": "exclusive",
+            "allowed_inventory_modes": "[\"exclusive\"]",
+            "is_bookable_by_time": 1,
+            "sort_order": 50,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 6,
+            "key": "office_suite",
+            "name": "Office suite or floor plate",
+            "default_inventory_mode": "exclusive",
+            "allowed_inventory_modes": "[\"exclusive\"]",
+            "is_bookable_by_time": 0,
+            "sort_order": 60,
+            "created_at": "2026-11-10 13:21:29"
+        }
+    ],
+    "links": [
+        {
+            "type": "private_cabin",
+            "category": "private_office",
+            "category_name": "Private offices and cabins"
+        },
+        {
+            "type": "private_cabin",
+            "category": "managed_office",
+            "category_name": "Managed offices"
+        },
+        {
+            "type": "desk_zone_dedicated",
+            "category": "dedicated_desk",
+            "category_name": "Dedicated desks"
+        },
+        {
+            "type": "desk_zone_flexible",
+            "category": "hot_desk",
+            "category_name": "Hot desks"
+        },
+        {
+            "type": "meeting_room",
+            "category": "meeting_room",
+            "category_name": "Meeting rooms"
+        },
+        {
+            "type": "conference_training_room",
+            "category": "conference_room",
+            "category_name": "Conference and training rooms"
+        },
+        {
+            "type": "office_suite",
+            "category": "private_office",
+            "category_name": "Private offices and cabins"
+        },
+        {
+            "type": "office_suite",
+            "category": "managed_office",
+            "category_name": "Managed offices"
+        }
+    ],
+    "audit": [
+        {
+            "id": 341,
+            "log_name": "inventory",
+            "description": "created",
+            "subject_type": "App\\Models\\SpaceType",
+            "subject_id": 1,
+            "causer_id": null,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 342,
+            "log_name": "inventory",
+            "description": "created",
+            "subject_type": "App\\Models\\SpaceType",
+            "subject_id": 2,
+            "causer_id": null,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 343,
+            "log_name": "inventory",
+            "description": "created",
+            "subject_type": "App\\Models\\SpaceType",
+            "subject_id": 3,
+            "causer_id": null,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 344,
+            "log_name": "inventory",
+            "description": "created",
+            "subject_type": "App\\Models\\SpaceType",
+            "subject_id": 4,
+            "causer_id": null,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 345,
+            "log_name": "inventory",
+            "description": "created",
+            "subject_type": "App\\Models\\SpaceType",
+            "subject_id": 5,
+            "causer_id": null,
+            "created_at": "2026-11-10 13:21:29"
+        },
+        {
+            "id": 346,
+            "log_name": "inventory",
+            "description": "created",
+            "subject_type": "App\\Models\\SpaceType",
+            "subject_id": 6,
+            "causer_id": null,
+            "created_at": "2026-11-10 13:21:29"
+        }
+    ]
+}

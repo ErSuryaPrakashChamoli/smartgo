@@ -3,18 +3,20 @@
 /*
  * Test-only worker for Tests\Support\Concurrency\InventoryHarness.
  *
- * Boots the application, waits for the shared release instant, then records an allocation, changes a
- * space's status, takes a seat out of use or activates a price plan. After every read of spaces, seats,
- * allocations, offerings or price plans it pauses
- * briefly, which widens the race window so a missing lock would show up as a double allocation or as a
- * space taken out of use while allocated. Prints one JSON line.
+ * Boots the application, waits for the shared release instant, then records an allocation, wins a deal
+ * (allocating its proposed spaces), changes a space's status, takes a seat out of use or activates a
+ * price plan. After every read of spaces, seats, allocations, deals, proposed spaces, offerings or price
+ * plans it pauses briefly, which widens the race window so a missing lock would show up as a double
+ * allocation or as a space taken out of use while allocated. Prints one JSON line.
  */
 
+use App\Actions\Crm\WinDeal;
 use App\Actions\Inventory\ChangeSeats;
 use App\Actions\Inventory\ChangeSpaceStatus;
 use App\Actions\Inventory\RecordAllocation;
 use App\Actions\Pricing\ChangePricePlanState;
 use App\Enums\Inventory\SpaceStatus;
+use App\Models\Deal;
 use App\Models\PricePlan;
 use App\Models\Space;
 use App\Models\User;
@@ -37,7 +39,7 @@ if (! str_ends_with((string) DB::connection()->getDatabaseName(), '_testing')) {
 DB::connection()->getPdo();
 
 DB::listen(function (QueryExecuted $query): void {
-    if (preg_match('/^\s*select\b.*\bfrom `(spaces|space_seats|space_allocations|offerings|price_plans)`/is', $query->sql)) {
+    if (preg_match('/^\s*select\b.*\bfrom `(spaces|space_seats|space_allocations|offerings|price_plans|deals|deal_space)`/is', $query->sql)) {
         usleep(150_000);
     }
 });
@@ -56,6 +58,7 @@ try {
     $outcome = match (getenv('INVENTORY_MODE')) {
         'allocate' => app(RecordAllocation::class)->handle($user, $space, $data)->agreement_reference,
         'status' => app(ChangeSpaceStatus::class)->handle($user, $space, SpaceStatus::from($data['status']), SpaceStatus::Active, 'Race test')->operational_status->value,
+        'win_deal' => app(WinDeal::class)->handle($user, Deal::query()->findOrFail((int) $data['deal_id']), $data['win'])->agreement_reference ?? 'won',
         'activate_plan' => app(ChangePricePlanState::class)->handle($user, PricePlan::query()->findOrFail((int) $data['plan_id']), 'activate')->status->value,
         'deactivate_seat' => app(ChangeSeats::class)->handle($user, $space, 'deactivate', [...$data, 'reason' => 'Race test'])->seats->where('is_active', false)->count().' out of use',
     };

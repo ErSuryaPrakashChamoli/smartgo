@@ -8,15 +8,19 @@ use App\Models\Page;
 use App\Models\Product;
 use App\Models\Property;
 use App\Models\SiteSetting;
+use App\Models\SpaceListing;
+use App\Models\SpaceType;
 use App\Services\Website\EnquiryForm;
 use App\Services\Website\SiteSections;
+use App\Services\Website\SpaceListingPages;
 use App\Services\Website\WorkspaceCatalogue;
 
 /**
  * The website's published menus, contact details and social links, ready for the header and footer.
  * A link to a page appears only while that page is published, a link to a property only while it is
- * listed, a link to a workspace type while it is shown (to its page, or to the enquiry form while it has
- * none), and a link to a part of the website only while it has something to show, always at the
+ * listed, a link to a workspace type while it is shown (to its page, to the enquiry form while it has
+ * none, or to its card on the workspaces page while the form is closed), and a link to a part of the
+ * website only while it has something to show, always at the
  * current address; groups without a visible link, and menus and settings that were never published,
  * are left out, so nothing unapproved or placeholder is shown (BR-CMS-9). Drop-down links and categories
  * carry their description and icon (OD-149), and a link to a sample page says so, for the "example pages" note.
@@ -49,6 +53,10 @@ class SiteNavigation
         ];
         $paths['icons'] = $paths[NavigationPayload::CATEGORY] === [] ? [] : Product::query()->whereKey(array_keys($paths[NavigationPayload::CATEGORY]))->get(['id', 'key'])
             ->mapWithKeys(fn (Product $product): array => [$product->getKey() => app(WorkspaceCatalogue::class)->categoryCopy($product)['icon']])->all();
+        $spaceTypeIds = $this->linkIds($payloads, 'space_type_id');
+        $paths['spaces'] = app(SpaceListingPages::class)->menu($spaceTypeIds);
+        $paths['spaceTypeIcons'] = $paths['spaces'] === [] ? [] : SpaceType::query()->whereKey(array_keys($paths['spaces']))->pluck('key', 'id')
+            ->map(fn (string $key): ?string => SpaceListing::TYPE_ICONS[$key] ?? null)->all();
 
         $settings = SiteSetting::query()->whereIn('handle', ['contact', 'social'])->get()->keyBy('handle');
 
@@ -167,6 +175,36 @@ class SiteNavigation
                 continue;
             }
 
+            // A space type opens as a tab of its shown spaces, each with its location (OD-177); none shown, no tab.
+            if (($item['type'] ?? null) === NavigationPayload::SPACE_TYPE) {
+                $spaces = $paths['spaces'][(int) ($item['space_type_id'] ?? 0)] ?? [];
+
+                if ($spaces !== [] && filled($item['label'] ?? null)) {
+                    $resolved[] = [
+                        'label' => (string) $item['label'],
+                        'href' => null,
+                        'external' => false,
+                        'description' => $this->description($item),
+                        'icon' => $this->chosenIcon($item) ?? $paths['spaceTypeIcons'][(int) $item['space_type_id']] ?? null,
+                        'sample' => collect($spaces)->contains('sample', true),
+                        'kind' => NavigationPayload::SPACE_TYPE,
+                        'children' => array_map(fn (array $space): array => [
+                            'label' => $space['label'],
+                            'href' => $space['href'],
+                            'external' => false,
+                            'description' => collect([$space['location'], $space['area']])->filter()->join(' · '),
+                            'icon' => null,
+                            'sample' => $space['sample'],
+                            'location' => $space['location'],
+                            'area' => $space['area'],
+                            'children' => [],
+                        ], $spaces),
+                    ];
+                }
+
+                continue;
+            }
+
             $href = match ($item['type'] ?? null) {
                 ContentLink::TO_PAGE => $paths[ContentLink::TO_PAGE][(int) ($item['page_id'] ?? 0)] ?? null,
                 NavigationPayload::SECTION => $paths[NavigationPayload::SECTION][(string) ($item['section'] ?? '')] ?? null,
@@ -243,9 +281,10 @@ class SiteNavigation
     }
 
     /**
-     * Where each of the given workspace types leads: its page while it is shown with an offering on the
-     * website (as WorkspaceCatalogue::categoryWithPage); otherwise, while it is shown and the enquiry form is
-     * open, the form with the type chosen, as the workspaces page does (OD-145); otherwise nowhere.
+     * Where each of the given workspace types leads while it is shown: its page while it has an offering on
+     * the website (as WorkspaceCatalogue::categoryWithPage); otherwise, while the enquiry form is open, the
+     * form with the type chosen, as the workspaces page does (OD-145); otherwise its own card on the
+     * workspaces page, so every shown type keeps its place in the menu (OD-174). A hidden type leads nowhere.
      *
      * @param  list<int>  $productIds
      * @return array<int, string>
@@ -262,8 +301,11 @@ class SiteNavigation
         $enquiryOpen = $products->contains('has_page', false) && app(EnquiryForm::class)->isOpen();
 
         return $products
-            ->filter(fn (Product $product): bool => $product->has_page || $enquiryOpen)
-            ->mapWithKeys(fn (Product $product): array => [$product->getKey() => $product->has_page ? '/workspaces/'.$product->slug : '/enquire?workspace='.$product->slug])
+            ->mapWithKeys(fn (Product $product): array => [$product->getKey() => match (true) {
+                (bool) $product->has_page => '/workspaces/'.$product->slug,
+                $enquiryOpen => '/enquire?workspace='.$product->slug,
+                default => '/workspaces#'.$product->slug,
+            }])
             ->all();
     }
 

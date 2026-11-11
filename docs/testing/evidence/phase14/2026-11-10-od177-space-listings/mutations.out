@@ -1,0 +1,14 @@
+OD-177 mutation checks, 2026-11-10, in an isolated copy of the project (own vendor, composer dump-autoload --no-scripts)
+against its own test database smartgro_od177_testing (created and dropped by this session); the live tree and
+smartgro_testing were never mutated. Baseline in the copy: 18 passed (142 assertions).
+
+M1 a closed location still shows its spaces: CAUGHT (exit 1); restored identical to the real file: True
+M2 switching on ignores a version already in progress: CAUGHT (exit 1); restored identical to the real file: True
+M3 the seeder switches a space back on: MISSED (exit 0) on the first run: the seeder skips unchanged content anyway,
+   so the test never reached the guard. The test now gives the switched-off space older words than the seeder's.
+M3 (rerun with the corrected test): CAUGHT (exit 1); restored identical to the real file: True
+M4 a space type is accepted at the top of the menu: CAUGHT (exit 1); restored identical to the real file: True
+M5 a space type with no shown space still gets a tab: CAUGHT (exit 1); restored identical to the real file: True
+M6 the enquiry form guesses a workspace type for a shared space type: CAUGHT (exit 1); restored identical to the real file: True
+
+Seeder test file unmutated after the correction: 4 passed (28 assertions).

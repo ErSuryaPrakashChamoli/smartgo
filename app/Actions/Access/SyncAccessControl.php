@@ -25,6 +25,10 @@ class SyncAccessControl
                 Permission::findOrCreate($capability);
             }
 
+            // Spatie refreshes its cached list on a model event; with events off (a seeder using
+            // WithoutModelEvents) the new capabilities would be missing from it (OD-166).
+            $this->permissionRegistrar->forgetCachedPermissions();
+
             foreach (StaffRole::cases() as $staffRole) {
                 $role = Role::findOrCreate($staffRole);
                 $previousCapabilities = $role->permissions()->pluck('name')->sort()->values()->all();

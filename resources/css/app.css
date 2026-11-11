@@ -285,3 +285,86 @@
         border-color: transparent;
     }
 }
+
+/*
+ * The home page's banner carousel (OD-169, resources/js/app.js). The banner on screen raises its text in turn and
+ * its image settles from a slight zoom; the current dot fills while the banner waits, and the script moves on when it
+ * is full, so the pointer or focus on the banners (data-carousel-held) holds both. None of it runs under reduced motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+    [data-carousel-slide][data-active] [data-carousel-rise] {
+        animation: var(--animate-rise);
+    }
+
+    [data-carousel-slide][data-active] [data-carousel-rise]:nth-child(2) {
+        animation-delay: 120ms;
+    }
+
+    [data-carousel-slide][data-active] [data-carousel-rise]:nth-child(3) {
+        animation-delay: 240ms;
+    }
+
+    [data-carousel-slide][data-active] [data-carousel-image] {
+        animation: carousel-settle 9s var(--ease-smooth) both;
+    }
+
+    [data-carousel][data-carousel-playing] [data-carousel-dot][aria-current='true'] .carousel-dot-progress {
+        animation: carousel-progress 7s linear forwards;
+    }
+
+    [data-carousel][data-carousel-held] .carousel-dot-progress {
+        animation-play-state: paused;
+    }
+}
+
+@keyframes carousel-settle {
+    from {
+        transform: scale(1.07);
+    }
+}
+
+@keyframes carousel-progress {
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/*
+ * The highlights strip (OD-169) moves from left to right: two equal copies side by side, shifted by one copy's
+ * width. The pointer or keyboard focus holds it, the pause button stops it (data-paused), and under reduced
+ * motion it stands still with one copy that scrolls sideways.
+ */
+.marquee-track {
+    animation: marquee-to-right var(--marquee-duration, 60s) linear infinite;
+}
+
+[data-marquee]:hover .marquee-track,
+[data-marquee]:focus-within .marquee-track,
+[data-marquee][data-paused] .marquee-track {
+    animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+        animation: none;
+    }
+
+    .marquee-copy {
+        display: none;
+    }
+
+    .marquee-viewport {
+        overflow-x: auto;
+        mask-image: none;
+    }
+}
+
+@keyframes marquee-to-right {
+    from {
+        transform: translateX(-50%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}

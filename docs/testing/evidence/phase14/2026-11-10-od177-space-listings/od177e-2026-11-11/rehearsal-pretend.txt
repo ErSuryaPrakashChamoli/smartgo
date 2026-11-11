@@ -1,0 +1,7 @@
+
+ INFO Running migrations. 
+
+ 2026_11_11_045007_add_media_asset_id_to_space_listings_table .. 
+ ⇂ alter table `space_listings` add `media_asset_id` bigint unsigned null after `features` 
+ ⇂ alter table `space_listings` add constraint `space_listings_media_asset_id_foreign` foreign key (`media_asset_id`) references `media_assets` (`id`) on delete set null 
+

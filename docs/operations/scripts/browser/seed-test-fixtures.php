@@ -10,7 +10,8 @@
 // contact details, menus, a contact page, an about page, a page with every text-only section, a page
 // with an image and a testimonial section, a legal page, an insight, a customer story, FAQs (general, A-70's, hot desks'), a
 // coming-soon city, a 410 rule, an insight topic, an enquiry, a draft page for the staff preview, two
-// test-only assignment rules (switched off) with one decision, one
+// test-only assignment rules (switched off) with one decision, three test-only pipeline stages with an
+// open and a won deal, one
 // floor of A-70 with cabins, a pool and a hybrid zone, some allocated, and four test-only 3D models
 // (Tests\Support\Twin\TestGlb, uploaded through the real checks). The models' files are stored only when
 // LARAVEL_STORAGE_PATH points at a temporary folder (run-checks.sh sets it), never in the shared storage.
@@ -25,8 +26,11 @@ use App\Actions\Content\CreateDraft;
 use App\Actions\Content\PublishRevision;
 use App\Actions\Content\SubmitRevision;
 use App\Actions\Crm\AssignNewLead;
+use App\Actions\Crm\OpenDeal;
+use App\Actions\Crm\ProposeDealSpace;
 use App\Actions\Crm\SaveAssignmentRule;
 use App\Actions\Crm\SetAssignmentRuleActive;
+use App\Actions\Crm\WinDeal;
 use App\Actions\Inventory\AddSpaces;
 use App\Actions\Inventory\RecordAllocation;
 use App\Actions\Inventory\SaveFloor;
@@ -46,6 +50,7 @@ use App\Models\Faq;
 use App\Models\Lead;
 use App\Models\NavigationMenu;
 use App\Models\Page;
+use App\Models\PipelineStage;
 use App\Models\Post;
 use App\Models\PostTopic;
 use App\Models\Product;
@@ -339,6 +344,20 @@ $emptyRule = app(SaveAssignmentRule::class)->handle($staff['admin'], new Assignm
     'name' => 'TEST FIXTURE rule without people', 'priority' => 2, 'strategy' => 'fixed_user', 'criteria' => [], 'assignee_ids' => [],
 ]);
 
+// Test-only pipeline stages and two deals (P9-D browser checks): never real stages (D-09, A-42), test
+// database only, no values typed. The open deal (on the fixture enquiry) proposes a cabin and two pool
+// seats; the won deal (on the assigned enquiry) proposed the third cabin, which its win allocated through
+// AllocateWonDeal.
+$dealStage = PipelineStage::factory()->create(['name' => 'TEST FIXTURE open stage', 'sort_order' => 1]);
+$wonStage = PipelineStage::factory()->won()->create(['name' => 'TEST FIXTURE won stage', 'sort_order' => 2]);
+PipelineStage::factory()->lost()->create(['name' => 'TEST FIXTURE lost stage', 'sort_order' => 3]);
+$openDeal = app(OpenDeal::class)->handle($staff['admin'], $lead, ['pipeline_stage_id' => $dealStage->id]);
+app(ProposeDealSpace::class)->handle($staff['admin'], $openDeal, ['space_id' => $fixtureCabins->values()->get(1)->id]);
+app(ProposeDealSpace::class)->handle($staff['admin'], $openDeal, ['space_id' => $fixturePool->id, 'seats' => 2]);
+$wonDeal = app(OpenDeal::class)->handle($staff['admin'], $assignedLead, ['pipeline_stage_id' => $dealStage->id]);
+app(ProposeDealSpace::class)->handle($staff['admin'], $wonDeal, ['space_id' => $fixtureCabins->values()->get(2)->id]);
+app(WinDeal::class)->handle($staff['admin'], $wonDeal, ['pipeline_stage_id' => $wonStage->id, 'agreement_reference' => 'TF-DEAL-1', 'starts_on' => now()->toDateString()]);
+
 // Staff sessions for this database only: one session row per person, as signing in leaves it.
 $sessions = [];
 foreach (['admin', 'marketing', 'operations', 'sales'] as $key) {
@@ -352,7 +371,7 @@ foreach (['admin', 'marketing', 'operations', 'sales'] as $key) {
 }
 
 echo json_encode([
-    'ids' => ['a70' => $a70->id, 'a71' => $a71->id, 'h105' => $h105->id, 'a70_profile' => $a70->profile->id, 'noida' => $a70->city_id, 'contact_page' => $contactPage->id, 'about_page' => $about->id, 'lead' => $lead->id, 'assignment_rule' => $assignmentRule->id, 'assignment_rule_empty' => $emptyRule->id, 'assigned_lead' => $assignedLead->id, 'space_cabin' => $fixtureCabins->first()->id, 'space_zone' => $fixtureZone->id, 'tour' => $tour->id, ...array_map(fn ($model): int => $model->id, $twinModels)],
+    'ids' => ['a70' => $a70->id, 'a71' => $a71->id, 'h105' => $h105->id, 'a70_profile' => $a70->profile->id, 'noida' => $a70->city_id, 'contact_page' => $contactPage->id, 'about_page' => $about->id, 'lead' => $lead->id, 'assignment_rule' => $assignmentRule->id, 'assignment_rule_empty' => $emptyRule->id, 'assigned_lead' => $assignedLead->id, 'deal_open' => $openDeal->id, 'deal_won' => $wonDeal->id, 'pipeline_stage' => $dealStage->id, 'space_cabin' => $fixtureCabins->first()->id, 'space_zone' => $fixtureZone->id, 'tour' => $tour->id, ...array_map(fn ($model): int => $model->id, $twinModels)],
     'twin_checks' => $twinChecks,
     'upload_files' => ['at_limits' => "{$out}/upload-at-limits.glb", 'oversized' => "{$out}/upload-oversized.glb"],
     'preview' => (string) parse_url(RevisionPreviewController::url($previewDraft), PHP_URL_PATH).'?'.parse_url(RevisionPreviewController::url($previewDraft), PHP_URL_QUERY),

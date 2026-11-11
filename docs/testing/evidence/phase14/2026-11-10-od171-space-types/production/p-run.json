@@ -1,0 +1,47 @@
+{
+    "database": "smart_go",
+    "simulated_failure": false,
+    "result": "committed",
+    "failure": null,
+    "created_types": [
+        "private_cabin",
+        "desk_zone_dedicated",
+        "desk_zone_flexible",
+        "meeting_room",
+        "conference_training_room",
+        "office_suite"
+    ],
+    "confirmed_types": [],
+    "added_links": [
+        "private_cabin -> private_office",
+        "private_cabin -> managed_office",
+        "desk_zone_dedicated -> dedicated_desk",
+        "desk_zone_flexible -> hot_desk",
+        "meeting_room -> meeting_room",
+        "conference_training_room -> conference_room",
+        "office_suite -> managed_office",
+        "office_suite -> private_office"
+    ],
+    "confirmed_links": [],
+    "before": {
+        "space_types": 0,
+        "product_space_type": 0,
+        "activity_log": 340
+    },
+    "after": {
+        "space_types": 6,
+        "product_space_type": 8,
+        "activity_log": 346
+    },
+    "links_now": [
+        "private_cabin -> private_office",
+        "private_cabin -> managed_office",
+        "desk_zone_dedicated -> dedicated_desk",
+        "desk_zone_flexible -> hot_desk",
+        "meeting_room -> meeting_room",
+        "conference_training_room -> conference_room",
+        "office_suite -> private_office",
+        "office_suite -> managed_office"
+    ],
+    "a28_present": []
+}

@@ -7,6 +7,8 @@ use App\Models\NavigationMenu;
 use App\Models\Page;
 use App\Models\Product;
 use App\Models\Property;
+use App\Models\SpaceListing;
+use App\Models\SpaceType;
 use App\Services\Content\ContentLink;
 use App\Services\Content\NavigationPayload;
 use App\Services\Content\PagePayload;
@@ -55,7 +57,11 @@ class NavigationMenuForm
                                     ->label('Links in this group')
                                     ->schema(fn (): array => [
                                         ...self::linkFields(($record?->structure()['groups'] ?? 'none') === 'allowed'
-                                            ? [...self::LINK_TYPES, NavigationPayload::GROUP => 'A sub-group (a heading with its own links)']
+                                            ? [
+                                                ...self::LINK_TYPES,
+                                                NavigationPayload::GROUP => 'A sub-group (a heading with its own links)',
+                                                ...(SpaceListing::isAvailable() ? [NavigationPayload::SPACE_TYPE => 'A space type (its spaces on the website, listed by location)'] : []),
+                                            ]
                                             : self::LINK_TYPES, $record?->offersDetails() ?? false),
                                         Repeater::make('children')
                                             ->label('Links in this sub-group')
@@ -155,6 +161,12 @@ class NavigationMenuForm
                 ->searchable()
                 ->markAsRequired()
                 ->visible(fn (Get $get): bool => $get('type') === NavigationPayload::CATEGORY),
+            Select::make('space_type_id')
+                ->label('Space type')
+                ->options(fn (): array => SpaceType::query()->orderBy('sort_order')->orderBy('id')->pluck('name', 'id')->all())
+                ->helperText('Opens as a tab in the drop-down showing this type\'s spaces, by location, from Website → Spaces on the website. Hidden while none is on the website.')
+                ->markAsRequired()
+                ->visible(fn (Get $get): bool => $get('type') === NavigationPayload::SPACE_TYPE),
             TextInput::make('url')
                 ->label('Web address')
                 ->placeholder('https://')

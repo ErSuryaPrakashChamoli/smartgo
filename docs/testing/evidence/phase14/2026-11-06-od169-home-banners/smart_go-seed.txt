@@ -1,0 +1,7 @@
+
+ INFO Seeding database. 
+
+ Database\Seeders\HomeShowcaseSeeder .. RUNNING 
+Home banners and highlights: {"skipped":false,"images":4,"banners":4,"highlights":12,"left_alone":[]}
+ Database\Seeders\HomeShowcaseSeeder .. 4,566 ms DONE 
+

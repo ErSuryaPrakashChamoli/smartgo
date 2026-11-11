@@ -21,12 +21,12 @@
     The first screen, as in the owner's design (OD-146): a calm, light stage with the headline, two next steps
     and the facts from records on the left, and a photograph of a SmartGro location (or, until one is published,
     the owner's AI-generated image, labelled as such) filling the right side and fading into the page. Text rises in on arrival;
-    nothing moves under reduced motion.
+    nothing moves under reduced motion. Lower since OD-169; once a banner is published, the carousel replaces it.
 --}}
 <section class="relative isolate overflow-hidden" aria-labelledby="home-heading">
-    <div class="container-page grid items-center gap-10 pt-10 pb-12 sm:pt-14 lg:min-h-[40rem] lg:grid-cols-12 lg:pt-20 lg:pb-20">
-        <div class="relative z-10 flex flex-col gap-7 lg:col-span-7">
-            <h1 id="home-heading" class="max-w-xl font-editorial text-display-2xl font-semibold text-balance text-forest">
+    <div class="container-page grid items-center gap-8 pt-8 pb-10 sm:pt-10 lg:min-h-[31rem] lg:grid-cols-12 lg:pt-12 lg:pb-12">
+        <div class="relative z-10 flex flex-col gap-6 lg:col-span-7">
+            <h1 id="home-heading" class="max-w-xl font-editorial text-display-xl font-semibold text-balance text-forest">
                 <span class="block motion-safe:animate-rise">A better space</span>
                 <span class="block motion-safe:animate-rise motion-safe:[animation-delay:120ms]">to do your</span>
                 <span class="block text-leaf-700 motion-safe:animate-rise motion-safe:[animation-delay:240ms]">best work.</span>
@@ -66,7 +66,11 @@
                     class="absolute inset-0 size-full object-cover"
                 >
                 <figcaption class="absolute right-4 bottom-4 inline-flex max-w-[calc(100%-2rem)] items-center gap-1.5 rounded-full bg-forest/80 px-3 py-1.5 text-xs font-medium text-paper backdrop-blur">
-                    <x-heroicon-m-map-pin class="size-3.5 shrink-0 text-leaf-300" aria-hidden="true" />
+                    @if ($photo['label'] ?? null)
+                        <x-heroicon-m-information-circle class="size-3.5 shrink-0 text-leaf-300" aria-hidden="true" />
+                    @else
+                        <x-heroicon-m-map-pin class="size-3.5 shrink-0 text-leaf-300" aria-hidden="true" />
+                    @endif
                     {{ $photo['caption'] }}
                 </figcaption>
             @else

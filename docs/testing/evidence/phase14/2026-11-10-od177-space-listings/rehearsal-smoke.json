@@ -1,0 +1,361 @@
+{
+    "database": "smartgro_od177_rehearsal",
+    "read_only": 1,
+    "public": {
+        "/": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Sample content"
+            ]
+        },
+        "/workspaces": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/locations": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/insights": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Sample content"
+            ]
+        },
+        "/faqs": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/search": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "noindex"
+            ]
+        },
+        "/enquire": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/book-a-tour": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/sitemap.xml": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/robots.txt": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/find-a-workspace": {
+            "status": 302,
+            "location": "http://localhost/workspaces",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/login": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        }
+    },
+    "backoffice": {
+        "/admin/website/navigation-menus/1/edit": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Short description"
+            ]
+        },
+        "/admin/properties/workspace-categories/1/edit": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Spaces it can be sold with"
+            ]
+        },
+        "/admin/website/home-banners": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/home-banners/1/edit": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/home-highlights": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/home-highlights/1/edit": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/space-listings": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/space-listings/create": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/space-listings/1/edit": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties": {
+            "status": 302,
+            "location": "http://localhost/admin/properties/properties",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/cities": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/inventory-imports": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/inventory-imports/upload": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/offers": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/price-plans": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/properties": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/spaces": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/space-types": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/website-profiles": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/workspace-categories": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/properties/workspace-offerings": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/reports": {
+            "status": 302,
+            "location": "http://localhost/admin/reports/enquiries-and-tours",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/reports/content-freshness": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/reports/enquiries-and-tours": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/sales": {
+            "status": 302,
+            "location": "http://localhost/admin/sales/enquiries",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/sales/assignment-rules": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/sales/assignment-rules/create": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/sales/closing-reasons": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/sales/enquiries": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/sales/tours": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/settings": {
+            "status": 302,
+            "location": "http://localhost/admin/settings/security",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/settings/activities": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/settings/security": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Two-step login is optional"
+            ]
+        },
+        "/admin/settings/users": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website": {
+            "status": 302,
+            "location": "http://localhost/admin/website/pages",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/customer-stories": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/faqs": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/insights": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/insight-topics": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Sample content"
+            ]
+        },
+        "/admin/website/media-assets": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/missing-pages": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/navigation-menus": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/pages": {
+            "status": 200,
+            "robots": "noindex, nofollow",
+            "has": [
+                "Sample content"
+            ]
+        },
+        "/admin/website/redirects": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/search-titles": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/settings": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/testimonials": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/website/twin-models": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        },
+        "/admin/design-previews": {
+            "status": 302,
+            "location": "http://localhost/admin/design-previews/dashboard-overview",
+            "robots": "noindex, nofollow"
+        },
+        "/admin/design-previews/permissions-review": {
+            "status": 200,
+            "robots": "noindex, nofollow"
+        }
+    },
+    "home": {
+        "banners_available": true,
+        "highlights_available": true,
+        "carousel": true,
+        "slides": 4,
+        "single_hero_image": false,
+        "labels": {
+            "ai": 1,
+            "stock": 12
+        },
+        "strip": true,
+        "example_highlights": true,
+        "h1": "A better space to do your best work.",
+        "images": {
+            "/media/1/w960": 200,
+            "/media/2/w960": 200,
+            "/media/3/w960": 200,
+            "/media/4/w960": 200
+        }
+    },
+    "spaces": {
+        "available": true,
+        "shown": 72,
+        "tabs": [
+            "Private cabins (12)",
+            "Dedicated desks (12)",
+            "Flexible seating (12)",
+            "Meeting rooms (12)",
+            "Conference rooms (12)",
+            "Office suites (12)"
+        ],
+        "example_note": true,
+        "pages": {
+            "/spaces/a-23-cabin-c1": {
+                "status": 200,
+                "robots": "noindex, nofollow",
+                "has": [
+                    "Sample content",
+                    "noindex"
+                ]
+            },
+            "/spaces/a-23-cabin-c2": {
+                "status": 200,
+                "robots": "noindex, nofollow",
+                "has": [
+                    "Sample content",
+                    "noindex"
+                ]
+            },
+            "/spaces/a-23-cabin-c3": {
+                "status": 200,
+                "robots": "noindex, nofollow",
+                "has": [
+                    "Sample content",
+                    "noindex"
+                ]
+            },
+            "/spaces/no-such-space": {
+                "status": 404,
+                "error": "NotFoundHttpException: ",
+                "robots": "noindex, nofollow",
+                "has": [
+                    "noindex"
+                ]
+            }
+        }
+    },
+    "acting_as": 4,
+    "menu_rules_keep_details": true,
+    "still_read_only": 1
+}

@@ -1,0 +1,157 @@
+{
+    "db": "smartgro_od177_rehearsal",
+    "ro": 1,
+    "checked_at": "2026-11-10 21:40:21",
+    "tables": 71,
+    "rows": {
+        "activity_log": 833,
+        "amenities": 0,
+        "amenity_space": 0,
+        "assignment_rule_user": 0,
+        "assignment_rules": 0,
+        "buildings": 4,
+        "cache": 9,
+        "cache_locks": 0,
+        "case_studies": 2,
+        "cities": 5,
+        "contacts": 0,
+        "customer_segments": 8,
+        "failed_jobs": 0,
+        "faqs": 5,
+        "floors": 0,
+        "home_banners": 4,
+        "home_highlights": 12,
+        "inventory_import_issues": 0,
+        "inventory_imports": 0,
+        "job_batches": 0,
+        "jobs": 0,
+        "lead_activities": 0,
+        "lead_assignments": 0,
+        "lead_close_reasons": 0,
+        "leads": 0,
+        "media": 11,
+        "media_assets": 11,
+        "micro_markets": 3,
+        "migrations": 76,
+        "missing_pages": 0,
+        "model_has_permissions": 0,
+        "model_has_roles": 11,
+        "navigation_items": 64,
+        "navigation_menus": 4,
+        "offer_offering": 0,
+        "offering_profiles": 28,
+        "offering_space": 0,
+        "offerings": 28,
+        "offers": 0,
+        "pages": 30,
+        "password_reset_tokens": 0,
+        "permissions": 49,
+        "post_topics": 4,
+        "posts": 10,
+        "price_plans": 0,
+        "product_space_type": 8,
+        "products": 7,
+        "properties": 4,
+        "property_closures": 0,
+        "property_profiles": 4,
+        "property_user": 8,
+        "redirect_maps": 1,
+        "redirects": 0,
+        "revisions": 177,
+        "role_has_permissions": 126,
+        "roles": 6,
+        "security_settings": 1,
+        "seo_metadata": 62,
+        "sessions": 6,
+        "site_settings": 4,
+        "space_allocations": 0,
+        "space_listings": 72,
+        "space_seats": 0,
+        "space_types": 6,
+        "spaces": 0,
+        "testimonials": 2,
+        "tour_availability_rules": 24,
+        "tour_requests": 0,
+        "twin_anchors": 0,
+        "twin_models": 0,
+        "users": 12
+    },
+    "migrations": {
+        "count": 76,
+        "last_batch": 13
+    },
+    "users": [
+        {
+            "id": 1,
+            "email": "(personal address removed)",
+            "is_active": 0,
+            "created_at": "2026-10-27 12:33:05"
+        },
+        {
+            "id": 2,
+            "email": "(personal address removed)",
+            "is_active": 0,
+            "created_at": "2026-10-27 12:33:05"
+        },
+        {
+            "id": 3,
+            "email": "(personal address removed)",
+            "is_active": 0,
+            "created_at": "2026-10-27 12:33:06"
+        },
+        {
+            "id": 4,
+            "email": "(personal address removed)",
+            "is_active": 1,
+            "created_at": "2026-10-30 06:18:19"
+        },
+        {
+            "id": 5,
+            "email": "(personal address removed)",
+            "is_active": 1,
+            "created_at": "2026-11-05 06:31:37"
+        },
+        {
+            "id": 6,
+            "email": "admin@dummy.test",
+            "is_active": 1,
+            "created_at": "2026-11-05 09:48:14"
+        },
+        {
+            "id": 7,
+            "email": "marketing@dummy.test",
+            "is_active": 1,
+            "created_at": "2026-11-05 09:48:18"
+        },
+        {
+            "id": 8,
+            "email": "marketing2@dummy.test",
+            "is_active": 1,
+            "created_at": "2026-11-05 09:48:23"
+        },
+        {
+            "id": 9,
+            "email": "operations@dummy.test",
+            "is_active": 1,
+            "created_at": "2026-11-05 09:48:27"
+        },
+        {
+            "id": 10,
+            "email": "property@dummy.test",
+            "is_active": 1,
+            "created_at": "2026-11-05 09:48:31"
+        },
+        {
+            "id": 11,
+            "email": "sales@dummy.test",
+            "is_active": 1,
+            "created_at": "2026-11-05 09:48:34"
+        },
+        {
+            "id": 12,
+            "email": "finance@dummy.test",
+            "is_active": 1,
+            "created_at": "2026-11-05 09:48:36"
+        }
+    ]
+}

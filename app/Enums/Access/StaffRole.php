@@ -53,7 +53,7 @@ enum StaffRole: string
                 Capability::ImportInventory, Capability::ApproveInventoryImport,
                 Capability::ViewPrices, Capability::ManagePrices, Capability::ApprovePrices, Capability::ManageOffers,
                 Capability::ViewProfiles, Capability::EditProfiles,
-                Capability::ViewLeads, Capability::ManageLeads, Capability::AssignLeads, Capability::ExportLeads, Capability::ManageLeadSettings, Capability::ManageAssignmentRules,
+                Capability::ViewLeads, Capability::ManageLeads, Capability::AssignLeads, Capability::ExportLeads, Capability::ManageLeadSettings, Capability::ManageAssignmentRules, Capability::ManagePipelineStages,
                 Capability::ViewTours, Capability::ManageTours, Capability::ViewLeadReports,
                 Capability::ViewTwinModels, Capability::ManageTwinModels,
             ],

@@ -9,7 +9,7 @@
     Team size and move-in date are left out: they need verified inventory, which does not exist yet
     (OD-113 d). Prices and availability are never shown.
 --}}
-<div class="flex flex-col gap-3">
+<div {{ $attributes->class('flex flex-col gap-3') }}>
     <form id="find" method="get" action="{{ route('workspaces.find', [], false) }}" role="search" aria-label="Find a workspace"
         class="flex scroll-mt-48 flex-col gap-1 rounded-[1.75rem] bg-surface p-2 text-ink shadow-card ring-1 ring-line sm:flex-row sm:items-center">
         <div class="relative flex-1">

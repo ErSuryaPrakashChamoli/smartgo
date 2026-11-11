@@ -7,6 +7,7 @@ use App\Filament\Clusters\Properties\Resources\PropertyProfiles\PropertyProfileR
 use App\Filament\Clusters\Website\Resources\CaseStudies\CaseStudyResource;
 use App\Filament\Clusters\Website\Resources\Pages\PageResource;
 use App\Filament\Clusters\Website\Resources\Posts\PostResource;
+use App\Filament\Clusters\Website\Resources\SpaceListings\SpaceListingResource;
 use App\Models\City;
 use App\Models\Offering;
 use App\Models\Page;
@@ -52,7 +53,7 @@ class SearchMetadata
      */
     public const array TYPES = [
         'home' => 'Home page', 'workspaces' => 'Workspaces hub', 'category' => 'Workspace type', 'category_city' => 'Workspace type in a city',
-        'locations' => 'Locations hub', 'city' => 'City', 'sector' => 'Sector', 'property' => 'Property', 'offering' => 'Workspace at a property',
+        'locations' => 'Locations hub', 'city' => 'City', 'sector' => 'Sector', 'property' => 'Property', 'offering' => 'Workspace at a property', 'space' => 'Space',
         'insights' => 'Article list', 'topic' => 'Article topic', 'post' => 'Article', 'customers' => 'Customer story list', 'case_study' => 'Customer story',
         'faqs' => 'Questions page', 'enquire' => 'Enquiry page', 'book_a_tour' => 'Tour page', 'page' => 'Page',
     ];
@@ -123,6 +124,7 @@ class SearchMetadata
             'sector' => $template($subject->name.', '.$subject->city->name, 'Workspaces in '.$subject->name.', '.$subject->city->name, 'SmartGro workspace locations in '.$subject->name.', '.$subject->city->name.'.'),
             'property' => $this->property($subject),
             'offering' => $this->offering($subject),
+            'space' => ['page' => $subject->name.' at SmartGro '.$subject->property->name, 'title' => $this->title(null, $subject->name.' at SmartGro '.$subject->property->name), 'description' => filled($subject->summary) ? $subject->summary : null, 'source' => 'Space name and summary', 'edit_url' => SpaceListingResource::getUrl('edit', ['record' => $subject])],
             'insights' => $template('Insights'.$this->pageSuffix($entry), 'Insights', 'Articles and guides from SmartGro.'),
             'topic' => $template($subject->name.$this->pageSuffix($entry), $subject->name.' — Insights', 'Articles about '.$subject->name.' from SmartGro.'),
             'post' => ['page' => (string) $subject->title, 'title' => $this->title(null, $subject->title), 'description' => filled($subject->excerpt) ? $subject->excerpt : null, 'source' => 'Article title and summary', 'edit_url' => PostResource::getUrl('edit', ['record' => $subject])],

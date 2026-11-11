@@ -149,6 +149,9 @@ enum Capability: string
     /** Creating, changing, switching on and off the rules that give new enquiries an owner (FR-CRM-2); Super Admin only (OD-36, SECURITY_MODEL §3.1). */
     case ManageAssignmentRules = 'leads.assignment.manage';
 
+    /** Adding, ordering and switching off the stages deals move through, with their outcome and probability (FR-CRM-4); Super Admin only (OD-36, SECURITY_MODEL §3.1 "Assignment rules, pipeline stages"). */
+    case ManagePipelineStages = 'leads.pipeline.manage';
+
     /** Seeing uploaded 3D models, their checks and anchors, and previewing them (§3.1 "3D model upload and anchors"). */
     case ViewTwinModels = 'twin_models.view';
 

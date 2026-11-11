@@ -1,0 +1,466 @@
+{
+    "database": "smart_go",
+    "read_only": 1,
+    "pages": {
+        "/": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "sample_notice",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/enquire": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/book-a-tour": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/legal/privacy": {
+            "status": 200,
+            "marks": [
+                "example_text",
+                "sample_notice",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/workspaces": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/customers": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/faqs": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-23": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-70": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-71": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/h-105": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-70/private-cabins": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-71/private-cabins": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-23/private-cabins": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/h-105/private-cabins": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-70/dedicated-desks": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-71/dedicated-desks": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-23/dedicated-desks": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/h-105/dedicated-desks": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-70/hot-desks": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-71/hot-desks": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-23/hot-desks": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/h-105/hot-desks": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-70/meeting-rooms": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-71/meeting-rooms": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-23/meeting-rooms": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/h-105/meeting-rooms": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-70/conference-training-rooms": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-71/conference-training-rooms": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-23/conference-training-rooms": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/h-105/conference-training-rooms": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-70/virtual-office": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-71/virtual-office": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-23/virtual-office": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/h-105/virtual-office": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-70/managed-offices": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-71/managed-offices": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/a-23/managed-offices": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/locations/noida/h-105/managed-offices": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/workspaces/private-cabins": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/workspaces/dedicated-desks": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/workspaces/hot-desks": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/workspaces/meeting-rooms": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/workspaces/conference-training-rooms": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/workspaces/virtual-office": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/workspaces/managed-offices": {
+            "status": 200,
+            "marks": [
+                "placeholder_phone",
+                "placeholder_email"
+            ]
+        },
+        "/customers/example-design-studio": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email",
+                "example_testimonial"
+            ]
+        },
+        "/customers/example-software-team": {
+            "status": 200,
+            "marks": [
+                "stock_label",
+                "example_text",
+                "placeholder_phone",
+                "placeholder_email",
+                "example_testimonial"
+            ]
+        },
+        "/media/1/w960": {
+            "status": 200
+        },
+        "/media/2/w960": {
+            "status": 200
+        },
+        "/media/3/w960": {
+            "status": 200
+        },
+        "/media/4/w960": {
+            "status": 200
+        },
+        "/media/5/w960": {
+            "status": 200
+        },
+        "/media/6/w960": {
+            "status": 200
+        },
+        "/media/7/w960": {
+            "status": 200
+        },
+        "/media/8/w960": {
+            "status": 200
+        },
+        "/media/9/w960": {
+            "status": 200
+        },
+        "/media/10/w960": {
+            "status": 200
+        },
+        "/media/11/w960": {
+            "status": 200
+        }
+    },
+    "statuses": {
+        "200": 61
+    }
+}

@@ -1,0 +1,15 @@
+f129728
+ M app/Actions/Access/SyncAccessControl.php
+ M database/seeders/DatabaseSeeder.php
+ M docs/decisions/DECISION_REGISTER.md
+ M docs/operations/LOCAL_DEVELOPMENT.md
+ M docs/operations/scripts/browser/seed-sample-content.php
+ M docs/phases/PHASE_STATUS.md
+ M tests/Feature/Actions/Access/SyncAccessControlTest.php
+?? database/seeders/DummyStaffSeeder.php
+?? database/seeders/SampleContentSeeder.php
+?? docs/testing/evidence/phase14/2026-11-05-od165-sample-content/
+?? docs/testing/evidence/phase14/2026-11-05-od166-default-seed/
+?? tests/Feature/Database/DatabaseSeederTest.php
+?? tests/Feature/Database/DummyStaffSeederTest.php
+?? tests/Feature/Database/SampleContentSeederTest.php

@@ -64,6 +64,9 @@ class NavigationItem extends Model
 
     public const string LINK_SECTION = 'section';
 
+    /** A space type whose listed spaces open as a tab in the drop-down (OD-177). */
+    public const string LINK_SPACE_TYPE = 'space_type';
+
     public const string LINK_EXTERNAL = 'external';
 
     public const string LINK_GROUP = 'group';

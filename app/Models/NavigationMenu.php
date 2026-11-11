@@ -148,6 +148,7 @@ class NavigationMenu extends Model implements Revisionable
             ContentLink::TO_PAGE => NavigationItem::LINK_PAGE,
             NavigationPayload::PROPERTY => NavigationItem::LINK_PROPERTY,
             NavigationPayload::CATEGORY => NavigationItem::LINK_CATEGORY,
+            NavigationPayload::SPACE_TYPE => NavigationItem::LINK_SPACE_TYPE,
             NavigationPayload::SECTION => NavigationItem::LINK_SECTION,
             ContentLink::TO_URL => NavigationItem::LINK_EXTERNAL,
             default => NavigationItem::LINK_GROUP,
@@ -161,12 +162,14 @@ class NavigationMenu extends Model implements Revisionable
                 NavigationItem::LINK_PAGE => (new Page)->getMorphClass(),
                 NavigationItem::LINK_PROPERTY => (new Property)->getMorphClass(),
                 NavigationItem::LINK_CATEGORY => (new Product)->getMorphClass(),
+                NavigationItem::LINK_SPACE_TYPE => (new SpaceType)->getMorphClass(),
                 default => null,
             },
             'linkable_id' => match ($linkType) {
                 NavigationItem::LINK_PAGE => $item['page_id'],
                 NavigationItem::LINK_PROPERTY => $item['property_id'],
                 NavigationItem::LINK_CATEGORY => $item['product_id'],
+                NavigationItem::LINK_SPACE_TYPE => $item['space_type_id'],
                 default => null,
             },
             'section' => $linkType === NavigationItem::LINK_SECTION ? $item['section'] : null,
@@ -187,6 +190,7 @@ class NavigationMenu extends Model implements Revisionable
                 NavigationItem::LINK_PAGE => ContentLink::TO_PAGE,
                 NavigationItem::LINK_PROPERTY => NavigationPayload::PROPERTY,
                 NavigationItem::LINK_CATEGORY => NavigationPayload::CATEGORY,
+                NavigationItem::LINK_SPACE_TYPE => NavigationPayload::SPACE_TYPE,
                 NavigationItem::LINK_SECTION => NavigationPayload::SECTION,
                 NavigationItem::LINK_EXTERNAL => ContentLink::TO_URL,
                 default => NavigationPayload::GROUP,
@@ -196,6 +200,7 @@ class NavigationMenu extends Model implements Revisionable
             'property_id' => $item->link_type === NavigationItem::LINK_PROPERTY ? $item->linkable_id : null,
             'product_id' => $item->link_type === NavigationItem::LINK_CATEGORY ? $item->linkable_id : null,
             'url' => $item->url,
+            ...($item->link_type === NavigationItem::LINK_SPACE_TYPE ? ['space_type_id' => $item->linkable_id] : []),
             ...($withDetails ? ['description' => $item->description, 'icon' => $item->icon] : []),
         ];
     }

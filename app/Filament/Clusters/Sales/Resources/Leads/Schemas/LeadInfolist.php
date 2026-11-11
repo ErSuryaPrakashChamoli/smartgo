@@ -9,6 +9,7 @@ use App\Models\AssignmentRule;
 use App\Models\Contact;
 use App\Models\Lead;
 use App\Models\User;
+use App\Services\Crm\FirstResponseClock;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -44,7 +45,10 @@ class LeadInfolist
                             ->visible(fn (): bool => AssignmentRule::isAvailable())
                             ->columnSpanFull(),
                         TextEntry::make('created_at')->label('Received')->dateTime('j M Y, H:i T', $timezone),
-                        TextEntry::make('first_responded_at')->label('First response')->dateTime('j M Y, H:i T', $timezone)->placeholder('Not yet'),
+                        TextEntry::make('first_response')
+                            ->label('First response')
+                            ->state(fn (Lead $record): string => self::firstResponse($record))
+                            ->color(fn (Lead $record): ?string => app(FirstResponseClock::class)->isOverdue($record) ? 'danger' : null),
                         TextEntry::make('closeReason.label')->label('Reason')->visible(fn (Lead $record): bool => $record->close_reason_id !== null),
                         TextEntry::make('closed_reason')->label('Details')->visible(fn (Lead $record): bool => filled($record->closed_reason)),
                         TextEntry::make('message')->placeholder('No message')->columnSpanFull(),
@@ -128,6 +132,41 @@ class LeadInfolist
                     ])
                     ->columnSpanFull(),
             ]);
+    }
+
+    /**
+     * The first response and how long it took, or how long the enquiry has waited (FR-CRM-1, UJ-10 "SLA
+     * visible"); with the due time and whether it is overdue once the owner has set a target (A-41).
+     */
+    private static function firstResponse(Lead $record): string
+    {
+        $clock = app(FirstResponseClock::class);
+        $timezone = config('backoffice.timezone');
+        $waited = $clock->describe($clock->waitedMinutes($record));
+
+        if ($record->first_responded_at !== null) {
+            $late = $clock->respondedLate($record);
+
+            return $record->first_responded_at->setTimezone($timezone)->format('j M Y, H:i T').', after '.$waited
+                .match ($late) {
+                    true => ', after its target', false => ', within its target', null => ''
+                }.'.';
+        }
+
+        $text = 'Not yet: waiting '.$waited.' since it arrived.';
+
+        if (! $clock->hasTarget()) {
+            return $text;
+        }
+
+        $due = $clock->dueAt($record);
+
+        return match (true) {
+            $due === null && $record->property === null => $text.' No due time: an enquiry without a location has no opening hours to count.',
+            $due === null => $text.' No due time: the location has no opening hours recorded.',
+            $clock->isOverdue($record) => $text.' Overdue since '.$due->setTimezone($timezone)->format('j M, H:i').'.',
+            default => $text.' Due by '.$due->setTimezone($timezone)->format('j M, H:i').'.',
+        };
     }
 
     /**

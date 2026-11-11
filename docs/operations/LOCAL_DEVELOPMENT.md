@@ -151,10 +151,21 @@ Then open http://127.0.0.1:8766 (website) and http://127.0.0.1:8766/admin (back 
 
 - **Tests:** `phpunit.xml` sets it to `true`.
 - **The sample seed script:** `docs/operations/scripts/browser/seed-sample-content.php` allows it itself, and only on the demo, site or test database.
+- **The sample seeder:** `SampleContentSeeder` allows it for its own run only (below).
 
 No server sets it to `true` any more: the site's service does not (above), and the demo is retired (below). Turning sample submission back on for the site would need the owner's decision. It would mean adding `Environment=BACKOFFICE_SAMPLE_CONTENT=true` to its unit.
 
 The browser kit publishes no sample content and needs nothing.
+
+### Sample content and dummy staff on any local database (OD-165)
+
+`php artisan db:seed --class=SampleContentSeeder` fills a local database with the sample website content for the team to replace from the back office: the sample pages (Solutions and its 13 offerings, Community, About, Careers, Partners, Accessibility), ten example articles, five example FAQs, and the main and footer menus. Each location's website profile also gets example text as a draft. It is never published, because a profile can be published only once a workspace category is recorded for the property. Production is refused. Rerunning changes nothing that is unchanged. Content someone active published or is working on is left alone.
+
+It writes as two dummy Marketing Managers. When they are missing it first runs `DummyStaffSeeder`, which creates one account per role (`admin`, `marketing`, `marketing2`, `operations`, `property`, `sales`, `finance` `@dummy.test`; `admin` is a Super Admin, OD-166). The seven share one password, printed only by that run. `php artisan db:seed --class=DummyStaffSeeder` issues a new one and leaves roles, properties and active state alone.
+
+**The default seed (OD-166).** `php artisan db:seed`, and so `migrate:fresh --seed`, runs `access:sync`, `ReferenceDataSeeder` and then `SampleContentSeeder`, which creates the dummy staff first when they are missing. In production it stops after the reference data. The reference seeder also proposes which categories each space type can be sold as, including the two combinations still awaiting the owner's decision (A-28). `migrate:fresh` empties the whole database first, including real accounts, so on `smart_go` take a backup before running it. Do not use `migrate:refresh` or `migrate:reset`: the audit-log migration cannot be undone (it has no `down()`), so they stop halfway and leave the database part-built.
+
+To replace a sample page, edit it as yourself and switch its layout from "Sample" to a real one. On the owner's server the sample switch is off, so a page that keeps the sample layout can be saved but not submitted. Then sign in as `marketing2@dummy.test` to approve it, and publish it as yourself. The approver may never be the author or the publisher. Run both seeders with `DB_DATABASE` set explicitly and the cache-bypass variables, as for any command against `smart_go`.
 
 ### Retired: the demo on port 8768 (OD-158)
 
